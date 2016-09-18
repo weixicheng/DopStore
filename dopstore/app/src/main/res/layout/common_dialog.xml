@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/common_dialog_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="30.0dip"
+        android:layout_marginRight="30.0dip"
+        android:background="@drawable/shape_corner_all_selector"
+        android:gravity="center_vertical"
+        android:minWidth="290.0dip"
+        android:orientation="vertical">
+
+        <!-- title -->
+
+        <TextView
+            android:id="@+id/common_dialog_title"
+            android:textSize="20sp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15.0dip"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:textColor="@android:color/black"
+            android:visibility="visible" />
+
+        <!-- message -->
+
+        <TextView
+            android:id="@+id/common_dialog_message"
+            android:textSize="16sp"
+            android:layout_width="fill_parent"
+            android:layout_height="90.0dip"
+            android:layout_margin="10.0dip"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:textColor="@android:color/black" />
+
+        <!-- 分界线 -->
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1.0dip"
+            android:background="#cccccc" />
+
+        <!-- 底部button -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40.0dip"
+            android:orientation="horizontal">
+
+            <!-- 取消 -->
+
+            <TextView
+                android:id="@+id/cancel"
+                android:textSize="15sp"
+                android:layout_width="0dip"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="取消"
+                android:textColor="@android:color/holo_blue_light"
+                android:visibility="gone" />
+
+            <!-- 分界线 -->
+
+            <View
+                android:id="@+id/boundary"
+                android:layout_width="0dip"
+                android:layout_height="match_parent"
+                android:layout_weight="0.01"
+                android:background="#cccccc"
+                android:visibility="gone" />
+
+            <!-- 确定 -->
+
+            <TextView
+                android:id="@+id/confirm"
+                android:textSize="15sp"
+                android:layout_width="0dip"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="确定"
+                android:textColor="@android:color/holo_blue_light"
+                android:visibility="gone" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

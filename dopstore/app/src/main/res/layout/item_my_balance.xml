@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="@dimen/margin_10">
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/gray_color_33"
+                    android:text="充值"
+                    android:textSize="@dimen/textsize_16" />
+
+                <TextView
+                    android:id="@+id/item_my_balance_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:textColor="@color/orange_color_E98028"
+                    android:textSize="@dimen/textsize_16" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="元"
+                    android:layout_marginLeft="5dp"
+                    android:textColor="@color/gray_color_33"
+                    android:textSize="@dimen/textsize_16" />
+
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/item_my_balance_intro"
+                android:layout_width="match_parent"
+                android:layout_marginTop="5dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/gray_color_99"
+                android:textSize="@dimen/textsize_14" />
+
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="72dp"
+            android:layout_height="27dp"
+            android:background="@mipmap/recharge_logo" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/item_my_balance_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gray_color_ee"
+        android:layout_marginLeft="@dimen/margin_10" />
+
+</LinearLayout>

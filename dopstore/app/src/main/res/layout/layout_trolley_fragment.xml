@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include layout="@layout/common_title" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:padding="@dimen/margin_10"
+            android:layout_height="wrap_content">
+
+            <CheckBox
+                android:id="@+id/check_box"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:background="@null"
+                android:button="@drawable/check_box_bg"
+                android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+                android:clickable="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:visibility="visible"
+                android:checked="false" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="全选"
+                android:layout_marginLeft="@dimen/margin_10"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/gray_color_33"
+                android:textSize="@dimen/textsize_14" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+
+        <RelativeLayout
+            android:id="@+id/cart_rl_allprie_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:visibility="visible">
+
+            <TextView
+                android:id="@+id/tv_cart_Allprice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="合计:"
+                android:textColor="@color/red_color_f93448"
+                android:textSize="@dimen/textsize_14" />
+
+            <TextView
+                android:id="@+id/tv_cart_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/tv_cart_Allprice"
+                android:singleLine="true"
+                android:text="￥0.00 "
+                android:textColor="@color/red_color_f93448"
+                android:textSize="@dimen/textsize_14"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+
+
+        <TextView
+            android:id="@+id/tv_cart_buy_or_del"
+            android:layout_width="121dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="15dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@color/red_color_f93448"
+            android:clickable="true"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="结算"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/textsize_16" />
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom_bar"
+        android:layout_below="@id/top_bar"
+        android:divider="@color/gray_color_ee"
+        android:dividerHeight="1dp" />
+
+</RelativeLayout>

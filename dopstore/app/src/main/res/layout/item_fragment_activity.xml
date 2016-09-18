@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white_color"
+    android:paddingLeft="@dimen/margin_10"
+    android:paddingRight="@dimen/margin_10"
+    android:paddingBottom="@dimen/margin_10"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/item_fragment_activity_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@null"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/item_fragment_activity_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="123"
+            android:layout_marginLeft="@dimen/margin_10"
+            android:layout_marginBottom="@dimen/margin_10"
+            android:layout_alignBottom="@id/item_fragment_activity_image"
+            android:textColor="@color/red_color_f93448"
+            android:textSize="@dimen/textsize_20" />
+
+        <TextView
+            android:id="@+id/item_fragment_activity_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/margin_10"
+            android:layout_marginBottom="@dimen/margin_10"
+            android:layout_alignBottom="@id/item_fragment_activity_image"
+            android:textColor="@color/white_color"
+            android:textSize="@dimen/textsize_14" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/item_fragment_activity_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/item_fragment_activity_image"
+        android:layout_marginTop="@dimen/margin_10"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/gray_color_33"
+        android:textSize="@dimen/textsize_14" />
+
+</LinearLayout>

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.dopstore.mall">
+
+    <!-- Required  一些系统要求的权限，如访问网络等-->
+    <uses-permission android:name="${applicationId}.permission.JPUSH_MESSAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <!-- Optional for location -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+
+    <!-- 请求访问使用照相设备 -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- 开启闪光灯权限 -->
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+
+    <application
+        android:name=".base.MyApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:screenOrientation="portrait"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".activity.WelcomePageActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".activity.WebActivity" />
+        <activity android:name=".activity.SearchActivity" />
+        <activity
+            android:name=".activity.MainActivity"
+            android:launchMode="singleTask" />
+        <!-- 二维码扫描 -->
+        <activity
+            android:name=".activity.MipcaActivityCapture"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <!-- 注册 -->
+        <activity
+            android:name=".login.activity.RegisterActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize|stateAlwaysHidden" />
+        <!-- 忘记密码 -->
+        <activity
+            android:name=".login.activity.LosePwdActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize|stateAlwaysHidden" />
+        <!--  登录 -->
+        <activity
+            android:name=".login.activity.LoginActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize|stateAlwaysHidden" />
+        <!--  注册详情 -->
+        <activity android:name=".login.activity.RegisterDetailActivity" />
+        <!--  设置 -->
+        <activity android:name=".person.activity.SetActivity" />
+        <!--图库 -->
+        <activity
+            android:name="com.zfdang.multiple_images_selector.ImagesSelectorActivity"
+            android:configChanges="orientation|screenSize" />
+        <!--  我的资料 -->
+        <activity android:name=".person.activity.MyDetailActivity" />
+        <!--  选择收货地址 -->
+        <activity android:name=".person.activity.MyAddressActivity" />
+        <!--  新建地址 -->
+        <activity
+            android:name=".person.activity.NewAddressActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize|stateAlwaysHidden" />
+        <!--  我的余额 -->
+        <activity android:name=".person.activity.MyBalanceActivity" />
+        <!--  我的活动 -->
+        <activity android:name=".order.activity.MyActivityActivity" />
+        <!--  活动详情 -->
+        <activity android:name=".order.activity.ActivityOrderDetailActivity" />
+        <!--  我的收藏 -->
+        <activity android:name=".person.activity.MyCollectActivity" />
+        <!--  安全中心 -->
+        <activity android:name=".person.activity.SafeActivity" />
+        <!--  消息通知 -->
+        <activity android:name=".person.activity.NoticActivity" />
+        <!--  意见反馈 -->
+        <activity android:name=".person.activity.AdviceActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize|stateAlwaysHidden"/>
+        <!--  帮助中心 -->
+        <activity android:name=".person.activity.HelpActivity" />
+        <!--  修改昵称 -->
+        <activity
+            android:name=".person.activity.ModifyNickActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize|stateAlwaysHidden" />
+        <!--  我的订单 -->
+        <activity android:name=".order.activity.MyOrderActivity" />
+        <!--  订单详情 -->
+        <activity android:name=".order.activity.OrderDetailActivity" />
+        <!--  配送信息 -->
+        <activity android:name=".order.activity.DeliveryInfoActivity" />
+        <!--  确认订单 -->
+        <activity android:name=".shop.activity.ConfirmOrderActivity" />
+        <!--  收银台 -->
+        <activity android:name=".order.activity.CashierActivity" />
+        <!--   付款成功  -->
+        <activity android:name=".order.activity.PaySuccessActivity" />
+        <!--  申请退款 -->
+        <activity android:name=".order.activity.RefundOrderActivity" />
+        <!--  商城列表 -->
+        <activity android:name=".shop.activity.ShopListActivity" />
+        <!--  商城详情 -->
+        <activity android:name=".shop.activity.ShopDetailActivity" />
+        <!--  活动列表 -->
+        <activity android:name=".shop.activity.ActivityListActivity" />
+        <!--  活动详情 -->
+        <activity android:name=".shop.activity.ActivityDetailActivity" />
+        <!--  活动报名 -->
+        <activity android:name=".shop.activity.ConfirmActivityActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize|stateAlwaysHidden"/>
+    </application>
+
+</manifest>

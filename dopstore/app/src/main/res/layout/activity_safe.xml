@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/common_title" />
+
+    <RelativeLayout
+        android:id="@+id/safe_pwd_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margin_10">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:layout_centerVertical="true"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="登录密码"
+                android:textSize="@dimen/textsize_16"
+                android:textColor="@color/gray_color_33" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="建议您定期更改密码以保护账户安全"
+                android:layout_marginTop="5dp"
+                android:textSize="@dimen/textsize_12"
+                android:textColor="@color/gray_color_99" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="7dp"
+            android:layout_height="15dp"
+            android:background="@mipmap/right_arrow"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/margin_10"
+        android:layout_marginRight="@dimen/margin_10"
+        android:background="@color/gray_color_ee" />
+
+    <RelativeLayout
+        android:id="@+id/safe_phone_layout"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margin_10">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_marginRight="@dimen/margin_10"
+            android:layout_centerVertical="true"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="手机号"
+                    android:layout_centerVertical="true"
+                    android:textSize="@dimen/textsize_16"
+                    android:textColor="@color/gray_color_33" />
+
+                <TextView
+                    android:id="@+id/safe_phone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="12345678901"
+                    android:layout_marginRight="@dimen/margin_10"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:textSize="@dimen/textsize_16"
+                    android:textColor="@color/gray_color_33" />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="如您的验证码手机已丢失或停用,请立即修改更换"
+                android:layout_marginTop="5dp"
+                android:textSize="@dimen/textsize_12"
+                android:textColor="@color/gray_color_99" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="7dp"
+            android:layout_height="15dp"
+            android:background="@mipmap/right_arrow"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true" />
+    </RelativeLayout>
+</LinearLayout>

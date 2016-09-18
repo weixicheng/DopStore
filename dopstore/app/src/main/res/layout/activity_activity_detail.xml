@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_order_main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray_color_ee"
+    android:orientation="vertical">
+
+
+    <include
+        android:id="@+id/activity_order_title_layout"
+        layout="@layout/common_title" />
+
+    <RelativeLayout
+        android:id="@+id/activity_order_bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_50"
+        android:layout_alignParentBottom="true"
+        android:background="@color/red_color_f93448">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="19dp"
+                android:layout_height="19dp"
+                android:background="@mipmap/sign_up_logo" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="马上报名"
+                android:textColor="@color/white_color"
+                android:textSize="@dimen/textsize_16" />
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+    <WebView
+        android:id="@+id/activity_order_web"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/activity_order_bottom_layout"
+        android:layout_below="@id/activity_order_title_layout" />
+
+    <LinearLayout
+        android:id="@+id/activity_order_poup_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/activity_order_title_layout"
+        android:background="@drawable/darkening_background"
+        android:orientation="vertical"
+        android:visibility="gone" />
+
+
+</RelativeLayout>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white_color"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/margin_10">
+
+        <CheckBox
+            android:id="@+id/item_my_collect_check_box"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/margin_10"
+            android:layout_marginRight="4dp"
+            android:button="@drawable/check_box_bg"
+            android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+            android:clickable="true"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:gravity="center"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/item_my_collect_image"
+            android:layout_width="91dp"
+            android:layout_height="91dp"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/ic_launcher" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="91dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/item_my_collect_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_10"
+                android:layout_marginTop="@dimen/margin_10"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textColor="@color/gray_color_33"
+                android:textSize="@dimen/textsize_12" />
+
+            <TextView
+                android:id="@+id/item_my_collect_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="@dimen/margin_10"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textColor="@color/red_color_f93448"
+                android:textSize="@dimen/textsize_12" />
+        </RelativeLayout>
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="@color/gray_color_ee"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/my_collect_top"
+        layout="@layout/common_title" />
+
+    <RelativeLayout
+        android:id="@+id/my_collect_bottom"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:background="@color/white_color"
+        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/my_collect_check_layout"
+            android:layout_width="match_parent"
+            android:padding="@dimen/margin_10"
+            android:layout_centerVertical="true"
+            android:layout_height="wrap_content">
+
+            <CheckBox
+                android:id="@+id/my_collect_check"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:background="@null"
+                android:button="@drawable/check_box_bg"
+                android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+                android:clickable="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:visibility="visible"
+                android:checked="false" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="全选"
+                android:layout_marginLeft="5dp"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/gray_color_33"
+                android:textSize="@dimen/textsize_14" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/my_collect_delete"
+            android:layout_width="120dp"
+            android:text="删除"
+            android:textColor="@color/white_color"
+            android:textSize="@dimen/textsize_14"
+            android:gravity="center"
+            android:background="@color/red_color_f93448"
+            android:layout_alignParentRight="true"
+            android:layout_height="@dimen/margin_50" />
+
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/my_collect_list"
+        android:layout_below="@id/my_collect_top"
+        android:layout_above="@id/my_collect_bottom"
+        android:layout_width="match_parent"
+        android:dividerHeight="@dimen/margin_10"
+        android:divider="@color/gray_color_ee"
+        android:layout_height="match_parent" />
+
+</RelativeLayout>

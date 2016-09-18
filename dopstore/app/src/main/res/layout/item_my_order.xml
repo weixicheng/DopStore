@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white_color"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margin_10">
+
+        <TextView
+            android:id="@+id/item_my_order_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:textColor="@color/gray_color_99"
+            android:textSize="@dimen/textsize_14" />
+
+        <TextView
+            android:id="@+id/item_my_order_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:textColor="@color/red_color_f93448"
+            android:textSize="@dimen/textsize_14" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margin_10">
+
+        <ImageView
+            android:id="@+id/item_my_order_image"
+            android:layout_width="91dp"
+            android:layout_height="91dp"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/item_my_order_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/item_my_order_image"
+            android:layout_marginLeft="@dimen/margin_10"
+            android:layout_toRightOf="@id/item_my_order_image"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/gray_color_33"
+            android:textSize="@dimen/textsize_14" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/item_my_order_image"
+            android:layout_marginLeft="@dimen/margin_10"
+            android:layout_toRightOf="@id/item_my_order_image">
+
+            <TextView
+                android:id="@+id/item_my_order_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:singleLine="true"
+                android:textColor="@color/gray_color_99"
+                android:textSize="@dimen/textsize_12" />
+
+            <TextView
+                android:id="@+id/item_my_order_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:singleLine="true"
+                android:textColor="@color/gray_color_99"
+                android:textSize="@dimen/textsize_12" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margin_10">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="实付款:"
+                android:textColor="@color/gray_color_99"
+                android:textSize="@dimen/textsize_14" />
+
+            <TextView
+                android:id="@+id/item_my_order_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:textColor="@color/red_color_f93448"
+                android:textSize="@dimen/textsize_14" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/item_my_order_pay"
+            android:layout_width="76dp"
+            android:layout_height="29dp"
+            android:visibility="gone"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@mipmap/pay_li_logo" />
+    </RelativeLayout>
+
+
+</LinearLayout>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@color/gray_color_ee"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/common_title" />
+
+    <EditText
+        android:id="@+id/advice_input_et"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:layout_margin="@dimen/margin_20"
+        android:background="@drawable/square_corners_white_bg"
+        android:gravity="top"
+        android:padding="@dimen/margin_10"
+        android:hint="请输入您的宝贵意见"
+        android:inputType="text"
+        android:textColor="@color/gray_color_33"
+        android:textColorHint="@color/gray_color_99"
+        android:textSize="@dimen/textsize_16" />
+    <EditText
+        android:id="@+id/advice_input_post_et"
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:layout_marginLeft="@dimen/margin_20"
+        android:layout_marginRight="@dimen/margin_20"
+        android:background="@drawable/square_corners_white_bg"
+        android:gravity="top"
+        android:padding="@dimen/margin_10"
+        android:hint="请留下您的联系方式(QQ/邮箱/电话号码)"
+        android:inputType="text"
+        android:textColor="@color/gray_color_33"
+        android:textColorHint="@color/gray_color_99"
+        android:textSize="@dimen/textsize_16" />
+
+    <Button
+        android:id="@+id/advice_submit_bt"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_50"
+        android:layout_margin="@dimen/margin_20"
+        android:background="@drawable/square_corners_red_bg"
+        android:text="提交"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textsize_16" />
+</LinearLayout>

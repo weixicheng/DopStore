@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:overScrollMode="never"
+    android:scrollbars="none">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white_color"
+        android:orientation="vertical">
+
+        <include layout="@layout/common_title" />
+
+        <LinearLayout
+            android:id="@+id/my_balance_numly"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/my_balance_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/red_color_f93448"
+                    android:textSize="@dimen/textsize_44" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="账户余额(元)"
+                    android:textColor="@color/gray_color_33"
+                    android:textSize="@dimen/textsize_14" />
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <com.dopstore.mall.view.MyListView
+            android:id="@+id/my_balance_lv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            android:scrollbars="none" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/margin_10"
+                android:text="海豚币说明"
+                android:textColor="@color/gray_color_33"
+                android:textSize="@dimen/textsize_16" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_10"
+                android:padding="@dimen/margin_10"
+                android:text="海豚币是小海囤推出的一种可以到线下消费的货币,海豚币在线下可直接抵现金使用。"
+                android:textColor="@color/gray_color_33"
+                android:textSize="@dimen/textsize_14" />
+
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

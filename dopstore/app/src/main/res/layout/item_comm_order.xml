@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white_color"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/comm_order_type"
+        android:layout_width="match_parent"
+        android:padding="@dimen/margin_10"
+        android:layout_height="wrap_content"
+        android:textColor="@color/gray_color_33"
+        android:textSize="@dimen/textsize_14"
+        android:visibility="gone" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white_color"
+        android:padding="@dimen/margin_10">
+
+        <ImageView
+            android:id="@+id/comm_order_image"
+            android:layout_width="91dp"
+            android:layout_height="91dp"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/comm_order_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/comm_order_image"
+            android:layout_marginLeft="@dimen/margin_10"
+            android:layout_toRightOf="@id/comm_order_image"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/gray_color_33"
+            android:textSize="@dimen/textsize_14" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/comm_order_image"
+            android:layout_marginLeft="@dimen/margin_10"
+            android:layout_toRightOf="@id/comm_order_image">
+
+            <TextView
+                android:id="@+id/comm_order_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:singleLine="true"
+                android:textColor="@color/red_color_f93448"
+                android:textSize="@dimen/textsize_12" />
+
+            <TextView
+                android:id="@+id/comm_order_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:singleLine="true"
+                android:textColor="@color/red_color_f93448"
+                android:textSize="@dimen/textsize_12" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/comm_order_hint_layout"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/margin_10"
+        android:paddingRight="@dimen/margin_10"
+        android:layout_height="@dimen/margin_50">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="订单备注:"
+            android:textColor="@color/gray_color_33"
+            android:textSize="@dimen/textsize_14" />
+        <EditText
+            android:id="@+id/comm_order_hint_et"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white_color"
+            android:paddingLeft="@dimen/margin_10"
+            android:paddingRight="@dimen/margin_10"
+            android:gravity="center_vertical"
+            android:hint="请输入文字"
+            android:textColorHint="@color/gray_color_99"
+            android:textColor="@color/gray_color_33"
+            android:textSize="@dimen/textsize_14" />
+
+
+    </LinearLayout>
+
+</LinearLayout>

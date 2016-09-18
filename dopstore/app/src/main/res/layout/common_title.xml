@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/brandsquare_title"
+    android:layout_width="fill_parent"
+    android:background="@color/red_color_f93448"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/brandsquare_title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="45.0dip"
+        android:paddingBottom="5.0dip"
+        android:paddingTop="5.0dip">
+
+        <!-- 以下为title栏常用按钮，请根据实际使用情况酌情增减 -->
+
+        <!-- 左图片按钮 -->
+
+        <ImageButton
+            android:id="@+id/title_left_imageButton"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="@null"
+            android:contentDescription="@null"
+            android:layout_marginLeft="10.0dip"
+            android:visibility="gone" />
+
+        <!-- 左边返回文本 -->
+
+        <TextView
+            android:id="@+id/title_left_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10.0dip"
+            android:layout_toRightOf="@id/title_left_imageButton"
+            android:clickable="true"
+            android:textSize="14sp"
+            android:visibility="gone" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
+
+            <!-- 标题 -->
+
+            <TextView
+                android:id="@+id/title_main_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:ellipsize="end"
+                android:maxLength="12"
+                android:singleLine="true"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/title_main_image"
+                android:layout_width="65dp"
+                android:scaleType="centerCrop"
+                android:visibility="gone"
+                android:layout_height="20dp" />
+        </RelativeLayout>
+
+        <!-- 右图片按钮 -->
+
+        <ImageButton
+            android:id="@+id/title_right_imageButton"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:contentDescription="@null"
+            android:background="@null"
+            android:layout_marginRight="10.0dip"
+            android:visibility="gone" />
+
+        <!-- 右文本按钮 -->
+
+        <TextView
+            android:id="@+id/title_right_textButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10.0dip"
+            android:clickable="true"
+            android:gravity="center"
+            android:minHeight="33.5dip"
+            android:textSize="14sp"
+            android:visibility="gone" />
+
+        <!-- 右前按钮 -->
+
+        <ImageButton
+            android:id="@+id/title_right_before_imageButton"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10.0dip"
+            android:background="@null"
+            android:contentDescription="@null"
+            android:layout_toLeftOf="@id/title_right_imageButton"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+</RelativeLayout>
