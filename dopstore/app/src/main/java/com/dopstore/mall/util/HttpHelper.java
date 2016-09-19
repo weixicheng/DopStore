@@ -2,6 +2,7 @@ package com.dopstore.mall.util;
 
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.Callback;
@@ -35,9 +36,11 @@ import javax.net.ssl.SSLSession;
 public class HttpHelper {
     private static OkHttpClient okHttpClient = null;
     private static HttpHelper okHttpUtils = null;
+    private ACache aCache;
 
     private HttpHelper(Context context) {
         okHttpClient = getOkHttpSingletonInstance();
+        aCache=ACache.get(context);
 
         //开启响应缓存
         okHttpClient.setCookieHandler(new CookieManager(null, CookiePolicy.ACCEPT_ORIGINAL_SERVER));
@@ -93,12 +96,17 @@ public class HttpHelper {
      */
     private Request buildGetRequest(String urlString, Object tag) {
         Request.Builder builder = new Request.Builder();
+        String token=aCache.getAsString(Constant.TOKEN);
+        if (!TextUtils.isEmpty(token)){
+            builder.addHeader("Authorization","JWT "+token);
+        }
         builder.url(urlString);
         if (tag != null) {
             builder.tag(tag);
         }
         return builder.build();
     }
+
 
     /**
      * 自定义方法，返回Response对象
@@ -180,24 +188,11 @@ public class HttpHelper {
      */
     private Request buildPostRequest(String urlString, RequestBody requestBody, Object tag) {
         Request.Builder builder = new Request.Builder();
-        builder.url(urlString).post(requestBody);
-        //builder.addHeader("Accept", "application/json; q=0.5");
-        if (tag != null) {
-            builder.tag(tag);
+        String token=aCache.getAsString(Constant.TOKEN);
+        if (!TextUtils.isEmpty(token)){
+            builder.addHeader("Authorization","JWT "+token);
         }
-        return builder.build();
-    }
-    /**
-     * 基方法，返回Request对象
-     *
-     * @param urlString
-     * @param tag
-     * @return
-     */
-    private Request buildRequest(String urlString,RequestBody requestBody, Object tag) {
-        Request.Builder builder = new Request.Builder();
         builder.url(urlString).post(requestBody);
-        builder.addHeader("Authorization","JWT "+Constant.TOKEN_VALUE);
         //builder.addHeader("Accept", "application/json; q=0.5");
         if (tag != null) {
             builder.tag(tag);
@@ -306,30 +301,7 @@ public class HttpHelper {
         }
         okHttpClient.newCall(request).enqueue(callback);
     }
-/**
-     * 作用：post提交数据，返回服务器端返回的字节数组
-     *
-     * @param urlString ：访问网络的url地址
-     */
-    private void postRequestAsync(String urlString,RequestBody requestBody, Callback
-            callback, Object tag) {
-        Request request = buildRequest(urlString,requestBody, tag);
-        if (callback == null) {
-            new Callback() {
 
-                @Override
-                public void onFailure(Request request, IOException e) {
-
-                }
-
-                @Override
-                public void onResponse(Response response) throws IOException {
-
-                }
-            };
-        }
-        okHttpClient.newCall(request).enqueue(callback);
-    }
 
     /**
      * 作用：POST提交键值对，再返回相应的数据
@@ -351,25 +323,7 @@ public class HttpHelper {
         //将请求提放置到请求对象中
         getOkHttpClientUtils(context).postRequestBodyAsync(urlString, requestBody, callback, tag);
     }
-    /**
-     * 作用：POST提交键值对，再返回相应的数据
-     *
-     * @param urlString ：访问网络的url地址
-     * @param map       ：访问url时，需要传递给服务器的键值对数据。
-     */
-    public static void postAsync(Context context, String urlString,Map<String, String> map, Callback callback, Object tag) {
-        //往FormEncodingBuilder对象中放置键值对
-        FormEncodingBuilder formBuilder = new FormEncodingBuilder();
-        if (map != null && !map.isEmpty()) {
-            for (Map.Entry<String, String> entry : map.entrySet()) {
-                formBuilder.add(entry.getKey(), entry.getValue());
-            }
-        }
-        //生成请求体对象
-        RequestBody requestBody = formBuilder.build();
-        //将请求提放置到请求对象中
-        getOkHttpClientUtils(context).postRequestAsync(urlString,requestBody, callback, tag);
-    }
+
 
     /**
      * 作用：post异步上传文件，提交分块请求
@@ -388,7 +342,6 @@ public class HttpHelper {
                 formFieldName);
         getOkHttpClientUtils(context).postRequestBodyAsync(urlString, requestBody, callback, tag);
     }
-
     ///////////////////////////////////////////////////////////////////////////
     // POST方式提交分块请求，实现文件上传
     ///////////////////////////////////////////////////////////////////////////

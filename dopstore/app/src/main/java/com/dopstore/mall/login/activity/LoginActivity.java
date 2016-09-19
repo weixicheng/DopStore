@@ -18,9 +18,12 @@ import com.dopstore.mall.activity.MainActivity;
 import com.dopstore.mall.activity.bean.CityBean;
 import com.dopstore.mall.activity.bean.UserData;
 import com.dopstore.mall.base.BaseActivity;
+import com.dopstore.mall.base.MyApplication;
 import com.dopstore.mall.util.ACache;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.HttpHelper;
+import com.dopstore.mall.util.OtherLoginUtils;
+import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
@@ -41,6 +44,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.sharesdk.sina.weibo.SinaWeibo;
+import cn.sharesdk.tencent.qq.QQ;
+import cn.sharesdk.wechat.friends.Wechat;
+
 
 /**
  * 作者：xicheng on 16/7/29 18:25
@@ -54,18 +61,21 @@ public class LoginActivity extends BaseActivity {
     private ImageView weChatIv, qqIv, sinaIv;
     private HttpHelper httpHelper;
     private ACache aCache;
+    private OtherLoginUtils otherLoginUtils;
+    private ProUtils proUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initView();
-        initData();
     }
 
     private void initView() {
         httpHelper = HttpHelper.getOkHttpClientUtils(this);
+        proUtils=new ProUtils(this);
         aCache = ACache.get(this);
+        otherLoginUtils=new OtherLoginUtils(this);
         topLayout = (RelativeLayout) findViewById(R.id.brandsquare_title);
         topLayout.setBackgroundColor(getResources().getColor(R.color.white_color));
         leftTextBack("取消", getResources().getColor(R.color.red_color_f93448), listener);
@@ -82,10 +92,7 @@ public class LoginActivity extends BaseActivity {
         loseTxt.setOnClickListener(listener);
         weChatIv.setOnClickListener(listener);
         qqIv.setOnClickListener(listener);
-    }
-
-    private void initData() {
-
+        sinaIv.setOnClickListener(listener);
     }
 
     View.OnClickListener listener = new View.OnClickListener() {
@@ -109,14 +116,18 @@ public class LoginActivity extends BaseActivity {
                 }
                 break;
                 case R.id.login_wechat_iv: {//微信
+
+                    otherLoginUtils.authorize(1);
                     T.show(LoginActivity.this, "微信");
                 }
                 break;
                 case R.id.login_qq_iv: {//QQ
+                    otherLoginUtils.authorize(0);
                     T.show(LoginActivity.this, "QQ");
                 }
                 break;
                 case R.id.login_sina_iv: {//新浪
+                    otherLoginUtils.authorize(2);
                     T.show(LoginActivity.this, "新浪");
                 }
                 break;
@@ -148,12 +159,14 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void loginToNext(String phone, String pwd) {
+        proUtils.show();
         Map<String, String> map = new HashMap<String, String>();
         map.put(Constant.MOBILE, phone);
         map.put(Constant.PASSWORD, pwd);
         httpHelper.postKeyValuePairAsync(this, URL.LOGIN, map, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
+                T.checkNet(LoginActivity.this);
             }
 
             @Override
@@ -163,7 +176,7 @@ public class LoginActivity extends BaseActivity {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
                     if ("0".equals(code)) {
-                        Constant.TOKEN_VALUE = jo.optString(Constant.TOKEN);
+                        aCache.put(Constant.TOKEN, jo.optString(Constant.TOKEN));
                         JSONObject user = jo.optJSONObject(Constant.USER);
                         JSONArray citys = jo.optJSONArray(Constant.CITYS);
                         List<CityBean> cityList = new ArrayList<CityBean>();
@@ -194,16 +207,17 @@ public class LoginActivity extends BaseActivity {
                         Intent intent = new Intent();
                         intent.setAction(Constant.UPDATA_USER_FLAG);
                         sendBroadcast(intent);
-                        SkipUtils.directJump(LoginActivity.this, MainActivity.class, true);
+                        MyApplication.getInstance().removeActivity(LoginActivity.this);
+                        finish();
                     } else {
                         String msg = jo.optString(Constant.ERROR_MSG);
-
                         T.show(LoginActivity.this, msg);
 
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                proUtils.diamiss();
             }
         }, null);
     }

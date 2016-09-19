@@ -4,12 +4,24 @@ android {
     compileSdkVersion 24
     buildToolsVersion "24.0.1"
 
+    signingConfigs {
+        uchance {
+            keyAlias 'dopstore'
+            keyPassword '123456'
+            storeFile file('/Users/xicheng/Desktop/MyApplication/dopstore.jks')
+            storePassword '123456'
+        }
+    }
+
+
     defaultConfig {
         applicationId "com.dopstore.mall"
         minSdkVersion 15
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
+
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -30,4 +42,12 @@ dependencies {
     compile 'com.squareup.okio:okio:1.5.0'
     compile files('libs/zxing.jar')
     compile files('libs/universal-image-loader-1.9.2_sources.jar')
+    compile files('libs/MobCommons-2016.0830.1940.jar')
+    compile files('libs/MobTools-2016.0830.1940.jar')
+    compile files('libs/ShareSDK-Core-2.7.7.jar')
+    compile files('libs/ShareSDK-QQ-2.7.7.jar')
+    compile files('libs/ShareSDK-SinaWeibo-2.7.7.jar')
+    compile files('libs/ShareSDK-Wechat-2.7.7.jar')
+    compile files('libs/ShareSDK-Wechat-Core-2.7.7.jar')
+    compile files('libs/ShareSDK-Wechat-Moments-2.7.7.jar')
 }

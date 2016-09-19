@@ -25,6 +25,7 @@ import com.dopstore.mall.time.TimePopupWindow;
 import com.dopstore.mall.util.ACache;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.HttpHelper;
+import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
@@ -68,6 +69,7 @@ public class RegisterDetailActivity extends BaseActivity {
     private String mobile;
     private BabyAdapter adapter;
     private ACache aCache;
+    private ProUtils proUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +81,7 @@ public class RegisterDetailActivity extends BaseActivity {
 
     private void initView() {
         aCache = ACache.get(this);
+        proUtils=new ProUtils(this);
         httpHelper = HttpHelper.getOkHttpClientUtils(this);
         Map<String, Object> intentMap = SkipUtils.getMap(this);
         list = (List<DetailData>) intentMap.get(Constant.LIST);
@@ -160,6 +163,7 @@ public class RegisterDetailActivity extends BaseActivity {
 
 
     private void registData() {
+        proUtils.show();
         String num = "";
         for (int i = 0; i < list.size(); i++) {
             num = list.get(i).getId() + ",";
@@ -179,6 +183,7 @@ public class RegisterDetailActivity extends BaseActivity {
         httpHelper.postKeyValuePairAsync(this, URL.SIGN_UP, map, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
+                T.checkNet(RegisterDetailActivity.this);
             }
 
             @Override
@@ -188,7 +193,7 @@ public class RegisterDetailActivity extends BaseActivity {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
                     if ("0".equals(code)) {
-                        Constant.TOKEN_VALUE = jo.optString(Constant.TOKEN);
+                        aCache.put(Constant.TOKEN, jo.optString(Constant.TOKEN));
                         JSONObject user = jo.optJSONObject(Constant.USER);
                         JSONArray citys = jo.optJSONArray(Constant.CITYS);
                         List<CityBean> cityList = new ArrayList<CityBean>();
@@ -232,6 +237,7 @@ public class RegisterDetailActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                proUtils.diamiss();
             }
         }, null);
 

@@ -33,4 +33,15 @@ public class T {
             });
     }
 
+    public static void checkNet(final Context context) {
+        if (isShow)
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+
+                @Override
+                public void run() {
+                    Toast.makeText(context, "请检查网络", Toast.LENGTH_SHORT).show();
+                }
+            });
+    }
+
 }

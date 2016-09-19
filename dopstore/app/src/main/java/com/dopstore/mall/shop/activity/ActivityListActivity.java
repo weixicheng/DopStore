@@ -58,10 +58,10 @@ public class ActivityListActivity extends BaseActivity {
         for (int i = 0; i < 4; i++) {
             ActivityData data = new ActivityData();
             data.setId(i + "");
-            data.setImage("http://pic51.nipic.com/file/20141022/19779658_171157758000_2.jpg");
+            data.setPicture("http://pic51.nipic.com/file/20141022/19779658_171157758000_2.jpg");
             data.setPrice("¥ 156");
-            data.setDistance("<3km");
-            data.setTitle("欧克破门刻录机");
+            data.setId("<3km");
+            data.setName("欧克破门刻录机");
             aList.add(data);
         }
 

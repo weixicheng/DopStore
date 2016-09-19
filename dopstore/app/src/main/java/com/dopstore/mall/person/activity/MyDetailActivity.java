@@ -19,6 +19,7 @@ import com.dopstore.mall.activity.bean.UserData;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.util.HttpHelper;
 import com.dopstore.mall.util.LoadImageUtils;
+import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.view.citypicker.CityPicker;
@@ -68,6 +69,7 @@ public class MyDetailActivity extends BaseActivity {
     private String imageUrl="";
     private LoadImageUtils loadImage;
     private HttpHelper httpHelper;
+    private ProUtils proUtils;
 
 
     private CommonDialog dialog;
@@ -85,6 +87,7 @@ public class MyDetailActivity extends BaseActivity {
     private void initview() {
         loadImage=LoadImageUtils.getInstance(this);
         aCache=ACache.get(this);
+        proUtils=new ProUtils(this);
         httpHelper=HttpHelper.getOkHttpClientUtils(this);
         cityList=(List<CityBean>)aCache.getAsObject(Constant.CITYS);
         leftImageBack(R.mipmap.back_arrow);
@@ -319,13 +322,15 @@ public class MyDetailActivity extends BaseActivity {
 
     private void savePicture() {
         if (mListResult!=null&&mListResult.size()>0){
+            proUtils.show();
             String imageStr=mListResult.get(0);
             String imageBase=Utils.encodeBase64File(imageStr);
             Map<String, String> map = new HashMap<String, String>();
             map.put(Constant.AVATAR_BINARY, imageBase);
-            httpHelper.postAsync(this, URL.UPLOAD_AVATAR, map, new Callback() {
+            httpHelper.postKeyValuePairAsync(this, URL.UPLOAD_AVATAR, map, new Callback() {
                 @Override
                 public void onFailure(Request request, IOException e) {
+                    T.checkNet(MyDetailActivity.this);
                 }
 
                 @Override
@@ -344,6 +349,7 @@ public class MyDetailActivity extends BaseActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                    proUtils.diamiss();
                 }
             }, null);
         }else {
@@ -353,6 +359,7 @@ public class MyDetailActivity extends BaseActivity {
     }
 
     private void saveToService() {
+        proUtils.show();
         String sexStr=sexTv.getText().toString().trim();
         String babySexStr=babySexTv.getText().toString().trim();
         String cityStr=cityTv.getText().toString();
@@ -384,9 +391,10 @@ public class MyDetailActivity extends BaseActivity {
             map.put(Constant.BABY_GENDER, "0");
         }
         map.put(Constant.BABY_BIRTHDAY, babyDateTv.getText().toString().trim());
-        httpHelper.postAsync(this, URL.USER_UPDATE, map, new Callback() {
+        httpHelper.postKeyValuePairAsync(this, URL.USER_UPDATE, map, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
+                T.checkNet(MyDetailActivity.this);
             }
 
             @Override
@@ -396,7 +404,7 @@ public class MyDetailActivity extends BaseActivity {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
                     if ("0".equals(code)) {
-                        Constant.TOKEN_VALUE = jo.optString(Constant.TOKEN);
+                        aCache.put(Constant.TOKEN,jo.optString(Constant.TOKEN));
                         JSONObject user = jo.optJSONObject(Constant.USER);
                         JSONArray citys = jo.optJSONArray(Constant.CITYS);
                         List<CityBean> cityList = new ArrayList<CityBean>();
@@ -435,6 +443,7 @@ public class MyDetailActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                proUtils.diamiss();
             }
         }, null);
     }

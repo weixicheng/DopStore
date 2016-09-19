@@ -60,8 +60,8 @@ public class MiddleDataAdapter extends BaseAdapter {
         }
 
 
-        loadImageUtils.displayImage(list.get(i).getImage(), viewHolder.bigImageView, Constant.OPTIONS_SPECIAL_CODE);
-        viewHolder.titleTv.setText(list.get(i).getTitle());
+        loadImageUtils.displayImage(list.get(i).getCover(), viewHolder.bigImageView, Constant.OPTIONS_SPECIAL_CODE);
+        viewHolder.titleTv.setText(list.get(i).getName());
         viewHolder.priceTv.setText(list.get(i).getPrice());
         return view;
     }

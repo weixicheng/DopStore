@@ -27,6 +27,12 @@
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <!-- 蓝牙分享所需的权限 -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
     <!-- 请求访问使用照相设备 -->
     <uses-permission android:name="android.permission.CAMERA" />
@@ -53,6 +59,35 @@
         <activity
             android:name=".activity.MainActivity"
             android:launchMode="singleTask" />
+        <!--******************************** shareSDk *********************************-->
+        <activity
+            android:name="com.mob.tools.MobUIShell"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize" >
+
+            <intent-filter>
+                <data android:scheme="tencent1105622207" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <!-- 调用新浪原生SDK，需要注册的回调activity -->
+            <intent-filter>
+                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <!-- 调用微信原生SDK，需要注册的回调activity -->
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:screenOrientation="portrait" />
+        <!--******************************** shareSDk *********************************-->
         <!-- 二维码扫描 -->
         <activity
             android:name=".activity.MipcaActivityCapture"
@@ -104,6 +139,8 @@
             android:windowSoftInputMode="stateVisible|adjustResize|stateAlwaysHidden"/>
         <!--  帮助中心 -->
         <activity android:name=".person.activity.HelpActivity" />
+        <!--  帮助中心 -->
+        <activity android:name=".person.activity.HelpDetailActivity" />
         <!--  修改昵称 -->
         <activity
             android:name=".person.activity.ModifyNickActivity"

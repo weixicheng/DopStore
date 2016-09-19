@@ -39,11 +39,13 @@
                 android:layout_height="@dimen/margin_50">
 
                 <RelativeLayout
+                    android:id="@+id/fragment_activity_first_ly"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="match_parent">
 
                     <TextView
+                        android:id="@+id/fragment_activity_first_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
@@ -52,6 +54,7 @@
                         android:textColor="@color/gray_color_33" />
 
                     <View
+                        android:id="@+id/fragment_activity_first_v"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_alignParentBottom="true"
@@ -60,11 +63,13 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fragment_activity_second_ly"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="match_parent">
 
                     <TextView
+                        android:id="@+id/fragment_activity_second_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
@@ -73,6 +78,7 @@
                         android:textColor="@color/gray_color_33" />
 
                     <View
+                        android:id="@+id/fragment_activity_second_v"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_alignParentBottom="true"

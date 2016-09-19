@@ -8,7 +8,9 @@ import java.util.List;
  */
 public class MainMiddleData {
     private String id;
-    private String image;
+    private String picture;
+    private String title;
+    private String url;
     private List<MainMiddleListData> dataList;
 
     public String getId() {
@@ -19,12 +21,28 @@ public class MainMiddleData {
         this.id = id;
     }
 
-    public String getImage() {
-        return image;
+    public String getPicture() {
+        return picture;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public List<MainMiddleListData> getDataList() {

@@ -1,5 +1,6 @@
 package com.dopstore.mall.base;
 
+import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -9,6 +10,20 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.util.SkipUtils;
+import com.dopstore.mall.view.addresspicker.wheel.widget.model.CityModel;
+import com.dopstore.mall.view.addresspicker.wheel.widget.model.DistrictModel;
+import com.dopstore.mall.view.addresspicker.wheel.widget.model.ProvinceModel;
+import com.dopstore.mall.view.addresspicker.wheel.widget.service.XmlParserHandler;
+
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import cn.sharesdk.framework.ShareSDK;
 
 
 public class BaseActivity extends AppCompatActivity {
@@ -17,12 +32,14 @@ public class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MyApplication.getInstance().addActivity(this);
+        ShareSDK.initSDK(this);
     }
 
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        ShareSDK.stopSDK(this);
         MyApplication.getInstance().removeActivity(this);
     }
 
@@ -128,5 +145,7 @@ public class BaseActivity extends AppCompatActivity {
             id.setOnClickListener(listener);
         }
     }
+
+
 
 }

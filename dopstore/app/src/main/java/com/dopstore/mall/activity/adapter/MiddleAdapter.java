@@ -74,7 +74,7 @@ public class MiddleAdapter extends BaseAdapter {
         viewHolder.bigImageView.setLayoutParams(layoutParams);
         viewHolder.bigImageView.setPadding(marginPx, 0, marginPx, 0);
 
-        loadImageUtils.displayImage(list.get(i).getImage(), viewHolder.bigImageView, Constant.OPTIONS_SPECIAL_CODE);
+        loadImageUtils.displayImage(list.get(i).getPicture(), viewHolder.bigImageView, Constant.OPTIONS_SPECIAL_CODE);
 
         viewHolder.eScrollView.setAdapter(new MiddleDataAdapter(context, list.get(i).getDataList()));
 

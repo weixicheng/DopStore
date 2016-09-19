@@ -23,6 +23,7 @@ import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.util.ACache;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.HttpHelper;
+import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
@@ -58,6 +59,7 @@ public class LosePwdActivity extends BaseActivity {
     private ACache aCache;
     private String v_code;
     private String titleStr="忘记密码";
+    private ProUtils proUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +77,7 @@ public class LosePwdActivity extends BaseActivity {
             }
         }
         httpHelper = HttpHelper.getOkHttpClientUtils(this);
+        proUtils=new ProUtils(this);
         aCache = ACache.get(this);
         topLayout = (RelativeLayout) findViewById(R.id.brandsquare_title);
         titleTv = (TextView) findViewById(R.id.register_title_tv);
@@ -216,6 +219,7 @@ public class LosePwdActivity extends BaseActivity {
         httpHelper.postKeyValuePairAsync(this, URL.SEND_V_CODE, map, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
+                T.checkNet(LosePwdActivity.this);
             }
 
             @Override
@@ -245,6 +249,7 @@ public class LosePwdActivity extends BaseActivity {
      * @param pwd
      */
     private void upToService(String phone, String code, String pwd) {
+        proUtils.show();
         Map<String, String> map = new HashMap<String, String>();
         map.put(Constant.MOBILE, phone);
         map.put(Constant.PASSWORD, pwd);
@@ -252,6 +257,7 @@ public class LosePwdActivity extends BaseActivity {
         httpHelper.postKeyValuePairAsync(this, URL.RESET_PASSWORD, map, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
+                T.checkNet(LosePwdActivity.this);
             }
 
             @Override
@@ -270,6 +276,7 @@ public class LosePwdActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                proUtils.diamiss();
             }
         }, null);
     }

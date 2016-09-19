@@ -7,6 +7,7 @@ package com.dopstore.mall.activity.bean;
 public class MainTabData {
     private String id;
     private String name;
+    private String picture;
     private String isSelect;
 
     public String getId() {
@@ -31,5 +32,13 @@ public class MainTabData {
 
     public void setIsSelect(String isSelect) {
         this.isSelect = isSelect;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
     }
 }

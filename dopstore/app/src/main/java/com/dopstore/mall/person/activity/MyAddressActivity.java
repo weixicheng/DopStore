@@ -2,23 +2,34 @@ package com.dopstore.mall.person.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.person.adapter.MyAddressAdapter;
 import com.dopstore.mall.person.bean.MyAddressData;
+import com.dopstore.mall.util.Constant;
+import com.dopstore.mall.util.HttpHelper;
+import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
-import com.dopstore.mall.view.MyListView;
+import com.dopstore.mall.util.T;
+import com.dopstore.mall.util.URL;
+import com.dopstore.mall.util.UserUtils;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,10 +42,8 @@ public class MyAddressActivity extends BaseActivity {
     private RelativeLayout addLayout;
     private List<MyAddressData> listData = new ArrayList<MyAddressData>();
     private MyAddressAdapter mAdapter;
-    final int REQUEST_CODE = 1;
-    final int RESULT_CODE = 100;
-    final int RESULT_CODE_TWO = 200;
-    private int status;
+    private HttpHelper httpHelper;
+    private ProUtils proUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +54,8 @@ public class MyAddressActivity extends BaseActivity {
     }
 
     private void initView() {
+        httpHelper=HttpHelper.getOkHttpClientUtils(this);
+        proUtils=new ProUtils(this);
         setCustomTitle("选择收货地址", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         my_address = (ListView) findViewById(R.id.lv_my_address);
@@ -53,23 +64,64 @@ public class MyAddressActivity extends BaseActivity {
     }
 
     private void doRequest() {
-        for (int i = 0; i < 5; i++) {
-            MyAddressData data = new MyAddressData();
-            data.setName("王杰");
-            data.setPhone("12345678999");
-            data.setAddress("几点技术交底活动速发货多少分的借口就发个快递发几个");
-            if (i == 0) {
-                data.setIsDefault("1");
-            } else {
-                data.setIsDefault("0");
+        getAddress();
+    }
+
+    private void getAddress() {
+        proUtils.show();
+        String id=UserUtils.getId(this);
+        httpHelper.getDataAsync(this, URL.SHIPPINGADDRESS+id+"/shippingaddress", new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                T.checkNet(MyAddressActivity.this);
             }
-            data.setIsCheck("0");
-            listData.add(data);
-        }
-        if (mAdapter == null) {
-            mAdapter = new MyAddressAdapter(this, listData);
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String body = response.body().string();
+                try {
+                    JSONObject jo = new JSONObject(body);
+                    String code = jo.optString(Constant.ERROR_CODE);
+                    if ("0".equals(code)) {
+                        JSONArray ja=jo.getJSONArray(Constant.SHIPPINGADDRESS);
+                        if (ja.length()>0) {
+                            for (int i = 0; i < ja.length(); i++) {
+                                JSONObject addjo = ja.getJSONObject(i);
+                                MyAddressData data = new MyAddressData();
+                                data.setId(addjo.optString(Constant.ID));
+                                data.setShipping_user(addjo.optString(Constant.SHIPPING_USER));
+                                data.setMobile(addjo.optString(Constant.MOBILE));
+                                data.setProvince(addjo.optString(Constant.PROVINCE));
+                                data.setCity(addjo.optString(Constant.CITY));
+                                data.setArea(addjo.optString(Constant.AREA));
+                                data.setId_card(addjo.optString(Constant.ID_CARD));
+                                data.setAddress(addjo.optString(Constant.ADDRESS));
+                                data.setIs_default(addjo.optString(Constant.IS_DEFAULT));
+                                data.setIs_check("0");
+                                listData.add(data);
+                            }
+                        }
+                        handler.sendEmptyMessage(UPDATE_ADDRESS_CODE);
+                    } else {
+                        String msg = jo.optString(Constant.ERROR_MSG);
+                        T.show(MyAddressActivity.this, msg);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                proUtils.diamiss();
+            }
+        },null);
+    }
+
+    private void refreshAdapter() {
+        if (mAdapter==null){
+            mAdapter=new MyAddressAdapter(this,listData);
             my_address.setAdapter(mAdapter);
+        }else {
+            mAdapter.upData(listData);
         }
+
     }
 
     OnClickListener listener = new OnClickListener() {
@@ -77,7 +129,16 @@ public class MyAddressActivity extends BaseActivity {
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.my_address_add_layout: {
-                    SkipUtils.directJump(MyAddressActivity.this, NewAddressActivity.class, false);
+                    SkipUtils.directJumpForResult(MyAddressActivity.this, NewAddressActivity.class, NEW_ADDRESS_CODE);
+                }
+                break;
+                case R.id.item_my_address_check_layout: {
+
+                    refreshAdapter();
+                }
+                break;
+                case R.id.item_my_address_edit: {
+
                 }
                 break;
             }
@@ -86,12 +147,26 @@ public class MyAddressActivity extends BaseActivity {
     };
 
 
+    private final static int NEW_ADDRESS_CODE=0;
+    private  final static int UPDATE_ADDRESS_CODE=1;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // TODO Auto-generated method stub
-
         super.onActivityResult(requestCode, resultCode, data);
+        listData.clear();
+        getAddress();
     }
+
+    Handler handler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case UPDATE_ADDRESS_CODE:{
+                    refreshAdapter();
+                }break;
+            }
+        }
+    };
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

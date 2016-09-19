@@ -19,6 +19,7 @@ import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.login.bean.DetailData;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.HttpHelper;
+import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
@@ -50,6 +51,7 @@ public class RegisterActivity extends BaseActivity {
     private MyCount mc;
     private HttpHelper httpHelper;
     private String v_code = "";
+    private ProUtils proUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,7 @@ public class RegisterActivity extends BaseActivity {
     }
 
     private void initView() {
+        proUtils=new ProUtils(this);
         httpHelper = HttpHelper.getOkHttpClientUtils(this);
         topLayout = (RelativeLayout) findViewById(R.id.brandsquare_title);
         topLayout.setBackgroundColor(getResources().getColor(R.color.white_color));
@@ -73,7 +76,6 @@ public class RegisterActivity extends BaseActivity {
         getBt.setOnClickListener(listener);
         agressTxt.setOnClickListener(listener);
         registBt.setOnClickListener(listener);
-        T.show(RegisterActivity.this, "你好");
     }
 
     private void initData() {
@@ -205,6 +207,7 @@ public class RegisterActivity extends BaseActivity {
         httpHelper.postKeyValuePairAsync(this, URL.SEND_V_CODE, map, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
+                T.checkNet(RegisterActivity.this);
             }
 
             @Override
@@ -238,12 +241,14 @@ public class RegisterActivity extends BaseActivity {
     private List<DetailData> list = new ArrayList<DetailData>();
 
     private void upToService(String phone, String code) {
+        proUtils.show();
         Map<String, String> map = new HashMap<String, String>();
         map.put("mobile", phone);
         map.put("v_code", code);
         httpHelper.postKeyValuePairAsync(this, URL.CHECK_V_CODE, map, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
+                T.checkNet(RegisterActivity.this);
             }
 
             @Override
@@ -279,6 +284,7 @@ public class RegisterActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                proUtils.diamiss();
             }
         }, null);
 

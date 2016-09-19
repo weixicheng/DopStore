@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:myRefresh="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -20,47 +19,88 @@
     </LinearLayout>
 
 
-    <com.dopstore.mall.view.PullToRefreshView
+    <com.dopstore.mall.view.view.PullToRefreshView
         android:layout_below="@id/fragment_main_top_ly"
         android:id="@+id/fragment_main_pulltorefreshview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        myRefresh:pullDown="true"
-        myRefresh:pullUp="true">
-
-        <ListView
-            android:id="@+id/main_content_listView"
+        android:orientation="vertical">
+        <ScrollView
             android:layout_width="match_parent"
-            android:divider="@color/gray_color_ee"
-            android:dividerHeight="10dp"
+            android:overScrollMode="never"
             android:scrollbars="none"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:id="@+id/main_first_content_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
-    </com.dopstore.mall.view.PullToRefreshView>
+                        <include layout="@layout/common_advertisement" />
+                    </LinearLayout>
+                    <com.dopstore.mall.view.MyListView
+                        android:id="@+id/main_middle_listview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:divider="@color/gray_color_ee"
+                        android:dividerHeight="10dp" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingRight="15dp"
+                        android:paddingLeft="15dp">
 
-    <com.dopstore.mall.view.PullToRefreshView
-        android:layout_below="@id/fragment_main_top_ly"
-        android:id="@+id/fragment_main_gw_pulltorefreshview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        myRefresh:pullDown="true"
-        android:paddingTop="15dp"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:visibility="gone"
-        myRefresh:pullUp="true">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="@dimen/margin_20"
+                            android:gravity="center"
+                            android:paddingBottom="@dimen/margin_20"
+                            android:textColor="@color/gray_color_33"
+                            android:textSize="@dimen/textsize_16"
+                            android:text="热门推荐" />
 
-        <GridView
-            android:id="@+id/main_content_gridview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:horizontalSpacing="10dp"
-            android:numColumns="2"
-            android:verticalSpacing="10dp" />
+                        <com.dopstore.mall.view.MyGridView
+                            android:id="@+id/main_bottom_gridView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:horizontalSpacing="10dp"
+                            android:numColumns="2"
+                            android:verticalSpacing="10dp" />
 
-    </com.dopstore.mall.view.PullToRefreshView>
+                    </LinearLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/main_other_content_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:orientation="vertical">
+                    <com.dopstore.mall.view.MyGridView
+                        android:id="@+id/main_content_gridview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:horizontalSpacing="10dp"
+                        android:numColumns="2"
+                        android:verticalSpacing="10dp" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+        </ScrollView>
+
+
+
+    </com.dopstore.mall.view.view.PullToRefreshView>
+
 
 
 </RelativeLayout>

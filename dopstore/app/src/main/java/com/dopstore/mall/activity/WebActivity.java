@@ -21,6 +21,8 @@ import java.util.Map;
 public class WebActivity extends BaseActivity {
     private WebView webView;
     protected WebSettings webSetting;
+    private String titleStr="";
+    private String urlStr="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,13 +35,16 @@ public class WebActivity extends BaseActivity {
     private void initView() {
         webView = (WebView) findViewById(R.id.web_main_web);
         Map<String, Object> map = SkipUtils.getMap(this);
-        String titleStr = map.get("title").toString().trim();
+        if (map!=null) {
+            titleStr = map.get("title").toString().trim();
+            urlStr = map.get("url").toString().trim();
+        }
         setCustomTitle(titleStr, getResources().getColor(R.color.white_color));
-        leftImageBack(R.mipmap.ic_launcher);
-        String url = map.get("url").toString().trim();
+        leftImageBack(R.mipmap.back_arrow);
+
         initWebViewSetting();
-        if (!TextUtils.isEmpty(url)) {
-            webView.loadUrl(url);
+        if (!TextUtils.isEmpty(urlStr)) {
+            webView.loadUrl(urlStr);
         }
     }
 

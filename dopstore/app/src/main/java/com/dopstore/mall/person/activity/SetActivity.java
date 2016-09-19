@@ -1,6 +1,9 @@
 package com.dopstore.mall.person.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -10,12 +13,15 @@ import android.widget.TextView;
 import com.dopstore.mall.R;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.base.MyApplication;
+import com.dopstore.mall.shop.bean.CommonData;
 import com.dopstore.mall.util.ACache;
+import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.DataCleanManager;
 import com.dopstore.mall.util.LoadImageUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.UserUtils;
+import com.dopstore.mall.view.CommonDialog;
 
 
 /**
@@ -26,6 +32,7 @@ public class SetActivity extends BaseActivity {
     private RelativeLayout detailLayout, safeLayout, addressLayout, msgLayout, adviceLayout, helpLayout, claenLayout, goodLayout, aboutLayout;
     private TextView textView_set_clear;
     private Button exitBt;
+    private CommonDialog dialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -90,8 +97,8 @@ public class SetActivity extends BaseActivity {
                     SkipUtils.directJump(SetActivity.this, HelpActivity.class, false);
                     break;
                 case R.id.setting_my_clean_layout:
-                    DataCleanManager.clearAllCache(SetActivity.this);
-                    textView_set_clear.setText("0M");
+                    dialog=new CommonDialog(SetActivity.this,handler,CLEAR_CACHE_CODE,"提示","是否清理缓存?",Constant.SHOWALLBUTTON);
+                    dialog.show();
                     break;
                 case R.id.setting_my_good_layout:
                     T.show(SetActivity.this, "亲,给个好评吧");
@@ -107,12 +114,27 @@ public class SetActivity extends BaseActivity {
     };
 
     private void exit() {
-        LoadImageUtils.getInstance(this).clear();
-        ACache aCache = ACache.get(this);
-        aCache.clear();
         UserUtils.clear(this);
-        MyApplication.getInstance().finishAllActivity();
+        ACache.get(this).clear();
+        Intent intent = new Intent();
+        intent.setAction(Constant.UPDATA_USER_FLAG);
+        sendBroadcast(intent);
+        SkipUtils.back(this);
     }
+    private final static int CLEAR_CACHE_CODE=0;
+    Handler handler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case CLEAR_CACHE_CODE:{
+                    DataCleanManager.clearAllCache(SetActivity.this);
+                    textView_set_clear.setText("0M");
+                }break;
+            }
+
+        }
+    };
 
 
     @Override
