@@ -1,6 +1,9 @@
 package com.dopstore.mall.person.activity;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -11,32 +14,46 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dopstore.mall.R;
+import com.dopstore.mall.activity.adapter.TrolleyAdapter;
+import com.dopstore.mall.activity.bean.DataBean;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.person.adapter.MyCollectAdapter;
 import com.dopstore.mall.person.bean.MyCollectData;
+import com.dopstore.mall.shop.activity.ConfirmOrderActivity;
 import com.dopstore.mall.util.SkipUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by 喜成 on 16/9/8.
  * name
  */
 public class MyCollectActivity extends BaseActivity {
-    private TextView editTv;
-    private ListView listView;
-    private RelativeLayout bottomLayout;
-    private CheckBox checkBox;
-    private Button deleteBt;
-    private LinearLayout checkLy;
-    private MyCollectAdapter myCollectAdapter;
-    private List<MyCollectData> myCollectDatas = new ArrayList<MyCollectData>();
-    private boolean showFlag = false;
-    private boolean allFlag = false;
+    private ListView mListView;// 列表
 
+    private MyCollectAdapter mListAdapter;// adapter
+
+    private List<MyCollectData> mListData = new ArrayList<MyCollectData>();// 数据
+
+    private boolean isBatchModel;// 是否可删除模式
+
+    private RelativeLayout mBottonLayout;
+    private CheckBox mCheckAll; // 全选 全不选
+
+    private TextView mEdit; // 切换到删除模式
+
+    private TextView mDelete; // 删除
+
+    /**
+     * 批量模式下，用来记录当前选中状态
+     */
+    private SparseArray<Boolean> mSelectState = new SparseArray<Boolean>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,123 +63,126 @@ public class MyCollectActivity extends BaseActivity {
         initData();
     }
 
+    private void doDelete(List<Integer> ids) {
+        for (int i = 0; i < mListData.size(); i++) {
+            long dataId = mListData.get(i).getId();
+            for (int j = 0; j < ids.size(); j++) {
+                int deleteId = ids.get(j);
+                if (dataId == deleteId) {
+                    mListData.remove(i);
+                    i--;
+                    ids.remove(j);
+                    j--;
+                }
+            }
+        }
+
+        refreshListView();
+        mSelectState.clear();
+        mCheckAll.setChecked(false);
+
+    }
+
+    private final List<Integer> getSelectedIds() {
+        ArrayList<Integer> selectedIds = new ArrayList<Integer>();
+        for (int index = 0; index < mSelectState.size(); index++) {
+            if (mSelectState.valueAt(index)) {
+                selectedIds.add(mSelectState.keyAt(index));
+            }
+        }
+        return selectedIds;
+    }
+
     private void initView() {
         setCustomTitle("我的收藏", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
-        listView = (ListView) findViewById(R.id.my_collect_list);
-        editTv = (TextView) findViewById(R.id.title_right_textButton);
-        editTv.setText("编辑");
-        editTv.setVisibility(View.VISIBLE);
-        editTv.setTextColor(getResources().getColor(R.color.white_color));
-        editTv.setOnClickListener(listener);
-        bottomLayout = (RelativeLayout) findViewById(R.id.my_collect_bottom);
-        checkBox = (CheckBox) findViewById(R.id.my_collect_check);
-        deleteBt = (Button) findViewById(R.id.my_collect_delete);
-        checkLy = (LinearLayout) findViewById(R.id.my_collect_check_layout);
-        checkLy.setOnClickListener(listener);
-        deleteBt.setOnClickListener(listener);
-
+        mListView = (ListView) findViewById(R.id.my_collect_list);
+        mEdit = (TextView) findViewById(R.id.title_right_textButton);
+        mEdit.setText("编辑");
+        mEdit.setVisibility(View.VISIBLE);
+        mEdit.setTextColor(getResources().getColor(R.color.white_color));
+        mEdit.setOnClickListener(listener);
+        mBottonLayout = (RelativeLayout) findViewById(R.id.my_collect_bottom);
+        mCheckAll = (CheckBox) findViewById(R.id.my_collect_check_box);
+        mDelete = (Button) findViewById(R.id.my_collect_delete);
+        mDelete.setOnClickListener(listener);
+        mCheckAll.setOnClickListener(listener);
     }
 
     private void initData() {
         for (int i = 0; i < 3; i++) {
             MyCollectData data = new MyCollectData();
-            data.setId("" + i);
+            data.setId(i);
             data.setImage("");
-            data.setIsShow("0");
-            data.setSelect(false);
             data.setPrice("1234");
             data.setTitle("hvuxcvibjkfbdfb");
-            myCollectDatas.add(data);
+            mListData.add(data);
         }
-        refreshAdapter();
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (myCollectDatas.get(i).isSelect()) {
-                    myCollectDatas.get(i).setSelect(false);
-                } else {
-                    myCollectDatas.get(i).setSelect(true);
-                }
-                setSelect();
-                refreshAdapter();
-            }
-        });
+        refreshListView();
     }
 
-    private void setSelect() {
-        int count = 1;
-        for (int i = 0; i < myCollectDatas.size(); i++) {
-            if (myCollectDatas.get(i).isSelect()) {
-                count++;
-            }
-        }
-        if (count != myCollectDatas.size()) {
-            checkBox.setChecked(false);
-            allFlag = false;
+    private void refreshListView() {
+        if (mListAdapter == null) {
+            mListAdapter = new MyCollectAdapter(this, mListData, mSelectState, mCheckAll);
+            mListView.setAdapter(mListAdapter);
+            mListView.setOnItemClickListener(mListAdapter);
         } else {
-            checkBox.setChecked(true);
-            allFlag = true;
+            mListAdapter.upData(mListData,mListData, mSelectState, mCheckAll);
         }
     }
+
 
     View.OnClickListener listener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
-                case R.id.title_right_textButton: {
-                    if (showFlag) {
-                        editTv.setText("完成");
-                        for (MyCollectData data : myCollectDatas) {
-                            data.setIsShow("1");
-                        }
-                        bottomLayout.setVisibility(View.VISIBLE);
-                        showFlag = false;
-                    } else {
-                        editTv.setText("编辑");
-                        for (MyCollectData data : myCollectDatas) {
-                            data.setIsShow("0");
-                        }
-                        bottomLayout.setVisibility(View.GONE);
-                        showFlag = true;
-                    }
-                    refreshAdapter();
-                }
-                break;
-                case R.id.my_collect_check_layout: {
-                    if (allFlag) {
-                        checkBox.setChecked(true);
-                        for (MyCollectData data : myCollectDatas) {
-                            data.setSelect(true);
-                        }
-                        allFlag = false;
-                    } else {
-                        checkBox.setChecked(false);
-                        for (MyCollectData data : myCollectDatas) {
-                            data.setSelect(false);
-                        }
-                        allFlag = true;
-                    }
-                    refreshAdapter();
-                }
-                break;
-                case R.id.my_collect_delete: {
 
-                }
-                break;
+                case R.id.title_right_textButton:
+                    isBatchModel = !isBatchModel;
+                    if (isBatchModel) {
+                        mEdit.setText(getResources().getString(R.string.menu_enter));
+                        mBottonLayout.setVisibility(View.VISIBLE);
+                    } else {
+                        mEdit.setText(getResources().getString(R.string.menu_edit));
+                        mBottonLayout.setVisibility(View.GONE);
+                    }
+                    break;
+
+                case R.id.my_collect_check_box:
+                    if (mCheckAll.isChecked()) {
+                        if (mListData != null) {
+                            mSelectState.clear();
+                            int size = mListData.size();
+                            if (size == 0) {
+                                return;
+                            }
+                            for (int i = 0; i < size; i++) {
+                                int _id = (int) mListData.get(i).getId();
+                                mSelectState.put(_id, true);
+                            }
+                            refreshListView();
+                        }
+                    } else {
+                        if (mListAdapter != null) {
+                            mSelectState.clear();
+                            refreshListView();
+                        }
+                    }
+                    break;
+
+                case R.id.my_collect_delete:
+                    if (isBatchModel) {
+                        List<Integer> ids = getSelectedIds();
+                        doDelete(ids);
+                    } else {
+                    }
+                    break;
+                default:
+                    break;
             }
         }
     };
-
-    private void refreshAdapter() {
-        if (myCollectAdapter == null) {
-            myCollectAdapter = new MyCollectAdapter(this, myCollectDatas);
-            listView.setAdapter(myCollectAdapter);
-        } else {
-            myCollectAdapter.notifyDataSetChanged();
-        }
-    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -92,6 +93,8 @@ public class MainActivity extends BaseActivity {
         viewPager.setOffscreenPageLimit(5);
         viewPager.setNoScroll(true);
         viewPager.setAdapter(adapter);
+
+
     }
 
     private void initData() {

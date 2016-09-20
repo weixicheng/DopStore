@@ -1,67 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white_color"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:descendantFocusability="blocksDescendants"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="@dimen/margin_10">
+        android:orientation="horizontal">
 
         <CheckBox
             android:id="@+id/item_my_collect_check_box"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/margin_10"
             android:layout_marginRight="4dp"
             android:button="@drawable/check_box_bg"
             android:checkMark="?android:attr/listChoiceIndicatorMultiple"
-            android:clickable="true"
+            android:clickable="false"
             android:focusable="false"
             android:focusableInTouchMode="false"
+            android:layout_gravity="center_vertical"
             android:gravity="center"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:visibility="visible" />
 
         <ImageView
             android:id="@+id/item_my_collect_image"
-            android:layout_width="91dp"
-            android:layout_height="91dp"
-            android:scaleType="centerCrop"
-            android:src="@mipmap/ic_launcher" />
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:layout_marginBottom="@dimen/margin_10"
+            android:layout_marginTop="@dimen/margin_10"
+            android:src="@mipmap/ic_launcher"
+            android:scaleType="centerCrop" />
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="91dp"
-            android:orientation="vertical">
+            android:layout_height="98dp"
+            android:layout_marginLeft="13dp">
 
             <TextView
                 android:id="@+id/item_my_collect_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_10"
-                android:layout_marginTop="@dimen/margin_10"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="20dp"
                 android:ellipsize="end"
-                android:maxLines="2"
+                android:maxLines="3"
+                android:text=" "
                 android:textColor="@color/gray_color_33"
-                android:textSize="@dimen/textsize_12" />
+                android:textSize="@dimen/textsize_14" />
 
-            <TextView
-                android:id="@+id/item_my_collect_price"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_marginLeft="@dimen/margin_10"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:textColor="@color/red_color_f93448"
-                android:textSize="@dimen/textsize_12" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/item_my_collect_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:singleLine="true"
+                    android:text="￥ 308.00"
+                    android:textColor="@color/red_color_f93448"
+                    android:textSize="@dimen/textsize_14"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
         </RelativeLayout>
     </LinearLayout>
-
 
 </LinearLayout>

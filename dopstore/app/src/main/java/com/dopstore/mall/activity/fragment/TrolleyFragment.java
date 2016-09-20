@@ -31,7 +31,6 @@ import java.util.TimerTask;
  * name 购物车
  */
 public class TrolleyFragment extends Fragment {
-    private static final int INITIALIZE = 0;
 
     private ListView mListView;// 列表
 

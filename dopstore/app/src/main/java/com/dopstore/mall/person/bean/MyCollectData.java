@@ -5,18 +5,16 @@ package com.dopstore.mall.person.bean;
  * name
  */
 public class MyCollectData {
-    private String id;
+    private int id;
     private String image;
     private String title;
     private String price;
-    private boolean isSelect;
-    private String isShow;
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -42,21 +40,5 @@ public class MyCollectData {
 
     public void setPrice(String price) {
         this.price = price;
-    }
-
-    public boolean isSelect() {
-        return isSelect;
-    }
-
-    public void setSelect(boolean select) {
-        isSelect = select;
-    }
-
-    public String getIsShow() {
-        return isShow;
-    }
-
-    public void setIsShow(String isShow) {
-        this.isShow = isShow;
     }
 }

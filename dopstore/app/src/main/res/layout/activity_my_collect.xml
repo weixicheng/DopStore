@@ -12,20 +12,19 @@
     <RelativeLayout
         android:id="@+id/my_collect_bottom"
         android:layout_width="match_parent"
-        android:visibility="gone"
+        android:visibility="visible"
         android:background="@color/white_color"
         android:layout_alignParentBottom="true"
-        android:layout_height="wrap_content">
+        android:layout_height="50dp">
 
         <LinearLayout
-            android:id="@+id/my_collect_check_layout"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:padding="@dimen/margin_10"
             android:layout_centerVertical="true"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <CheckBox
-                android:id="@+id/my_collect_check"
+                android:id="@+id/my_collect_check_box"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_gravity="center_vertical"
@@ -44,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="全选"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="@dimen/margin_10"
                 android:layout_gravity="center_vertical"
                 android:textColor="@color/gray_color_33"
                 android:textSize="@dimen/textsize_14" />
