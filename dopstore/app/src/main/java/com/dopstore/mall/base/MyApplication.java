@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.pingplusplus.android.PingppLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,13 +24,7 @@ public class MyApplication extends Application {
         Fresco.initialize(getApplicationContext());
         JPushInterface.setDebugMode(true);
         JPushInterface.init(this);
-        /**
-         * JPushInterface.stopPush(getApplicationContext());
-         * JPushInterface.resumePush(getApplicationContext());
-         * JPushInterface.getRegistrationID(getApplicationContext());
-
-         */
-
+        PingppLog.DEBUG = true;
     }
 
 
