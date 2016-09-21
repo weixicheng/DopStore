@@ -7,6 +7,7 @@ package com.dopstore.mall.util;
 public class URL {
     public static String BASE_URL = "http://orange.dev.attackt.com/";
     public static String SEND_V_CODE = BASE_URL + "api/v1/send_v_code";//发送验证码
+    public static String SEND_VOICE_CODE = BASE_URL + "api/v1/send_voice_code";//语音验证码
     public static String CHECK_V_CODE = BASE_URL + "api/v1/check_v_code";//校验验证码
     public static String SIGN_UP = BASE_URL + "api/v1/signup";//用户注册
     public static String LOGIN = BASE_URL + "api/v1/login";//用户登录

@@ -13,7 +13,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
-import com.dopstore.mall.activity.MainActivity;
 import com.dopstore.mall.activity.bean.CityBean;
 import com.dopstore.mall.activity.bean.UserData;
 import com.dopstore.mall.base.BaseActivity;
@@ -127,6 +126,7 @@ public class MyDetailActivity extends BaseActivity {
         nickTv.setText(UserUtils.getNickName(this));
         phoneTv.setText(UserUtils.getMobile(this));
         String gender=UserUtils.getGender(this);
+        imageUrl=UserUtils.getAvatar(this);
         if ("1".equals(gender)){
             sexTv.setText("男");
         }else {
@@ -349,7 +349,7 @@ public class MyDetailActivity extends BaseActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    proUtils.diamiss();
+                    proUtils.dismiss();
                 }
             }, null);
         }else {
@@ -395,6 +395,7 @@ public class MyDetailActivity extends BaseActivity {
             @Override
             public void onFailure(Request request, IOException e) {
                 T.checkNet(MyDetailActivity.this);
+                proUtils.dismiss();
             }
 
             @Override
@@ -443,7 +444,7 @@ public class MyDetailActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.diamiss();
+                proUtils.dismiss();
             }
         }, null);
     }

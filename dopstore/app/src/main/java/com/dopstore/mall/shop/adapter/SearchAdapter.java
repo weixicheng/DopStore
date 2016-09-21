@@ -1,4 +1,4 @@
-package com.dopstore.mall.activity.adapter;
+package com.dopstore.mall.shop.adapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -24,10 +24,10 @@ import java.util.List;
  */
 public class SearchAdapter extends BaseAdapter {
     private Context context;
-    private List<SearchData> list;
+    private List<MainTabData> list;
     private LoadImageUtils loadImageUtils;
 
-    public SearchAdapter(Context context, List<SearchData> list) {
+    public SearchAdapter(Context context, List<MainTabData> list) {
         this.context = context;
         this.list = list;
         loadImageUtils = LoadImageUtils.getInstance(context);
@@ -71,7 +71,7 @@ public class SearchAdapter extends BaseAdapter {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(picSize, picSize);
         viewHolder.main.setLayoutParams(layoutParams);
         String title = list.get(i).getName();
-        String image = list.get(i).getImage();
+        String image = list.get(i).getPicture();
 
         viewHolder.titleTv.setText(title);
         loadImageUtils.displayImage(image, viewHolder.head, Constant.OPTIONS_SPECIAL_CODE);

@@ -29,16 +29,17 @@
                     android:textSize="@dimen/textsize_16"
                     android:textColor="@color/gray_color_33" />
 
-                <TextView
-                    android:id="@+id/notic_switch"
+                <com.dopstore.mall.view.UISwitchButton
+                    xmlns:switch="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/setting_switch_bt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="已停用"
-                    android:layout_marginRight="@dimen/margin_10"
-                    android:layout_centerVertical="true"
                     android:layout_alignParentRight="true"
-                    android:textSize="@dimen/textsize_12"
-                    android:textColor="@color/gray_color_33" />
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    switch:bmHeight="3000dp"
+                    switch:bmWidth="50dp" />
             </RelativeLayout>
 
             <TextView

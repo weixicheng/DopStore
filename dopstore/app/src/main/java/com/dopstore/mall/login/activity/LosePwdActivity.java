@@ -2,8 +2,6 @@ package com.dopstore.mall.login.activity;
 
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -13,12 +11,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.dopstore.mall.R;
-import com.dopstore.mall.activity.MainActivity;
-import com.dopstore.mall.activity.bean.CityBean;
-import com.dopstore.mall.activity.bean.UserData;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.util.ACache;
 import com.dopstore.mall.util.Constant;
@@ -27,21 +21,16 @@ import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
-import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.util.Utils;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -95,6 +84,7 @@ public class LosePwdActivity extends BaseActivity {
         registBt.setText("修改密码");
         getBt.setOnClickListener(listener);
         registBt.setOnClickListener(listener);
+        agressTxt.setOnClickListener(listener);
         agressTxt.setText(Html.fromHtml("如果没有收到验证码,请点击这里<font color='#f93448'>获取语音验证码</font>"));
     }
 
@@ -114,9 +104,51 @@ public class LosePwdActivity extends BaseActivity {
                     registData();
                 }
                 break;
+                case R.id.register_getvoice_bt: {//获取语音验证码
+                    String phone = phoneEt.getText().toString().trim();
+                    if (TextUtils.isEmpty(phone)) {
+                        T.show(LosePwdActivity.this, "请填写手机号");
+                    } else {
+                        if (!Utils.isPhoneNumberValid(phone)) {
+                            T.show(LosePwdActivity.this, "请检查手机号");
+                        } else {
+                            getVoiceCode(phone);
+                        }
+                    }
+                }
+                break;
             }
         }
     };
+
+    private void getVoiceCode(String phone) {
+        Map<String, String> map = new HashMap<String, String>();
+        map.put(Constant.MOBILE, phone);
+        httpHelper.postKeyValuePairAsync(this, URL.SEND_VOICE_CODE, map, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                T.checkNet(LosePwdActivity.this);
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String body = response.body().string();
+                try {
+                    JSONObject jo = new JSONObject(body);
+                    String code = jo.optString(Constant.ERROR_CODE);
+                    if ("0".equals(code)) {
+                    } else {
+                        String msg = jo.optString(Constant.ERROR_MSG);
+                        T.show(LosePwdActivity.this, msg);
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, null);
+
+    }
 
     /**
      * 获取验证码
@@ -258,6 +290,7 @@ public class LosePwdActivity extends BaseActivity {
             @Override
             public void onFailure(Request request, IOException e) {
                 T.checkNet(LosePwdActivity.this);
+                proUtils.dismiss();
             }
 
             @Override
@@ -276,7 +309,7 @@ public class LosePwdActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.diamiss();
+                proUtils.dismiss();
             }
         }, null);
     }

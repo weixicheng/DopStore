@@ -1,5 +1,6 @@
 package com.dopstore.mall.login.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -10,34 +11,43 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.dopstore.mall.R;
+import com.dopstore.mall.activity.bean.CityBean;
+import com.dopstore.mall.activity.bean.UserData;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.login.bean.DetailData;
+import com.dopstore.mall.util.ACache;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.HttpHelper;
+import com.dopstore.mall.util.OtherCallBack;
+import com.dopstore.mall.util.OtherLoginUtils;
 import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
+import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.util.Utils;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
-import com.squareup.okhttp.internal.framed.FrameReader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import cn.sharesdk.framework.Platform;
+import cn.sharesdk.framework.ShareSDK;
 
 /**
  * 作者：xicheng on 16/7/30 13:00
@@ -48,10 +58,14 @@ public class RegisterActivity extends BaseActivity {
     private EditText phoneEt, codeEt, pwdEt;
     private Button getBt, registBt;
     private TextView agressTxt;
+    private ImageView weChatIv, qqIv, sinaIv;
     private MyCount mc;
     private HttpHelper httpHelper;
     private String v_code = "";
     private ProUtils proUtils;
+    private OtherLoginUtils otherLoginUtils;
+    private Platform mPlatform;
+    private ACache aCache;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +77,8 @@ public class RegisterActivity extends BaseActivity {
 
     private void initView() {
         proUtils=new ProUtils(this);
+        aCache=ACache.get(this);
+        otherLoginUtils=new OtherLoginUtils(this);
         httpHelper = HttpHelper.getOkHttpClientUtils(this);
         topLayout = (RelativeLayout) findViewById(R.id.brandsquare_title);
         topLayout.setBackgroundColor(getResources().getColor(R.color.white_color));
@@ -73,9 +89,15 @@ public class RegisterActivity extends BaseActivity {
         getBt = (Button) findViewById(R.id.register_get_code_bt);
         registBt = (Button) findViewById(R.id.register_submit_bt);
         agressTxt = (TextView) findViewById(R.id.register_getvoice_bt);
+        weChatIv = (ImageView) findViewById(R.id.login_wechat_iv);
+        qqIv = (ImageView) findViewById(R.id.login_qq_iv);
+        sinaIv = (ImageView) findViewById(R.id.login_sina_iv);
         getBt.setOnClickListener(listener);
         agressTxt.setOnClickListener(listener);
         registBt.setOnClickListener(listener);
+        weChatIv.setOnClickListener(listener);
+        qqIv.setOnClickListener(listener);
+        sinaIv.setOnClickListener(listener);
     }
 
     private void initData() {
@@ -95,16 +117,99 @@ public class RegisterActivity extends BaseActivity {
                 }
                 break;
                 case R.id.register_getvoice_bt: {//获取语音验证码
-
+                    String phone = phoneEt.getText().toString().trim();
+                    if (TextUtils.isEmpty(phone)) {
+                        T.show(RegisterActivity.this, "请填写手机号");
+                    } else {
+                        if (!Utils.isPhoneNumberValid(phone)) {
+                            T.show(RegisterActivity.this, "请检查手机号");
+                        } else {
+                            getVoiceCode(phone);
+                        }
+                    }
                 }
                 break;
                 case R.id.register_submit_bt: {//注册
                     registData();
                 }
                 break;
+                case R.id.login_wechat_iv: {//微信
+                    toOther(1);
+                }
+                break;
+                case R.id.login_qq_iv: {//QQ
+                    toOther(0);
+                }
+                break;
+                case R.id.login_sina_iv: {//新浪
+                    toOther(2);
+                }
+                break;
             }
         }
     };
+
+    private void toOther(final int numStr) {
+        otherLoginUtils.authorize(numStr);
+        otherLoginUtils.setCallBack(new OtherCallBack() {
+            @Override
+            public void success(String name) {
+                    loginOther(name,numStr);
+            }
+
+            @Override
+            public void failed(String erroe) {
+                T.show(RegisterActivity.this,erroe);
+            }
+        });
+
+    }
+
+    private void loginOther(String platform,int numStr) {
+        mPlatform= ShareSDK.getPlatform(platform);
+        String gender = "";
+        if(platform != null) {
+            gender = mPlatform.getDb().getUserGender();
+            if (gender.equals("m")) {
+                gender = "1";
+            } else {
+                gender = "0";
+            }
+            String name = mPlatform.getDb().getUserName();
+            String uid = mPlatform.getDb().getUserId();
+            String picture = mPlatform.getDb().getUserIcon();
+            otherLogin(name, gender, picture, uid, numStr);
+        }
+    }
+
+    private void getVoiceCode(String phone) {
+        Map<String, String> map = new HashMap<String, String>();
+        map.put(Constant.MOBILE, phone);
+        httpHelper.postKeyValuePairAsync(this, URL.SEND_VOICE_CODE, map, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                T.checkNet(RegisterActivity.this);
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String body = response.body().string();
+                try {
+                    JSONObject jo = new JSONObject(body);
+                    String code = jo.optString(Constant.ERROR_CODE);
+                    if ("0".equals(code)) {
+                    } else {
+                        String msg = jo.optString(Constant.ERROR_MSG);
+                        T.show(RegisterActivity.this, msg);
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, null);
+
+    }
 
     /**
      * 获取验证码
@@ -220,7 +325,6 @@ public class RegisterActivity extends BaseActivity {
                         v_code = jo.optString(Constant.V_CODE);
                     } else {
                         String msg = jo.optString(Constant.ERROR_MSG);
-
                         T.show(RegisterActivity.this, msg);
 
                     }
@@ -249,6 +353,7 @@ public class RegisterActivity extends BaseActivity {
             @Override
             public void onFailure(Request request, IOException e) {
                 T.checkNet(RegisterActivity.this);
+                proUtils.dismiss();
             }
 
             @Override
@@ -284,7 +389,7 @@ public class RegisterActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.diamiss();
+                proUtils.dismiss();
             }
         }, null);
 
@@ -300,6 +405,88 @@ public class RegisterActivity extends BaseActivity {
         map.put(Constant.MOBILE, phone);
         map.put(Constant.LIST, list);
         SkipUtils.jumpForMap(this, RegisterDetailActivity.class, map, false);
+    }
+
+
+    private void otherLogin(String name, String gender, String picture, String uid,int id) {
+        proUtils.show();
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("nickname", name);
+        map.put("avatar", picture);
+        switch (id){
+            case 0:{
+                map.put("wx_unionid", "");
+                map.put("weibo_uid", "");
+                map.put("qq_uid", uid);
+            }break;
+            case 1:{
+                map.put("wx_unionid", uid);
+                map.put("weibo_uid", "");
+                map.put("qq_uid", "");
+            }break;
+            case 2:{
+                map.put("wx_unionid", "");
+                map.put("weibo_uid", uid);
+                map.put("qq_uid", "");
+            }break;
+        }
+        map.put("gender", gender);
+        httpHelper.postKeyValuePairAsync(this, URL.OTHER_SIGNUPL, map, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                T.checkNet(RegisterActivity.this);
+                proUtils.dismiss();
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String body = response.body().string();
+                try {
+                    JSONObject jo = new JSONObject(body);
+                    String code = jo.optString(Constant.ERROR_CODE);
+                    if ("0".equals(code)) {
+                        aCache.put(Constant.TOKEN, jo.optString(Constant.TOKEN));
+                        JSONObject user = jo.optJSONObject(Constant.USER);
+                        JSONArray citys = jo.optJSONArray(Constant.CITYS);
+                        List<CityBean> cityList = new ArrayList<CityBean>();
+                        if (citys.length() > 0) {
+                            for (int i = 0; i < citys.length(); i++) {
+                                JSONObject city = citys.getJSONObject(i);
+                                CityBean cityBean = new CityBean();
+                                cityBean.setId(city.optString(Constant.ID));
+                                cityBean.setName(city.optString(Constant.NAME));
+                                cityList.add(cityBean);
+                            }
+                            aCache.put(Constant.CITYS, (Serializable) cityList);
+                        }
+                        UserData data = new UserData();
+                        data.setId(user.optString(Constant.ID));
+                        data.setUsername(user.optString(Constant.USERNAME));
+                        data.setNickname(user.optString(Constant.NICKNAME));
+                        data.setBalance(user.optString(Constant.BALANCE));
+                        data.setAvatar(user.optString(Constant.AVATAR));
+                        data.setBirthday(user.optLong(Constant.BIRTHDAY));
+                        data.setBaby_birthday(user.optLong(Constant.BABY_BIRTHDAY));
+                        data.setBaby_gender(user.optString(Constant.BABY_GENDER));
+                        data.setUsername(user.optString(Constant.USERNAME));
+                        data.setBaby_name(user.optString(Constant.BABY_NAME));
+                        data.setMobile(user.optString(Constant.MOBILE));
+                        data.setAddress(user.optString(Constant.CITY));
+                        UserUtils.setData(RegisterActivity.this, data);
+                        Intent intent = new Intent();
+                        intent.setAction(Constant.UPDATA_USER_FLAG);
+                        sendBroadcast(intent);
+                        finish();
+                    } else {
+                        String msg = jo.optString(Constant.ERROR_MSG);
+                        T.show(RegisterActivity.this, msg);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                proUtils.dismiss();
+            }
+        }, null);
     }
 
     @Override

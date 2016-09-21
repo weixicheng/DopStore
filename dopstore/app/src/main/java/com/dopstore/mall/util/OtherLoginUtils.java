@@ -1,10 +1,30 @@
 package com.dopstore.mall.util;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 
+import com.dopstore.mall.activity.bean.CityBean;
+import com.dopstore.mall.activity.bean.MainBottomData;
+import com.dopstore.mall.activity.bean.UserData;
+import com.dopstore.mall.base.MyApplication;
+import com.dopstore.mall.time.WheelView;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;
@@ -22,7 +42,7 @@ public class OtherLoginUtils {
     private static final int MSG_AUTH_CANCEL = 0;
     private static final int MSG_AUTH_ERROR= 1;
     private static final int MSG_AUTH_COMPLETE = 2;
-    private static Platform mPlatform;
+    private static OtherCallBack callBack;
 
     public OtherLoginUtils(Context context) {
         this.context=context;
@@ -56,7 +76,6 @@ public class OtherLoginUtils {
 
 
     }
-
 
     static PlatformActionListener listener=new PlatformActionListener() {
         @Override
@@ -92,51 +111,24 @@ public class OtherLoginUtils {
             switch(msg.what) {
                 case MSG_AUTH_CANCEL: {
                     //取消授权
+                    callBack.failed("取消授权");
                 } break;
                 case MSG_AUTH_ERROR: {
                     //授权失败
+                    callBack.failed("授权失败");
                 } break;
                 case MSG_AUTH_COMPLETE: {
                     //授权成功
-
                     Object[] objs = (Object[]) msg.obj;
                     String platform = (String) objs[0];
-                    HashMap<String, Object> res = (HashMap<String, Object>) objs[1];
-//                  if (signupListener != null && signupListener.onSignin(platform, res)) {
-//                      SignupPage signupPage = new SignupPage();
-//                      signupPage.setOnLoginListener(signupListener);
-//                      signupPage.setPlatform(platform);
-//                      signupPage.show(activity, null);
-//                  }
-                    doLogined(platform);
+                    callBack.success(platform);
                 } break;
             }
         }
     };
 
-    private static void doLogined(String platform) {
-        // TODO Auto-generated method stub
-        mPlatform= ShareSDK.getPlatform(platform);
-        String gender = "";
-        if(platform != null){
-            gender = mPlatform.getDb().getUserGender();
-            if(gender.equals("m")){
-                //  userInfo.setUserGender(UserInfo.Gender.BOY);
-                gender = "男";
-            }else{
-                //userInfo.setUserGender(UserInfo.Gender.GIRL);
-                gender = "女";
-            }
-
-//              userInfo.setUserIcon(platform.getDb().getUserIcon());
-//              userInfo.setUserName(platform.getDb().getUserName());
-//              userInfo.setUserNote(platform.getDb().getUserId());
-//    getUserId        Toast.makeText(getApplicationContext(), gender+"/"+mPlatform.getDb().getUserName()+"/"+mPlatform.getDb().getUserId(), 4000).show();
-        }
-
-//          tvUserName.setText(userInfo.getUserName());
-//          tvUserGender.setText(gender);
-//          tvUserNote.setText("USER ID : " + userInfo.getUserNote());
+    public void setCallBack(OtherCallBack callBack) {
+        this.callBack =callBack;
     }
 
 

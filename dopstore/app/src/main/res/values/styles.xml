@@ -146,5 +146,10 @@
         <attr name="border_color" format="color" />
     </declare-styleable>
 
+    <declare-styleable name="SwitchButton">
+        <attr name="bmWidth" format="dimension"></attr>
+        <attr name="bmHeight" format="dimension"></attr>
+    </declare-styleable>
+
 
 </resources>

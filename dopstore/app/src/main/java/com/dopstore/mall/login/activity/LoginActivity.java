@@ -2,8 +2,6 @@ package com.dopstore.mall.login.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -14,7 +12,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
-import com.dopstore.mall.activity.MainActivity;
 import com.dopstore.mall.activity.bean.CityBean;
 import com.dopstore.mall.activity.bean.UserData;
 import com.dopstore.mall.base.BaseActivity;
@@ -22,6 +19,7 @@ import com.dopstore.mall.base.MyApplication;
 import com.dopstore.mall.util.ACache;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.HttpHelper;
+import com.dopstore.mall.util.OtherCallBack;
 import com.dopstore.mall.util.OtherLoginUtils;
 import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
@@ -44,9 +42,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cn.sharesdk.sina.weibo.SinaWeibo;
-import cn.sharesdk.tencent.qq.QQ;
-import cn.sharesdk.wechat.friends.Wechat;
+import cn.sharesdk.framework.Platform;
+import cn.sharesdk.framework.ShareSDK;
 
 
 /**
@@ -63,6 +60,7 @@ public class LoginActivity extends BaseActivity {
     private ACache aCache;
     private OtherLoginUtils otherLoginUtils;
     private ProUtils proUtils;
+    private Platform mPlatform;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,19 +114,15 @@ public class LoginActivity extends BaseActivity {
                 }
                 break;
                 case R.id.login_wechat_iv: {//微信
-
-                    otherLoginUtils.authorize(1);
-                    T.show(LoginActivity.this, "微信");
+                    toOther(1);
                 }
                 break;
                 case R.id.login_qq_iv: {//QQ
-                    otherLoginUtils.authorize(0);
-                    T.show(LoginActivity.this, "QQ");
+                    toOther(0);
                 }
                 break;
                 case R.id.login_sina_iv: {//新浪
-                    otherLoginUtils.authorize(2);
-                    T.show(LoginActivity.this, "新浪");
+                    toOther(2);
                 }
                 break;
             }
@@ -167,59 +161,136 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onFailure(Request request, IOException e) {
                 T.checkNet(LoginActivity.this);
+                proUtils.dismiss();
             }
 
             @Override
             public void onResponse(Response response) throws IOException {
                 String body = response.body().string();
-                try {
-                    JSONObject jo = new JSONObject(body);
-                    String code = jo.optString(Constant.ERROR_CODE);
-                    if ("0".equals(code)) {
-                        aCache.put(Constant.TOKEN, jo.optString(Constant.TOKEN));
-                        JSONObject user = jo.optJSONObject(Constant.USER);
-                        JSONArray citys = jo.optJSONArray(Constant.CITYS);
-                        List<CityBean> cityList = new ArrayList<CityBean>();
-                        if (citys.length() > 0) {
-                            for (int i = 0; i < citys.length(); i++) {
-                                JSONObject city = citys.getJSONObject(i);
-                                CityBean cityBean = new CityBean();
-                                cityBean.setId(city.optString(Constant.ID));
-                                cityBean.setName(city.optString(Constant.NAME));
-                                cityList.add(cityBean);
-                            }
-                            aCache.put(Constant.CITYS, (Serializable) cityList);
-                        }
-                        UserData data = new UserData();
-                        data.setId(user.optString(Constant.ID));
-                        data.setUsername(user.optString(Constant.USERNAME));
-                        data.setNickname(user.optString(Constant.NICKNAME));
-                        data.setBalance(user.optString(Constant.BALANCE));
-                        data.setAvatar(user.optString(Constant.AVATAR));
-                        data.setBirthday(user.optLong(Constant.BIRTHDAY));
-                        data.setBaby_birthday(user.optLong(Constant.BABY_BIRTHDAY));
-                        data.setBaby_gender(user.optString(Constant.BABY_GENDER));
-                        data.setUsername(user.optString(Constant.USERNAME));
-                        data.setBaby_name(user.optString(Constant.BABY_NAME));
-                        data.setMobile(user.optString(Constant.MOBILE));
-                        data.setAddress(user.optString(Constant.CITY));
-                        UserUtils.setData(LoginActivity.this, data);
-                        Intent intent = new Intent();
-                        intent.setAction(Constant.UPDATA_USER_FLAG);
-                        sendBroadcast(intent);
-                        MyApplication.getInstance().removeActivity(LoginActivity.this);
-                        finish();
-                    } else {
-                        String msg = jo.optString(Constant.ERROR_MSG);
-                        T.show(LoginActivity.this, msg);
-
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                proUtils.diamiss();
+                AnalyData(body);
+                proUtils.dismiss();
             }
         }, null);
+    }
+
+    private void toOther(final int numStr) {
+        otherLoginUtils.authorize(numStr);
+        otherLoginUtils.setCallBack(new OtherCallBack() {
+            @Override
+            public void success(String name) {
+                loginOther(name,numStr);
+            }
+
+            @Override
+            public void failed(String erroe) {
+                T.show(LoginActivity.this,erroe);
+            }
+        });
+
+    }
+
+    private void loginOther(String platform,int numStr) {
+        mPlatform= ShareSDK.getPlatform(platform);
+        String gender = "";
+        if(platform != null) {
+            gender = mPlatform.getDb().getUserGender();
+            if (gender.equals("m")) {
+                gender = "1";
+            } else {
+                gender = "0";
+            }
+            String name = mPlatform.getDb().getUserName();
+            String uid = mPlatform.getDb().getUserId();
+            String picture = mPlatform.getDb().getUserIcon();
+            otherLogin(name, gender, picture, uid, numStr);
+        }
+    }
+
+    private void otherLogin(String name, String gender, String picture, String uid,int id) {
+        proUtils.show();
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("nickname", name);
+        map.put("avatar", picture);
+        switch (id){
+            case 0:{
+                map.put("wx_unionid", "");
+                map.put("weibo_uid", "");
+                map.put("qq_uid", uid);
+            }break;
+            case 1:{
+                map.put("wx_unionid", uid);
+                map.put("weibo_uid", "");
+                map.put("qq_uid", "");
+            }break;
+            case 2:{
+                map.put("wx_unionid", "");
+                map.put("weibo_uid", uid);
+                map.put("qq_uid", "");
+            }break;
+        }
+        map.put("gender", gender);
+        httpHelper.postKeyValuePairAsync(this, URL.OTHER_SIGNUPL, map, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                T.checkNet(LoginActivity.this);
+                proUtils.dismiss();
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String body = response.body().string();
+                AnalyData(body);
+                proUtils.dismiss();
+            }
+        }, null);
+    }
+
+    private void AnalyData(String body){
+        try {
+            JSONObject jo = new JSONObject(body);
+            String code = jo.optString(Constant.ERROR_CODE);
+            if ("0".equals(code)) {
+                aCache.put(Constant.TOKEN, jo.optString(Constant.TOKEN));
+                JSONObject user = jo.optJSONObject(Constant.USER);
+                JSONArray citys = jo.optJSONArray(Constant.CITYS);
+                List<CityBean> cityList = new ArrayList<CityBean>();
+                if (citys.length() > 0) {
+                    for (int i = 0; i < citys.length(); i++) {
+                        JSONObject city = citys.getJSONObject(i);
+                        CityBean cityBean = new CityBean();
+                        cityBean.setId(city.optString(Constant.ID));
+                        cityBean.setName(city.optString(Constant.NAME));
+                        cityList.add(cityBean);
+                    }
+                    aCache.put(Constant.CITYS, (Serializable) cityList);
+                }
+                UserData data = new UserData();
+                data.setId(user.optString(Constant.ID));
+                data.setUsername(user.optString(Constant.USERNAME));
+                data.setNickname(user.optString(Constant.NICKNAME));
+                data.setBalance(user.optString(Constant.BALANCE));
+                data.setAvatar(user.optString(Constant.AVATAR));
+                data.setBirthday(user.optLong(Constant.BIRTHDAY));
+                data.setBaby_birthday(user.optLong(Constant.BABY_BIRTHDAY));
+                data.setBaby_gender(user.optString(Constant.BABY_GENDER));
+                data.setUsername(user.optString(Constant.USERNAME));
+                data.setBaby_name(user.optString(Constant.BABY_NAME));
+                data.setMobile(user.optString(Constant.MOBILE));
+                data.setAddress(user.optString(Constant.CITY));
+                UserUtils.setData(LoginActivity.this, data);
+                Intent intent = new Intent();
+                intent.setAction(Constant.UPDATA_USER_FLAG);
+                sendBroadcast(intent);
+                MyApplication.getInstance().removeActivity(LoginActivity.this);
+                finish();
+            } else {
+                String msg = jo.optString(Constant.ERROR_MSG);
+                T.show(LoginActivity.this, msg);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override

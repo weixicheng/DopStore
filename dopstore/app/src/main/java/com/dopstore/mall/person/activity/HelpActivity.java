@@ -1,6 +1,5 @@
 package com.dopstore.mall.person.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -8,11 +7,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.dopstore.mall.R;
-import com.dopstore.mall.activity.bean.CityBean;
-import com.dopstore.mall.activity.bean.UserData;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.person.adapter.HelpAdapter;
 import com.dopstore.mall.person.bean.HelpData;
@@ -22,7 +18,6 @@ import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
-import com.dopstore.mall.util.UserUtils;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -32,7 +27,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -83,6 +77,7 @@ public class HelpActivity extends BaseActivity {
             @Override
             public void onFailure(Request request, IOException e) {
                 T.checkNet(HelpActivity.this);
+                proUtils.dismiss();
             }
 
             @Override
@@ -111,7 +106,7 @@ public class HelpActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.diamiss();
+                proUtils.dismiss();
             }
         }, null);
     }

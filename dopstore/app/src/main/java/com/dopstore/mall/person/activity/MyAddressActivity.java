@@ -74,6 +74,7 @@ public class MyAddressActivity extends BaseActivity {
             @Override
             public void onFailure(Request request, IOException e) {
                 T.checkNet(MyAddressActivity.this);
+                proUtils.dismiss();
             }
 
             @Override
@@ -109,7 +110,7 @@ public class MyAddressActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.diamiss();
+                proUtils.dismiss();
             }
         },null);
     }

@@ -3,28 +3,32 @@ package com.dopstore.mall.util;
 import android.app.ProgressDialog;
 import android.content.Context;
 
-/**
- * 作者：xicheng on 16/9/19 14:00
- * 类别：
- */
-public class ProUtils {
-    private static ProgressDialog pd;
+public class ProUtils extends ProgressDialog {
+
 
     public ProUtils(Context context) {
-        pd = new ProgressDialog(context);
-        pd.setCancelable(false);
-        pd.setMessage("加载中...");
-        pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        super(context);
+        init();
     }
 
-    public void show(){
-        pd.show();
-    }
-    public void diamiss(){
-        if (pd!=null&&pd.isShowing()){
-            pd.dismiss();
-        }
+    public ProUtils(Context context, int theme) {
+        super(context, theme);
+        init();
     }
 
+    private void init(){
+        setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        setCancelable(false);
+        setMessage("正在努力加载...");
+    }
 
+    @Override
+    public void show() {
+        super.show();
+    }
+
+    @Override
+    public void dismiss() {
+        super.dismiss();
+    }
 }

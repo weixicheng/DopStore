@@ -14,4 +14,37 @@
 # class:
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
+-dontwarn com.pingplusplus.**
+-keep class com.pingplusplus.** {*;}
+
+-dontwarn  com.alipay.**
+-keep class com.alipay.** {*;}
+
+-dontwarn  com.ta.utdid2.**
+-keep class com.ta.utdid2.** {*;}
+
+-keep class com.ut.device.** {*;}
+
+-dontwarn  com.tencent.**
+-keep class com.tencent.** {*;}
+
+-dontwarn  com.unionpay.**
+-keep class com.unionpay.** {*;}
+
+-dontwarn com.baidu.**
+-keep class com.baidu.** {*;}
+
+-keepclassmembers class * {
+    @android.webkit.JavascriptInterface <methods>;
+}
+-dontoptimize
+-dontpreverify
+
+-dontwarn cn.jpush.**
+-keep class cn.jpush.** { *; }
+#==================gson && protobuf==========================
+-dontwarn com.google.**
+-keep class com.google.gson.** {*;}
+-keep class com.google.protobuf.** {*;}
+
 #}

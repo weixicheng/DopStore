@@ -63,22 +63,9 @@ public class BottomAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        DisplayMetrics dm = new DisplayMetrics();
-        ((Activity) context).getWindowManager().getDefaultDisplay()
-                .getMetrics(dm);
-        // 设置图片宽高
-        int screenWidth = ((Activity) context).getWindowManager()
-                .getDefaultDisplay().getWidth();
-        int marginPx = Utils.dip2px(10, dm.density);
-        int marginPxq = Utils.dip2px(15, dm.density);
-        int picSize = (screenWidth - marginPxq * 2 - marginPx) / 2;
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                picSize, picSize);
-        viewHolder.bigImageView.setLayoutParams(layoutParams);
-
-        loadImageUtils.displayImage(list.get(i).getImage(), viewHolder.bigImageView, Constant.OPTIONS_SPECIAL_CODE);
-        viewHolder.titleTv.setText(list.get(i).getTitle());
-        viewHolder.priceTv.setText(list.get(i).getPrice());
+        loadImageUtils.displayImage(list.get(i).getCover(), viewHolder.bigImageView, Constant.OPTIONS_SPECIAL_CODE);
+        viewHolder.titleTv.setText(list.get(i).getName());
+        viewHolder.priceTv.setText("￥"+list.get(i).getPrice());
         return view;
     }
 

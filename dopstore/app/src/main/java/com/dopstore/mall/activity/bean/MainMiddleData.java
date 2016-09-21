@@ -1,17 +1,18 @@
 package com.dopstore.mall.activity.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by 喜成 on 16/9/5.
  * name 首页中间数据
  */
-public class MainMiddleData {
+public class MainMiddleData implements Serializable{
     private String id;
     private String picture;
     private String title;
     private String url;
-    private List<MainMiddleListData> dataList;
+    private List<MainMiddleListData> related_goods;
 
     public String getId() {
         return id;
@@ -45,11 +46,11 @@ public class MainMiddleData {
         this.url = url;
     }
 
-    public List<MainMiddleListData> getDataList() {
-        return dataList;
+    public List<MainMiddleListData> getRelated_goods() {
+        return related_goods;
     }
 
-    public void setDataList(List<MainMiddleListData> dataList) {
-        this.dataList = dataList;
+    public void setRelated_goods(List<MainMiddleListData> related_goods) {
+        this.related_goods = related_goods;
     }
 }

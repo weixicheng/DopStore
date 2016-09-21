@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.bean.MainMiddleData;
+import com.dopstore.mall.activity.bean.MainMiddleListData;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.LoadImageUtils;
 import com.dopstore.mall.util.Utils;
@@ -76,7 +77,8 @@ public class MiddleAdapter extends BaseAdapter {
 
         loadImageUtils.displayImage(list.get(i).getPicture(), viewHolder.bigImageView, Constant.OPTIONS_SPECIAL_CODE);
 
-        viewHolder.eScrollView.setAdapter(new MiddleDataAdapter(context, list.get(i).getDataList()));
+        List<MainMiddleListData> datas=list.get(i).getRelated_goods();
+            viewHolder.eScrollView.setAdapter(new MiddleDataAdapter(context, datas));
 
         return view;
     }

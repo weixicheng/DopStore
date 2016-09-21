@@ -1,7 +1,5 @@
 package com.dopstore.mall.person.activity;
 
-import android.content.Intent;
-import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.base.BaseActivity;
@@ -33,27 +30,16 @@ import com.dopstore.mall.util.Utils;
 import com.dopstore.mall.view.addresspicker.wheel.widget.OnWheelChangedListener;
 import com.dopstore.mall.view.addresspicker.wheel.widget.WheelView;
 import com.dopstore.mall.view.addresspicker.wheel.widget.adapters.ArrayWheelAdapter;
-import com.dopstore.mall.view.addresspicker.wheel.widget.model.CityModel;
-import com.dopstore.mall.view.addresspicker.wheel.widget.model.DistrictModel;
-import com.dopstore.mall.view.addresspicker.wheel.widget.model.ProvinceModel;
-import com.dopstore.mall.view.addresspicker.wheel.widget.service.XmlParserHandler;
-import com.squareup.okhttp.Address;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 
 /**
@@ -183,6 +169,7 @@ public class NewAddressActivity extends BaseActivity {
             @Override
             public void onFailure(Request request, IOException e) {
                 T.checkNet(NewAddressActivity.this);
+                proUtils.dismiss();
             }
 
             @Override
@@ -201,7 +188,7 @@ public class NewAddressActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.diamiss();
+                proUtils.dismiss();
             }
         },null);
     }
@@ -255,6 +242,7 @@ public class NewAddressActivity extends BaseActivity {
             @Override
             public void onFailure(Request request, IOException e) {
                 T.checkNet(NewAddressActivity.this);
+                proUtils.dismiss();
             }
 
             @Override
@@ -273,7 +261,7 @@ public class NewAddressActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.diamiss();
+                proUtils.dismiss();
             }
         },null);
     }

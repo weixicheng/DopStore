@@ -81,6 +81,7 @@ public class Constant {
     public static final String LNG = "lng";
     public static final String CATEGORY_ID = "category_id";
     public static final String THEME = "theme";
+    public static final String THEMES = "themes";
     public static final String RELATED_GOODS = "related_goods";
     public static final String PRICE = "price";
     public static final String COVER = "cover";
@@ -95,6 +96,9 @@ public class Constant {
     public static final String END_TIME = "end_time";
     public static final String LIMIT = "limit";
     public static final String CATEGORY = "category";
+    public static final String CATEGORIES = "categories";
+    public static final String ITEMS = "items";
+    public static final String order_id = "order_id";
 
 
 

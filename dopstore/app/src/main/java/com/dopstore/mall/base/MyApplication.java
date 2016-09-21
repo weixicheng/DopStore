@@ -8,6 +8,8 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.jpush.android.api.JPushInterface;
+
 
 public class MyApplication extends Application {
 
@@ -19,6 +21,8 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Fresco.initialize(getApplicationContext());
+        JPushInterface.setDebugMode(true);
+        JPushInterface.init(this);
         /**
          * JPushInterface.stopPush(getApplicationContext());
          * JPushInterface.resumePush(getApplicationContext());

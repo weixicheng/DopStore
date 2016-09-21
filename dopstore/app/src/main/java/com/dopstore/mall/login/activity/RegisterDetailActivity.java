@@ -1,10 +1,7 @@
 package com.dopstore.mall.login.activity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -12,7 +9,6 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.MainActivity;
@@ -30,7 +26,6 @@ import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
-import com.dopstore.mall.util.Utils;
 import com.dopstore.mall.view.CircleImageView;
 import com.dopstore.mall.view.MyGridView;
 import com.squareup.okhttp.Callback;
@@ -184,6 +179,7 @@ public class RegisterDetailActivity extends BaseActivity {
             @Override
             public void onFailure(Request request, IOException e) {
                 T.checkNet(RegisterDetailActivity.this);
+                proUtils.dismiss();
             }
 
             @Override
@@ -237,7 +233,7 @@ public class RegisterDetailActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.diamiss();
+                proUtils.dismiss();
             }
         }, null);
 

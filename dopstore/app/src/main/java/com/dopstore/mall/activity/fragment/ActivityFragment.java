@@ -71,12 +71,13 @@ public class ActivityFragment extends Fragment {
     private RelativeLayout firstLy, secondLy;
     private TextView firstTv, secondTv;
     private View firstV, secondV;
+    private LinearLayout topLy;
     private Timer timer;
     private TimerTask doing;
     private EScrollView eScrollView;
     private ScrollView mainView;
     private RollPagerView rollPagerView;
-    private MyListView myListView;
+    private MyListView myListView,otherListView;
     private List<MainTabData> tabList = new ArrayList<MainTabData>();
     private List<CarouselData> titleAdvertList = new ArrayList<CarouselData>();
     private List<ActivityData> aList = new ArrayList<ActivityData>();
@@ -125,6 +126,7 @@ public class ActivityFragment extends Fragment {
         firstLy = (RelativeLayout) v.findViewById(R.id.fragment_activity_first_ly);
         secondLy = (RelativeLayout) v.findViewById(R.id.fragment_activity_second_ly);
         firstTv = (TextView) v.findViewById(R.id.fragment_activity_first_tv);
+        topLy = (LinearLayout) v.findViewById(R.id.fragment_activity_top_ly);
         secondTv = (TextView) v.findViewById(R.id.fragment_activity_second_tv);
         firstV = v.findViewById(R.id.fragment_activity_first_v);
         secondV = v.findViewById(R.id.fragment_activity_second_v);
@@ -134,6 +136,7 @@ public class ActivityFragment extends Fragment {
         eScrollView = (EScrollView) v.findViewById(R.id.fragment_activity_tab_escrollview);
         rollPagerView = (RollPagerView) v.findViewById(R.id.roll_view_pager);
         myListView = (MyListView) v.findViewById(R.id.fragment_activity_mylistview);
+        otherListView = (MyListView) v.findViewById(R.id.fragment_activity_other_mylistview);
         titleTv.setText("亲子活动");
         leftTv.setText("北京");
         leftTv.setVisibility(View.VISIBLE);
@@ -145,18 +148,28 @@ public class ActivityFragment extends Fragment {
         imageButton.setOnClickListener(listener);
         firstLy.setOnClickListener(listener);
         secondLy.setOnClickListener(listener);
+        TextView textView=new TextView(getActivity());
+        textView.setText("请开启定位");
+        otherListView.setEmptyView(textView);
     }
 
     private void initData() {
         getGPSData();
-        proUtils.show();
-        getTabData();
-        getCarousel();
-        latitude="";
-        longitude="";
-        getData(latitude, longitude);
+        getMainData();
         mainView.smoothScrollTo(0, 0);
     }
+
+    private void getMainData(){
+        tabList.clear();
+        titleAdvertList.clear();
+        aList.clear();
+        getTabData();
+        getCarousel();
+        getTdata();
+        mainView.smoothScrollTo(0, 0);
+    }
+
+
 
     /**
      * 设置轮播
@@ -202,9 +215,10 @@ public class ActivityFragment extends Fragment {
                     firstV.setBackgroundColor(getResources().getColor(R.color.red_color_f93448));
                     secondTv.setTextColor(getResources().getColor(R.color.gray_color_33));
                     secondV.setBackgroundColor(getResources().getColor(R.color.white_color));
-                    latitude="";
-                    longitude="";
-                    getData(latitude, longitude);
+                    latitude = "";
+                    longitude = "";
+                    aList.clear();
+                    getTdata();
                 }
                 break;
                 case R.id.fragment_activity_second_ly: {
@@ -212,7 +226,8 @@ public class ActivityFragment extends Fragment {
                     firstV.setBackgroundColor(getResources().getColor(R.color.white_color));
                     secondTv.setTextColor(getResources().getColor(R.color.red_color_f93448));
                     secondV.setBackgroundColor(getResources().getColor(R.color.red_color_f93448));
-                    getData(latitude, longitude);
+                    aList.clear();
+                    getNdata();
                 }
                 break;
                 case R.id.title_right_imageButton: {
@@ -224,10 +239,12 @@ public class ActivityFragment extends Fragment {
     };
 
     private void getTabData() {
+        proUtils.show();
         httpHelper.getDataAsync(getActivity(), URL.ACT_CATEGORIES, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
                 T.checkNet(getActivity());
+                proUtils.dismiss();
             }
 
             @Override
@@ -237,19 +254,19 @@ public class ActivityFragment extends Fragment {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
                     if ("0".equals(code)) {
-                        JSONArray ja = jo.getJSONArray(Constant.CATEGORYS);
+                        MainTabData data = new MainTabData();
+                        data.setId("");
+                        data.setName("推荐");
+                        data.setIsSelect("1");
+                        tabList.add(data);
+                        JSONArray ja = jo.getJSONArray(Constant.CATEGORIES);
                         if (ja.length() > 0) {
                             for (int i = 0; i < ja.length(); i++) {
                                 JSONObject tab = ja.getJSONObject(i);
                                 MainTabData tabData = new MainTabData();
                                 tabData.setId(tab.optString(Constant.ID));
                                 tabData.setName(tab.optString(Constant.NAME));
-                                tabData.setPicture(tab.optString(Constant.PICTURE));
-                                if (i == 0) {
-                                    tabData.setIsSelect("1");
-                                } else {
-                                    tabData.setIsSelect("0");
-                                }
+                                tabData.setIsSelect("0");
                                 tabList.add(tabData);
                             }
                         }
@@ -261,17 +278,19 @@ public class ActivityFragment extends Fragment {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.diamiss();
+                proUtils.dismiss();
             }
         }, null);
     }
 
 
     private void getCarousel() {
+        proUtils.show();
         httpHelper.getDataAsync(getActivity(), URL.HOME_CAROUSEL + "2", new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
                 T.checkNet(getActivity());
+                proUtils.dismiss();
             }
 
             @Override
@@ -301,70 +320,88 @@ public class ActivityFragment extends Fragment {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.diamiss();
+                proUtils.dismiss();
             }
         }, null);
     }
 
-    private void getData(String lat, String lng) {
+    private void getTdata() {
+        proUtils.show();
         Map<String, String> map = new HashMap<String, String>();
         map.put(Constant.PAGESIZE, "10");
-        map.put(Constant.PAGE, "2");
-        map.put(Constant.LAT, lat);
-        map.put(Constant.LNG, lng);
-        map.put(Constant.CATEGORY_ID, "2");
+        map.put(Constant.PAGE, "1");
         httpHelper.postKeyValuePairAsync(getActivity(), URL.RECOMMENDED_ACT, map, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
                 T.checkNet(getActivity());
+                proUtils.dismiss();
             }
 
             @Override
             public void onResponse(Response response) throws IOException {
                 String body = response.body().string();
-                try {
-                    JSONObject jo = new JSONObject(body);
-                    String code = jo.optString(Constant.ERROR_CODE);
-                    if ("0".equals(code)) {
-                        JSONArray ja = jo.getJSONArray(Constant.ACTIVITYS);
-                        if (ja.length() > 0) {
-                            for (int i = 0; i < ja.length(); i++) {
-                                JSONObject middle = ja.getJSONObject(i);
-                                ActivityData middleData = new ActivityData();
-                                middleData.setId(middle.optString(Constant.ID));
-                                middleData.setName(middle.optString(Constant.NAME));
-                                middleData.setPicture(middle.optString(Constant.PICTURE));
-                                middleData.setAge(middle.optString(Constant.AGE));
-                                middleData.setMerchant(middle.optString(Constant.MERCHANT));
-                                middleData.setCity(middle.optString(Constant.CITY));
-                                middleData.setLat(middle.optString(Constant.LAT));
-                                middleData.setLng(middle.optString(Constant.LNG));
-                                middleData.setStart_time(middle.optString(Constant.START_TIME));
-                                middleData.setEnd_time(middle.optString(Constant.END_TIME));
-                                middleData.setLimit(middle.optString(Constant.LIMIT));
-                                middleData.setPrice(middle.optString(Constant.PRICE));
-                                middleData.setAddress(middle.optString(Constant.ADDRESS));
-                                middleData.setContent(middle.optString(Constant.CONTENT));
-                                aList.add(middleData);
-                            }
-                        }
-                    } else {
-                        String msg = jo.optString(Constant.ERROR_MSG);
-                        T.show(getActivity(), msg);
-                    }
-                    handler.sendEmptyMessage(UPDATA_MIDDLE_CODE);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                proUtils.diamiss();
+                analysisData(body);
+                handler.sendEmptyMessage(UPDATA_MIDDLE_CODE);
+                proUtils.dismiss();
             }
         }, null);
     }
 
+    private void getNdata() {
+        proUtils.show();
+        Map<String, String> map = new HashMap<String, String>();
+        map.put(Constant.PAGESIZE, "10");
+        map.put(Constant.PAGE, "1");
+        map.put(Constant.LAT, latitude);
+        map.put(Constant.LNG, longitude);
+        httpHelper.postKeyValuePairAsync(getActivity(), URL.RECOMMENDED_ACT, map, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                T.checkNet(getActivity());
+                proUtils.dismiss();
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String body = response.body().string();
+                analysisData(body);
+                handler.sendEmptyMessage(UPDATA_NFC_CODE);
+                proUtils.dismiss();
+            }
+        }, null);
+    }
+
+    private void getOtherData(String id) {
+        proUtils.show();
+        Map<String, String> map = new HashMap<String, String>();
+        map.put(Constant.PAGESIZE, "10");
+        map.put(Constant.PAGE, "1");
+        map.put(Constant.CATEGORY_ID, id);
+        httpHelper.postKeyValuePairAsync(getActivity(), URL.RECOMMENDED_ACT, map, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                T.checkNet(getActivity());
+                proUtils.dismiss();
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String body = response.body().string();
+                analysisData(body);
+                handler.sendEmptyMessage(UPDATA_OTHER_CODE);
+                proUtils.dismiss();
+            }
+        }, null);
+    }
+
+
+
     private final static int UPDATA_TAB_CODE = 0;
     private final static int UPDATA_TOB_CODE = 1;
     private final static int UPDATA_MIDDLE_CODE = 2;
-    private final static int LAZY_LOADING_MSG = 3;
+    private final static int UPDATA_NFC_CODE = 3;
+    private final static int UPDATA_OTHER_CODE = 4;
+    private final static int LAZY_LOADING_MSG = 5;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -383,6 +420,14 @@ public class ActivityFragment extends Fragment {
                     refreshAdapter();
                 }
                 break;
+                case UPDATA_NFC_CODE: {
+                    refreshNAdapter();
+                }
+                break;
+                case UPDATA_OTHER_CODE: {
+                    refreshOtherAdapter();
+                }
+                break;
                 case LAZY_LOADING_MSG: {
                     initData();
                 }
@@ -392,12 +437,48 @@ public class ActivityFragment extends Fragment {
         }
     };
 
+    private void analysisData(String body){
+        try {
+            JSONObject jo = new JSONObject(body);
+            String code = jo.optString(Constant.ERROR_CODE);
+            if ("0".equals(code)) {
+                JSONArray ja = jo.getJSONArray(Constant.ACTIVITYS);
+                if (ja.length() > 0) {
+                    for (int i = 0; i < ja.length(); i++) {
+                        JSONObject middle = ja.getJSONObject(i);
+                        ActivityData middleData = new ActivityData();
+                        middleData.setId(middle.optString(Constant.ID));
+                        middleData.setName(middle.optString(Constant.NAME));
+                        middleData.setPicture(middle.optString(Constant.PICTURE));
+                        middleData.setAge(middle.optString(Constant.AGE));
+                        middleData.setMerchant(middle.optString(Constant.MERCHANT));
+                        middleData.setCity(middle.optString(Constant.CITY));
+                        middleData.setLat(middle.optString(Constant.LAT));
+                        middleData.setLng(middle.optString(Constant.LNG));
+                        middleData.setStart_time(middle.optString(Constant.START_TIME));
+                        middleData.setEnd_time(middle.optString(Constant.END_TIME));
+                        middleData.setLimit(middle.optString(Constant.LIMIT));
+                        middleData.setPrice(middle.optString(Constant.PRICE));
+                        middleData.setAddress(middle.optString(Constant.ADDRESS));
+                        middleData.setContent(middle.optString(Constant.CONTENT));
+                        aList.add(middleData);
+                    }
+                }
+            } else {
+                String msg = jo.optString(Constant.ERROR_MSG);
+                T.show(getActivity(), msg);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void refreshAdapter() {
         if (adapter == null) {
-            adapter = new ActivityAdapter(getActivity(), aList);
+            adapter = new ActivityAdapter(getActivity(), aList,0);
             myListView.setAdapter(adapter);
         } else {
-            adapter.notifyDataSetChanged();
+            adapter.upData(aList,0);
         }
         myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -405,6 +486,38 @@ public class ActivityFragment extends Fragment {
                 SkipUtils.directJump(getActivity(), ActivityDetailActivity.class, false);
             }
         });
+        mainView.smoothScrollTo(0, 0);
+    }
+    private void refreshNAdapter() {
+        if (adapter == null) {
+            adapter = new ActivityAdapter(getActivity(), aList,1);
+            myListView.setAdapter(adapter);
+        } else {
+            adapter.upData(aList,1);
+        }
+        mainView.smoothScrollTo(0, 0);
+        myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                SkipUtils.directJump(getActivity(), ActivityDetailActivity.class, false);
+            }
+        });
+    }
+    private void refreshOtherAdapter() {
+        otherListView.setAdapter(new ActivityAdapter(getActivity(), aList,0));
+//        if (adapter == null) {
+//            adapter = new ActivityAdapter(getActivity(), aList,0);
+//            otherListView.setAdapter(adapter);
+//        } else {
+//            adapter.upData(aList,0);
+//        }
+        otherListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                SkipUtils.directJump(getActivity(), ActivityDetailActivity.class, false);
+            }
+        });
+        mainView.smoothScrollTo(0, 0);
     }
 
     private void refreshTabAdapter() {
@@ -425,6 +538,16 @@ public class ActivityFragment extends Fragment {
                     }
                 }
                 tabAdapter.notifyDataSetChanged();
+                if (position==0){
+                    topLy.setVisibility(View.VISIBLE);
+                    otherListView.setVisibility(View.GONE);
+                    getMainData();
+                }else {
+                    topLy.setVisibility(View.GONE);
+                    otherListView.setVisibility(View.VISIBLE);
+                    aList.clear();
+                    getOtherData(tabList.get(position).getId());
+                }
 
             }
         });
@@ -445,8 +568,8 @@ public class ActivityFragment extends Fragment {
             }
             Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             if (location != null) {
-                latitude = location.getLatitude()+"";
-                longitude = location.getLongitude()+"";
+                latitude = location.getLatitude() + "";
+                longitude = location.getLongitude() + "";
             }
         } else {
             LocationListener locationListener = new LocationListener() {
@@ -482,8 +605,8 @@ public class ActivityFragment extends Fragment {
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 0, locationListener);
             Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             if (location != null) {
-                latitude = location.getLatitude()+""; //经度
-                longitude = location.getLongitude()+""; //纬度
+                latitude = location.getLatitude() + ""; //经度
+                longitude = location.getLongitude() + ""; //纬度
             }
         }
     }

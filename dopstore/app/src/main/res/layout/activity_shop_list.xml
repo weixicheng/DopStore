@@ -102,7 +102,9 @@
     </LinearLayout>
     <GridView
         android:id="@+id/shop_list_listview"
-        android:layout_marginLeft="@dimen/margin_10"
+        android:layout_margin="@dimen/margin_10"
+        android:verticalSpacing="@dimen/margin_10"
+        android:horizontalSpacing="@dimen/margin_10"
         android:layout_width="match_parent"
         android:numColumns="2"
         android:layout_height="match_parent"/>

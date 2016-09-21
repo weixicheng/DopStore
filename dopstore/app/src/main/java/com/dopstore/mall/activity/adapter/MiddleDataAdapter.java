@@ -58,11 +58,11 @@ public class MiddleDataAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) view.getTag();
         }
-
-
-        loadImageUtils.displayImage(list.get(i).getCover(), viewHolder.bigImageView, Constant.OPTIONS_SPECIAL_CODE);
-        viewHolder.titleTv.setText(list.get(i).getName());
-        viewHolder.priceTv.setText(list.get(i).getPrice());
+        if (list.size()>0){
+            loadImageUtils.displayImage(list.get(i).getCover(), viewHolder.bigImageView, Constant.OPTIONS_SPECIAL_CODE);
+            viewHolder.titleTv.setText(list.get(i).getName());
+            viewHolder.priceTv.setText(list.get(i).getPrice());
+        }
         return view;
     }
 

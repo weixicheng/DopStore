@@ -3,8 +3,12 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib/bdwallet_pay_sdk/bdwallet_pay_sdk.iml" filepath="$PROJECT_DIR$/lib/bdwallet_pay_sdk/bdwallet_pay_sdk.iml" />
       <module fileurl="file://$PROJECT_DIR$/dopstore.iml" filepath="$PROJECT_DIR$/dopstore.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib/lib.iml" filepath="$PROJECT_DIR$/lib/lib.iml" />
       <module fileurl="file://$PROJECT_DIR$/multiple-images-selector/multiple-images-selector.iml" filepath="$PROJECT_DIR$/multiple-images-selector/multiple-images-selector.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib/pingpp/pingpp.iml" filepath="$PROJECT_DIR$/lib/pingpp/pingpp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib/pingpp_one/pingpp_one.iml" filepath="$PROJECT_DIR$/lib/pingpp_one/pingpp_one.iml" />
     </modules>
   </component>
 </project>

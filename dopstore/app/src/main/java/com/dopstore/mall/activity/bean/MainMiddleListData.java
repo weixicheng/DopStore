@@ -1,10 +1,12 @@
 package com.dopstore.mall.activity.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by 喜成 on 16/9/5.
  * name
  */
-public class MainMiddleListData {
+public class MainMiddleListData implements Serializable{
     private String id;
     private String name;
     private String price;

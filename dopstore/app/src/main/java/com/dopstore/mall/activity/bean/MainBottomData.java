@@ -6,8 +6,10 @@ package com.dopstore.mall.activity.bean;
  */
 public class MainBottomData {
     private String id;
-    private String image;
-    private String title;
+    private String cover;
+    private String name;
+    private String number;
+    private String stock_number;
     private String price;
 
     public String getId() {
@@ -18,20 +20,36 @@ public class MainBottomData {
         this.id = id;
     }
 
-    public String getImage() {
-        return image;
+    public String getCover() {
+        return cover;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setCover(String cover) {
+        this.cover = cover;
     }
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getStock_number() {
+        return stock_number;
+    }
+
+    public void setStock_number(String stock_number) {
+        this.stock_number = stock_number;
     }
 
     public String getPrice() {

@@ -3,8 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white_color"
-    android:paddingLeft="@dimen/margin_10"
-    android:paddingRight="@dimen/margin_10"
     android:paddingBottom="@dimen/margin_10"
     android:orientation="vertical">
 
@@ -50,6 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/item_fragment_activity_image"
         android:layout_marginTop="@dimen/margin_10"
+        android:paddingLeft="@dimen/margin_10"
         android:ellipsize="end"
         android:singleLine="true"
         android:textColor="@color/gray_color_33"

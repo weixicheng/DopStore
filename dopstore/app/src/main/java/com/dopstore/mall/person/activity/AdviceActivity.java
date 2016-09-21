@@ -8,11 +8,9 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.base.BaseActivity;
-import com.dopstore.mall.person.bean.HelpData;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.HttpHelper;
 import com.dopstore.mall.util.ProUtils;
@@ -24,7 +22,6 @@ import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -94,6 +91,7 @@ public class AdviceActivity extends BaseActivity {
             @Override
             public void onFailure(Request request, IOException e) {
                 T.checkNet(AdviceActivity.this);
+                proUtils.dismiss();
             }
 
             @Override
@@ -113,7 +111,7 @@ public class AdviceActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.diamiss();
+                proUtils.dismiss();
             }
         }, null);
     }
