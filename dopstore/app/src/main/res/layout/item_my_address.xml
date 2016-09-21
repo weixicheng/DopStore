@@ -17,11 +17,12 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical">
+
             <View
                 android:id="@+id/item_my_address_check"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:background="@mipmap/checkbox_normal"/>
+                android:background="@mipmap/checkbox_normal" />
         </LinearLayout>
 
         <LinearLayout

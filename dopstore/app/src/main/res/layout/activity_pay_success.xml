@@ -4,7 +4,8 @@
     android:orientation="vertical"
     android:gravity="center_horizontal"
     android:layout_height="match_parent">
-    <include layout="@layout/common_title"/>
+
+    <include layout="@layout/common_title" />
 
     <ImageView
         android:layout_width="101dp"
@@ -12,21 +13,24 @@
         android:contentDescription="@null"
         android:layout_marginTop="@dimen/margin_50"
         android:src="@mipmap/pay_success_logo"
-        android:scaleType="centerCrop"/>
+        android:scaleType="centerCrop" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_50"
         android:textSize="@dimen/textsize_18"
         android:textColor="@color/gray_color_33"
-        android:text="恭喜您!支付成功"/>
+        android:text="恭喜您!支付成功" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_20"
         android:textSize="@dimen/textsize_18"
         android:textColor="@color/gray_color_99"
-        android:text="请保持手机畅通,以便快递哥哥第一时间联系到您"/>
+        android:text="请保持手机畅通,以便快递哥哥第一时间联系到您" />
+
     <Button
         android:id="@+id/pay_success_check_bt"
         android:layout_width="335dp"
@@ -36,7 +40,8 @@
         android:gravity="center"
         android:background="@drawable/square_corners_red_bg"
         android:textColor="@color/white_color"
-        android:text="查看订单"/>
+        android:text="查看订单" />
+
     <Button
         android:id="@+id/pay_success_continue_bt"
         android:layout_width="335dp"
@@ -46,6 +51,6 @@
         android:textSize="@dimen/textsize_16"
         android:gravity="center"
         android:textColor="@color/red_color_f93448"
-        android:text="继续购物"/>
+        android:text="继续购物" />
 
 </LinearLayout>

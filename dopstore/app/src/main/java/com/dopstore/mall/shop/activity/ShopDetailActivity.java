@@ -2,6 +2,8 @@ package com.dopstore.mall.shop.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -18,13 +20,29 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
+import com.dopstore.mall.activity.bean.ShopData;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.shop.adapter.ShopCarAdapter;
 import com.dopstore.mall.shop.bean.CommonData;
+import com.dopstore.mall.util.Constant;
+import com.dopstore.mall.util.HttpHelper;
+import com.dopstore.mall.util.LoadImageUtils;
 import com.dopstore.mall.util.PopupUtils;
+import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
+import com.dopstore.mall.util.T;
+import com.dopstore.mall.util.URL;
+import com.dopstore.mall.util.UserUtils;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +58,11 @@ public class ShopDetailActivity extends BaseActivity {
     private WebView webView;
     protected WebSettings webSetting;
     private PopupWindow popupWindow;
+    private TextView poupNumTv;
+    private ShopData shopData;
+    private HttpHelper httpHelper;
+    private ProUtils proUtils;
+    private LoadImageUtils loadImageUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +73,12 @@ public class ShopDetailActivity extends BaseActivity {
     }
 
     private void initView() {
+        httpHelper=HttpHelper.getOkHttpClientUtils(this);
+        proUtils=new ProUtils(this);
+        loadImageUtils=LoadImageUtils.getInstance(this);
+        Map<String,Object> map=SkipUtils.getMap(this);
+        if (map==null)return;
+        shopData=(ShopData) map.get(Constant.LIST);
         webView = (WebView) findViewById(R.id.shop_detail_web);
         mainLayout = (RelativeLayout) findViewById(R.id.shop_detail_main_bt);
         shopLayout = (RelativeLayout) findViewById(R.id.shop_detail_shop_bt);
@@ -143,16 +172,62 @@ public class ShopDetailActivity extends BaseActivity {
                 case R.id.poup_shop_close:{
                     if (popupWindow.isShowing()){popupWindow.dismiss();}
                 }break;
-                case R.id.poup_shop_reduce:{}break;
-                case R.id.poup_shop_add:{}break;
+                case R.id.poup_shop_reduce:{
+                    String num=poupNumTv.getText().toString().trim();
+                    int cartNum=Integer.parseInt(num);
+                    if (cartNum==1)return;
+                    cartNum=cartNum-1;
+                    poupNumTv.setText(cartNum);
+                }break;
+                case R.id.poup_shop_add:{
+                    String num=poupNumTv.getText().toString().trim();
+                    int cartNum=Integer.parseInt(num);
+                    cartNum=cartNum+1;
+                    poupNumTv.setText(cartNum);
+                }break;
                 case R.id.shop_detail_service_bt:{}break;
                 case R.id.poup_shop_join_bt:{
-                    if (popupWindow.isShowing()){popupWindow.dismiss();}
+                    addToService();
                 }break;
             }
 
         }
     };
+
+    private void addToService() {
+        proUtils.show();
+        final Map<String,String> map=new HashMap<String,String>();
+        map.put("user_id", UserUtils.getId(this));
+        map.put("item_id", shopData.getId());
+        map.put("count", "");
+        map.put("edit", "");
+        httpHelper.postKeyValuePairAsync(this, URL.CART_EDIT, map, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                T.checkNet(ShopDetailActivity.this);
+                proUtils.dismiss();
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String body = response.body().string();
+                try {
+                    JSONObject jo = new JSONObject(body);
+                    String code = jo.optString(Constant.ERROR_CODE);
+                    if ("0".equals(code)){
+                       handler.sendEmptyMessage(ADD_SUCCESS_CODE);
+                    }else {
+                        String msg = jo.optString(Constant.ERROR_MSG);
+                        T.show(ShopDetailActivity.this, msg);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                proUtils.dismiss();
+            }
+        }, null);
+
+    }
 
     private void showPop() {
         List<CommonData> lists=new ArrayList<CommonData>();
@@ -164,15 +239,17 @@ public class ShopDetailActivity extends BaseActivity {
         bgLayout.setVisibility(View.VISIBLE);
         int screenWidth = getWindowManager().getDefaultDisplay().getWidth();
         View v= LayoutInflater.from(this).inflate(R.layout.poup_shop_car,null);
-
         ImageView imageView=(ImageView) v.findViewById(R.id.poup_shop_image);
         TextView info=(TextView) v.findViewById(R.id.poup_shop_info);
         TextView price=(TextView) v.findViewById(R.id.poup_shop_price);
         View close=v.findViewById(R.id.poup_shop_close);
+        loadImageUtils.displayImage(shopData.getCover(),imageView,Constant.OPTIONS_SPECIAL_CODE);
+        info.setText(shopData.getName());
+        price.setText("￥"+shopData.getPrice());
         GridView colorGw=(GridView) v.findViewById(R.id.poup_shop_color_gridview);
         GridView typeGw=(GridView) v.findViewById(R.id.poup_shop_type_gridview);
         TextView reduceTv=(TextView) v.findViewById(R.id.poup_shop_reduce);
-        TextView numTv=(TextView) v.findViewById(R.id.poup_shop_num);
+        poupNumTv=(TextView) v.findViewById(R.id.poup_shop_num);
         TextView addTv=(TextView) v.findViewById(R.id.poup_shop_add);
         RelativeLayout joinBt=(RelativeLayout) v.findViewById(R.id.poup_shop_join_bt);
         colorGw.setAdapter(new ShopCarAdapter(this,lists));
@@ -203,6 +280,19 @@ public class ShopDetailActivity extends BaseActivity {
         super.onPause();
 
     }
+
+    private final static int ADD_SUCCESS_CODE=0;
+    Handler handler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case ADD_SUCCESS_CODE:{
+                    if (popupWindow.isShowing()){popupWindow.dismiss();}
+                }break;
+            }
+        }
+    };
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

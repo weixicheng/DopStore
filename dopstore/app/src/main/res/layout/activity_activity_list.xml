@@ -100,11 +100,12 @@
             android:visibility="invisible"
             android:background="@color/red_color_f93448" />
     </LinearLayout>
+
     <ListView
         android:id="@+id/shop_list_listview"
         android:layout_marginTop="@dimen/margin_10"
         android:layout_width="match_parent"
         android:numColumns="2"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
 </LinearLayout>

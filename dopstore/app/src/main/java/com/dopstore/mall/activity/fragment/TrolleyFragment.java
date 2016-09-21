@@ -19,10 +19,26 @@ import com.dopstore.mall.R;
 import com.dopstore.mall.activity.adapter.TrolleyAdapter;
 import com.dopstore.mall.activity.bean.DataBean;
 import com.dopstore.mall.shop.activity.ConfirmOrderActivity;
+import com.dopstore.mall.util.Constant;
+import com.dopstore.mall.util.HttpHelper;
+import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
+import com.dopstore.mall.util.T;
+import com.dopstore.mall.util.URL;
+import com.dopstore.mall.util.UserUtils;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -54,11 +70,13 @@ public class TrolleyFragment extends Fragment {
 
     private Timer timer;
     private TimerTask doing;
-    private final static int LAZY_LOADING_MSG = 0;
+
     /**
      * 批量模式下，用来记录当前选中状态
      */
     private SparseArray<Boolean> mSelectState = new SparseArray<Boolean>();
+    private HttpHelper httpHelper;
+    private ProUtils proUtils;
 
     @Nullable
     @Override
@@ -104,6 +122,7 @@ public class TrolleyFragment extends Fragment {
                 }
             }
         }
+        deleteToService(mListData);
 
         refreshListView();
         mSelectState.clear();
@@ -111,6 +130,39 @@ public class TrolleyFragment extends Fragment {
         mPriceAll.setText("￥" + 0.00 + "");
         mCheckAll.setChecked(false);
 
+    }
+
+    private void deleteToService(List<DataBean> mListData) {
+        proUtils.show();
+        Map<String,String> map=new HashMap<String,String>();
+        map.put("user_id", UserUtils.getId(getActivity()));
+        map.put("item_id", "");
+        httpHelper.postKeyValuePairAsync(getActivity(), URL.CART_DELETE, map, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                T.checkNet(getActivity());
+                proUtils.dismiss();
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String body = response.body().string();
+                try {
+                    JSONObject jo = new JSONObject(body);
+                    String code = jo.optString(Constant.ERROR_CODE);
+                    if ("0".equals(code)){
+                        T.show(getActivity(), "删除成功");
+                    }else {
+                        String msg = jo.optString(Constant.ERROR_MSG);
+                        T.show(getActivity(), msg);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                handler.sendEmptyMessage(UPDATA_CART_MSG);
+                proUtils.dismiss();
+            }
+        }, null);
     }
 
     private final List<Integer> getSelectedIds() {
@@ -124,6 +176,8 @@ public class TrolleyFragment extends Fragment {
     }
 
     private void initView(View v) {
+        httpHelper=HttpHelper.getOkHttpClientUtils(getActivity());
+        proUtils=new ProUtils(getActivity());
         mBottonLayout = (RelativeLayout) v.findViewById(R.id.cart_rl_allprie_total);
         mCheckAll = (CheckBox) v.findViewById(R.id.check_box);
         mEdit = (TextView) v.findViewById(R.id.title_right_textButton);
@@ -147,7 +201,7 @@ public class TrolleyFragment extends Fragment {
     }
 
     private void loadData() {
-        mListData = getData();
+        getCartList();
         refreshListView();
     }
 
@@ -161,23 +215,55 @@ public class TrolleyFragment extends Fragment {
         }
     }
 
-    private List<DataBean> getData() {
-        int maxId = 0;
-        if (mListData != null && mListData.size() > 0)
-            maxId = mListData.get(mListData.size() - 1).getId();
-        List<DataBean> result = new ArrayList<DataBean>();
-        DataBean data = null;
-        for (int i = 0; i < 20; i++) {
-            data = new DataBean();
-            data.setId(maxId + i + 1);// 从最大Id的下一个开始
-            data.setShopName("我的" + (maxId + 1 + i) + "店铺");
-            data.setContent("我的购物车里面的第" + (maxId + 1 + i) + "个商品");
-            data.setCarNum(1);
-            data.setPrice(305f);
-            result.add(data);
-        }
-        return result;
+    private void getCartList() {
+        proUtils.show();
+        Map<String,String> map=new HashMap<String,String>();
+        map.put("user_id", UserUtils.getId(getActivity()));
+        httpHelper.postKeyValuePairAsync(getActivity(), URL.CART_QUERY, map, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                T.checkNet(getActivity());
+                proUtils.dismiss();
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String body = response.body().string();
+                analyData(body);
+                handler.sendEmptyMessage(UPDATA_CART_MSG);
+                proUtils.dismiss();
+            }
+        }, null);
     }
+
+    private void analyData(String body) {
+        try {
+            JSONObject jo = new JSONObject(body);
+            String code = jo.optString(Constant.ERROR_CODE);
+            if ("0".equals(code)) {
+                JSONArray ja = jo.getJSONArray("items");
+                if (ja.length() > 0) {
+                    for (int i = 0; i < ja.length(); i++) {
+                        JSONObject job = ja.getJSONObject(i);
+                        DataBean data = new DataBean();
+                        data.setId(Integer.parseInt(job.optString(Constant.ID)));
+                        data.setCarNum(Integer.parseInt(job.optString(Constant.NUMBER)));
+                        data.setContent(job.optString(Constant.NAME));
+                        data.setPrice(Float.parseFloat(job.optString(Constant.PRICE)));
+                        data.setCover(job.optString(Constant.COVER));
+                        mListData.add(data);
+                    }
+                }
+            } else {
+                String msg = jo.optString(Constant.ERROR_MSG);
+                T.show(getActivity(), msg);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
 
     View.OnClickListener listener = new View.OnClickListener() {
@@ -200,7 +286,6 @@ public class TrolleyFragment extends Fragment {
 
                 case R.id.check_box:
                     if (mCheckAll.isChecked()) {
-
                         totalPrice = 0;
                         if (mListData != null) {
                             mSelectState.clear();
@@ -215,7 +300,6 @@ public class TrolleyFragment extends Fragment {
                             }
                             refreshListView();
                             mPriceAll.setText("￥" + totalPrice + "");
-
                         }
                     } else {
                         if (mListAdapter != null) {
@@ -242,12 +326,19 @@ public class TrolleyFragment extends Fragment {
         }
     };
 
+    private final static int LAZY_LOADING_MSG = 0;
+    private final static int UPDATA_CART_MSG = 1;
+
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
                 case LAZY_LOADING_MSG: {
+                    loadData();
+                }
+                break;
+                case UPDATA_CART_MSG: {
                     loadData();
                 }
                 break;

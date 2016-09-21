@@ -1,6 +1,9 @@
 package com.dopstore.mall.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -21,8 +24,11 @@ import com.dopstore.mall.activity.fragment.PersonFragment;
 import com.dopstore.mall.activity.fragment.TrolleyFragment;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.base.MyApplication;
+import com.dopstore.mall.login.activity.LoginActivity;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.HttpHelper;
+import com.dopstore.mall.util.SkipUtils;
+import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.view.CommonDialog;
 import com.dopstore.mall.view.MyViewPager;
 import com.squareup.okhttp.Callback;
@@ -68,6 +74,10 @@ public class MainActivity extends BaseActivity {
      * 初始化
      */
     private void initView() {
+        // 注册广播接收
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Constant.UPDATA_USER_FLAG);
+        registerReceiver(receiver, filter);
         Map<String, String> map = new HashMap<>();
         mainRly = (RelativeLayout) findViewById(R.id.main_tab_button);
         viewPager = (MyViewPager) findViewById(R.id.main_content_viewpager);
@@ -120,7 +130,11 @@ public class MainActivity extends BaseActivity {
                     break;
                 case R.id.head_tab_button:// 购物车
                     setTab(ROB_CODE);
-                    viewPager.setCurrentItem(ROB_CODE);
+                    if (UserUtils.haveLogin(MainActivity.this)) {
+                        viewPager.setCurrentItem(ROB_CODE);
+                    }else {
+                        SkipUtils.directJump(MainActivity.this, LoginActivity.class,false);
+                    }
                     break;
                 case R.id.my_tab_button:// 我的
                     setTab(MY_CODE);
@@ -245,6 +259,14 @@ public class MainActivity extends BaseActivity {
                 }
                 break;
             }
+        }
+    };
+
+    BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            personFragment.loadData();
         }
     };
 

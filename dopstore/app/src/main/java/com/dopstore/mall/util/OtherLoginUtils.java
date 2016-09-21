@@ -1,30 +1,10 @@
 package com.dopstore.mall.util;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 
-import com.dopstore.mall.activity.bean.CityBean;
-import com.dopstore.mall.activity.bean.MainBottomData;
-import com.dopstore.mall.activity.bean.UserData;
-import com.dopstore.mall.base.MyApplication;
-import com.dopstore.mall.time.WheelView;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;

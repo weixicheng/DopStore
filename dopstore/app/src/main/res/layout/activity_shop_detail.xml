@@ -17,6 +17,7 @@
         android:orientation="horizontal"
         android:layout_alignParentBottom="true"
         android:layout_height="@dimen/margin_50">
+
         <RelativeLayout
             android:id="@+id/shop_detail_main_bt"
             android:layout_width="0dip"
@@ -44,6 +45,7 @@
                 android:textColor="@color/gray_color_66"
                 android:textSize="@dimen/textsize_10" />
         </RelativeLayout>
+
         <RelativeLayout
             android:id="@+id/shop_detail_shop_bt"
             android:layout_width="0dip"
@@ -71,7 +73,7 @@
                 android:textColor="@color/gray_color_66"
                 android:textSize="@dimen/textsize_10" />
         </RelativeLayout>
-        
+
         <TextView
             android:id="@+id/shop_detail_join_bt"
             android:layout_width="121dp"
@@ -79,7 +81,8 @@
             android:gravity="center"
             android:text="加入购物车"
             android:textColor="@color/gray_color_66"
-            android:textSize="@dimen/textsize_14"/>
+            android:textSize="@dimen/textsize_14" />
+
         <TextView
             android:id="@+id/shop_detail_once_bt"
             android:layout_width="121dp"
@@ -88,7 +91,7 @@
             android:background="@color/red_color_f93448"
             android:text="立即下单"
             android:textColor="@color/white_color"
-            android:textSize="@dimen/textsize_14"/>
+            android:textSize="@dimen/textsize_14" />
 
     </LinearLayout>
 
@@ -107,7 +110,7 @@
         android:layout_marginBottom="60dp"
         android:layout_marginRight="@dimen/margin_10"
         android:layout_alignParentRight="true"
-        android:background="@mipmap/kefu_logo"/>
+        android:background="@mipmap/kefu_logo" />
 
     <LinearLayout
         android:id="@+id/shop_detail_poup_bg"
@@ -116,7 +119,7 @@
         android:orientation="vertical"
         android:layout_height="match_parent"
         android:visibility="gone"
-        android:background="@drawable/darkening_background"/>
+        android:background="@drawable/darkening_background" />
 
 
 </RelativeLayout>

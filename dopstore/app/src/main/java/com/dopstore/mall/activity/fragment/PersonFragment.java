@@ -85,10 +85,6 @@ public class PersonFragment extends Fragment {
     }
 
     private void initView(View v) {
-        // 注册广播接收
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Constant.UPDATA_USER_FLAG);
-        getActivity().registerReceiver(receiver, filter);
         loadImageUtils = LoadImageUtils.getInstance(getActivity());
         orderLayout = (RelativeLayout) v.findViewById(R.id.fragment_person_order_layout);
         orderLayout.setOnClickListener(listener);
@@ -118,7 +114,7 @@ public class PersonFragment extends Fragment {
         headImage = (CircleImageView) v.findViewById(R.id.fragment_person_user_image);
     }
 
-    private void loadData() {
+    public void loadData() {
         if (UserUtils.haveLogin(getActivity())) {
             nameTv.setVisibility(View.VISIBLE);
             nameTv.setText(UserUtils.getNickName(getActivity()));
@@ -244,12 +240,7 @@ public class PersonFragment extends Fragment {
         }
     };
 
-    BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            loadData();
-        }
-    };
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

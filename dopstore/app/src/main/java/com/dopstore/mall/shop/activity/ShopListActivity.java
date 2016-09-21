@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.adapter.BottomAdapter;
-import com.dopstore.mall.activity.bean.MainBottomData;
+import com.dopstore.mall.activity.bean.ShopData;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.shop.adapter.ShopListAdapter;
 import com.dopstore.mall.shop.bean.ShopListData;
@@ -45,7 +45,7 @@ public class ShopListActivity extends BaseActivity {
     private GridView gridView;
     private ShopListAdapter shopListAdapter;
     private List<ShopListData> lists = new ArrayList<ShopListData>();
-    private List<MainBottomData> bottomList = new ArrayList<MainBottomData>();
+    private List<ShopData> bottomList = new ArrayList<ShopData>();
     private HttpHelper httpHelper;
     private ProUtils proUtils;
 
@@ -115,7 +115,7 @@ public class ShopListActivity extends BaseActivity {
                         if (ja.length() > 0) {
                             for (int i = 0; i < ja.length(); i++) {
                                 JSONObject job = ja.getJSONObject(i);
-                                MainBottomData data = new MainBottomData();
+                                ShopData data = new ShopData();
                                 data.setId(job.optString(Constant.ID));
                                 data.setCover(job.optString(Constant.COVER));
                                 data.setName(job.optString(Constant.NAME));

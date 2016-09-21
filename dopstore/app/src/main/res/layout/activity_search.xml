@@ -6,6 +6,7 @@
     android:layout_height="match_parent">
 
     <include layout="@layout/common_title" />
+
     <LinearLayout
         android:id="@+id/search_title"
         android:layout_width="match_parent"
@@ -17,6 +18,7 @@
         android:gravity="center"
         android:paddingBottom="@dimen/margin_10"
         android:padding="@dimen/margin_10">
+
         <EditText
             android:id="@+id/search_title_et"
             android:layout_width="283dp"
@@ -26,7 +28,8 @@
             android:paddingRight="@dimen/margin_10"
             android:textSize="@dimen/textsize_14"
             android:textColor="@color/gray_color_33"
-            android:background="@mipmap/search_logo_bg"/>
+            android:background="@mipmap/search_logo_bg" />
+
         <TextView
             android:id="@+id/search_title_tv"
             android:paddingLeft="@dimen/margin_10"
@@ -35,8 +38,8 @@
             android:textSize="@dimen/textsize_16"
             android:gravity="center"
             android:textColor="@color/gray_color_33"
-            android:text="搜索"/>
-        
+            android:text="搜索" />
+
     </LinearLayout>
 
     <GridView

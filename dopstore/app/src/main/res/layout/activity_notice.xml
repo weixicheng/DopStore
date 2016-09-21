@@ -29,8 +29,7 @@
                     android:textSize="@dimen/textsize_16"
                     android:textColor="@color/gray_color_33" />
 
-                <com.dopstore.mall.view.UISwitchButton
-                    xmlns:switch="http://schemas.android.com/apk/res-auto"
+                <com.dopstore.mall.view.UISwitchButton xmlns:switch="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/setting_switch_bt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

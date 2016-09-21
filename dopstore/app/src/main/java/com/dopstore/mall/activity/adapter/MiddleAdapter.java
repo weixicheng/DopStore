@@ -6,19 +6,24 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.bean.MainMiddleData;
-import com.dopstore.mall.activity.bean.MainMiddleListData;
+import com.dopstore.mall.activity.bean.ShopData;
+import com.dopstore.mall.shop.activity.ShopDetailActivity;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.LoadImageUtils;
+import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.Utils;
 import com.dopstore.mall.view.EScrollView;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by 喜成 on 16/9/5.
@@ -77,8 +82,17 @@ public class MiddleAdapter extends BaseAdapter {
 
         loadImageUtils.displayImage(list.get(i).getPicture(), viewHolder.bigImageView, Constant.OPTIONS_SPECIAL_CODE);
 
-        List<MainMiddleListData> datas=list.get(i).getRelated_goods();
+        final List<ShopData> datas=list.get(i).getRelated_goods();
             viewHolder.eScrollView.setAdapter(new MiddleDataAdapter(context, datas));
+        viewHolder.eScrollView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ShopData data=datas.get(i);
+                Map<String,Object> map=new HashMap<String, Object>();
+                map.put(Constant.LIST,data);
+                SkipUtils.jumpForMap(context, ShopDetailActivity.class,map,false);
+            }
+        });
 
         return view;
     }

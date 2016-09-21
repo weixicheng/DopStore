@@ -20,6 +20,7 @@
         android:textColor="@color/gray_color_33"
         android:textColorHint="@color/gray_color_99"
         android:textSize="@dimen/textsize_16" />
+
     <EditText
         android:id="@+id/advice_input_post_et"
         android:layout_width="match_parent"

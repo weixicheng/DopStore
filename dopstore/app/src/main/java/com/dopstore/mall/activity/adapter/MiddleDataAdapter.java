@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
-import com.dopstore.mall.activity.bean.MainMiddleListData;
+import com.dopstore.mall.activity.bean.ShopData;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.LoadImageUtils;
 
@@ -21,10 +21,10 @@ import java.util.List;
  */
 public class MiddleDataAdapter extends BaseAdapter {
     private Context context;
-    private List<MainMiddleListData> list;
+    private List<ShopData> list;
     private LoadImageUtils loadImageUtils;
 
-    public MiddleDataAdapter(Context context, List<MainMiddleListData> list) {
+    public MiddleDataAdapter(Context context, List<ShopData> list) {
         this.context = context;
         this.list = list;
         loadImageUtils = LoadImageUtils.getInstance(context);

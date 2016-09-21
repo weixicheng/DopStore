@@ -12,7 +12,7 @@ public class MainMiddleData implements Serializable{
     private String picture;
     private String title;
     private String url;
-    private List<MainMiddleListData> related_goods;
+    private List<ShopData> related_goods;
 
     public String getId() {
         return id;
@@ -46,11 +46,11 @@ public class MainMiddleData implements Serializable{
         this.url = url;
     }
 
-    public List<MainMiddleListData> getRelated_goods() {
+    public List<ShopData> getRelated_goods() {
         return related_goods;
     }
 
-    public void setRelated_goods(List<MainMiddleListData> related_goods) {
+    public void setRelated_goods(List<ShopData> related_goods) {
         this.related_goods = related_goods;
     }
 }

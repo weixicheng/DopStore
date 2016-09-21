@@ -21,7 +21,15 @@
 
     <string name="scan_text">将二维码放入框内, 即可自动扫描</string>
 
-
+    <!-- 下拉刷新/下拉加载更多 -->
+    <string name="pull_to_refresh_pull_label">下拉刷新</string>
+    <string name="pull_to_refresh_release_label">松开后刷新</string>
+    <string name="pull_to_refresh_refreshing_label">正在刷新 &#8230;</string>
+    <string name="pull_to_refresh_footer_release_label">松开后加载</string>
+    <string name="pull_to_refresh_header_release_label">松开后加载</string>
+    <string name="pull_to_refresh_footer_pull_label">继续上拉加载</string>
+    <string name="pull_to_refresh_header_pull_label">下拉加载</string>
+    <string name="pull_to_refresh_footer_refreshing_label">正在加载&#8230;</string>
 
 
 </resources>

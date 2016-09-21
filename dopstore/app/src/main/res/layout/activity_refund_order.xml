@@ -4,16 +4,20 @@
     android:orientation="vertical"
     android:background="@color/gray_color_ee"
     android:layout_height="match_parent">
-    <include layout="@layout/common_title"/>
+
+    <include layout="@layout/common_title" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:overScrollMode="never"
         android:scrollbars="none">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -95,6 +99,7 @@
                 </RelativeLayout>
 
             </RelativeLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -127,6 +132,7 @@
                     android:padding="@dimen/margin_10"
                     android:textColor="@color/gray_color_33"
                     android:textSize="@dimen/textsize_12" />
+
                 <Button
                     android:id="@+id/refund_order_submit"
                     android:layout_width="match_parent"
@@ -137,6 +143,7 @@
                     android:text="提交申请"
                     android:textColor="@color/white_color"
                     android:textSize="@dimen/textsize_16" />
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -145,6 +152,7 @@
                     android:text="退款换货说明:"
                     android:textColor="@color/gray_color_99"
                     android:textSize="@dimen/textsize_12" />
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -153,6 +161,7 @@
                     android:text="1.请务必将所有邮寄来物品快递到退换地址。"
                     android:textColor="@color/gray_color_99"
                     android:textSize="@dimen/textsize_12" />
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -161,6 +170,7 @@
                     android:text="2.请确保所有物品无任何损坏,如有损坏请提前致电客服。"
                     android:textColor="@color/gray_color_99"
                     android:textSize="@dimen/textsize_12" />
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

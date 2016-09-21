@@ -6,30 +6,19 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
-import android.util.DisplayMetrics;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.MipcaActivityCapture;
-import com.dopstore.mall.activity.bean.MiddleData;
 import com.dopstore.mall.shop.activity.SearchActivity;
-import com.dopstore.mall.activity.WebActivity;
-import com.dopstore.mall.activity.adapter.BottomAdapter;
-import com.dopstore.mall.activity.adapter.HomeAdImageAdapter;
-import com.dopstore.mall.activity.adapter.MiddleAdapter;
 import com.dopstore.mall.activity.adapter.TabAdapter;
-import com.dopstore.mall.activity.bean.CarouselData;
-import com.dopstore.mall.activity.bean.MainBottomData;
-import com.dopstore.mall.activity.bean.MainMiddleData;
 import com.dopstore.mall.activity.bean.MainTabData;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.HttpHelper;
@@ -38,15 +27,6 @@ import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.view.EScrollView;
-import com.dopstore.mall.view.MyGridView;
-import com.dopstore.mall.view.MyListView;
-import com.dopstore.mall.view.rollviewpager.OnItemClickListener;
-import com.dopstore.mall.view.rollviewpager.RollPagerView;
-import com.dopstore.mall.view.rollviewpager.hintview.IconHintView;
-import com.dopstore.mall.view.view.PullToRefreshView;
-import com.dopstore.mall.view.view.PullToRefreshView.OnRefreshListener;
-import com.dopstore.mall.view.view.PullToRefreshView.OnLoadMoreListener;
-import com.google.gson.Gson;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -57,32 +37,27 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by 喜成 on 16/9/5.
  * name  首页
  */
-public class MainFragment extends Fragment implements OnRefreshListener, OnLoadMoreListener {
+public class MainFragment extends Fragment {
     private ImageView titleTv;
     private ImageButton leftBtn, rightBtn;
-    private PullToRefreshView pullToRefreshView;
-    private RollPagerView rollPagerView;
-    private MyListView myListView;
-    LinearLayout firstLy,otherLy;
-    private MyGridView myGridView, otherGridView;
-    private TextView hotTv;
     private EScrollView eScrollView;
+    private TabAdapter adapter;
     private List<MainTabData> tabList = new ArrayList<MainTabData>();
-    private List<CarouselData> titleAdvertList = new ArrayList<CarouselData>();
-    private List<MainMiddleData> midddleList = new ArrayList<MainMiddleData>();
-    private List<MainBottomData> bottomList = new ArrayList<MainBottomData>();
-    private TabAdapter tabAdapter;
     private HttpHelper httpHelper;
     private ProUtils proUtils;
-    private ScrollView mainView;
+
+    private FragmentTransaction fragmentTransaction;
+    private FragmentManager fragmentManager;
+    private FirstMainFragment firstMainFragment;
+    private SecondMainFragment secondMainFragment;
+    private Fragment currentFragment;
+
 
     @Nullable
     @Override
@@ -94,21 +69,13 @@ public class MainFragment extends Fragment implements OnRefreshListener, OnLoadM
     }
 
     private void initView(View v) {
+        fragmentManager = getActivity().getSupportFragmentManager();
         httpHelper = HttpHelper.getOkHttpClientUtils(getActivity());
         proUtils = new ProUtils(getActivity());
         titleTv = (ImageView) v.findViewById(R.id.title_main_image);
         leftBtn = (ImageButton) v.findViewById(R.id.title_left_imageButton);
-        mainView = (ScrollView) v.findViewById(R.id.fragment_main_scrollview);
         rightBtn = (ImageButton) v.findViewById(R.id.title_right_imageButton);
-        pullToRefreshView = (PullToRefreshView) v.findViewById(R.id.fragment_main_pulltorefreshview);
-        rollPagerView = (RollPagerView) v.findViewById(R.id.roll_view_pager);
-        myListView = (MyListView) v.findViewById(R.id.main_middle_listview);
-        myGridView = (MyGridView) v.findViewById(R.id.main_bottom_gridView);
-        otherGridView = (MyGridView) v.findViewById(R.id.main_content_gridview);
         eScrollView = (EScrollView) v.findViewById(R.id.fragment_main_tab_escrollview);
-        firstLy = (LinearLayout) v.findViewById(R.id.main_first_content_layout);
-        otherLy = (LinearLayout) v.findViewById(R.id.main_other_content_layout);
-        hotTv = (TextView) v.findViewById(R.id.main_bottom_title_tv);
         titleTv.setImageResource(R.mipmap.title_logo);
         leftBtn.setBackgroundResource(R.mipmap.search_logo);
         leftBtn.setVisibility(View.VISIBLE);
@@ -117,19 +84,12 @@ public class MainFragment extends Fragment implements OnRefreshListener, OnLoadM
         rightBtn.setVisibility(View.VISIBLE);
         rightBtn.setBackgroundResource(R.mipmap.sweep_logo);
         rightBtn.setOnClickListener(listener);
-        pullToRefreshView.setOnLoadMoreListener(this);
-        pullToRefreshView.setOnRefreshListener(this);
     }
 
     private void initData() {
         tabList.clear();
-        titleAdvertList.clear();
-        midddleList.clear();
-        bottomList.clear();
         getTabData();
-        getTopData();
-        getMiddleData();
-        getHotData("");
+        setTabSelection(0, "");
         eScrollView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -140,23 +100,60 @@ public class MainFragment extends Fragment implements OnRefreshListener, OnLoadM
                         tabList.get(i).setIsSelect("0");
                     }
                 }
-                tabAdapter.notifyDataSetChanged();
-                if (position==0){
-                    firstLy.setVisibility(View.VISIBLE);
-                    otherLy.setVisibility(View.GONE);
-                    initData();
-                }else {
-                    firstLy.setVisibility(View.GONE);
-                    otherLy.setVisibility(View.VISIBLE);
-                    setData(tabList.get(position).getId());
+                adapter.notifyDataSetChanged();
+                if (position == 0) {
+                    setTabSelection(0, "");
+                } else {
+                    String id = tabList.get(position).getId();
+                    setTabSelection(1, id);
                 }
             }
         });
     }
 
-    private void setData(String id) {//除推荐外
-        bottomList.clear();
-        getOtherData(id);
+    private void setTabSelection(int index, String id) {
+        fragmentTransaction = fragmentManager.beginTransaction();
+        hideFragment(fragmentTransaction);
+
+        if (null != getCurrentFragment()) {
+            getCurrentFragment().onPause();
+        }
+        switch (index) {
+            case 0:
+                firstMainFragment = new FirstMainFragment();
+                fragmentTransaction.replace(R.id.fragment_main_tab_layout, firstMainFragment);
+                setCurrentFragment(firstMainFragment);
+                break;
+            case 1:
+                secondMainFragment = new SecondMainFragment(id);
+                fragmentTransaction.replace(R.id.fragment_main_tab_layout, secondMainFragment);
+                setCurrentFragment(secondMainFragment);
+                break;
+            default:
+                break;
+        }
+
+        fragmentTransaction.commit();
+    }
+
+
+    private void hideFragment(FragmentTransaction fragmentTransaction) {
+
+        if (firstMainFragment != null) {
+            fragmentTransaction.remove(firstMainFragment);
+        }
+
+        if (secondMainFragment != null) {
+            fragmentTransaction.remove(secondMainFragment);
+        }
+    }
+
+    public Fragment getCurrentFragment() {
+        return currentFragment;
+    }
+
+    public void setCurrentFragment(Fragment currentFragment) {
+        this.currentFragment = currentFragment;
     }
 
     private void getTabData() {
@@ -206,160 +203,6 @@ public class MainFragment extends Fragment implements OnRefreshListener, OnLoadM
     }
 
 
-    /**
-     * 获取数据
-     */
-    private void getTopData() {
-        proUtils.show();
-        httpHelper.getDataAsync(getActivity(), URL.HOME_CAROUSEL + "1", new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
-                T.checkNet(getActivity());
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Response response) throws IOException {
-                String body = response.body().string();
-                try {
-                    JSONObject jo = new JSONObject(body);
-                    String code = jo.optString(Constant.ERROR_CODE);
-                    if ("0".equals(code)) {
-                        JSONArray ja = jo.getJSONArray(Constant.CAROUSEL);
-                        if (ja.length() > 0) {
-                            for (int i = 0; i < ja.length(); i++) {
-                                JSONObject job = ja.getJSONObject(i);
-                                CarouselData data = new CarouselData();
-                                data.setId(job.optString(Constant.ID));
-                                data.setUrl(job.optString(Constant.URL));
-                                data.setTitle(job.optString(Constant.TITLE));
-                                data.setPicture(job.optString(Constant.PICTURE));
-                                titleAdvertList.add(data);
-                            }
-                        }
-                    } else {
-                        String msg = jo.optString(Constant.ERROR_MSG);
-                        T.show(getActivity(), msg);
-                    }
-                    handler.sendEmptyMessage(UPDATA_TOB_CODE);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                proUtils.dismiss();
-            }
-        }, null);
-    }
-
-    private void getMiddleData() {
-        proUtils.show();
-        httpHelper.getDataAsync(getActivity(), URL.HOME_THEME, new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
-                T.checkNet(getActivity());
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Response response) throws IOException {
-                String body = response.body().string();
-                try {
-                    JSONObject jo = new JSONObject(body);
-                    String code = jo.optString(Constant.ERROR_CODE);
-                    if ("0".equals(code)) {
-                        Gson gson=new Gson();
-                        MiddleData middleData = gson.fromJson(
-                                body, MiddleData.class);
-                        midddleList=middleData.getThemes();
-                    } else {
-                        String msg = new JSONObject(body).optString(Constant.ERROR_MSG);
-                        T.show(getActivity(), msg);
-                    }
-                    handler.sendEmptyMessage(UPDATA_MIDDLE_CODE);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                proUtils.dismiss();
-            }
-        }, null);
-    }
-
-    private void getHotData(String type) {
-        proUtils.show();
-        Map<String, String> map = new HashMap<String, String>();
-        map.put(Constant.PAGESIZE, "10");
-        map.put(Constant.PAGE, "1");
-        map.put(Constant.CATEGORY, type);
-        httpHelper.postKeyValuePairAsync(getActivity(), URL.GOODS_LIST, map, new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
-                T.checkNet(getActivity());
-                hotTv.setVisibility(View.GONE);
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Response response) throws IOException {
-                String body = response.body().string();
-                analyData(body);
-                handler.sendEmptyMessage(UPDATA_BOTTOM_CODE);
-                proUtils.dismiss();
-            }
-        }, null);
-    }
-
-    private void getOtherData(String type) {
-        proUtils.show();
-        Map<String, String> map = new HashMap<String, String>();
-        map.put(Constant.PAGESIZE, "10");
-        map.put(Constant.PAGE, "1");
-        map.put(Constant.CATEGORY, type);
-        httpHelper.postKeyValuePairAsync(getActivity(), URL.GOODS_LIST, map, new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
-                T.checkNet(getActivity());
-                hotTv.setVisibility(View.GONE);
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Response response) throws IOException {
-                String body = response.body().string();
-                analyData(body);
-                handler.sendEmptyMessage(UPDATA_OTHER_CODE);
-                proUtils.dismiss();
-            }
-        }, null);
-    }
-
-    private void analyData(String body){
-        try {
-            JSONObject jo = new JSONObject(body);
-            String code = jo.optString(Constant.ERROR_CODE);
-            if ("0".equals(code)) {
-                JSONArray ja = jo.getJSONArray(Constant.ITEMS);
-                if (ja.length() > 0) {
-                    for (int i = 0; i < ja.length(); i++) {
-                        JSONObject job = ja.getJSONObject(i);
-                        MainBottomData data = new MainBottomData();
-                        data.setId(job.optString(Constant.ID));
-                        data.setCover(job.optString(Constant.COVER));
-                        data.setName(job.optString(Constant.NAME));
-                        data.setNumber(job.optString(Constant.NUMBER));
-                        data.setStock_number(job.optString(Constant.STOCK_NUMBER));
-                        data.setPrice(job.optString(Constant.PRICE));
-                        bottomList.add(data);
-                    }
-                }
-            } else {
-                String msg = jo.optString(Constant.ERROR_MSG);
-                T.show(getActivity(), msg);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-
     View.OnClickListener listener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -390,10 +233,6 @@ public class MainFragment extends Fragment implements OnRefreshListener, OnLoadM
     }
 
     private final static int UPDATA_TAB_CODE = 0;
-    private final static int UPDATA_TOB_CODE = 1;
-    private final static int UPDATA_MIDDLE_CODE = 2;
-    private final static int UPDATA_BOTTOM_CODE = 3;
-    private final static int UPDATA_OTHER_CODE = 4;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -403,112 +242,17 @@ public class MainFragment extends Fragment implements OnRefreshListener, OnLoadM
                     refreshTabAdapter();
                 }
                 break;
-                case UPDATA_TOB_CODE: {
-                    setAdvertisementData();
-                }
-                break;
-                case UPDATA_MIDDLE_CODE: {
-                    refreshMiddleAdapter();
-                }
-                break;
-                case UPDATA_BOTTOM_CODE: {
-                    refreshBottomAdapter();
-                }
-                break;
-                case UPDATA_OTHER_CODE: {
-                    refreshOtherAdapter();
-                }
-                break;
-
             }
         }
     };
 
-    private void refreshBottomAdapter() {
-        if (bottomList.size()>0){
-            hotTv.setVisibility(View.VISIBLE);
-        }else {
-            hotTv.setVisibility(View.GONE);
-        }
-        myGridView.setAdapter(new BottomAdapter(getActivity(), bottomList));
-        mainView.scrollTo(0,0);
-    }
-
-
-    private void refreshMiddleAdapter() {
-        myListView.setAdapter(new MiddleAdapter(getActivity(), midddleList));
-        mainView.scrollTo(0,0);
-    }
-    private void refreshOtherAdapter() {
-        otherGridView.setAdapter(new BottomAdapter(getActivity(), bottomList));
-        mainView.scrollTo(0,0);
-    }
-
-    /**
-     * 设置轮播
-     */
-    private void setAdvertisementData() {
-        DisplayMetrics dm = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay()
-                .getMetrics(dm);
-        // 设置图片宽高
-        int screenWidth = getActivity().getWindowManager()
-                .getDefaultDisplay().getWidth();
-        final int picSize = screenWidth / 2;
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                screenWidth, picSize);
-        rollPagerView.setLayoutParams(layoutParams);
-
-        if (titleAdvertList != null) {
-            //设置播放时间间隔
-            rollPagerView.setPlayDelay(1000);
-            //设置透明度
-            rollPagerView.setAnimationDurtion(500);
-            //设置适配器
-            rollPagerView.setAdapter(new HomeAdImageAdapter(getActivity(), titleAdvertList));
-            rollPagerView.setHintView(new IconHintView(getActivity(), R.mipmap.dop_press, R.mipmap.dop_normal));
-            if (titleAdvertList.size() == 1) {
-                rollPagerView.pause();
-                rollPagerView.setHintView(null);
-            }
-        }
-
-        rollPagerView.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                CarouselData data = titleAdvertList.get(position);
-                String urlStr = data.getUrl();
-                if (!TextUtils.isEmpty(urlStr)) {
-                    Map<String, Object> map = new HashMap<String, Object>();
-                    map.put(Constant.TITLE, data.getTitle());
-                    map.put(Constant.URL, urlStr);
-                    SkipUtils.jumpForMap(getActivity(), WebActivity.class, map, false);
-                }
-            }
-        });
-
-        mainView.scrollTo(0,0);
-
-    }
-
     private void refreshTabAdapter() {
-        if (tabAdapter == null) {
-            tabAdapter = new TabAdapter(getActivity(), tabList);
-            eScrollView.setAdapter(tabAdapter);
+        if (adapter == null) {
+            adapter = new TabAdapter(getActivity(), tabList);
+            eScrollView.setAdapter(adapter);
         } else {
-            tabAdapter.notifyDataSetChanged();
+            adapter.notifyDataSetChanged();
         }
-        mainView.scrollTo(0,0);
     }
 
-    @Override
-    public void onLoadMore() {
-
-        pullToRefreshView.onLoadMoreComplete();
-    }
-
-    @Override
-    public void onRefresh() {
-        pullToRefreshView.onRefreshComplete();
-    }
 }

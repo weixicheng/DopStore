@@ -24,5 +24,8 @@ public class URL {
     public static String ACT_CATEGORIES = BASE_URL + "api/v1/home/act_categories";//活动分类
     public static String RECOMMENDED_ACT = BASE_URL + "api/v1/home/recommended_act";//推荐活动
     public static String GOODS_LIST = BASE_URL + "api/v1/goods";//活动列表
+    public static String CART_QUERY = BASE_URL + "api/v1/home/cart/query";//查询购物车
+    public static String CART_DELETE = BASE_URL + "api/v1/home/cart/delete";//购物车物品删除
+    public static String CART_EDIT = BASE_URL + "api/v1/home/cart/edit";//购物车物品编辑
 
 }

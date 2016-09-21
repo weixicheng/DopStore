@@ -12,6 +12,8 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -68,25 +70,19 @@ import java.util.TimerTask;
 public class ActivityFragment extends Fragment {
     private TextView leftTv, titleTv;
     private ImageButton imageButton;
-    private RelativeLayout firstLy, secondLy;
-    private TextView firstTv, secondTv;
-    private View firstV, secondV;
-    private LinearLayout topLy;
     private Timer timer;
     private TimerTask doing;
     private EScrollView eScrollView;
-    private ScrollView mainView;
-    private RollPagerView rollPagerView;
-    private MyListView myListView,otherListView;
     private List<MainTabData> tabList = new ArrayList<MainTabData>();
-    private List<CarouselData> titleAdvertList = new ArrayList<CarouselData>();
-    private List<ActivityData> aList = new ArrayList<ActivityData>();
-    private ActivityAdapter adapter;
     private TabAdapter tabAdapter;
     private HttpHelper httpHelper;
     private ProUtils proUtils;
-    private String latitude = "";
-    private String longitude = "";
+
+    private FragmentTransaction fragmentTransaction;
+    private FragmentManager fragmentManager;
+    private FirstActivityFragment firstActivityFragment;
+    private SecondActivityFragment secondActivityFragment;
+    private Fragment currentFragment;
 
     @Nullable
     @Override
@@ -122,21 +118,11 @@ public class ActivityFragment extends Fragment {
     private void initView(View v) {
         httpHelper = HttpHelper.getOkHttpClientUtils(getActivity());
         proUtils = new ProUtils(getActivity());
-        mainView = (ScrollView) v.findViewById(R.id.fragment_activity_main_ly);
-        firstLy = (RelativeLayout) v.findViewById(R.id.fragment_activity_first_ly);
-        secondLy = (RelativeLayout) v.findViewById(R.id.fragment_activity_second_ly);
-        firstTv = (TextView) v.findViewById(R.id.fragment_activity_first_tv);
-        topLy = (LinearLayout) v.findViewById(R.id.fragment_activity_top_ly);
-        secondTv = (TextView) v.findViewById(R.id.fragment_activity_second_tv);
-        firstV = v.findViewById(R.id.fragment_activity_first_v);
-        secondV = v.findViewById(R.id.fragment_activity_second_v);
+        fragmentManager = getActivity().getSupportFragmentManager();
         leftTv = (TextView) v.findViewById(R.id.title_left_textView);
         imageButton = (ImageButton) v.findViewById(R.id.title_right_imageButton);
         titleTv = (TextView) v.findViewById(R.id.title_main_txt);
         eScrollView = (EScrollView) v.findViewById(R.id.fragment_activity_tab_escrollview);
-        rollPagerView = (RollPagerView) v.findViewById(R.id.roll_view_pager);
-        myListView = (MyListView) v.findViewById(R.id.fragment_activity_mylistview);
-        otherListView = (MyListView) v.findViewById(R.id.fragment_activity_other_mylistview);
         titleTv.setText("亲子活动");
         leftTv.setText("北京");
         leftTv.setVisibility(View.VISIBLE);
@@ -146,88 +132,20 @@ public class ActivityFragment extends Fragment {
         imageButton.setImageResource(R.mipmap.search_logo);
         imageButton.setVisibility(View.VISIBLE);
         imageButton.setOnClickListener(listener);
-        firstLy.setOnClickListener(listener);
-        secondLy.setOnClickListener(listener);
-        TextView textView=new TextView(getActivity());
-        textView.setText("请开启定位");
-        otherListView.setEmptyView(textView);
     }
 
     private void initData() {
-        getGPSData();
-        getMainData();
-        mainView.smoothScrollTo(0, 0);
-    }
-
-    private void getMainData(){
         tabList.clear();
-        titleAdvertList.clear();
-        aList.clear();
         getTabData();
-        getCarousel();
-        getTdata();
-        mainView.smoothScrollTo(0, 0);
+        setTabSelection(0, "");
     }
 
-
-
-    /**
-     * 设置轮播
-     */
-    private void setAdvertisementData() {
-        DisplayMetrics dm = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay()
-                .getMetrics(dm);
-        // 设置图片宽高
-        int screenWidth = getActivity().getWindowManager()
-                .getDefaultDisplay().getWidth();
-        int picSize = screenWidth / 2;
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                screenWidth, picSize);
-        rollPagerView.setLayoutParams(layoutParams);
-
-        if (titleAdvertList != null) {
-            //设置播放时间间隔
-            rollPagerView.setPlayDelay(1000);
-            //设置透明度
-            rollPagerView.setAnimationDurtion(500);
-            //设置适配器
-            rollPagerView.setAdapter(new HomeAdImageAdapter(getActivity(), titleAdvertList));
-            //设置指示器（顺序依次）
-            rollPagerView.setHintView(new IconHintView(getActivity(), R.mipmap.dop_press, R.mipmap.dop_normal));
-
-            if (titleAdvertList.size() == 1) {
-                rollPagerView.pause();
-                rollPagerView.setHintView(null);
-            }
-        }
-    }
 
     View.OnClickListener listener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.title_left_textView: {
-                }
-                break;
-                case R.id.fragment_activity_first_ly: {
-                    firstTv.setTextColor(getResources().getColor(R.color.red_color_f93448));
-                    firstV.setBackgroundColor(getResources().getColor(R.color.red_color_f93448));
-                    secondTv.setTextColor(getResources().getColor(R.color.gray_color_33));
-                    secondV.setBackgroundColor(getResources().getColor(R.color.white_color));
-                    latitude = "";
-                    longitude = "";
-                    aList.clear();
-                    getTdata();
-                }
-                break;
-                case R.id.fragment_activity_second_ly: {
-                    firstTv.setTextColor(getResources().getColor(R.color.gray_color_33));
-                    firstV.setBackgroundColor(getResources().getColor(R.color.white_color));
-                    secondTv.setTextColor(getResources().getColor(R.color.red_color_f93448));
-                    secondV.setBackgroundColor(getResources().getColor(R.color.red_color_f93448));
-                    aList.clear();
-                    getNdata();
                 }
                 break;
                 case R.id.title_right_imageButton: {
@@ -284,124 +202,11 @@ public class ActivityFragment extends Fragment {
     }
 
 
-    private void getCarousel() {
-        proUtils.show();
-        httpHelper.getDataAsync(getActivity(), URL.HOME_CAROUSEL + "2", new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
-                T.checkNet(getActivity());
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Response response) throws IOException {
-                String body = response.body().string();
-                try {
-                    JSONObject jo = new JSONObject(body);
-                    String code = jo.optString(Constant.ERROR_CODE);
-                    if ("0".equals(code)) {
-                        JSONArray ja = jo.getJSONArray(Constant.CAROUSEL);
-                        if (ja.length() > 0) {
-                            for (int i = 0; i < ja.length(); i++) {
-                                JSONObject job = ja.getJSONObject(i);
-                                CarouselData data = new CarouselData();
-                                data.setId(job.optString(Constant.ID));
-                                data.setUrl(job.optString(Constant.URL));
-                                data.setTitle(job.optString(Constant.TITLE));
-                                data.setPicture(job.optString(Constant.PICTURE));
-                                titleAdvertList.add(data);
-                            }
-                        }
-                    } else {
-                        String msg = jo.optString(Constant.ERROR_MSG);
-                        T.show(getActivity(), msg);
-                    }
-                    handler.sendEmptyMessage(UPDATA_TOB_CODE);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                proUtils.dismiss();
-            }
-        }, null);
-    }
-
-    private void getTdata() {
-        proUtils.show();
-        Map<String, String> map = new HashMap<String, String>();
-        map.put(Constant.PAGESIZE, "10");
-        map.put(Constant.PAGE, "1");
-        httpHelper.postKeyValuePairAsync(getActivity(), URL.RECOMMENDED_ACT, map, new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
-                T.checkNet(getActivity());
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Response response) throws IOException {
-                String body = response.body().string();
-                analysisData(body);
-                handler.sendEmptyMessage(UPDATA_MIDDLE_CODE);
-                proUtils.dismiss();
-            }
-        }, null);
-    }
-
-    private void getNdata() {
-        proUtils.show();
-        Map<String, String> map = new HashMap<String, String>();
-        map.put(Constant.PAGESIZE, "10");
-        map.put(Constant.PAGE, "1");
-        map.put(Constant.LAT, latitude);
-        map.put(Constant.LNG, longitude);
-        httpHelper.postKeyValuePairAsync(getActivity(), URL.RECOMMENDED_ACT, map, new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
-                T.checkNet(getActivity());
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Response response) throws IOException {
-                String body = response.body().string();
-                analysisData(body);
-                handler.sendEmptyMessage(UPDATA_NFC_CODE);
-                proUtils.dismiss();
-            }
-        }, null);
-    }
-
-    private void getOtherData(String id) {
-        proUtils.show();
-        Map<String, String> map = new HashMap<String, String>();
-        map.put(Constant.PAGESIZE, "10");
-        map.put(Constant.PAGE, "1");
-        map.put(Constant.CATEGORY_ID, id);
-        httpHelper.postKeyValuePairAsync(getActivity(), URL.RECOMMENDED_ACT, map, new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
-                T.checkNet(getActivity());
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Response response) throws IOException {
-                String body = response.body().string();
-                analysisData(body);
-                handler.sendEmptyMessage(UPDATA_OTHER_CODE);
-                proUtils.dismiss();
-            }
-        }, null);
-    }
 
 
 
     private final static int UPDATA_TAB_CODE = 0;
-    private final static int UPDATA_TOB_CODE = 1;
-    private final static int UPDATA_MIDDLE_CODE = 2;
-    private final static int UPDATA_NFC_CODE = 3;
-    private final static int UPDATA_OTHER_CODE = 4;
-    private final static int LAZY_LOADING_MSG = 5;
+    private final static int LAZY_LOADING_MSG = 1;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -412,22 +217,6 @@ public class ActivityFragment extends Fragment {
 
                 }
                 break;
-                case UPDATA_TOB_CODE: {
-                    setAdvertisementData();
-                }
-                break;
-                case UPDATA_MIDDLE_CODE: {
-                    refreshAdapter();
-                }
-                break;
-                case UPDATA_NFC_CODE: {
-                    refreshNAdapter();
-                }
-                break;
-                case UPDATA_OTHER_CODE: {
-                    refreshOtherAdapter();
-                }
-                break;
                 case LAZY_LOADING_MSG: {
                     initData();
                 }
@@ -436,89 +225,6 @@ public class ActivityFragment extends Fragment {
             }
         }
     };
-
-    private void analysisData(String body){
-        try {
-            JSONObject jo = new JSONObject(body);
-            String code = jo.optString(Constant.ERROR_CODE);
-            if ("0".equals(code)) {
-                JSONArray ja = jo.getJSONArray(Constant.ACTIVITYS);
-                if (ja.length() > 0) {
-                    for (int i = 0; i < ja.length(); i++) {
-                        JSONObject middle = ja.getJSONObject(i);
-                        ActivityData middleData = new ActivityData();
-                        middleData.setId(middle.optString(Constant.ID));
-                        middleData.setName(middle.optString(Constant.NAME));
-                        middleData.setPicture(middle.optString(Constant.PICTURE));
-                        middleData.setAge(middle.optString(Constant.AGE));
-                        middleData.setMerchant(middle.optString(Constant.MERCHANT));
-                        middleData.setCity(middle.optString(Constant.CITY));
-                        middleData.setLat(middle.optString(Constant.LAT));
-                        middleData.setLng(middle.optString(Constant.LNG));
-                        middleData.setStart_time(middle.optString(Constant.START_TIME));
-                        middleData.setEnd_time(middle.optString(Constant.END_TIME));
-                        middleData.setLimit(middle.optString(Constant.LIMIT));
-                        middleData.setPrice(middle.optString(Constant.PRICE));
-                        middleData.setAddress(middle.optString(Constant.ADDRESS));
-                        middleData.setContent(middle.optString(Constant.CONTENT));
-                        aList.add(middleData);
-                    }
-                }
-            } else {
-                String msg = jo.optString(Constant.ERROR_MSG);
-                T.show(getActivity(), msg);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void refreshAdapter() {
-        if (adapter == null) {
-            adapter = new ActivityAdapter(getActivity(), aList,0);
-            myListView.setAdapter(adapter);
-        } else {
-            adapter.upData(aList,0);
-        }
-        myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                SkipUtils.directJump(getActivity(), ActivityDetailActivity.class, false);
-            }
-        });
-        mainView.smoothScrollTo(0, 0);
-    }
-    private void refreshNAdapter() {
-        if (adapter == null) {
-            adapter = new ActivityAdapter(getActivity(), aList,1);
-            myListView.setAdapter(adapter);
-        } else {
-            adapter.upData(aList,1);
-        }
-        mainView.smoothScrollTo(0, 0);
-        myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                SkipUtils.directJump(getActivity(), ActivityDetailActivity.class, false);
-            }
-        });
-    }
-    private void refreshOtherAdapter() {
-        otherListView.setAdapter(new ActivityAdapter(getActivity(), aList,0));
-//        if (adapter == null) {
-//            adapter = new ActivityAdapter(getActivity(), aList,0);
-//            otherListView.setAdapter(adapter);
-//        } else {
-//            adapter.upData(aList,0);
-//        }
-        otherListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                SkipUtils.directJump(getActivity(), ActivityDetailActivity.class, false);
-            }
-        });
-        mainView.smoothScrollTo(0, 0);
-    }
 
     private void refreshTabAdapter() {
         if (tabAdapter == null) {
@@ -538,78 +244,63 @@ public class ActivityFragment extends Fragment {
                     }
                 }
                 tabAdapter.notifyDataSetChanged();
-                if (position==0){
-                    topLy.setVisibility(View.VISIBLE);
-                    otherListView.setVisibility(View.GONE);
-                    getMainData();
-                }else {
-                    topLy.setVisibility(View.GONE);
-                    otherListView.setVisibility(View.VISIBLE);
-                    aList.clear();
-                    getOtherData(tabList.get(position).getId());
+                if (position == 0) {
+                    setTabSelection(0, "");
+                } else {
+                    String id = tabList.get(position).getId();
+                    setTabSelection(1, id);
                 }
 
             }
         });
     }
 
-    private void getGPSData() {
-        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return;
-            }
-            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if (location != null) {
-                latitude = location.getLatitude() + "";
-                longitude = location.getLongitude() + "";
-            }
-        } else {
-            LocationListener locationListener = new LocationListener() {
 
-                // Provider的状态在可用、暂时不可用和无服务三个状态直接切换时触发此函数
-                @Override
-                public void onStatusChanged(String provider, int status, Bundle extras) {
+    private void setTabSelection(int index, String id) {
+        fragmentTransaction = fragmentManager.beginTransaction();
+        hideFragment(fragmentTransaction);
 
-                }
+        if (null != getCurrentFragment()) {
+            getCurrentFragment().onPause();
+        }
+        switch (index) {
+            case 0:
+                firstActivityFragment = new FirstActivityFragment();
+                fragmentTransaction.replace(R.id.fragment_activity_tab_layout, firstActivityFragment);
+                setCurrentFragment(firstActivityFragment);
+                break;
+            case 1:
+                secondActivityFragment = new SecondActivityFragment(id);
+                fragmentTransaction.replace(R.id.fragment_activity_tab_layout, secondActivityFragment);
+                setCurrentFragment(secondActivityFragment);
+                break;
+            default:
+                break;
+        }
 
-                // Provider被enable时触发此函数，比如GPS被打开
-                @Override
-                public void onProviderEnabled(String provider) {
+        fragmentTransaction.commit();
+    }
 
-                }
 
-                // Provider被disable时触发此函数，比如GPS被关闭
-                @Override
-                public void onProviderDisabled(String provider) {
+    private void hideFragment(FragmentTransaction fragmentTransaction) {
 
-                }
+        if (firstActivityFragment != null) {
+            fragmentTransaction.remove(firstActivityFragment);
+        }
 
-                //当坐标改变时触发此函数，如果Provider传进相同的坐标，它就不会被触发
-                @Override
-                public void onLocationChanged(Location location) {
-                    if (location != null) {
-                        Log.e("Map", "Location changed : Lat: "
-                                + location.getLatitude() + " Lng: "
-                                + location.getLongitude());
-                    }
-                }
-            };
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 0, locationListener);
-            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            if (location != null) {
-                latitude = location.getLatitude() + ""; //经度
-                longitude = location.getLongitude() + ""; //纬度
-            }
+        if (secondActivityFragment != null) {
+            fragmentTransaction.remove(secondActivityFragment);
         }
     }
+
+    public Fragment getCurrentFragment() {
+        return currentFragment;
+    }
+
+    public void setCurrentFragment(Fragment currentFragment) {
+        this.currentFragment = currentFragment;
+    }
+
 
 
 }

@@ -6,11 +6,18 @@ public class DataBean {
 
     int carNum;
 
-    String shopName;
-
     String content;
+    String cover;
 
     float price;
+
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
+    }
 
     public int getId() {
         return id;
@@ -26,14 +33,6 @@ public class DataBean {
 
     public void setCarNum(int carNum) {
         this.carNum = carNum;
-    }
-
-    public String getShopName() {
-        return shopName;
-    }
-
-    public void setShopName(String shopName) {
-        this.shopName = shopName;
     }
 
     public String getContent() {

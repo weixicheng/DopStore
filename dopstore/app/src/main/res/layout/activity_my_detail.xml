@@ -395,6 +395,7 @@
                 android:textSize="@dimen/textsize_16" />
         </LinearLayout>
     </ScrollView>
+
     <LinearLayout
         android:id="@+id/my_detail_poup_bg"
         android:layout_width="match_parent"
@@ -402,5 +403,5 @@
         android:orientation="horizontal"
         android:visibility="gone"
         android:layout_below="@id/my_detail_top_layout"
-        android:background="@drawable/darkening_background"/>
+        android:background="@drawable/darkening_background" />
 </RelativeLayout>

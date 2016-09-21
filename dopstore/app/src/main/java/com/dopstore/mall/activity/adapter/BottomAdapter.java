@@ -1,21 +1,17 @@
 package com.dopstore.mall.activity.adapter;
 
-import android.app.Activity;
 import android.content.Context;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
-import com.dopstore.mall.activity.bean.MainBottomData;
+import com.dopstore.mall.activity.bean.ShopData;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.LoadImageUtils;
-import com.dopstore.mall.util.Utils;
 
 import java.util.List;
 
@@ -25,10 +21,10 @@ import java.util.List;
  */
 public class BottomAdapter extends BaseAdapter {
     private Context context;
-    private List<MainBottomData> list;
+    private List<ShopData> list;
     private LoadImageUtils loadImageUtils;
 
-    public BottomAdapter(Context context, List<MainBottomData> list) {
+    public BottomAdapter(Context context, List<ShopData> list) {
         this.context = context;
         this.list = list;
         loadImageUtils = LoadImageUtils.getInstance(context);
