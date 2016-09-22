@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.bean.MainTabData;
-import com.dopstore.mall.activity.bean.SearchData;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.LoadImageUtils;
 

@@ -1,9 +1,5 @@
 package com.dopstore.mall.activity;
 
-import java.io.IOException;
-import java.util.Vector;
-
-import android.app.Activity;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
@@ -19,7 +15,6 @@ import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.dopstore.mall.R;
@@ -31,6 +26,9 @@ import com.mining.app.zxing.camera.CameraManager;
 import com.mining.app.zxing.decoding.CaptureActivityHandler;
 import com.mining.app.zxing.decoding.InactivityTimer;
 import com.mining.app.zxing.view.ViewfinderView;
+
+import java.io.IOException;
+import java.util.Vector;
 
 /**
  * Initial the camera

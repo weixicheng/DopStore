@@ -8,10 +8,9 @@
 
 package com.dopstore.mall.onekeyshare.themes.classic.port;
 
-import com.mob.tools.utils.R;
-
 import com.dopstore.mall.onekeyshare.OnekeyShareThemeImpl;
 import com.dopstore.mall.onekeyshare.themes.classic.FriendListPage;
+import com.mob.tools.utils.R;
 
 /** 竖屏的好友列表 */
 public class FriendListPagePort extends FriendListPage {

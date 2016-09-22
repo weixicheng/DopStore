@@ -18,7 +18,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -27,10 +26,8 @@ import android.widget.TextView;
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.adapter.ActivityAdapter;
 import com.dopstore.mall.activity.adapter.HomeAdImageAdapter;
-import com.dopstore.mall.activity.adapter.TabAdapter;
 import com.dopstore.mall.activity.bean.ActivityData;
 import com.dopstore.mall.activity.bean.CarouselData;
-import com.dopstore.mall.activity.bean.MainTabData;
 import com.dopstore.mall.shop.activity.ActivityDetailActivity;
 import com.dopstore.mall.shop.activity.ActivityListActivity;
 import com.dopstore.mall.util.Constant;
@@ -39,8 +36,10 @@ import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
-import com.dopstore.mall.view.EScrollView;
 import com.dopstore.mall.view.MyListView;
+import com.dopstore.mall.view.PullToRefreshView;
+import com.dopstore.mall.view.PullToRefreshView.OnFooterRefreshListener;
+import com.dopstore.mall.view.PullToRefreshView.OnHeaderRefreshListener;
 import com.dopstore.mall.view.rollviewpager.RollPagerView;
 import com.dopstore.mall.view.rollviewpager.hintview.IconHintView;
 import com.squareup.okhttp.Callback;
@@ -56,14 +55,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by 喜成 on 16/9/5
  * name 活动
  */
-public class FirstActivityFragment extends Fragment {
+public class FirstActivityFragment extends Fragment implements OnHeaderRefreshListener,OnFooterRefreshListener{
+    private PullToRefreshView pullToRefreshView;
     private RelativeLayout firstLy, secondLy;
     private TextView firstTv, secondTv;
     private View firstV, secondV;
@@ -77,6 +75,9 @@ public class FirstActivityFragment extends Fragment {
     private ProUtils proUtils;
     private String latitude = "";
     private String longitude = "";
+    private int page=1;
+    private boolean isRefresh= false;
+    private boolean isUpRefresh = false;
 
     @Nullable
     @Override
@@ -90,6 +91,7 @@ public class FirstActivityFragment extends Fragment {
     private void initView(View v) {
         httpHelper = HttpHelper.getOkHttpClientUtils(getActivity());
         proUtils = new ProUtils(getActivity());
+        pullToRefreshView = (PullToRefreshView) v.findViewById(R.id.fragment_activity_pulltorefreshview);
         mainView = (ScrollView) v.findViewById(R.id.fragment_activity_main_ly);
         firstLy = (RelativeLayout) v.findViewById(R.id.fragment_activity_first_ly);
         secondLy = (RelativeLayout) v.findViewById(R.id.fragment_activity_second_ly);
@@ -105,12 +107,13 @@ public class FirstActivityFragment extends Fragment {
         TextView textView=new TextView(getActivity());
         textView.setText("请开启定位");
         otherListView.setEmptyView(textView);
+        pullToRefreshView.setOnHeaderRefreshListener(this);
+        pullToRefreshView.setOnFooterRefreshListener(this);
     }
 
     private void initData() {
         getGPSData();
         getMainData();
-        mainView.smoothScrollTo(0, 0);
     }
 
     private void getMainData(){
@@ -118,7 +121,6 @@ public class FirstActivityFragment extends Fragment {
         aList.clear();
         getCarousel();
         getTdata();
-        mainView.smoothScrollTo(0, 0);
     }
 
 
@@ -236,11 +238,12 @@ public class FirstActivityFragment extends Fragment {
         proUtils.show();
         Map<String, String> map = new HashMap<String, String>();
         map.put(Constant.PAGESIZE, "10");
-        map.put(Constant.PAGE, "1");
+        map.put(Constant.PAGE, page+"");
         httpHelper.postKeyValuePairAsync(getActivity(), URL.RECOMMENDED_ACT, map, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
                 T.checkNet(getActivity());
+                dismissRefresh();
                 proUtils.dismiss();
             }
 
@@ -249,6 +252,7 @@ public class FirstActivityFragment extends Fragment {
                 String body = response.body().string();
                 analysisData(body);
                 handler.sendEmptyMessage(UPDATA_MIDDLE_CODE);
+                dismissRefresh();
                 proUtils.dismiss();
             }
         }, null);
@@ -265,6 +269,7 @@ public class FirstActivityFragment extends Fragment {
             @Override
             public void onFailure(Request request, IOException e) {
                 T.checkNet(getActivity());
+                dismissRefresh();
                 proUtils.dismiss();
             }
 
@@ -273,35 +278,11 @@ public class FirstActivityFragment extends Fragment {
                 String body = response.body().string();
                 analysisData(body);
                 handler.sendEmptyMessage(UPDATA_NFC_CODE);
+                dismissRefresh();
                 proUtils.dismiss();
             }
         }, null);
     }
-
-    private void getOtherData(String id) {
-        proUtils.show();
-        Map<String, String> map = new HashMap<String, String>();
-        map.put(Constant.PAGESIZE, "10");
-        map.put(Constant.PAGE, "1");
-        map.put(Constant.CATEGORY_ID, id);
-        httpHelper.postKeyValuePairAsync(getActivity(), URL.RECOMMENDED_ACT, map, new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
-                T.checkNet(getActivity());
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Response response) throws IOException {
-                String body = response.body().string();
-                analysisData(body);
-                handler.sendEmptyMessage(UPDATA_OTHER_CODE);
-                proUtils.dismiss();
-            }
-        }, null);
-    }
-
-
 
     private final static int UPDATA_TOB_CODE = 1;
     private final static int UPDATA_MIDDLE_CODE = 2;
@@ -379,7 +360,9 @@ public class FirstActivityFragment extends Fragment {
         myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                SkipUtils.directJump(getActivity(), ActivityDetailActivity.class, false);
+                Map<String,Object> map=new HashMap<String, Object>();
+                map.put(Constant.LIST,aList.get(i));
+                SkipUtils.jumpForMap(getActivity(), ActivityDetailActivity.class,map, false);
             }
         });
         mainView.smoothScrollTo(0, 0);
@@ -395,7 +378,9 @@ public class FirstActivityFragment extends Fragment {
         myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                SkipUtils.directJump(getActivity(), ActivityDetailActivity.class, false);
+                Map<String,Object> map=new HashMap<String, Object>();
+                map.put(Constant.LIST,aList.get(i));
+                SkipUtils.jumpForMap(getActivity(), ActivityDetailActivity.class,map, false);
             }
         });
     }
@@ -420,13 +405,6 @@ public class FirstActivityFragment extends Fragment {
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
                 return;
             }
             Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -475,4 +453,32 @@ public class FirstActivityFragment extends Fragment {
     }
 
 
+    @Override
+    public void onFooterRefresh(PullToRefreshView view) {
+        isUpRefresh=true;
+        if (isUpRefresh) {
+            page = page + 1;
+            initData();
+        }
+    }
+
+    @Override
+    public void onHeaderRefresh(PullToRefreshView view) {
+        isRefresh=true;
+        if (isRefresh) {
+            page = 1;
+            initData();
+        }
+    }
+
+    private void dismissRefresh(){
+        if (isRefresh){
+            pullToRefreshView.onHeaderRefreshComplete();
+            isRefresh=false;
+        }else if (isUpRefresh){
+            pullToRefreshView.onFooterRefreshComplete();
+            isUpRefresh=false;
+        }
+
+    }
 }

@@ -17,9 +17,9 @@ import android.widget.ImageView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.MipcaActivityCapture;
-import com.dopstore.mall.shop.activity.SearchActivity;
 import com.dopstore.mall.activity.adapter.TabAdapter;
 import com.dopstore.mall.activity.bean.MainTabData;
+import com.dopstore.mall.shop.activity.SearchActivity;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.HttpHelper;
 import com.dopstore.mall.util.ProUtils;

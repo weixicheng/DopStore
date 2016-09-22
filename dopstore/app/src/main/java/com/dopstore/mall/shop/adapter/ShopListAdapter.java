@@ -9,11 +9,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
-import com.dopstore.mall.person.bean.HelpData;
 import com.dopstore.mall.shop.bean.ShopListData;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.LoadImageUtils;

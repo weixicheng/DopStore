@@ -71,6 +71,8 @@ public class FirstMainFragment extends Fragment implements OnFooterRefreshListen
     private ProUtils proUtils;
     private ScrollView mainView;
     private int page = 1;
+    private boolean isRefresh= false;
+    private boolean isUpRefresh = false;
 
     @Nullable
     @Override
@@ -112,6 +114,7 @@ public class FirstMainFragment extends Fragment implements OnFooterRefreshListen
             @Override
             public void onFailure(Request request, IOException e) {
                 T.checkNet(getActivity());
+                dismissRefresh();
                 proUtils.dismiss();
             }
 
@@ -142,6 +145,7 @@ public class FirstMainFragment extends Fragment implements OnFooterRefreshListen
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                dismissRefresh();
                 proUtils.dismiss();
             }
         }, null);
@@ -153,6 +157,7 @@ public class FirstMainFragment extends Fragment implements OnFooterRefreshListen
             @Override
             public void onFailure(Request request, IOException e) {
                 T.checkNet(getActivity());
+                dismissRefresh();
                 proUtils.dismiss();
             }
 
@@ -175,6 +180,7 @@ public class FirstMainFragment extends Fragment implements OnFooterRefreshListen
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                dismissRefresh();
                 proUtils.dismiss();
             }
         }, null);
@@ -191,6 +197,7 @@ public class FirstMainFragment extends Fragment implements OnFooterRefreshListen
             public void onFailure(Request request, IOException e) {
                 T.checkNet(getActivity());
                 hotTv.setVisibility(View.GONE);
+                dismissRefresh();
                 proUtils.dismiss();
             }
 
@@ -199,6 +206,7 @@ public class FirstMainFragment extends Fragment implements OnFooterRefreshListen
                 String body = response.body().string();
                 analyData(body);
                 handler.sendEmptyMessage(UPDATA_BOTTOM_CODE);
+                dismissRefresh();
                 proUtils.dismiss();
             }
         }, null);
@@ -329,14 +337,30 @@ public class FirstMainFragment extends Fragment implements OnFooterRefreshListen
 
     @Override
     public void onFooterRefresh(PullToRefreshView view) {
-        page = page + 1;
-        initData();
+        isUpRefresh=true;
+        if (isUpRefresh) {
+            page = page + 1;
+            initData();
+        }
     }
 
     @Override
     public void onHeaderRefresh(PullToRefreshView view) {
-        page = 1;
-        initData();
+        isRefresh=true;
+        if (isRefresh) {
+            page = 1;
+            initData();
+        }
+    }
+
+    private void dismissRefresh(){
+        if (isRefresh){
+            pullToRefreshView.onHeaderRefreshComplete();
+            isRefresh=false;
+        }else if (isUpRefresh){
+            pullToRefreshView.onFooterRefreshComplete();
+            isUpRefresh=false;
+        }
 
     }
 }

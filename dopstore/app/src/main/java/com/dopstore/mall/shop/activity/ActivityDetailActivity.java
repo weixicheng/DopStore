@@ -1,30 +1,66 @@
 package com.dopstore.mall.shop.activity;
 
+import android.graphics.Color;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.View;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.dopstore.mall.R;
+import com.dopstore.mall.activity.adapter.HomeAdImageAdapter;
+import com.dopstore.mall.activity.adapter.MiddleDataAdapter;
+import com.dopstore.mall.activity.bean.ActivityData;
+import com.dopstore.mall.activity.bean.CarouselData;
+import com.dopstore.mall.activity.bean.ShopData;
 import com.dopstore.mall.base.BaseActivity;
+import com.dopstore.mall.util.Constant;
+import com.dopstore.mall.util.HttpHelper;
+import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
+import com.dopstore.mall.util.T;
+import com.dopstore.mall.util.URL;
+import com.dopstore.mall.util.UserUtils;
+import com.dopstore.mall.view.EScrollView;
+import com.dopstore.mall.view.scrollview.DetailMenu;
+import com.dopstore.mall.view.rollviewpager.RollPagerView;
+import com.dopstore.mall.view.rollviewpager.hintview.IconHintView;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 作者：xicheng on 16/9/13
  */
 public class ActivityDetailActivity extends BaseActivity {
-    private LinearLayout bgLayout;
     private RelativeLayout bottomLy;
-    private WebView webView;
-    protected WebSettings webSetting;
-    private PopupWindow popupWindow;
+    private HttpHelper httpHelper;
+    private ProUtils proUtils;
+    private ActivityData activityData;
+    private String isCollect="1";
+    private DetailMenu detailMenu;
+    private RollPagerView rollPagerView;
+    private TextView titleTv,priceTv,numTv,timeTv,ageTv,addressTv,phoneTv;
+    private EScrollView eScrollView;
+    private RelativeLayout titleLayout;
+
+
+    private List<CarouselData> titleAdvertList = new ArrayList<CarouselData>();
+    private List<ShopData> datas=new ArrayList<ShopData>();
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,71 +71,68 @@ public class ActivityDetailActivity extends BaseActivity {
     }
 
     private void initView() {
-        webView = (WebView) findViewById(R.id.activity_order_web);
-        bottomLy = (RelativeLayout) findViewById(R.id.activity_order_bottom_layout);
+        httpHelper=HttpHelper.getOkHttpClientUtils(this);
+        proUtils=new ProUtils(this);
+        Map<String,Object> map=SkipUtils.getMap(this);
+        if (map==null)return;
+        activityData=(ActivityData) map.get(Constant.LIST);
+        detailMenu = (DetailMenu) findViewById(R.id.activity_detail_content_ly);
+        rollPagerView = (RollPagerView) findViewById(R.id.roll_view_pager);
+        titleTv = (TextView) findViewById(R.id.activity_detail_title_name);
+        priceTv = (TextView) findViewById(R.id.activity_detail_price);
+        numTv = (TextView) findViewById(R.id.activity_detail_num);
+        timeTv = (TextView) findViewById(R.id.activity_detail_time);
+        ageTv = (TextView) findViewById(R.id.activity_detail_age);
+        addressTv = (TextView) findViewById(R.id.activity_detail_address);
+        phoneTv = (TextView) findViewById(R.id.activity_detail_phone);
+        eScrollView = (EScrollView) findViewById(R.id.activity_detail_about_scrollview);
+        bottomLy = (RelativeLayout) findViewById(R.id.activity_detail_bottom_layout);
         bottomLy.setOnClickListener(listener);
-        bgLayout = (LinearLayout) findViewById(R.id.activity_order_poup_bg);
+        setTopBg(getResources().getColor(R.color.transparent));
         setCustomTitle("活动详情", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         rightFirstImageBack(R.mipmap.share_logo,listener);
         rightSecondImageBack(R.mipmap.collect_small_logo,listener);
-        String url="https://www.baidu.com/";
-        initWebViewSetting();
-        if (!TextUtils.isEmpty(url)) {
-            webView.loadUrl(url);
-        }
+        detailMenu.openMenu();
     }
 
     private void initData() {
-    }
 
-    private void initWebViewSetting() {
-        if (webView != null) {
-            webSetting = webView.getSettings();
-            // 支持js
-            webSetting.setJavaScriptEnabled(true);
-            webSetting.setJavaScriptCanOpenWindowsAutomatically(true);
-            // 缩放
-            webSetting.setSupportZoom(true);
-            webSetting.setBuiltInZoomControls(false);
-            // 支持保存数据
-            webSetting.setSaveFormData(true);
-            webSetting.setDefaultTextEncodingName("UTF-8");
-
-            webSetting.setAppCacheEnabled(false);
-            webSetting.setDomStorageEnabled(true);
-            // webSetting.setAppCacheMaxSize(1024 * 1024 * 8);
-            String appCachePath = getApplicationContext().getCacheDir()
-                    .getAbsolutePath();
-            webSetting.setAppCachePath(appCachePath);
-            webSetting.setAllowFileAccess(true);
-            // webSetting.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-            webView.clearHistory();
-
-            webView.setWebViewClient(new WebViewClient() {
-                @Override
-                public void onPageFinished(WebView view, String url) {
-                    super.onPageFinished(view, url);
-                }
-            });
-
-            webView.setWebChromeClient(new chromeClient());
-            //webView.addJavascriptInterface(new JsObject(), "qifu");
-        }
-    }
-
-    protected class chromeClient extends WebChromeClient {
-
-        @Override
-        public void onReceivedTitle(WebView view, String title) {
-            super.onReceivedTitle(view, title);
-
+        for (int i=0;i<5;i++){
+            CarouselData data=new CarouselData();
+            data.setPicture("http://www.taopic.com/uploads/allimg/120421/107063-12042114025737.jpg");
+            data.setId(i+"");
+            titleAdvertList.add(data);
         }
 
-        @Override
-        public void onProgressChanged(WebView view, int newProgress) {
-            super.onProgressChanged(view, newProgress);
+        titleTv.setText("海岛五日游,上海-仁川 5日4晚");
+        priceTv.setText("免费");
+        numTv.setText("限制20人");
+        timeTv.setText("2016年03月05日——2016年04月05日");
+        ageTv.setText("3——6岁");
+        addressTv.setText("喝吧");
+        phoneTv.setText("010-22222222");
+
+        for (int i=0;i<9;i++){
+            ShopData shopData=new ShopData();
+            shopData.setId(i+"");
+            shopData.setPrice("123");
+            shopData.setCover("http://www.taopic.com/uploads/allimg/120421/107063-12042114025737.jpg");
+            shopData.setName("sdjk");
+            datas.add(shopData);
         }
+        eScrollView.setAdapter(new MiddleDataAdapter(this, datas));
+        eScrollView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ShopData data=datas.get(i);
+                Map<String,Object> map=new HashMap<String, Object>();
+                map.put(Constant.LIST,data);
+                SkipUtils.jumpForMap(ActivityDetailActivity.this, ShopDetailActivity.class,map,false);
+            }
+        });
+
+        setAdvertisementData();
     }
 
     View.OnClickListener listener=new View.OnClickListener() {
@@ -109,15 +142,58 @@ public class ActivityDetailActivity extends BaseActivity {
                 case R.id.title_right_imageButton:{//分享
                     }break;
                 case R.id.title_right_before_imageButton:{//收藏
-
+                    if ("1".equals(isCollect)){
+                        isCollect="2";
+                        getCollectStatus(isCollect);
+                    }else {
+                        isCollect="1";
+                        getCollectStatus(isCollect);
+                    }
                 }break;
-                case R.id.activity_order_bottom_layout:{
+                case R.id.activity_detail_bottom_layout:{
                     SkipUtils.directJump(ActivityDetailActivity.this,ConfirmActivityActivity.class,false);
                 }break;
             }
 
         }
     };
+
+    private void getCollectStatus(final String isCollect) {
+        proUtils.show();
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("user_id", UserUtils.getId(this));
+        map.put("item_id", activityData.getId());
+        map.put("action_id", isCollect);
+        httpHelper.postKeyValuePairAsync(this, URL.COLLECTION_EDIT, map, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                T.checkNet(ActivityDetailActivity.this);
+                proUtils.dismiss();
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String body = response.body().string();
+                try {
+                    JSONObject jo = new JSONObject(body);
+                    String code = jo.optString(Constant.ERROR_CODE);
+                    if ("0".equals(code)) {
+                        if ("1".equals(isCollect)) {
+                            T.show(ActivityDetailActivity.this, "添加成功");
+                        }else {
+                            T.show(ActivityDetailActivity.this, "取消成功");
+                        }
+                    } else {
+                        String msg = jo.optString(Constant.ERROR_MSG);
+                        T.show(ActivityDetailActivity.this, msg);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                proUtils.dismiss();
+            }
+        }, null);
+    }
 
 
 
@@ -131,7 +207,37 @@ public class ActivityDetailActivity extends BaseActivity {
 
     }
 
-    @Override
+    /**
+     * 设置轮播
+     */
+    private void setAdvertisementData() {
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay()
+                .getMetrics(dm);
+        // 设置图片宽高
+        int screenWidth = getWindowManager()
+                .getDefaultDisplay().getWidth();
+        final int picSize = screenWidth / 2;
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                screenWidth, picSize);
+        rollPagerView.setLayoutParams(layoutParams);
+        rollPagerView.pause();
+
+        if (titleAdvertList != null) {
+            //设置播放时间间隔
+            rollPagerView.setPlayDelay(1000);
+            //设置透明度
+            rollPagerView.setAnimationDurtion(500);
+            //设置适配器
+            rollPagerView.setAdapter(new HomeAdImageAdapter(this, titleAdvertList));
+            rollPagerView.setHintView(new IconHintView(this, R.mipmap.dop_press, R.mipmap.dop_normal));
+            if (titleAdvertList.size() == 1) {
+                rollPagerView.setHintView(null);
+            }
+        }
+    }
+
+        @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             SkipUtils.back(this);

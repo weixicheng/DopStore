@@ -11,7 +11,6 @@ import com.dopstore.mall.util.LoadImageUtils;
 import com.dopstore.mall.view.rollviewpager.adapter.StaticPagerAdapter;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 轮播广告的Adapter

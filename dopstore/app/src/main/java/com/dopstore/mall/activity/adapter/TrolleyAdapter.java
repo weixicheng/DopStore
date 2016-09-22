@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
-import com.dopstore.mall.activity.bean.DataBean;
+import com.dopstore.mall.activity.bean.GoodBean;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.HttpHelper;
 import com.dopstore.mall.util.LoadImageUtils;
@@ -38,10 +38,9 @@ import java.util.Map;
  * Created by 喜成 on 16/9/7.
  * name
  */
-public class TrolleyAdapter extends BaseAdapter implements AdapterView.OnItemClickListener {
+public class TrolleyAdapter extends BaseAdapter {
     private Context context;
-    private List<DataBean> mListData;// 数据
-    private SparseArray<Boolean> mSelectState;
+    private List<GoodBean> mListData;// 数据
     private TextView mPriceAll; // 商品总价
     private int totalPrice = 0; // 商品总价
     private CheckBox mCheckAll; // 全选 全不选
@@ -49,10 +48,9 @@ public class TrolleyAdapter extends BaseAdapter implements AdapterView.OnItemCli
     private ProUtils proUtils;
     private LoadImageUtils loadImageUtils;
 
-    public TrolleyAdapter(Context context, List<DataBean> mListData, SparseArray<Boolean> mSelectState, TextView mPriceAll, int totalPrice, CheckBox mCheckAll) {
+    public TrolleyAdapter(Context context, List<GoodBean> mListData, TextView mPriceAll, int totalPrice, CheckBox mCheckAll) {
         this.context = context;
         this.mListData = mListData;
-        this.mSelectState = mSelectState;
         this.mPriceAll = mPriceAll;
         this.totalPrice = totalPrice;
         this.mCheckAll = mCheckAll;
@@ -76,10 +74,8 @@ public class TrolleyAdapter extends BaseAdapter implements AdapterView.OnItemCli
         return position;
     }
 
-    public void upData(List<DataBean> listData, List<DataBean> mListData, SparseArray<Boolean> mSelectState, TextView mPriceAll, int totalPrice, CheckBox mCheckAll){
-        this.mListData=mListData;
+    public void upData(List<GoodBean> mListData, TextView mPriceAll, int totalPrice, CheckBox mCheckAll){
         this.mListData = mListData;
-        this.mSelectState = mSelectState;
         this.mPriceAll = mPriceAll;
         this.totalPrice = totalPrice;
         this.mCheckAll = mCheckAll;
@@ -88,23 +84,58 @@ public class TrolleyAdapter extends BaseAdapter implements AdapterView.OnItemCli
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        ViewHolder holder = null;
+       ViewHolder holder = null;
         View view = convertView;
         if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.cart_list_item, null);
-            holder = new ViewHolder(view);
+            holder = new ViewHolder();
+            holder.checkBox = (CheckBox) view.findViewById(R.id.check_box);
+            holder.image = (ImageView) view.findViewById(R.id.iv_adapter_list_pic);
+            holder.content = (TextView) view.findViewById(R.id.tv_intro);
+            holder.carNum = (TextView) view.findViewById(R.id.tv_num);
+            holder.price = (TextView) view.findViewById(R.id.tv_price);
+            holder.add = (TextView) view.findViewById(R.id.tv_add);
+            holder.red = (TextView) view.findViewById(R.id.tv_reduce);
             view.setTag(holder);
         } else {
             holder = (ViewHolder) view.getTag();
         }
 
-        DataBean data = mListData.get(position);
-        bindListItem(holder, data);
+        GoodBean data = mListData.get(position);
+        holder.content.setText(data.getContent());
+        holder.price.setText("￥" + data.getPrice());
+        holder.carNum.setText(data.getCarNum() + "");
+        loadImageUtils.displayImage(data.getCover(),holder.image,Constant.OPTIONS_SPECIAL_CODE);
+        boolean selected = data.isChoose();
+        holder.checkBox.setChecked(selected);
+        holder.checkBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                GoodBean bean = mListData.get(position);
+                boolean selected = bean.isChoose();;
+                if (selected) {
+                    mListData.get(position).setChoose(false);
+                    totalPrice -= bean.getCarNum() * bean.getPrice();
+                } else {
+                    mListData.get(position).setChoose(true);
+                    totalPrice += bean.getCarNum() * bean.getPrice();
+                }
+                mPriceAll.setText("￥" + totalPrice + "");
+                for (GoodBean bean1:mListData){
+                    if (bean1.isChoose()==false){
+                        mCheckAll.setChecked(false);
+                    }else {
+                        mCheckAll.setChecked(true);
+                    }
+                }
+                notifyDataSetChanged();
+            }
+        });
+
         holder.add.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
                 addToService(mListData,position);
             }
         });
@@ -113,7 +144,6 @@ public class TrolleyAdapter extends BaseAdapter implements AdapterView.OnItemCli
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
                 if (mListData.get(position).getCarNum() == 1)
                     return;
                 redToService(mListData,position);
@@ -122,7 +152,7 @@ public class TrolleyAdapter extends BaseAdapter implements AdapterView.OnItemCli
         return view;
     }
 
-    private void addToService(List<DataBean> mListData, final int i) {
+    private void addToService(List<GoodBean> mListData, final int i) {
             proUtils.show();
             final Map<String,String> map=new HashMap<String,String>();
             map.put("user_id", UserUtils.getId(context));
@@ -158,7 +188,7 @@ public class TrolleyAdapter extends BaseAdapter implements AdapterView.OnItemCli
                 }
             }, null);
     }
-    private void redToService(List<DataBean> mListData, final int i) {
+    private void redToService(List<GoodBean> mListData, final int i) {
             proUtils.show();
             final Map<String,String> map=new HashMap<String,String>();
             map.put("user_id", UserUtils.getId(context));
@@ -195,41 +225,6 @@ public class TrolleyAdapter extends BaseAdapter implements AdapterView.OnItemCli
             }, null);
     }
 
-    private void bindListItem(ViewHolder holder, DataBean data) {
-        holder.content.setText(data.getContent());
-        holder.price.setText("￥" + data.getPrice());
-        holder.carNum.setText(data.getCarNum() + "");
-        loadImageUtils.displayImage(data.getCover(),holder.image,Constant.OPTIONS_SPECIAL_CODE);
-        int _id = data.getId();
-
-        boolean selected = mSelectState.get(_id, false);
-        holder.checkBox.setChecked(selected);
-
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        DataBean bean = mListData.get(position);
-
-        ViewHolder holder = (ViewHolder) view.getTag();
-        int _id = (int) bean.getId();
-
-        boolean selected = !mSelectState.get(_id, false);
-        holder.checkBox.toggle();
-        if (selected) {
-            mSelectState.put(_id, true);
-            totalPrice += bean.getCarNum() * bean.getPrice();
-        } else {
-            mSelectState.delete(_id);
-            totalPrice -= bean.getCarNum() * bean.getPrice();
-        }
-        mPriceAll.setText("￥" + totalPrice + "");
-        if (mSelectState.size() == mListData.size()) {
-            mCheckAll.setChecked(true);
-        } else {
-            mCheckAll.setChecked(false);
-        }
-    }
 
 
     private final static int UPDATA_RED_CART_MSG=0;
@@ -242,28 +237,17 @@ public class TrolleyAdapter extends BaseAdapter implements AdapterView.OnItemCli
             switch (msg.what){
                 case UPDATA_RED_CART_MSG:{
                     int position=msg.arg1;
-                    int _id = (int) mListData.get(position).getId();
-                    boolean selected = mSelectState.get(_id, false);
                     mListData.get(position).setCarNum(mListData.get(position).getCarNum() - 1);
+                    totalPrice -= mListData.get(position).getPrice();
+                    mPriceAll.setText("￥" + totalPrice + "");
                     notifyDataSetChanged();
-                    if (selected) {
-                        totalPrice -= mListData.get(position).getPrice();
-                        mPriceAll.setText("￥" + totalPrice + "");
-
-                    }
                 }break;
                 case UPDATA_ADD_CART_MSG:{
                     int position=msg.arg1;
-                    int _id = (int) mListData.get(position).getId();
-                    boolean selected = mSelectState.get(_id, false);
                     mListData.get(position).setCarNum(mListData.get(position).getCarNum() + 1);
+                    totalPrice += mListData.get(position).getPrice();
+                    mPriceAll.setText("￥" + totalPrice + "");
                     notifyDataSetChanged();
-
-                    if (selected) {
-                        totalPrice += mListData.get(position).getPrice();
-                        mPriceAll.setText("￥" + totalPrice + "");
-
-                    }
                 }break;
             }
         }
@@ -279,14 +263,4 @@ class ViewHolder {
     TextView price;
     TextView add;
     TextView red;
-
-    public ViewHolder(View view) {
-        checkBox = (CheckBox) view.findViewById(R.id.check_box);
-        image = (ImageView) view.findViewById(R.id.iv_adapter_list_pic);
-        content = (TextView) view.findViewById(R.id.tv_intro);
-        carNum = (TextView) view.findViewById(R.id.tv_num);
-        price = (TextView) view.findViewById(R.id.tv_price);
-        add = (TextView) view.findViewById(R.id.tv_add);
-        red = (TextView) view.findViewById(R.id.tv_reduce);
-    }
 }

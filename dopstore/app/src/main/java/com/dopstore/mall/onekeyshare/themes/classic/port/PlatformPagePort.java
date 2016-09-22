@@ -8,11 +8,11 @@
 
 package com.dopstore.mall.onekeyshare.themes.classic.port;
 
-import java.util.ArrayList;
-
 import com.dopstore.mall.onekeyshare.OnekeyShareThemeImpl;
 import com.dopstore.mall.onekeyshare.themes.classic.PlatformPage;
 import com.dopstore.mall.onekeyshare.themes.classic.PlatformPageAdapter;
+
+import java.util.ArrayList;
 
 /** 竖屏的九宫格页面 */
 public class PlatformPagePort extends PlatformPage {

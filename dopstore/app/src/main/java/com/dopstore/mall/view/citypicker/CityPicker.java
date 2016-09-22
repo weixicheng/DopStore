@@ -1,13 +1,13 @@
 package com.dopstore.mall.view.citypicker;
 
-import java.util.List;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.bean.CityBean;
+
+import java.util.List;
 
 
 

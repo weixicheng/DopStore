@@ -1,6 +1,5 @@
 package com.dopstore.mall.shop.activity;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -63,6 +62,7 @@ public class ShopDetailActivity extends BaseActivity {
     private HttpHelper httpHelper;
     private ProUtils proUtils;
     private LoadImageUtils loadImageUtils;
+    private String isCollect="1";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,10 +161,16 @@ public class ShopDetailActivity extends BaseActivity {
                 case R.id.title_right_imageButton:{//分享
                     }break;
                 case R.id.title_right_before_imageButton:{//收藏
-
+//                        if ("1".equals(isCollect)){
+//                            getCollectStatus(isCollect);
+//                        }else {
+                            getCollectStatus(isCollect);
+//                        }
                 }break;
                 case R.id.shop_detail_main_bt:{}break;
-                case R.id.shop_detail_shop_bt:{}break;
+                case R.id.shop_detail_shop_bt:{
+                    addToService();
+                }break;
                 case R.id.shop_detail_join_bt:{
                     showPop();
                 }break;
@@ -194,12 +200,49 @@ public class ShopDetailActivity extends BaseActivity {
         }
     };
 
+    private void getCollectStatus(final String isCollect) {
+        proUtils.show();
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("user_id", UserUtils.getId(this));
+        map.put("item_id", shopData.getId());
+        map.put("action_id", isCollect);
+        httpHelper.postKeyValuePairAsync(this, URL.COLLECTION_EDIT, map, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                T.checkNet(ShopDetailActivity.this);
+                proUtils.dismiss();
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String body = response.body().string();
+                try {
+                    JSONObject jo = new JSONObject(body);
+                    String code = jo.optString(Constant.ERROR_CODE);
+                    if ("0".equals(code)) {
+                        if ("1".equals(isCollect)) {
+                            T.show(ShopDetailActivity.this, "添加成功");
+                        }else {
+                            T.show(ShopDetailActivity.this, "取消成功");
+                        }
+                    } else {
+                        String msg = jo.optString(Constant.ERROR_MSG);
+                        T.show(ShopDetailActivity.this, msg);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                proUtils.dismiss();
+            }
+        }, null);
+    }
+
     private void addToService() {
         proUtils.show();
         final Map<String,String> map=new HashMap<String,String>();
         map.put("user_id", UserUtils.getId(this));
         map.put("item_id", shopData.getId());
-        map.put("count", "");
+        map.put("count", "1");
         map.put("edit", "");
         httpHelper.postKeyValuePairAsync(this, URL.CART_EDIT, map, new Callback() {
             @Override
@@ -215,7 +258,7 @@ public class ShopDetailActivity extends BaseActivity {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
                     if ("0".equals(code)){
-                       handler.sendEmptyMessage(ADD_SUCCESS_CODE);
+                        T.show(ShopDetailActivity.this, "添加购物车成功");
                     }else {
                         String msg = jo.optString(Constant.ERROR_MSG);
                         T.show(ShopDetailActivity.this, msg);
@@ -226,7 +269,6 @@ public class ShopDetailActivity extends BaseActivity {
                 proUtils.dismiss();
             }
         }, null);
-
     }
 
     private void showPop() {

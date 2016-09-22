@@ -16,8 +16,8 @@ import android.view.Gravity;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.dopstore.mall.onekeyshare.themes.classic.FriendAdapter.Following;
 
+import com.dopstore.mall.onekeyshare.themes.classic.FriendAdapter.Following;
 import com.mob.tools.gui.AsyncImageView;
 import com.mob.tools.gui.BitmapProcessor;
 import com.mob.tools.utils.R;

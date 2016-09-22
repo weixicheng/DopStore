@@ -1,18 +1,15 @@
 package com.dopstore.mall.person.activity;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.KeyEvent;
-import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.base.BaseActivity;
-import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.view.UISwitchButton;
-import android.content.SharedPreferences;
 
 import cn.jpush.android.api.JPushInterface;
 

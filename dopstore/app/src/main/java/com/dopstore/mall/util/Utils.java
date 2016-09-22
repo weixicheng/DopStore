@@ -4,8 +4,6 @@ import android.util.Base64;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

@@ -1,43 +1,22 @@
 package com.dopstore.mall.activity.fragment;
 
-import android.Manifest;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-
 import com.dopstore.mall.R;
-import com.dopstore.mall.activity.adapter.ActivityAdapter;
-import com.dopstore.mall.activity.adapter.HomeAdImageAdapter;
 import com.dopstore.mall.activity.adapter.TabAdapter;
-import com.dopstore.mall.activity.bean.ActivityData;
-import com.dopstore.mall.activity.bean.CarouselData;
 import com.dopstore.mall.activity.bean.MainTabData;
-import com.dopstore.mall.shop.activity.ActivityDetailActivity;
 import com.dopstore.mall.shop.activity.ActivityListActivity;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.HttpHelper;
@@ -46,20 +25,17 @@ import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.view.EScrollView;
-import com.dopstore.mall.view.MyListView;
-import com.dopstore.mall.view.rollviewpager.RollPagerView;
-import com.dopstore.mall.view.rollviewpager.hintview.IconHintView;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 

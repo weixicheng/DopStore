@@ -1,7 +1,5 @@
 package com.dopstore.mall.activity.bean;
 
-import java.util.List;
-
 /**
  * 作者：xicheng on 16/9/18 15:43
  * 类别：

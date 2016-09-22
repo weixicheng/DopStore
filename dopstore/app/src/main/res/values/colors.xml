@@ -10,6 +10,7 @@
     <color name="red_color_f93448">#f93448</color>
     <color name="orange_color_E98028">#E98028</color>
     <color name="gray_color_ee">#EEEEEE</color>
+    <color name="transparent">#00000000</color>
 
     <!-- wheel -->
     <color name="province_line_border">#C7C7C7</color>

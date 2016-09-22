@@ -8,9 +8,6 @@
 
 package com.dopstore.mall.onekeyshare.themes.classic;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import android.graphics.drawable.ColorDrawable;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -23,13 +20,17 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import cn.sharesdk.framework.Platform;
+
 import com.dopstore.mall.onekeyshare.OnekeySharePage;
 import com.dopstore.mall.onekeyshare.OnekeyShareThemeImpl;
 import com.dopstore.mall.onekeyshare.themes.classic.FriendAdapter.Following;
-
 import com.mob.tools.gui.PullToRequestView;
 import com.mob.tools.utils.R;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import cn.sharesdk.framework.Platform;
 
 /** 编辑界面，@好友时，弹出的好友列表 */
 public abstract class FriendListPage extends OnekeySharePage implements OnClickListener, OnItemClickListener {

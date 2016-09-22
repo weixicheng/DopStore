@@ -8,13 +8,13 @@
 
 package com.dopstore.mall.onekeyshare.themes.classic.port;
 
-import java.util.ArrayList;
-
 import android.content.Context;
+
 import com.dopstore.mall.onekeyshare.themes.classic.PlatformPage;
 import com.dopstore.mall.onekeyshare.themes.classic.PlatformPageAdapter;
-
 import com.mob.tools.utils.R;
+
+import java.util.ArrayList;
 
 /** 竖屏的九宫格页面适配器 */
 public class PlatformPageAdapterPort extends PlatformPageAdapter {

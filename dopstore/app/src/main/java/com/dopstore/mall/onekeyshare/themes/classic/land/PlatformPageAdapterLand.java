@@ -8,13 +8,13 @@
 
 package com.dopstore.mall.onekeyshare.themes.classic.land;
 
-import java.util.ArrayList;
-
 import android.content.Context;
+
 import com.dopstore.mall.onekeyshare.themes.classic.PlatformPage;
 import com.dopstore.mall.onekeyshare.themes.classic.PlatformPageAdapter;
-
 import com.mob.tools.utils.R;
+
+import java.util.ArrayList;
 
 /** 横屏的九宫格页面适配器 */
 public class PlatformPageAdapterLand extends PlatformPageAdapter {

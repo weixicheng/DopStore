@@ -50,6 +50,8 @@ public class SecondMainFragment extends Fragment implements OnFooterRefreshListe
     private ProUtils proUtils;
     private int page=1;
     private String id="";
+    private boolean isRefresh= false;
+    private boolean isUpRefresh = false;
 
     public SecondMainFragment(String id) {
         this.id=id;
@@ -88,6 +90,7 @@ public class SecondMainFragment extends Fragment implements OnFooterRefreshListe
             @Override
             public void onFailure(Request request, IOException e) {
                 T.checkNet(getActivity());
+                dismissRefresh();
                 proUtils.dismiss();
             }
 
@@ -96,6 +99,7 @@ public class SecondMainFragment extends Fragment implements OnFooterRefreshListe
                 String body = response.body().string();
                 analyData(body);
                 handler.sendEmptyMessage(UPDATA_OTHER_CODE);
+                dismissRefresh();
                 proUtils.dismiss();
             }
         }, null);
@@ -158,16 +162,33 @@ public class SecondMainFragment extends Fragment implements OnFooterRefreshListe
     }
 
 
+
     @Override
     public void onFooterRefresh(PullToRefreshView view) {
-        page=page+1;
-        getHotData(id);
+        isUpRefresh=true;
+        if (isUpRefresh) {
+            page = page + 1;
+            getHotData(id);
+        }
     }
 
     @Override
     public void onHeaderRefresh(PullToRefreshView view) {
-        page=1;
-        getHotData(id);
+        isRefresh=true;
+        if (isRefresh) {
+            page = 1;
+            getHotData(id);
+        }
+    }
+
+    private void dismissRefresh(){
+        if (isRefresh){
+            pullToRefreshView.onHeaderRefreshComplete();
+            isRefresh=false;
+        }else if (isUpRefresh){
+            pullToRefreshView.onFooterRefreshComplete();
+            isUpRefresh=false;
+        }
 
     }
 }

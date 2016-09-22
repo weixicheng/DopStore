@@ -1,14 +1,15 @@
 package com.dopstore.mall.view.addresspicker.wheel.widget.service;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.dopstore.mall.view.addresspicker.wheel.widget.model.CityModel;
+import com.dopstore.mall.view.addresspicker.wheel.widget.model.DistrictModel;
+import com.dopstore.mall.view.addresspicker.wheel.widget.model.ProvinceModel;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.dopstore.mall.view.addresspicker.wheel.widget.model.CityModel;
-import com.dopstore.mall.view.addresspicker.wheel.widget.model.DistrictModel;
-import com.dopstore.mall.view.addresspicker.wheel.widget.model.ProvinceModel;
+import java.util.ArrayList;
+import java.util.List;
 
 public class XmlParserHandler extends DefaultHandler {
 

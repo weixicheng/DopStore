@@ -8,8 +8,6 @@
 
 package com.dopstore.mall.onekeyshare.themes.classic.port;
 
-import java.io.File;
-
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.util.TypedValue;
@@ -21,13 +19,15 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
 import com.dopstore.mall.onekeyshare.OnekeyShareThemeImpl;
 import com.dopstore.mall.onekeyshare.themes.classic.EditPage;
 import com.dopstore.mall.onekeyshare.themes.classic.XView;
-
 import com.mob.tools.gui.AsyncImageView;
 import com.mob.tools.utils.BitmapHelper;
 import com.mob.tools.utils.R;
+
+import java.io.File;
 
 /** 竖屏的编辑页 */
 public class EditPagePort extends EditPage  {

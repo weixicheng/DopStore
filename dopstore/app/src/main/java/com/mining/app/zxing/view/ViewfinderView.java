@@ -16,9 +16,6 @@
 
 package com.mining.app.zxing.view;
 
-import java.util.Collection;
-import java.util.HashSet;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -33,6 +30,9 @@ import android.view.View;
 import com.dopstore.mall.R;
 import com.google.zxing.ResultPoint;
 import com.mining.app.zxing.camera.CameraManager;
+
+import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * This view is overlaid on top of the camera preview. It adds the viewfinder

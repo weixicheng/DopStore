@@ -4,11 +4,11 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
 
+import com.dopstore.mall.R;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.imageaware.ImageAware;
-import com.dopstore.mall.R;
 
 /**
  * 作者：xicheng on 16/8/4 12:55

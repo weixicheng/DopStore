@@ -1,9 +1,6 @@
 package com.dopstore.mall.activity.fragment;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,8 +15,8 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.login.activity.LoginActivity;
-import com.dopstore.mall.order.activity.MyOrderActivity;
 import com.dopstore.mall.order.activity.MyActivityActivity;
+import com.dopstore.mall.order.activity.MyOrderActivity;
 import com.dopstore.mall.person.activity.MyAddressActivity;
 import com.dopstore.mall.person.activity.MyBalanceActivity;
 import com.dopstore.mall.person.activity.MyCollectActivity;

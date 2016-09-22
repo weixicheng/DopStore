@@ -16,16 +16,14 @@
 
 package com.mining.app.zxing.decoding;
 
-import java.util.Hashtable;
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
-import com.dopstore.mall.activity.MipcaActivityCapture;
 import com.dopstore.mall.R;
+import com.dopstore.mall.activity.MipcaActivityCapture;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.MultiFormatReader;
@@ -34,6 +32,8 @@ import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 import com.mining.app.zxing.camera.CameraManager;
 import com.mining.app.zxing.camera.PlanarYUVLuminanceSource;
+
+import java.util.Hashtable;
 
 final class DecodeHandler extends Handler {
 

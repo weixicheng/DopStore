@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -12,8 +11,6 @@ import com.dopstore.mall.R;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.order.adapter.CommOrderAdapter;
 import com.dopstore.mall.order.bean.CommOrderData;
-import com.dopstore.mall.order.bean.ConfirmOrderData;
-import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.LoadImageUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.view.MyListView;

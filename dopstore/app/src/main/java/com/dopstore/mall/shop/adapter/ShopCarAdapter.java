@@ -7,15 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.shop.bean.CommonData;
-import com.dopstore.mall.shop.bean.ShopListData;
-import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.LoadImageUtils;
 import com.dopstore.mall.util.Utils;
 
 import java.util.List;

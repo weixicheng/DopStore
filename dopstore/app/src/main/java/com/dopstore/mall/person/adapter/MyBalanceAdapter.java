@@ -3,15 +3,11 @@ package com.dopstore.mall.person.adapter;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
-import com.dopstore.mall.person.bean.MyAddressData;
 import com.dopstore.mall.person.bean.MyBalanceData;
 
 import java.util.List;

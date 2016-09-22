@@ -10,13 +10,15 @@ package com.dopstore.mall.onekeyshare.themes.classic;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import cn.sharesdk.framework.Platform;
-import cn.sharesdk.framework.Platform.ShareParams;
+
 import com.dopstore.mall.onekeyshare.OnekeyShareThemeImpl;
 import com.dopstore.mall.onekeyshare.themes.classic.land.EditPageLand;
 import com.dopstore.mall.onekeyshare.themes.classic.land.PlatformPageLand;
 import com.dopstore.mall.onekeyshare.themes.classic.port.EditPagePort;
 import com.dopstore.mall.onekeyshare.themes.classic.port.PlatformPagePort;
+
+import cn.sharesdk.framework.Platform;
+import cn.sharesdk.framework.Platform.ShareParams;
 
 /** 九宫格经典主题样式的实现类*/
 public class ClassicTheme extends OnekeyShareThemeImpl {

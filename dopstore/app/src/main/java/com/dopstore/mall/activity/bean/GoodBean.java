@@ -1,23 +1,12 @@
 package com.dopstore.mall.activity.bean;
 
-public class DataBean {
-
-    int id;
-
-    int carNum;
-
-    String content;
-    String cover;
-
-    float price;
-
-    public String getCover() {
-        return cover;
-    }
-
-    public void setCover(String cover) {
-        this.cover = cover;
-    }
+public class GoodBean {
+    private int id;
+    private int carNum;
+    private String content;
+    private String cover;
+    private float price;
+    private boolean isChoose;
 
     public int getId() {
         return id;
@@ -43,6 +32,14 @@ public class DataBean {
         this.content = content;
     }
 
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
+    }
+
     public float getPrice() {
         return price;
     }
@@ -51,4 +48,11 @@ public class DataBean {
         this.price = price;
     }
 
+    public boolean isChoose() {
+        return isChoose;
+    }
+
+    public void setChoose(boolean choose) {
+        isChoose = choose;
+    }
 }

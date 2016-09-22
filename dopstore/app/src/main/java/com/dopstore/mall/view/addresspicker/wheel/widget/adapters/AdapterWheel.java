@@ -16,8 +16,9 @@
 
 package com.dopstore.mall.view.addresspicker.wheel.widget.adapters;
 
-import com.dopstore.mall.view.addresspicker.wheel.widget.WheelAdapter;
 import android.content.Context;
+
+import com.dopstore.mall.view.addresspicker.wheel.widget.WheelAdapter;
 
 /**
  * Adapter class for old wheel adapter (deprecated WheelAdapter class).

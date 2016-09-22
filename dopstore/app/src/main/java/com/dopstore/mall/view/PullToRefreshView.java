@@ -3,6 +3,8 @@ package com.dopstore.mall.view;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -501,14 +503,20 @@ public class PullToRefreshView extends LinearLayout {
     }
 
     public void onHeaderRefreshComplete() {
-        setHeaderTopMargin(-mHeaderViewHeight);
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
 
-        mHeaderTextView.setText(R.string.pull_to_refresh_pull_label);
+            @Override
+            public void run() {
+                setHeaderTopMargin(-mHeaderViewHeight);
 
-        pull_to_refresh_arrows.setVisibility(View.VISIBLE);
-        pull_to_refresh_roundness.setVisibility(View.GONE);
-        stopLoadAnimation();
-        mHeaderState = PULL_TO_REFRESH;
+                mHeaderTextView.setText(R.string.pull_to_refresh_pull_label);
+
+                pull_to_refresh_arrows.setVisibility(View.VISIBLE);
+                pull_to_refresh_roundness.setVisibility(View.GONE);
+                stopLoadAnimation();
+                mHeaderState = PULL_TO_REFRESH;
+            }
+        });
     }
 
     /**
@@ -524,11 +532,17 @@ public class PullToRefreshView extends LinearLayout {
      * footer view 完成更新后恢复初始状态
      */
     public void onFooterRefreshComplete() {
-        setHeaderTopMargin(-mHeaderViewHeight);
-        mFooterTextView.setText(R.string.pull_to_refresh_footer_pull_label);
-        mFooterTextView.setVisibility(View.INVISIBLE);
-        mFooterProgressBar.setVisibility(View.GONE);
-        mFooterState = PULL_TO_REFRESH;
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+
+            @Override
+            public void run() {
+                setHeaderTopMargin(-mHeaderViewHeight);
+                mFooterTextView.setText(R.string.pull_to_refresh_footer_pull_label);
+                mFooterTextView.setVisibility(View.INVISIBLE);
+                mFooterProgressBar.setVisibility(View.GONE);
+                mFooterState = PULL_TO_REFRESH;
+            }
+        });
     }
 
     private int getHeaderTopMargin() {

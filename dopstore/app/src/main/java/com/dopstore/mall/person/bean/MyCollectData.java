@@ -9,6 +9,7 @@ public class MyCollectData {
     private String image;
     private String title;
     private String price;
+    private boolean isChoose;
 
     public int getId() {
         return id;
@@ -40,5 +41,13 @@ public class MyCollectData {
 
     public void setPrice(String price) {
         this.price = price;
+    }
+
+    public boolean isChoose() {
+        return isChoose;
+    }
+
+    public void setChoose(boolean choose) {
+        isChoose = choose;
     }
 }

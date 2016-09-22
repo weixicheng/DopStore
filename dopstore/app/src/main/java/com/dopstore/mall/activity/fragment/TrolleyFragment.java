@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.adapter.TrolleyAdapter;
-import com.dopstore.mall.activity.bean.DataBean;
+import com.dopstore.mall.activity.bean.GoodBean;
 import com.dopstore.mall.shop.activity.ConfirmOrderActivity;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.HttpHelper;
@@ -52,7 +52,7 @@ public class TrolleyFragment extends Fragment {
 
     private TrolleyAdapter mListAdapter;// adapter
 
-    private List<DataBean> mListData = new ArrayList<DataBean>();// 数据
+    private List<GoodBean> mListData = new ArrayList<GoodBean>();// 数据
 
     private boolean isBatchModel;// 是否可删除模式
 
@@ -71,10 +71,6 @@ public class TrolleyFragment extends Fragment {
     private Timer timer;
     private TimerTask doing;
 
-    /**
-     * 批量模式下，用来记录当前选中状态
-     */
-    private SparseArray<Boolean> mSelectState = new SparseArray<Boolean>();
     private HttpHelper httpHelper;
     private ProUtils proUtils;
 
@@ -109,30 +105,7 @@ public class TrolleyFragment extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
     }
 
-    private void doDelete(List<Integer> ids) {
-        for (int i = 0; i < mListData.size(); i++) {
-            long dataId = mListData.get(i).getId();
-            for (int j = 0; j < ids.size(); j++) {
-                int deleteId = ids.get(j);
-                if (dataId == deleteId) {
-                    mListData.remove(i);
-                    i--;
-                    ids.remove(j);
-                    j--;
-                }
-            }
-        }
-        deleteToService(mListData);
-
-        refreshListView();
-        mSelectState.clear();
-        totalPrice = 0;
-        mPriceAll.setText("￥" + 0.00 + "");
-        mCheckAll.setChecked(false);
-
-    }
-
-    private void deleteToService(List<DataBean> mListData) {
+    private void deleteToService(List<GoodBean> mListData) {
         proUtils.show();
         Map<String,String> map=new HashMap<String,String>();
         map.put("user_id", UserUtils.getId(getActivity()));
@@ -165,16 +138,6 @@ public class TrolleyFragment extends Fragment {
         }, null);
     }
 
-    private final List<Integer> getSelectedIds() {
-        ArrayList<Integer> selectedIds = new ArrayList<Integer>();
-        for (int index = 0; index < mSelectState.size(); index++) {
-            if (mSelectState.valueAt(index)) {
-                selectedIds.add(mSelectState.keyAt(index));
-            }
-        }
-        return selectedIds;
-    }
-
     private void initView(View v) {
         httpHelper=HttpHelper.getOkHttpClientUtils(getActivity());
         proUtils=new ProUtils(getActivity());
@@ -190,8 +153,6 @@ public class TrolleyFragment extends Fragment {
         mPriceAll = (TextView) v.findViewById(R.id.tv_cart_total);
         mDelete = (TextView) v.findViewById(R.id.tv_cart_buy_or_del);
         mListView = (ListView) v.findViewById(R.id.listview);
-//        mListView.setSelector(R.drawable.list_selector);
-
     }
 
     private void initListener() {
@@ -202,16 +163,14 @@ public class TrolleyFragment extends Fragment {
 
     private void loadData() {
         getCartList();
-        refreshListView();
     }
 
     private void refreshListView() {
         if (mListAdapter == null) {
-            mListAdapter = new TrolleyAdapter(getActivity(), mListData, mSelectState, mPriceAll, totalPrice, mCheckAll);
+            mListAdapter = new TrolleyAdapter(getActivity(), mListData, mPriceAll, totalPrice, mCheckAll);
             mListView.setAdapter(mListAdapter);
-            mListView.setOnItemClickListener(mListAdapter);
         } else {
-            mListAdapter.upData(mListData,mListData, mSelectState, mPriceAll, totalPrice, mCheckAll);
+            mListAdapter.upData(mListData, mPriceAll, totalPrice, mCheckAll);
         }
     }
 
@@ -245,12 +204,13 @@ public class TrolleyFragment extends Fragment {
                 if (ja.length() > 0) {
                     for (int i = 0; i < ja.length(); i++) {
                         JSONObject job = ja.getJSONObject(i);
-                        DataBean data = new DataBean();
+                        GoodBean data = new GoodBean();
                         data.setId(Integer.parseInt(job.optString(Constant.ID)));
                         data.setCarNum(Integer.parseInt(job.optString(Constant.NUMBER)));
                         data.setContent(job.optString(Constant.NAME));
                         data.setPrice(Float.parseFloat(job.optString(Constant.PRICE)));
                         data.setCover(job.optString(Constant.COVER));
+                        data.setChoose(false);
                         mListData.add(data);
                     }
                 }
@@ -288,14 +248,12 @@ public class TrolleyFragment extends Fragment {
                     if (mCheckAll.isChecked()) {
                         totalPrice = 0;
                         if (mListData != null) {
-                            mSelectState.clear();
                             int size = mListData.size();
                             if (size == 0) {
                                 return;
                             }
                             for (int i = 0; i < size; i++) {
-                                int _id = (int) mListData.get(i).getId();
-                                mSelectState.put(_id, true);
+                                mListData.get(i).setChoose(true);
                                 totalPrice += mListData.get(i).getCarNum() * mListData.get(i).getPrice();
                             }
                             refreshListView();
@@ -304,7 +262,9 @@ public class TrolleyFragment extends Fragment {
                     } else {
                         if (mListAdapter != null) {
                             totalPrice = 0;
-                            mSelectState.clear();
+                            for (int i = 0; i < mListData.size(); i++) {
+                                mListData.get(i).setChoose(false);
+                            }
                             refreshListView();
                             mPriceAll.setText("￥" + 0.00 + "");
                         }
@@ -313,8 +273,11 @@ public class TrolleyFragment extends Fragment {
 
                 case R.id.tv_cart_buy_or_del:
                     if (isBatchModel) {
-                        List<Integer> ids = getSelectedIds();
-                        doDelete(ids);
+                        deleteToService(mListData);
+                        refreshListView();
+                        totalPrice = 0;
+                        mPriceAll.setText("￥" + 0.00 + "");
+                        mCheckAll.setChecked(false);
                     } else {
                         SkipUtils.directJump(getActivity(),ConfirmOrderActivity.class,false);
                         Toast.makeText(getActivity(), "结算", Toast.LENGTH_SHORT).show();
@@ -339,7 +302,7 @@ public class TrolleyFragment extends Fragment {
                 }
                 break;
                 case UPDATA_CART_MSG: {
-                    loadData();
+                    refreshListView();
                 }
                 break;
             }

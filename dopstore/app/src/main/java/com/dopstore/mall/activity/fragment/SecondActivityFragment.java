@@ -1,50 +1,29 @@
 package com.dopstore.mall.activity.fragment;
 
-import android.Manifest;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.adapter.ActivityAdapter;
-import com.dopstore.mall.activity.adapter.HomeAdImageAdapter;
-import com.dopstore.mall.activity.adapter.TabAdapter;
 import com.dopstore.mall.activity.bean.ActivityData;
-import com.dopstore.mall.activity.bean.CarouselData;
-import com.dopstore.mall.activity.bean.MainTabData;
 import com.dopstore.mall.shop.activity.ActivityDetailActivity;
-import com.dopstore.mall.shop.activity.ActivityListActivity;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.HttpHelper;
 import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
-import com.dopstore.mall.view.EScrollView;
-import com.dopstore.mall.view.MyListView;
 import com.dopstore.mall.view.PullToRefreshView;
-import com.dopstore.mall.view.rollviewpager.RollPagerView;
-import com.dopstore.mall.view.rollviewpager.hintview.IconHintView;
+import com.dopstore.mall.view.PullToRefreshView.OnFooterRefreshListener;
+import com.dopstore.mall.view.PullToRefreshView.OnHeaderRefreshListener;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -58,21 +37,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by 喜成 on 16/9/5
  * name 活动
  */
-public class SecondActivityFragment extends Fragment {
+public class SecondActivityFragment extends Fragment implements OnFooterRefreshListener,OnHeaderRefreshListener {
     private PullToRefreshView pullToRefreshView;
     private ListView myListView;
     private List<ActivityData> aList = new ArrayList<ActivityData>();
     private ActivityAdapter adapter;
     private HttpHelper httpHelper;
     private ProUtils proUtils;
+    private int page=1;
     private String id="";
+    private boolean isRefresh= false;
+    private boolean isUpRefresh = false;
 
     public SecondActivityFragment(String id) {
         this.id=id;
@@ -92,6 +72,8 @@ public class SecondActivityFragment extends Fragment {
         proUtils = new ProUtils(getActivity());
         pullToRefreshView = (PullToRefreshView) v.findViewById(R.id.fragment_second_activity_pulltorefreshview);
         myListView = (ListView) v.findViewById(R.id.fragment_second_activity_listview);
+        pullToRefreshView.setOnFooterRefreshListener(this);
+        pullToRefreshView.setOnHeaderRefreshListener(this);
     }
 
     private void initData() {
@@ -108,6 +90,7 @@ public class SecondActivityFragment extends Fragment {
             @Override
             public void onFailure(Request request, IOException e) {
                 T.checkNet(getActivity());
+                dismissRefresh();
                 proUtils.dismiss();
             }
 
@@ -116,6 +99,7 @@ public class SecondActivityFragment extends Fragment {
                 String body = response.body().string();
                 analysisData(body);
                 handler.sendEmptyMessage(UPDATA_OTHER_CODE);
+                dismissRefresh();
                 proUtils.dismiss();
             }
         }, null);
@@ -174,20 +158,49 @@ public class SecondActivityFragment extends Fragment {
     }
 
     private void refreshOtherAdapter() {
-        myListView.setAdapter(new ActivityAdapter(getActivity(), aList,0));
-//        if (adapter == null) {
-//            adapter = new ActivityAdapter(getActivity(), aList,0);
-//            otherListView.setAdapter(adapter);
-//        } else {
-//            adapter.upData(aList,0);
-//        }
+        if (adapter == null) {
+            adapter = new ActivityAdapter(getActivity(), aList,0);
+            myListView.setAdapter(adapter);
+        } else {
+            adapter.upData(aList,0);
+        }
         myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                SkipUtils.directJump(getActivity(), ActivityDetailActivity.class, false);
+                Map<String,Object> map=new HashMap<String, Object>();
+                map.put(Constant.LIST,aList.get(i));
+                SkipUtils.jumpForMap(getActivity(), ActivityDetailActivity.class,map, false);
             }
         });
     }
 
 
+    @Override
+    public void onFooterRefresh(PullToRefreshView view) {
+        isUpRefresh=true;
+        if (isUpRefresh) {
+            page = page + 1;
+            getOtherData(id);
+        }
+    }
+
+    @Override
+    public void onHeaderRefresh(PullToRefreshView view) {
+        isRefresh=true;
+        if (isRefresh) {
+            page = 1;
+            getOtherData(id);
+        }
+    }
+
+    private void dismissRefresh(){
+        if (isRefresh){
+            pullToRefreshView.onHeaderRefreshComplete();
+            isRefresh=false;
+        }else if (isUpRefresh){
+            pullToRefreshView.onFooterRefreshComplete();
+            isUpRefresh=false;
+        }
+
+    }
 }

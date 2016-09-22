@@ -11,7 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
-import com.dopstore.mall.order.bean.CommOrderData;
 import com.dopstore.mall.order.bean.ConfirmOrderData;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.LoadImageUtils;

@@ -12,9 +12,9 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.ImageView.ScaleType;
+
 import com.dopstore.mall.onekeyshare.OnekeySharePage;
 import com.dopstore.mall.onekeyshare.OnekeyShareThemeImpl;
-
 import com.mob.tools.gui.ScaledImageView;
 
 /** 图片浏览的视图类 */

@@ -19,9 +19,6 @@
 
 package com.dopstore.mall.view.citypicker;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -43,6 +40,9 @@ import android.view.animation.Interpolator;
 import android.widget.Scroller;
 
 import com.dopstore.mall.R;
+
+import java.util.LinkedList;
+import java.util.List;
 
 
 /**

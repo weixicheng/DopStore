@@ -6,7 +6,6 @@ import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -14,8 +13,6 @@ import com.dopstore.mall.R;
 import com.dopstore.mall.activity.adapter.ActivityAdapter;
 import com.dopstore.mall.activity.bean.ActivityData;
 import com.dopstore.mall.base.BaseActivity;
-import com.dopstore.mall.shop.adapter.ShopListAdapter;
-import com.dopstore.mall.shop.bean.ShopListData;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.HttpHelper;
 import com.dopstore.mall.util.ProUtils;

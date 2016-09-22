@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -26,16 +25,11 @@ import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.base.MyApplication;
 import com.dopstore.mall.login.activity.LoginActivity;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.HttpHelper;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.view.CommonDialog;
 import com.dopstore.mall.view.MyViewPager;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 

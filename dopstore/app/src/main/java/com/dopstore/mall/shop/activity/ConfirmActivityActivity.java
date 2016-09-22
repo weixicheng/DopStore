@@ -6,22 +6,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.order.activity.CashierActivity;
-import com.dopstore.mall.order.adapter.ConfirmOrderAdapter;
-import com.dopstore.mall.order.bean.ConfirmOrderData;
-import com.dopstore.mall.person.activity.MyAddressActivity;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.LoadImageUtils;
 import com.dopstore.mall.util.SkipUtils;
-import com.dopstore.mall.view.MyListView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by 喜成 on 16/9/13.

@@ -8,10 +8,9 @@
 
 package com.dopstore.mall.onekeyshare.themes.classic.land;
 
-import com.mob.tools.utils.R;
-
 import com.dopstore.mall.onekeyshare.OnekeyShareThemeImpl;
 import com.dopstore.mall.onekeyshare.themes.classic.FriendListPage;
+import com.mob.tools.utils.R;
 
 /** 横屏的好友列表 */
 public class FriendListPageLand extends FriendListPage {

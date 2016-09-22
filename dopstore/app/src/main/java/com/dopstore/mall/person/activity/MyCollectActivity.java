@@ -6,29 +6,38 @@ import android.os.Message;
 import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dopstore.mall.R;
-import com.dopstore.mall.activity.adapter.TrolleyAdapter;
-import com.dopstore.mall.activity.bean.DataBean;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.person.adapter.MyCollectAdapter;
 import com.dopstore.mall.person.bean.MyCollectData;
 import com.dopstore.mall.shop.activity.ConfirmOrderActivity;
+import com.dopstore.mall.util.Constant;
+import com.dopstore.mall.util.HttpHelper;
+import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
+import com.dopstore.mall.util.T;
+import com.dopstore.mall.util.URL;
+import com.dopstore.mall.util.UserUtils;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.Map;
 
 /**
  * Created by 喜成 on 16/9/8.
@@ -50,10 +59,8 @@ public class MyCollectActivity extends BaseActivity {
 
     private TextView mDelete; // 删除
 
-    /**
-     * 批量模式下，用来记录当前选中状态
-     */
-    private SparseArray<Boolean> mSelectState = new SparseArray<Boolean>();
+    private HttpHelper httpHelper;
+    private ProUtils proUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,37 +70,10 @@ public class MyCollectActivity extends BaseActivity {
         initData();
     }
 
-    private void doDelete(List<Integer> ids) {
-        for (int i = 0; i < mListData.size(); i++) {
-            long dataId = mListData.get(i).getId();
-            for (int j = 0; j < ids.size(); j++) {
-                int deleteId = ids.get(j);
-                if (dataId == deleteId) {
-                    mListData.remove(i);
-                    i--;
-                    ids.remove(j);
-                    j--;
-                }
-            }
-        }
-
-        refreshListView();
-        mSelectState.clear();
-        mCheckAll.setChecked(false);
-
-    }
-
-    private final List<Integer> getSelectedIds() {
-        ArrayList<Integer> selectedIds = new ArrayList<Integer>();
-        for (int index = 0; index < mSelectState.size(); index++) {
-            if (mSelectState.valueAt(index)) {
-                selectedIds.add(mSelectState.keyAt(index));
-            }
-        }
-        return selectedIds;
-    }
 
     private void initView() {
+        httpHelper=HttpHelper.getOkHttpClientUtils(this);
+        proUtils=new ProUtils(this);
         setCustomTitle("我的收藏", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         mListView = (ListView) findViewById(R.id.my_collect_list);
@@ -110,27 +90,58 @@ public class MyCollectActivity extends BaseActivity {
     }
 
     private void initData() {
-        for (int i = 0; i < 3; i++) {
-            MyCollectData data = new MyCollectData();
-            data.setId(i);
-            data.setImage("");
-            data.setPrice("1234");
-            data.setTitle("hvuxcvibjkfbdfb");
-            mListData.add(data);
-        }
-
-        refreshListView();
+        getCollectList();
     }
 
-    private void refreshListView() {
-        if (mListAdapter == null) {
-            mListAdapter = new MyCollectAdapter(this, mListData, mSelectState, mCheckAll);
-            mListView.setAdapter(mListAdapter);
-            mListView.setOnItemClickListener(mListAdapter);
-        } else {
-            mListAdapter.upData(mListData,mListData, mSelectState, mCheckAll);
+    private void getCollectList() {
+        proUtils.show();
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("user_id", UserUtils.getId(this));
+        httpHelper.postKeyValuePairAsync(this, URL.COLLECTION_QUERY, map, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                T.checkNet(MyCollectActivity.this);
+                proUtils.dismiss();
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String body = response.body().string();
+                analyData(body);
+                handler.sendEmptyMessage(UPDATA_COLLECT_CODE);
+                proUtils.dismiss();
+            }
+        }, null);
+    }
+
+    private void analyData(String body){
+        try {
+            JSONObject jo = new JSONObject(body);
+            String code = jo.optString(Constant.ERROR_CODE);
+            if ("0".equals(code)) {
+                JSONArray ja = jo.getJSONArray(Constant.ITEMS);
+                if (ja.length() > 0) {
+                    for (int i = 0; i < ja.length(); i++) {
+                        JSONObject job = ja.getJSONObject(i);
+                        MyCollectData data = new MyCollectData();
+                        data.setId(Integer.parseInt(job.optString(Constant.ID)));
+                        data.setImage(job.optString(Constant.COVER));
+                        data.setTitle(job.optString(Constant.NAME));
+                        data.setPrice(job.optString(Constant.PRICE));
+                        data.setChoose(false);
+                        mListData.add(data);
+                    }
+                }
+            } else {
+                String msg = jo.optString(Constant.ERROR_MSG);
+                T.show(MyCollectActivity.this, msg);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
+
+
 
 
     View.OnClickListener listener = new View.OnClickListener() {
@@ -152,20 +163,20 @@ public class MyCollectActivity extends BaseActivity {
                 case R.id.my_collect_check_box:
                     if (mCheckAll.isChecked()) {
                         if (mListData != null) {
-                            mSelectState.clear();
                             int size = mListData.size();
                             if (size == 0) {
                                 return;
                             }
                             for (int i = 0; i < size; i++) {
-                                int _id = (int) mListData.get(i).getId();
-                                mSelectState.put(_id, true);
+                                mListData.get(i).setChoose(true);
                             }
                             refreshListView();
                         }
                     } else {
                         if (mListAdapter != null) {
-                            mSelectState.clear();
+                            for (int i = 0; i < mListData.size(); i++) {
+                                mListData.get(i).setChoose(false);
+                            }
                             refreshListView();
                         }
                     }
@@ -173,9 +184,11 @@ public class MyCollectActivity extends BaseActivity {
 
                 case R.id.my_collect_delete:
                     if (isBatchModel) {
-                        List<Integer> ids = getSelectedIds();
-                        doDelete(ids);
+                        deleteToService(mListData);
+                        refreshListView();
+                        mCheckAll.setChecked(false);
                     } else {
+
                     }
                     break;
                 default:
@@ -183,6 +196,71 @@ public class MyCollectActivity extends BaseActivity {
             }
         }
     };
+
+    private void deleteToService(List<MyCollectData> mListData) {
+        String idList="";
+        for (int i=0;i<mListData.size();i++){
+            boolean flag=mListData.get(i).isChoose();
+            int id=mListData.get(i).getId();
+            if (flag){
+                idList=id+",";
+            }
+        }
+        String ids="["+idList.substring(0,idList.length()-1)+"]";
+        proUtils.show();
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("user_id", UserUtils.getId(this));
+        map.put("item_list", ids);
+        httpHelper.postKeyValuePairAsync(this, URL.COLLECTION_DEL, map, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                T.checkNet(MyCollectActivity.this);
+                proUtils.dismiss();
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String body = response.body().string();
+                try {
+                    JSONObject jo = new JSONObject(body);
+                    String code = jo.optString(Constant.ERROR_CODE);
+                    if ("0".equals(code)) {
+                        T.show(MyCollectActivity.this, "删除成功");
+                    } else {
+                        String msg = jo.optString(Constant.ERROR_MSG);
+                        T.show(MyCollectActivity.this, msg);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                proUtils.dismiss();
+            }
+        }, null);
+    }
+
+
+    private final static int UPDATA_COLLECT_CODE = 0;
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case UPDATA_COLLECT_CODE: {
+                    refreshListView();
+                }
+                break;
+            }
+        }
+    };
+
+    private void refreshListView() {
+        if (mListAdapter == null) {
+            mListAdapter = new MyCollectAdapter(this, mListData, mCheckAll);
+            mListView.setAdapter(mListAdapter);
+        } else {
+            mListAdapter.upData(mListData, mCheckAll);
+        }
+    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
