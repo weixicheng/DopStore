@@ -21,7 +21,7 @@
         android:layout_marginTop="@dimen/margin_50"
         android:textSize="@dimen/textsize_18"
         android:textColor="@color/gray_color_33"
-        android:text="恭喜您!支付成功" />
+        android:text="恭喜您!报名成功" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -29,7 +29,7 @@
         android:layout_marginTop="@dimen/margin_20"
         android:textSize="@dimen/textsize_18"
         android:textColor="@color/gray_color_99"
-        android:text="请保持手机畅通,以便快递哥哥第一时间联系到您" />
+        android:text="请保持手机畅通,以便商家第一时间联系到您" />
 
     <Button
         android:id="@+id/pay_success_check_bt"

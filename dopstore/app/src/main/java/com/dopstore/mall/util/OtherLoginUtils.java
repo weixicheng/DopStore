@@ -4,6 +4,9 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 
+import com.dopstore.mall.onekeyshare.OnekeyShare;
+import com.dopstore.mall.util.ShareData.ShareData;
+
 import java.util.HashMap;
 
 import cn.sharesdk.framework.Platform;
@@ -109,6 +112,30 @@ public class OtherLoginUtils {
 
     public void setCallBack(OtherCallBack callBack) {
         this.callBack =callBack;
+    }
+
+    public  void showShare(Context context, ShareData shareData) {
+        OnekeyShare oks = new OnekeyShare();
+        //关闭sso授权
+        oks.disableSSOWhenAuthorize();
+        int type=shareData.getType();
+        switch (type){
+            case 0:{//QQ
+                oks.setTitle(shareData.getTitle());
+                oks.setText(shareData.getContent());
+                oks.setTitleUrl(shareData.getUrl());
+            }break;
+            case 1:{//微信
+                oks.setTitle(shareData.getTitle());
+                oks.setText(shareData.getContent());
+                oks.setUrl(shareData.getUrl());
+            }break;
+            case 2:{//新浪
+                oks.setText(shareData.getContent()+shareData.getUrl());
+            }break;
+        }
+        // 启动分享GUI
+        oks.show(context);
     }
 
 

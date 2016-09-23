@@ -96,7 +96,7 @@ public class ShopListActivity extends BaseActivity {
         Map<String, String> map = new HashMap<String, String>();
         map.put(Constant.PAGESIZE, "10");
         map.put(Constant.PAGE, "1");
-        map.put(Constant.CATEGORY, type);
+        map.put("category_id", type);
         httpHelper.postKeyValuePairAsync(this, URL.GOODS_LIST, map, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {

@@ -36,6 +36,17 @@ public class Utils {
         SimpleDateFormat format = new SimpleDateFormat(formatStr);
         return format.format(time*1000);
     }
+
+    public static String formatTSecond(String times) {
+        long time=Long.parseLong(times);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日");
+        return format.format(time*1000);
+    }
+    public static String formatTDSecond(String times) {
+        long time=Long.parseLong(times);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        return format.format(time*1000);
+    }
     public static String formatMilli(Long time,String formatStr) {
         SimpleDateFormat format = new SimpleDateFormat(formatStr);
         return format.format(time);

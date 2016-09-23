@@ -45,7 +45,7 @@ public class RefundOrderActivity extends BaseActivity {
     private void initData() {
         idTv.setText("订单号:16160805071127");
         stateTv.setText("等待付款");
-        loadImage.displayImage("",shopImage, Constant.OPTIONS_SPECIAL_CODE);
+        loadImage.displayImage("",shopImage);
         titleTv.setText("宝贝可爱欧");
         priceTv.setText("¥ 87.00");
         numTv.setText("✖️ 1");

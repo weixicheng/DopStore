@@ -78,7 +78,7 @@ public class ActivityAdapter extends BaseAdapter {
                 RelativeLayout.LayoutParams.MATCH_PARENT, picSize);
         viewHolder.bigImageView.setLayoutParams(layoutParams);
 
-        loadImageUtils.displayImage(list.get(i).getPicture(), viewHolder.bigImageView, Constant.OPTIONS_SPECIAL_CODE);
+        loadImageUtils.displayImage(list.get(i).getPicture(), viewHolder.bigImageView);
         viewHolder.titleTv.setText(list.get(i).getName());
         viewHolder.priceTv.setText("￥"+list.get(i).getPrice());
         if (isShow==0){

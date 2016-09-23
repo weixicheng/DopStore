@@ -83,7 +83,7 @@ public class ShopListAdapter extends BaseAdapter {
             if (data != null) {
                 holder.title.setText(data.getTitle());
                 holder.price.setText("¥ "+data.getPrice());
-                loadImageUtils.displayImage(data.getImage(),holder.imageView, Constant.OPTIONS_SPECIAL_CODE);
+                loadImageUtils.displayImage(data.getImage(),holder.imageView);
             }
         }
         return convertView;

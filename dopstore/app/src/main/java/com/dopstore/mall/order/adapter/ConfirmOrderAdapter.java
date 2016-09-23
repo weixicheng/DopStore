@@ -76,7 +76,7 @@ public class ConfirmOrderAdapter extends BaseAdapter {
                 holder.num.setText("✖️ "+data.getNum());
                 holder.price.setText("¥"+data.getPrice());
                 holder.title.setText(data.getInfo());
-                loadImageUtils.displayImage(data.getImage(), holder.imageView, Constant.OPTIONS_SPECIAL_CODE);
+                loadImageUtils.displayImage(data.getImage(), holder.imageView);
             }
         }
         return convertView;

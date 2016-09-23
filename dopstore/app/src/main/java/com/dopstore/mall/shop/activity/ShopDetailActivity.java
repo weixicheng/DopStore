@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -19,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
+import com.dopstore.mall.activity.MainActivity;
 import com.dopstore.mall.activity.bean.ShopData;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.shop.adapter.ShopCarAdapter;
@@ -49,15 +51,9 @@ import java.util.Map;
  * 作者：xicheng on 16/9/12
  */
 public class ShopDetailActivity extends BaseActivity {
-    private LinearLayout bgLayout;
-    private RelativeLayout mainLayout;
-    private RelativeLayout shopLayout;
-    private TextView joinTv,onceTv;
     private View serviceV;
     private WebView webView;
     protected WebSettings webSetting;
-    private PopupWindow popupWindow;
-    private TextView poupNumTv;
     private ShopData shopData;
     private HttpHelper httpHelper;
     private ProUtils proUtils;
@@ -80,22 +76,13 @@ public class ShopDetailActivity extends BaseActivity {
         if (map==null)return;
         shopData=(ShopData) map.get(Constant.LIST);
         webView = (WebView) findViewById(R.id.shop_detail_web);
-        mainLayout = (RelativeLayout) findViewById(R.id.shop_detail_main_bt);
-        shopLayout = (RelativeLayout) findViewById(R.id.shop_detail_shop_bt);
-        bgLayout = (LinearLayout) findViewById(R.id.shop_detail_poup_bg);
-        joinTv = (TextView) findViewById(R.id.shop_detail_join_bt);
-        onceTv = (TextView) findViewById(R.id.shop_detail_once_bt);
         serviceV = findViewById(R.id.shop_detail_service_bt);
         setCustomTitle("商品详情", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         rightFirstImageBack(R.mipmap.share_logo,listener);
         rightSecondImageBack(R.mipmap.collect_small_logo,listener);
-        mainLayout.setOnClickListener(listener);
-        shopLayout.setOnClickListener(listener);
-        joinTv.setOnClickListener(listener);
-        onceTv.setOnClickListener(listener);
         serviceV.setOnClickListener(listener);
-        String url="https://www.baidu.com/";
+        String url=URL.SHOP_GOOD_DETAIL_URL+shopData.getId();
         initWebViewSetting();
         if (!TextUtils.isEmpty(url)) {
             webView.loadUrl(url);
@@ -103,7 +90,53 @@ public class ShopDetailActivity extends BaseActivity {
     }
 
     private void initData() {
+        //js调用Android中的方法
+//        webView.addJavascriptInterface(this, "XXX");//XXX未html中的方法
+
     }
+
+    /**
+     * 客户端提供send_comment方法被js调用
+     * by:chenhe at:2015/09/28
+     *
+     * @param uuid   uuid
+     * @param fun_name 调用的方法名
+     * @param json   js给客户端的json
+     */
+    @JavascriptInterface
+    public void send_comment(final String uuid, final String fun_name, final String json) {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Message msg = new Message();
+                msg.what = 0;
+                msg.obj = 1;
+                handler.sendMessage(msg);
+            }
+        }).start();
+    }
+
+    /**
+     * 回掉JS方法将处理信息返回给JS
+     * @param isSuccess
+     * @param json
+     */
+    public void returnToJs(final boolean isSuccess, final JSONObject json){
+        String data = "javascript:app_result('" + isSuccess + "','" + json.toString() + "')";
+        webView.loadUrl(data);
+    }
+
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what==0){
+                //TODO:执行相关操作
+                returnToJs(true, (JSONObject) msg.obj);
+            }
+        }
+    };
 
     private void initWebViewSetting() {
         if (webView != null) {
@@ -159,6 +192,7 @@ public class ShopDetailActivity extends BaseActivity {
         public void onClick(View view) {
             switch (view.getId()){
                 case R.id.title_right_imageButton:{//分享
+                    SkipUtils.directJump(ShopDetailActivity.this, MainActivity.class,true);
                     }break;
                 case R.id.title_right_before_imageButton:{//收藏
 //                        if ("1".equals(isCollect)){
@@ -167,34 +201,7 @@ public class ShopDetailActivity extends BaseActivity {
                             getCollectStatus(isCollect);
 //                        }
                 }break;
-                case R.id.shop_detail_main_bt:{}break;
-                case R.id.shop_detail_shop_bt:{
-                    addToService();
-                }break;
-                case R.id.shop_detail_join_bt:{
-                    showPop();
-                }break;
-                case R.id.shop_detail_once_bt:{}break;
-                case R.id.poup_shop_close:{
-                    if (popupWindow.isShowing()){popupWindow.dismiss();}
-                }break;
-                case R.id.poup_shop_reduce:{
-                    String num=poupNumTv.getText().toString().trim();
-                    int cartNum=Integer.parseInt(num);
-                    if (cartNum==1)return;
-                    cartNum=cartNum-1;
-                    poupNumTv.setText(cartNum);
-                }break;
-                case R.id.poup_shop_add:{
-                    String num=poupNumTv.getText().toString().trim();
-                    int cartNum=Integer.parseInt(num);
-                    cartNum=cartNum+1;
-                    poupNumTv.setText(cartNum);
-                }break;
                 case R.id.shop_detail_service_bt:{}break;
-                case R.id.poup_shop_join_bt:{
-                    addToService();
-                }break;
             }
 
         }
@@ -236,8 +243,8 @@ public class ShopDetailActivity extends BaseActivity {
             }
         }, null);
     }
-
-    private void addToService() {
+    @JavascriptInterface
+    public void addToService() {
         proUtils.show();
         final Map<String,String> map=new HashMap<String,String>();
         map.put("user_id", UserUtils.getId(this));
@@ -271,46 +278,6 @@ public class ShopDetailActivity extends BaseActivity {
         }, null);
     }
 
-    private void showPop() {
-        List<CommonData> lists=new ArrayList<CommonData>();
-        for (int i=0;i<4;i++){
-            CommonData data=new CommonData();
-            data.setName("24");
-            lists.add(data);
-        }
-        bgLayout.setVisibility(View.VISIBLE);
-        int screenWidth = getWindowManager().getDefaultDisplay().getWidth();
-        View v= LayoutInflater.from(this).inflate(R.layout.poup_shop_car,null);
-        ImageView imageView=(ImageView) v.findViewById(R.id.poup_shop_image);
-        TextView info=(TextView) v.findViewById(R.id.poup_shop_info);
-        TextView price=(TextView) v.findViewById(R.id.poup_shop_price);
-        View close=v.findViewById(R.id.poup_shop_close);
-        loadImageUtils.displayImage(shopData.getCover(),imageView,Constant.OPTIONS_SPECIAL_CODE);
-        info.setText(shopData.getName());
-        price.setText("￥"+shopData.getPrice());
-        GridView colorGw=(GridView) v.findViewById(R.id.poup_shop_color_gridview);
-        GridView typeGw=(GridView) v.findViewById(R.id.poup_shop_type_gridview);
-        TextView reduceTv=(TextView) v.findViewById(R.id.poup_shop_reduce);
-        poupNumTv=(TextView) v.findViewById(R.id.poup_shop_num);
-        TextView addTv=(TextView) v.findViewById(R.id.poup_shop_add);
-        RelativeLayout joinBt=(RelativeLayout) v.findViewById(R.id.poup_shop_join_bt);
-        colorGw.setAdapter(new ShopCarAdapter(this,lists));
-        typeGw.setAdapter(new ShopCarAdapter(this,lists));
-        close.setOnClickListener(listener);
-        reduceTv.setOnClickListener(listener);
-        addTv.setOnClickListener(listener);
-        joinBt.setOnClickListener(listener);
-        int height=v.getHeight();
-        popupWindow= PopupUtils.ShowBottomPopupWindow(this,popupWindow,v,screenWidth,450,findViewById(R.id.shop_detail_main_layout));
-
-        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                popupWindow=null;
-                bgLayout.setVisibility(View.GONE);
-            }
-        });
-    }
 
 
     public void onResume() {
@@ -322,19 +289,6 @@ public class ShopDetailActivity extends BaseActivity {
         super.onPause();
 
     }
-
-    private final static int ADD_SUCCESS_CODE=0;
-    Handler handler=new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what){
-                case ADD_SUCCESS_CODE:{
-                    if (popupWindow.isShowing()){popupWindow.dismiss();}
-                }break;
-            }
-        }
-    };
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

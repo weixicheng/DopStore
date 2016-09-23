@@ -105,7 +105,7 @@ public class TrolleyAdapter extends BaseAdapter {
         holder.content.setText(data.getContent());
         holder.price.setText("￥" + data.getPrice());
         holder.carNum.setText(data.getCarNum() + "");
-        loadImageUtils.displayImage(data.getCover(),holder.image,Constant.OPTIONS_SPECIAL_CODE);
+        loadImageUtils.displayImage(data.getCover(),holder.image);
         boolean selected = data.isChoose();
         holder.checkBox.setChecked(selected);
         holder.checkBox.setOnClickListener(new View.OnClickListener() {

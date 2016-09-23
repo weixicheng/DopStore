@@ -79,7 +79,7 @@ public class BabyAdapter extends BaseAdapter {
                 picSize, picSize);
         viewHolder.bigImageView.setLayoutParams(layoutParams);
 
-        loadImageUtils.displayImage(list.get(i).getImage(), viewHolder.bigImageView, Constant.OPTIONS_SPECIAL_CODE);
+        loadImageUtils.displayImage(list.get(i).getImage(), viewHolder.bigImageView);
         viewHolder.titleTv.setText(list.get(i).getName());
         String isSelect = list.get(i).getIsSelect();
         if ("1".equals(isSelect)) {

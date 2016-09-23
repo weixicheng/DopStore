@@ -31,7 +31,7 @@ public class HomeAdImageAdapter extends StaticPagerAdapter {
     @Override
     public View getView(ViewGroup container, int position) {
         ImageView view = new ImageView(container.getContext());
-        loadImageUtils.displayImage(adapterList.get(position).getPicture(), view, Constant.OPTIONS_SPECIAL_CODE);
+        loadImageUtils.displayImage(adapterList.get(position).getPicture(), view);
         view.setScaleType(ImageView.ScaleType.CENTER_CROP);
         view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         return view;

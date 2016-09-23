@@ -120,7 +120,7 @@ public class PersonFragment extends Fragment {
             long time=currentTime-babytime;
             String babyName=UserUtils.getBabyName(getActivity());
             introTv.setText(babyName+"  "+ Utils.formatMilli(time,"dd日HH时"));
-            loadImageUtils.displayImage(UserUtils.getAvatar(getActivity()), headImage, Constant.OPTIONS_NORMAL_CODE);
+            loadImageUtils.displayImage(UserUtils.getAvatar(getActivity()), headImage);
             priceTv.setText(UserUtils.getBalance(getActivity()));
         } else {
             nameTv.setVisibility(View.INVISIBLE);

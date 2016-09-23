@@ -64,13 +64,38 @@ public class MyActivityAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         if (items != null && items.size() > 0) {
-            final MyActivityData data = items.get(position);
+            MyActivityData data = items.get(position);
             if (data != null) {
-                holder.num.setText(data.getId());
-                holder.state.setText(data.getState());
+                holder.num.setText("订单号:"+data.getId());
+                int type=Integer.parseInt(data.getState());
+                String typeName="";
+                switch (type){
+                    case 0:{
+                        typeName="等待付款";
+                    }break;
+                    case 1:{
+                        typeName="付款成功";
+                    }break;
+                    case 2:{
+                        typeName="订单取消";
+                    }break;
+                    case 3:{
+                        typeName="报名成功";
+                    }break;
+                    case 4:{
+                        typeName="退款申请中";
+                    }break;
+                    case 5:{
+                        typeName="退款中";
+                    }break;
+                    case 6:{
+                        typeName="退款成功";
+                    }break;
+                }
+                holder.state.setText(typeName);
                 holder.title.setText(data.getTitle());
                 holder.intro.setText(data.getIntro());
-                loadImageUtils.displayImage(data.getImage(), holder.imageView, Constant.OPTIONS_SPECIAL_CODE);
+                loadImageUtils.displayImage(data.getImage(), holder.imageView);
             }
         }
         return convertView;

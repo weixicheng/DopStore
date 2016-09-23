@@ -73,7 +73,7 @@ public class SearchAdapter extends BaseAdapter {
         String image = list.get(i).getPicture();
 
         viewHolder.titleTv.setText(title);
-        loadImageUtils.displayImage(image, viewHolder.head, Constant.OPTIONS_SPECIAL_CODE);
+        loadImageUtils.displayImage(image, viewHolder.head);
 
         return view;
     }

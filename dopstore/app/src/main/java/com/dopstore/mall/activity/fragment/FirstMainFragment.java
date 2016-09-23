@@ -153,7 +153,7 @@ public class FirstMainFragment extends Fragment implements OnFooterRefreshListen
 
     private void getMiddleData() {
         proUtils.show();
-        httpHelper.getDataAsync(getActivity(), URL.HOME_THEME, new Callback() {
+        httpHelper.postKeyValuePairAsync(getActivity(), URL.HOME_THEME,null, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
                 T.checkNet(getActivity());
@@ -191,7 +191,8 @@ public class FirstMainFragment extends Fragment implements OnFooterRefreshListen
         Map<String, String> map = new HashMap<String, String>();
         map.put(Constant.PAGESIZE, "10");
         map.put(Constant.PAGE, page + "");
-        map.put(Constant.CATEGORY, type);
+        map.put(Constant.CATEGORY, "");
+        map.put("is_recommended", "1");
         httpHelper.postKeyValuePairAsync(getActivity(), URL.GOODS_LIST, map, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {

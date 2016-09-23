@@ -146,7 +146,7 @@ public class MyDetailActivity extends BaseActivity {
                 cityName="";
             }
         }
-        loadImage.displayImage(UserUtils.getAvatar(this),headImage,Constant.OPTIONS_NORMAL_CODE);
+        loadImage.displayImage(UserUtils.getAvatar(this),headImage);
         cityTv.setText(cityName);
         babyTv.setText(UserUtils.getBabyName(this));
         String babygender=UserUtils.getBabyGender(this);
@@ -478,7 +478,7 @@ public class MyDetailActivity extends BaseActivity {
                 if (resultCode == RESULT_OK) {
                     mListResult = data.getStringArrayListExtra(SelectorSettings.SELECTOR_RESULTS);
                     String image=mListResult.get(0);
-                    loadImage.displayImage("file://"+image,headImage,Constant.OPTIONS_NORMAL_CODE);
+                    loadImage.displayImage("file://"+image,headImage);
                 }
                 break;
         }

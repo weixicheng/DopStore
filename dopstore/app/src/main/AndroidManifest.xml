@@ -300,6 +300,7 @@
         <activity android:name=".order.activity.CashierActivity" />
         <!--   付款成功  -->
         <activity android:name=".order.activity.PaySuccessActivity" />
+        <activity android:name=".order.activity.NoPaySuccessActivity" />
         <!--  申请退款 -->
         <activity android:name=".order.activity.RefundOrderActivity" />
         <!--  商城列表 -->

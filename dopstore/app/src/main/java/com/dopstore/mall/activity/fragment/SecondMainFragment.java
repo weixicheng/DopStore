@@ -10,9 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.adapter.BottomAdapter;
+import com.dopstore.mall.activity.adapter.MiddleAdapter;
+import com.dopstore.mall.activity.bean.MainMiddleData;
+import com.dopstore.mall.activity.bean.MiddleData;
 import com.dopstore.mall.activity.bean.ShopData;
 import com.dopstore.mall.shop.activity.ShopDetailActivity;
 import com.dopstore.mall.util.Constant;
@@ -21,9 +26,12 @@ import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
+import com.dopstore.mall.view.MyGridView;
+import com.dopstore.mall.view.MyListView;
 import com.dopstore.mall.view.PullToRefreshView;
 import com.dopstore.mall.view.PullToRefreshView.OnFooterRefreshListener;
 import com.dopstore.mall.view.PullToRefreshView.OnHeaderRefreshListener;
+import com.google.gson.Gson;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -44,7 +52,9 @@ import java.util.Map;
  */
 public class SecondMainFragment extends Fragment implements OnFooterRefreshListener, OnHeaderRefreshListener {
     private PullToRefreshView pullToRefreshView;
-    private GridView myGridView;
+    private MyGridView myGridView;
+    private MyListView myListView;
+    private List<MainMiddleData> midddleList = new ArrayList<MainMiddleData>();
     private List<ShopData> bottomList = new ArrayList<ShopData>();
     private HttpHelper httpHelper;
     private ProUtils proUtils;
@@ -52,6 +62,9 @@ public class SecondMainFragment extends Fragment implements OnFooterRefreshListe
     private String id="";
     private boolean isRefresh= false;
     private boolean isUpRefresh = false;
+    private ScrollView mainView;
+
+    private MiddleAdapter middleAdapter;
 
     public SecondMainFragment(String id) {
         this.id=id;
@@ -70,14 +83,55 @@ public class SecondMainFragment extends Fragment implements OnFooterRefreshListe
         httpHelper = HttpHelper.getOkHttpClientUtils(getActivity());
         proUtils = new ProUtils(getActivity());
         pullToRefreshView = (PullToRefreshView) v.findViewById(R.id.main_second_fragmen_pulltorefreshview);
-        myGridView = (GridView) v.findViewById(R.id.main_second_fragment_gridView);
+        myGridView = (MyGridView) v.findViewById(R.id.main_second_fragment_gridView);
+        myListView = (MyListView) v.findViewById(R.id.main_second_fragment_listview);
+        mainView = (ScrollView) v.findViewById(R.id.main_second_main_scrollview);
         pullToRefreshView.setOnFooterRefreshListener(this);
         pullToRefreshView.setOnHeaderRefreshListener(this);
     }
 
     private void initData() {
         bottomList.clear();
+        midddleList.clear();
+        getMiddleData(id);
         getHotData(id);
+    }
+
+    private void getMiddleData(String id) {
+        proUtils.show();
+        Map<String,String> map=new HashMap<String,String>();
+        map.put("category_id",id);
+        httpHelper.postKeyValuePairAsync(getActivity(), URL.HOME_THEME,map, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                T.checkNet(getActivity());
+                dismissRefresh();
+                proUtils.dismiss();
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String body = response.body().string();
+                try {
+                    JSONObject jo = new JSONObject(body);
+                    String code = jo.optString(Constant.ERROR_CODE);
+                    if ("0".equals(code)) {
+                        Gson gson = new Gson();
+                        MiddleData middleData = gson.fromJson(
+                                body, MiddleData.class);
+                        midddleList = middleData.getThemes();
+                    } else {
+                        String msg = new JSONObject(body).optString(Constant.ERROR_MSG);
+                        T.show(getActivity(), msg);
+                    }
+                    handler.sendEmptyMessage(UPDATA_MIDDLE_CODE);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                dismissRefresh();
+                proUtils.dismiss();
+            }
+        }, null);
     }
 
     private void getHotData(String type) {
@@ -85,7 +139,7 @@ public class SecondMainFragment extends Fragment implements OnFooterRefreshListe
         Map<String, String> map = new HashMap<String, String>();
         map.put(Constant.PAGESIZE, "10");
         map.put(Constant.PAGE, page+"");
-        map.put(Constant.CATEGORY, type);
+        map.put("category_id", type);
         httpHelper.postKeyValuePairAsync(getActivity(), URL.GOODS_LIST, map, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
@@ -133,7 +187,8 @@ public class SecondMainFragment extends Fragment implements OnFooterRefreshListe
         }
     }
 
-    private final static int UPDATA_OTHER_CODE = 0;
+    private final static int UPDATA_MIDDLE_CODE = 0;
+    private final static int UPDATA_OTHER_CODE = 1;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -143,10 +198,22 @@ public class SecondMainFragment extends Fragment implements OnFooterRefreshListe
                     refreshOtherAdapter();
                 }
                 break;
-
+                case UPDATA_MIDDLE_CODE: {
+                    refreshMiddleAdapter();
+                }
+                break;
             }
         }
     };
+
+    private void refreshMiddleAdapter() {
+        if (middleAdapter==null){
+            middleAdapter=new MiddleAdapter(getActivity(),midddleList);
+            myListView.setAdapter(middleAdapter);
+        }else {
+            middleAdapter.upData(midddleList);
+        }
+    }
 
     private void refreshOtherAdapter() {
         myGridView.setAdapter(new BottomAdapter(getActivity(), bottomList));
@@ -159,6 +226,7 @@ public class SecondMainFragment extends Fragment implements OnFooterRefreshListe
                 SkipUtils.jumpForMap(getActivity(), ShopDetailActivity.class,map,false);
             }
         });
+        mainView.smoothScrollTo(0, 0);
     }
 
 

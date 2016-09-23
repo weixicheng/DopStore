@@ -10,23 +10,51 @@
         android:id="@+id/main_second_fragmen_pulltorefreshview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        myRefresh:pullDown="true"
-        myRefresh:pullUp="true"
+        android:orientation="vertical"
         android:background="@color/gray_color_ee"
-        android:orientation="vertical">
+        myRefresh:pullDown="true"
+        myRefresh:pullUp="true">
 
-        <GridView
-            android:id="@+id/main_second_fragment_gridView"
+        <ScrollView
+            android:id="@+id/main_second_main_scrollview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_10"
             android:overScrollMode="never"
-            android:layout_marginRight="@dimen/margin_10"
-            android:layout_marginTop="@dimen/margin_10"
-            android:horizontalSpacing="10dp"
-            android:numColumns="2"
-            android:scrollbars="none"
-            android:verticalSpacing="10dp" />
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.dopstore.mall.view.MyListView
+                    android:id="@+id/main_second_fragment_listview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10"
+                    android:scrollbars="none"
+                    android:divider="@color/gray_color_ee"
+                    android:dividerHeight="10dp" />
+
+                <com.dopstore.mall.view.MyGridView
+                    android:id="@+id/main_second_fragment_gridView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_10"
+                    android:layout_marginRight="@dimen/margin_10"
+                    android:layout_marginTop="@dimen/margin_10"
+                    android:visibility="gone"
+                    android:divider="@color/gray_color_ee"
+                    android:horizontalSpacing="10dp"
+                    android:numColumns="2"
+                    android:scrollbars="none"
+                    android:verticalSpacing="10dp" />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+
     </com.dopstore.mall.view.PullToRefreshView>
 
 </LinearLayout>

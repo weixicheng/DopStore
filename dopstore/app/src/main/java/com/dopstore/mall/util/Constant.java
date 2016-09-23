@@ -12,11 +12,6 @@ public class Constant {
     public static final int SHOWALLBUTTON = 2; // 显示取消和确定按钮
     public static final int SHOWTITLEALLBUTTON = 3;// 显示title 取消和确定按钮
     public static final int SHOWTITLECONFIRMBUTTON = 4;// 显示title 和确定按钮
-    /*******************
-     * 图片加载类型
-     **********************/
-    public static final int OPTIONS_SPECIAL_CODE = 0;// 缓存到内存与Sd
-    public static final int OPTIONS_NORMAL_CODE = 1;// 缓存内存
     /********************
      * 屏幕
      *************************/

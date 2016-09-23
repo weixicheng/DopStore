@@ -77,7 +77,7 @@ public class MyOrderAdapter extends BaseAdapter {
                 holder.state.setText(data.getState());
                 holder.title.setText(data.getTitle());
                 holder.price.setText(data.getPrice());
-                loadImageUtils.displayImage(data.getImage(), holder.imageView, Constant.OPTIONS_SPECIAL_CODE);
+                loadImageUtils.displayImage(data.getImage(), holder.imageView);
                 if (type == 1) {
                     holder.payV.setVisibility(View.VISIBLE);
                 } else {

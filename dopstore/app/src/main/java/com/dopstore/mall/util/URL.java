@@ -6,6 +6,7 @@ package com.dopstore.mall.util;
  */
 public class URL {
     public static String BASE_URL = "http://orange.dev.attackt.com/api/v1/";
+    public static String SHOP_GOOD_DETAIL_URL = "http://orange.dev.attackt.com/h5/goods/";
     public static String SEND_V_CODE = BASE_URL + "send_v_code";//发送验证码
     public static String SEND_VOICE_CODE = BASE_URL + "send_voice_code";//语音验证码
     public static String CHECK_V_CODE = BASE_URL + "check_v_code";//校验验证码
@@ -30,4 +31,7 @@ public class URL {
     public static String COLLECTION_EDIT = BASE_URL + "home/collection/edit";//加入或取消收藏
     public static String COLLECTION_QUERY = BASE_URL + "home/collection/query";//收藏列表
     public static String COLLECTION_DEL = BASE_URL + "home/collection/batch_del";//收藏删除
+    public static String ACTIVITY_DETAILS = BASE_URL + "home/activity_details";//活动详情
+    public static String ORDER_ACTIVITY = BASE_URL + "order/activity";//确认活动单下单
+    public static String ORDER_ACTIVITY_LIST = BASE_URL + "order/activity_list/";//活动订单列表
 }

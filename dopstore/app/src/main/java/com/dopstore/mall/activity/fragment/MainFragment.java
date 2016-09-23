@@ -140,11 +140,11 @@ public class MainFragment extends Fragment {
     private void hideFragment(FragmentTransaction fragmentTransaction) {
 
         if (firstMainFragment != null) {
-            fragmentTransaction.remove(firstMainFragment);
+            fragmentTransaction.hide(firstMainFragment);
         }
 
         if (secondMainFragment != null) {
-            fragmentTransaction.remove(secondMainFragment);
+            fragmentTransaction.hide(secondMainFragment);
         }
     }
 

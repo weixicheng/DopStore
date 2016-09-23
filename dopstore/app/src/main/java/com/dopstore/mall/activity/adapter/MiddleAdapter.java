@@ -32,6 +32,7 @@ import java.util.Map;
 public class MiddleAdapter extends BaseAdapter {
     private Context context;
     private List<MainMiddleData> list;
+    private List<ShopData> datas;
     private LoadImageUtils loadImageUtils;
 
     public MiddleAdapter(Context context, List<MainMiddleData> list) {
@@ -67,23 +68,11 @@ public class MiddleAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) view.getTag();
         }
-        DisplayMetrics dm = new DisplayMetrics();
-        ((Activity) context).getWindowManager().getDefaultDisplay()
-                .getMetrics(dm);
-        // 设置图片宽高
-        int screenWidth = ((Activity) context).getWindowManager()
-                .getDefaultDisplay().getWidth();
-        int marginPx = Utils.dip2px(10, dm.density);
-        int picSize = (screenWidth - marginPx * 2) / 2;
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                screenWidth, picSize);
-        viewHolder.bigImageView.setLayoutParams(layoutParams);
-        viewHolder.bigImageView.setPadding(marginPx, 0, marginPx, 0);
 
-        loadImageUtils.displayImage(list.get(i).getPicture(), viewHolder.bigImageView, Constant.OPTIONS_SPECIAL_CODE);
+        loadImageUtils.displayImage(list.get(i).getPicture(), viewHolder.bigImageView);
 
-        final List<ShopData> datas=list.get(i).getRelated_goods();
-            viewHolder.eScrollView.setAdapter(new MiddleDataAdapter(context, datas));
+        datas=list.get(i).getRelated_goods();
+        viewHolder.eScrollView.setAdapter(new MiddleDataAdapter(context, datas));
         viewHolder.eScrollView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -95,6 +84,11 @@ public class MiddleAdapter extends BaseAdapter {
         });
 
         return view;
+    }
+
+    public void upData(List<MainMiddleData> midddleList) {
+        this.list=midddleList;
+        notifyDataSetChanged();
     }
 
     class ViewHolder {
