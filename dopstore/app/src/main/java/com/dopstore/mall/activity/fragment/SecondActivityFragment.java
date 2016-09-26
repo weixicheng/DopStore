@@ -1,5 +1,6 @@
 package com.dopstore.mall.activity.fragment;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -42,6 +43,7 @@ import java.util.Map;
  * Created by 喜成 on 16/9/5
  * name 活动
  */
+@SuppressLint("ValidFragment")
 public class SecondActivityFragment extends Fragment implements OnFooterRefreshListener,OnHeaderRefreshListener {
     private PullToRefreshView pullToRefreshView;
     private ListView myListView;
@@ -55,7 +57,7 @@ public class SecondActivityFragment extends Fragment implements OnFooterRefreshL
     private boolean isUpRefresh = false;
 
     public SecondActivityFragment(String id) {
-        this.id=id;
+        this.id = id;
     }
 
     @Nullable
@@ -168,7 +170,7 @@ public class SecondActivityFragment extends Fragment implements OnFooterRefreshL
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Map<String,Object> map=new HashMap<String, Object>();
-                map.put(Constant.LIST,aList.get(i));
+                map.put(Constant.ID,aList.get(i).getId());
                 SkipUtils.jumpForMap(getActivity(), ActivityDetailActivity.class,map, false);
             }
         });
@@ -188,6 +190,7 @@ public class SecondActivityFragment extends Fragment implements OnFooterRefreshL
     public void onHeaderRefresh(PullToRefreshView view) {
         isRefresh=true;
         if (isRefresh) {
+            aList.clear();
             page = 1;
             getOtherData(id);
         }

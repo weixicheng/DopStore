@@ -22,6 +22,7 @@ public class ActivityDetailBean implements Serializable{
     private String price;
     private String address;
     private String content;
+    private String is_collect;
     private String category;
     private List<ShopData> items;
 
@@ -135,5 +136,13 @@ public class ActivityDetailBean implements Serializable{
 
     public void setItems(List<ShopData> items) {
         this.items = items;
+    }
+
+    public String getIs_collect() {
+        return is_collect;
+    }
+
+    public void setIs_collect(String is_collect) {
+        this.is_collect = is_collect;
     }
 }

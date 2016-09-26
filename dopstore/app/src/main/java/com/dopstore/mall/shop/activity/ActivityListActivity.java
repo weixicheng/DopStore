@@ -222,7 +222,9 @@ public class ActivityListActivity extends BaseActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                SkipUtils.directJump(ActivityListActivity.this, ActivityDetailActivity.class, false);
+                Map<String,Object> map=new HashMap<String, Object>();
+                map.put(Constant.ID,aList.get(i).getId());
+                SkipUtils.jumpForMap(ActivityListActivity.this, ActivityDetailActivity.class,map, false);
             }
         });
     }

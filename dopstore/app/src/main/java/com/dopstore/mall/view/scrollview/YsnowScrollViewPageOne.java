@@ -5,13 +5,17 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.WindowManager;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+
+import com.dopstore.mall.R;
 
 /**
  * Created by ysnow on 2015/4/20.
  */
 public class YsnowScrollViewPageOne extends ScrollView {
     private int mScreenHeight;
+    private RelativeLayout topLayout;
     public float oldY;
     private int t;
 
@@ -41,7 +45,6 @@ public class YsnowScrollViewPageOne extends ScrollView {
                 //在滑动的时候获得当前值，并计算得到YS,用来判断是向上滑动还是向下滑动
                 float Y = ev.getY();
                 float Ys = Y - oldY;
-
                 //得到scrollview里面空间的高度
                 int childHeight = this.getChildAt(0).getMeasuredHeight();
                 //子控件高度减去scrollview向上滑动的距离
@@ -60,7 +63,6 @@ public class YsnowScrollViewPageOne extends ScrollView {
                 break;
             case MotionEvent.ACTION_UP:
                 getParent().getParent().requestDisallowInterceptTouchEvent(true);
-
                 break;
 
 
@@ -74,6 +76,10 @@ public class YsnowScrollViewPageOne extends ScrollView {
         //t表示本scrollview向上滑动的距离
             this.t=t;
         super.onScrollChanged(l, t, oldl, oldt);
+    }
+
+    public void setView(RelativeLayout topLayout) {
+        this.topLayout = topLayout;
     }
 
 

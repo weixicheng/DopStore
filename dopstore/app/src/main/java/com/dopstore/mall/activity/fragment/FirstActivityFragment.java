@@ -67,6 +67,7 @@ public class FirstActivityFragment extends Fragment implements OnHeaderRefreshLi
     private View firstV, secondV;
     private ScrollView mainView;
     private RollPagerView rollPagerView;
+    private TextView emptyView;
     private MyListView myListView,otherListView;
     private List<CarouselData> titleAdvertList = new ArrayList<CarouselData>();
     private List<ActivityData> aList = new ArrayList<ActivityData>();
@@ -100,13 +101,11 @@ public class FirstActivityFragment extends Fragment implements OnHeaderRefreshLi
         firstV = v.findViewById(R.id.fragment_activity_first_v);
         secondV = v.findViewById(R.id.fragment_activity_second_v);
         rollPagerView = (RollPagerView) v.findViewById(R.id.roll_view_pager);
-        myListView = (MyListView) v.findViewById(R.id.fragment_activity_mylistview);
-        otherListView = (MyListView) v.findViewById(R.id.fragment_activity_other_mylistview);
+        myListView = (MyListView) v.findViewById(R.id.first_fragment_activity_mylistview);
+        otherListView = (MyListView) v.findViewById(R.id.first_fragment_activity_near_mylistview);
+        emptyView = (TextView) v.findViewById(R.id.fragment_first_activity_empty);
         firstLy.setOnClickListener(listener);
         secondLy.setOnClickListener(listener);
-        TextView textView=new TextView(getActivity());
-        textView.setText("请开启定位");
-        otherListView.setEmptyView(textView);
         pullToRefreshView.setOnHeaderRefreshListener(this);
         pullToRefreshView.setOnFooterRefreshListener(this);
     }
@@ -171,6 +170,9 @@ public class FirstActivityFragment extends Fragment implements OnHeaderRefreshLi
                     secondV.setBackgroundColor(getResources().getColor(R.color.white_color));
                     latitude = "";
                     longitude = "";
+                    myListView.setVisibility(View.VISIBLE);
+                    otherListView.setVisibility(View.GONE);
+                    emptyView.setVisibility(View.GONE);
                     aList.clear();
                     getTdata();
                 }
@@ -180,6 +182,9 @@ public class FirstActivityFragment extends Fragment implements OnHeaderRefreshLi
                     firstV.setBackgroundColor(getResources().getColor(R.color.white_color));
                     secondTv.setTextColor(getResources().getColor(R.color.red_color_f93448));
                     secondV.setBackgroundColor(getResources().getColor(R.color.red_color_f93448));
+                    myListView.setVisibility(View.GONE);
+                    otherListView.setVisibility(View.VISIBLE);
+                    emptyView.setVisibility(View.GONE);
                     aList.clear();
                     getNdata();
                 }
@@ -305,11 +310,6 @@ public class FirstActivityFragment extends Fragment implements OnHeaderRefreshLi
                     refreshNAdapter();
                 }
                 break;
-                case UPDATA_OTHER_CODE: {
-                    refreshOtherAdapter();
-                }
-                break;
-
             }
         }
     };
@@ -351,6 +351,7 @@ public class FirstActivityFragment extends Fragment implements OnHeaderRefreshLi
     }
 
     private void refreshAdapter() {
+        emptyView.setVisibility(View.GONE);
         if (adapter == null) {
             adapter = new ActivityAdapter(getActivity(), aList,0);
             myListView.setAdapter(adapter);
@@ -361,44 +362,35 @@ public class FirstActivityFragment extends Fragment implements OnHeaderRefreshLi
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Map<String,Object> map=new HashMap<String, Object>();
-                map.put(Constant.LIST,aList.get(i));
+                map.put(Constant.ID,aList.get(i).getId());
                 SkipUtils.jumpForMap(getActivity(), ActivityDetailActivity.class,map, false);
             }
         });
         mainView.smoothScrollTo(0, 0);
     }
     private void refreshNAdapter() {
+        if (aList.size()>0){
+            emptyView.setVisibility(View.GONE);
+            otherListView.setVisibility(View.VISIBLE);
+        }else {
+            emptyView.setVisibility(View.VISIBLE);
+            otherListView.setVisibility(View.GONE);
+        }
         if (adapter == null) {
             adapter = new ActivityAdapter(getActivity(), aList,1);
-            myListView.setAdapter(adapter);
+            otherListView.setAdapter(adapter);
         } else {
             adapter.upData(aList,1);
         }
         mainView.smoothScrollTo(0, 0);
-        myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Map<String,Object> map=new HashMap<String, Object>();
-                map.put(Constant.LIST,aList.get(i));
-                SkipUtils.jumpForMap(getActivity(), ActivityDetailActivity.class,map, false);
-            }
-        });
-    }
-    private void refreshOtherAdapter() {
-        otherListView.setAdapter(new ActivityAdapter(getActivity(), aList,0));
-//        if (adapter == null) {
-//            adapter = new ActivityAdapter(getActivity(), aList,0);
-//            otherListView.setAdapter(adapter);
-//        } else {
-//            adapter.upData(aList,0);
-//        }
         otherListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                SkipUtils.directJump(getActivity(), ActivityDetailActivity.class, false);
+                Map<String,Object> map=new HashMap<String, Object>();
+                map.put(Constant.ID,aList.get(i).getId());
+                SkipUtils.jumpForMap(getActivity(), ActivityDetailActivity.class,map, false);
             }
         });
-        mainView.smoothScrollTo(0, 0);
     }
 
     private void getGPSData() {
@@ -466,6 +458,7 @@ public class FirstActivityFragment extends Fragment implements OnHeaderRefreshLi
     public void onHeaderRefresh(PullToRefreshView view) {
         isRefresh=true;
         if (isRefresh) {
+            aList.clear();
             page = 1;
             initData();
         }

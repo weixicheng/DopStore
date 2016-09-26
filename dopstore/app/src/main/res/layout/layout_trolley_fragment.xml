@@ -12,8 +12,11 @@
         <include layout="@layout/common_title" />
 
         <LinearLayout
+            android:id="@+id/trolley_check_box_layout"
             android:layout_width="match_parent"
             android:padding="@dimen/margin_10"
+            android:visibility="gone"
+            android:orientation="horizontal"
             android:layout_height="wrap_content">
 
             <CheckBox

@@ -70,6 +70,16 @@ public class MiddleAdapter extends BaseAdapter {
         }
 
         loadImageUtils.displayImage(list.get(i).getPicture(), viewHolder.bigImageView);
+        final int position=i;
+//        viewHolder.bigImageView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                String id=list.get(position).getId();
+//                Map<String,Object> map=new HashMap<String, Object>();
+//                map.put(Constant.ID,id);
+//                SkipUtils.jumpForMap(context, ShopDetailActivity.class,map,false);
+//            }
+//        });
 
         datas=list.get(i).getRelated_goods();
         viewHolder.eScrollView.setAdapter(new MiddleDataAdapter(context, datas));
@@ -77,8 +87,11 @@ public class MiddleAdapter extends BaseAdapter {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 ShopData data=datas.get(i);
+                String id=data.getId();
+                String isCollect=data.getIs_collect();
                 Map<String,Object> map=new HashMap<String, Object>();
-                map.put(Constant.LIST,data);
+                map.put(Constant.ID,id);
+                map.put(Constant.IS_COLLECT,isCollect);
                 SkipUtils.jumpForMap(context, ShopDetailActivity.class,map,false);
             }
         });

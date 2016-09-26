@@ -9,64 +9,68 @@
         android:id="@+id/my_collect_top"
         layout="@layout/common_title" />
 
-    <RelativeLayout
-        android:id="@+id/my_collect_bottom"
-        android:layout_width="match_parent"
-        android:visibility="gone"
-        android:background="@color/white_color"
-        android:layout_alignParentBottom="true"
-        android:layout_height="50dp">
-
+  
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:padding="@dimen/margin_10"
-            android:layout_centerVertical="true"
-            android:layout_height="match_parent">
+            android:id="@+id/my_collect_title_layout"
+            android:layout_width="match_parent"
+            android:layout_below="@id/my_collect_top"
+            android:layout_height="@dimen/margin_50"
+            android:background="@color/white_color">
 
-            <CheckBox
-                android:id="@+id/my_collect_check_box"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center_vertical"
-                android:background="@null"
-                android:button="@drawable/check_box_bg"
-                android:checkMark="?android:attr/listChoiceIndicatorMultiple"
-                android:clickable="true"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:gravity="center"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:visibility="visible"
-                android:checked="false" />
+        <RelativeLayout
+            android:id="@+id/my_collect_first_ly"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
             <TextView
+                android:id="@+id/my_collect_first_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="全选"
-                android:layout_marginLeft="@dimen/margin_10"
-                android:layout_gravity="center_vertical"
+                android:layout_centerInParent="true"
+                android:text="商品"
                 android:textColor="@color/gray_color_33"
-                android:textSize="@dimen/textsize_14" />
-        </LinearLayout>
+                android:textSize="@dimen/textsize_16" />
 
-        <Button
-            android:id="@+id/my_collect_delete"
-            android:layout_width="120dp"
-            android:text="删除"
-            android:textColor="@color/white_color"
-            android:textSize="@dimen/textsize_14"
-            android:gravity="center"
-            android:background="@color/red_color_f93448"
-            android:layout_alignParentRight="true"
-            android:layout_height="@dimen/margin_50" />
+            <View
+                android:id="@+id/my_collect_first_v"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/red_color_f93448" />
 
-    </RelativeLayout>
+        </RelativeLayout>
 
+        <RelativeLayout
+            android:id="@+id/my_collect_second_ly"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/my_collect_second_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="活动"
+                android:textColor="@color/gray_color_33"
+                android:textSize="@dimen/textsize_16" />
+
+            <View
+                android:id="@+id/my_collect_second_v"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/white_color" />
+
+        </RelativeLayout>
+    </LinearLayout>
+    
     <ListView
-        android:id="@+id/my_collect_list"
-        android:layout_below="@id/my_collect_top"
-        android:layout_above="@id/my_collect_bottom"
+        android:id="@+id/my_collect_shop_list"
+        android:layout_below="@id/my_collect_title_layout"
         android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/margin_10"
         android:dividerHeight="@dimen/margin_10"
         android:divider="@color/gray_color_ee"
         android:layout_height="match_parent" />

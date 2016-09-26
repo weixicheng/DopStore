@@ -94,6 +94,7 @@ public class Constant {
     public static final String CATEGORIES = "categories";
     public static final String ITEMS = "items";
     public static final String order_id = "order_id";
+    public static final String IS_COLLECT = "is_collect";
 
 
 

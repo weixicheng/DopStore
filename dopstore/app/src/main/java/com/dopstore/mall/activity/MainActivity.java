@@ -72,7 +72,8 @@ public class MainActivity extends BaseActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Constant.UPDATA_USER_FLAG);
         registerReceiver(receiver, filter);
-        Map<String, String> map = new HashMap<>();
+
+
         mainRly = (RelativeLayout) findViewById(R.id.main_tab_button);
         viewPager = (MyViewPager) findViewById(R.id.main_content_viewpager);
         bilingRly = (RelativeLayout) findViewById(R.id.billing_tab_button);
@@ -98,6 +99,13 @@ public class MainActivity extends BaseActivity {
         viewPager.setNoScroll(true);
         viewPager.setAdapter(adapter);
 
+        Map<String, Object> map = SkipUtils.getMap(this);
+        if (map!=null){
+            String id= map.get(Constant.ID).toString();
+            if (id.equals("2")){
+                viewPager.setCurrentItem(ROB_CODE);
+            }
+        }
 
     }
 

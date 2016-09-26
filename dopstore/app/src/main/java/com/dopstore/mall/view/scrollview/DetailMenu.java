@@ -6,21 +6,23 @@ import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+
+import com.dopstore.mall.R;
 
 /**
  * Created by ysnow on 2015/3/3.
- *
- *
  */
 public class DetailMenu extends ScrollView {
-      private int mScreenHeight;
+    private int mScreenHeight;
+    private RelativeLayout topLayout;
 
 
     private YsnowScrollViewPageOne wrapperMenu;
     private YsnowScrollView wrapperContent;
-    private boolean isSetted=false;
-    private boolean ispageOne=true;
+    private boolean isSetted = false;
+    private boolean ispageOne = true;
 
     public DetailMenu(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -30,9 +32,9 @@ public class DetailMenu extends ScrollView {
         super(context, attrs, defStyleAttr);
         //获得屏幕的宽度和计算设置的偏移量的像素值,并计算出menu的宽度
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics metrics=new DisplayMetrics();
+        DisplayMetrics metrics = new DisplayMetrics();
         windowManager.getDefaultDisplay().getMetrics(metrics);
-        mScreenHeight=metrics.heightPixels;//得到屏幕的宽度(像素)
+        mScreenHeight = metrics.heightPixels;//得到屏幕的宽度(像素)
     }
 
     public DetailMenu(Context context) {
@@ -49,7 +51,7 @@ public class DetailMenu extends ScrollView {
             //设置两个子View的高度为手机的高度
             wrapperMenu.getLayoutParams().height = mScreenHeight;
             wrapperContent.getLayoutParams().height = mScreenHeight;
-            isSetted=true;
+            isSetted = true;
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
@@ -58,42 +60,45 @@ public class DetailMenu extends ScrollView {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
         if (changed) {
-            this.scrollTo(0,0);
+            this.scrollTo(0, 0);
         }
 
     }
 
 
-
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        int action=ev.getAction();
+        int action = ev.getAction();
         switch (action) {
             case MotionEvent.ACTION_UP:
+                topLayout.setBackgroundColor(getResources().getColor(R.color.red_color_f93448));
                 //隐藏在左边的距离
-               int scrollY= getScrollY();
-                int creteria=mScreenHeight /5;//滑动多少距离
+                int scrollY = getScrollY();
+                int creteria = mScreenHeight / 5;//滑动多少距离
                 if (ispageOne) {
-                if (scrollY <= creteria) {
-                    //显示菜单
-                    this.smoothScrollTo(0,0);
-                } else {
-                    //隐藏菜单
-                    this.smoothScrollTo(0, mScreenHeight);
-                    this.setFocusable(false);
-                    ispageOne=false;
-                }
-                }else{
-                    int scrollpadding=  mScreenHeight-scrollY;
-                    if (scrollpadding >= creteria) {
+                    if (scrollY <= creteria) {
+                        //显示菜单
+                        topLayout.setBackgroundColor(getResources().getColor(R.color.transparent));
                         this.smoothScrollTo(0, 0);
-                        ispageOne=true;
                     } else {
-                        this.smoothScrollTo(0,mScreenHeight);
+                        //隐藏菜单
+                        topLayout.setBackgroundColor(getResources().getColor(R.color.red_color_f93448));
+                        this.smoothScrollTo(0, mScreenHeight);
+                        this.setFocusable(false);
+                        ispageOne = false;
+                    }
+                } else {
+                    int scrollpadding = mScreenHeight - scrollY;
+                    if (scrollpadding >= creteria) {
+                        topLayout.setBackgroundColor(getResources().getColor(R.color.transparent));
+                        this.smoothScrollTo(0, 0);
+                        ispageOne = true;
+                    } else {
+                        topLayout.setBackgroundColor(getResources().getColor(R.color.red_color_f93448));
+                        this.smoothScrollTo(0, mScreenHeight);
                     }
                 }
-
-return true;
+                return true;
         }
         return super.onTouchEvent(ev);
     }
@@ -101,14 +106,18 @@ return true;
 
     public void closeMenu() {
         if (ispageOne) return;
-        this.smoothScrollTo(0,0);
-        ispageOne=true;
+        this.smoothScrollTo(0, 0);
+        ispageOne = true;
     }
 
     public void openMenu() {
-        if (!ispageOne)return;
-        this.smoothScrollTo(0,mScreenHeight);
-        ispageOne=false;
+        if (!ispageOne) return;
+        this.smoothScrollTo(0, mScreenHeight);
+        ispageOne = false;
+    }
+
+    public void setView(RelativeLayout topLayout) {
+        this.topLayout = topLayout;
     }
 
     /**
@@ -121,7 +130,6 @@ return true;
             closeMenu();
         }
     }
-
 
 
 }

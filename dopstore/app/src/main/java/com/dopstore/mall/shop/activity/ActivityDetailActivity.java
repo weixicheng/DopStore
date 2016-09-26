@@ -30,6 +30,8 @@ import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.util.Utils;
 import com.dopstore.mall.view.EScrollView;
 import com.dopstore.mall.view.scrollview.DetailMenu;
+import com.dopstore.mall.view.scrollview.YsnowScrollView;
+import com.dopstore.mall.view.scrollview.YsnowScrollViewPageOne;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -48,20 +50,21 @@ import java.util.Map;
  * 作者：xicheng on 16/9/13
  */
 public class ActivityDetailActivity extends BaseActivity {
-    private RelativeLayout bottomLy;
+    private RelativeLayout topLayout,bottomLy;
     private HttpHelper httpHelper;
     private ProUtils proUtils;
-    private ActivityData activityData;
-    private String isCollect = "1";
+    private String isCollect = "0";
     private DetailMenu detailMenu;
+    private YsnowScrollViewPageOne pageOne;
     private ImageView imageView;
     private TextView titleTv, priceTv, numTv, timeTv, ageTv, addressTv,shopTv, phoneTv;
     private EScrollView eScrollView;
     private LinearLayout shopLayout;
 
-    private ActivityDetailBean detailBean = new ActivityDetailBean();
+    private ActivityDetailBean detailBean;
     private List<ShopData> datas;
     private LoadImageUtils loadImageUtils;
+    private String  activity_id;
 
 
     @Override
@@ -78,9 +81,11 @@ public class ActivityDetailActivity extends BaseActivity {
         loadImageUtils=LoadImageUtils.getInstance(this);
         Map<String, Object> map = SkipUtils.getMap(this);
         if (map == null) return;
-        activityData = (ActivityData) map.get(Constant.LIST);
+        activity_id = map.get(Constant.ID).toString();
         detailMenu = (DetailMenu) findViewById(R.id.activity_detail_content_ly);
         imageView = (ImageView) findViewById(R.id.activity_detail_title_image);
+        topLayout = (RelativeLayout) findViewById(R.id.brandsquare_title_layout);
+        pageOne = (YsnowScrollViewPageOne) findViewById(R.id.activity_detail_title_ysnowpage);
         titleTv = (TextView) findViewById(R.id.activity_detail_title_name);
         priceTv = (TextView) findViewById(R.id.activity_detail_price);
         numTv = (TextView) findViewById(R.id.activity_detail_num);
@@ -97,8 +102,14 @@ public class ActivityDetailActivity extends BaseActivity {
         setCustomTitle("活动详情", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         rightFirstImageBack(R.mipmap.share_logo, listener);
-        rightSecondImageBack(R.mipmap.collect_small_logo, listener);
+        if (isCollect.equals("0")){
+            rightSecondImageBack(R.mipmap.collect_small_logo, listener);
+        }else {
+            rightSecondImageBack(R.mipmap.collect_check_logo, listener);
+        }
         detailMenu.openMenu();
+        detailMenu.setView(topLayout);
+        pageOne.setView(topLayout);
     }
 
     private void initData() {
@@ -108,7 +119,8 @@ public class ActivityDetailActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 ShopData data = datas.get(i);
                 Map<String, Object> map = new HashMap<String, Object>();
-                map.put(Constant.LIST, data);
+                map.put(Constant.ID, data.getId());
+                map.put(Constant.IS_COLLECT, data.getIs_collect());
                 SkipUtils.jumpForMap(ActivityDetailActivity.this, ShopDetailActivity.class, map, false);
             }
         });
@@ -117,7 +129,7 @@ public class ActivityDetailActivity extends BaseActivity {
     private void getDetail() {
         proUtils.show();
         Map<String, String> map = new HashMap<String, String>();
-        map.put("activity_id", activityData.getId());
+        map.put("activity_id", activity_id);
         httpHelper.postKeyValuePairAsync(this, URL.ACTIVITY_DETAILS, map, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
@@ -133,6 +145,7 @@ public class ActivityDetailActivity extends BaseActivity {
                     String code = jo.optString(Constant.ERROR_CODE);
                     if ("0".equals(code)) {
                         JSONObject middle = jo.getJSONObject("details");
+                        detailBean = new ActivityDetailBean();
                         detailBean.setId(middle.optString("id"));
                         detailBean.setName(middle.optString("name"));
                         detailBean.setPicture(middle.optString("picture"));
@@ -146,6 +159,8 @@ public class ActivityDetailActivity extends BaseActivity {
                         detailBean.setAddress(middle.optString("address"));
                         detailBean.setContent(middle.optString("content"));
                         detailBean.setCategory(middle.optString("category"));
+                        isCollect=middle.optString("is_collect");
+                        detailBean.setIs_collect(middle.optString("is_collect"));
                         datas = new ArrayList<ShopData>();
                         JSONArray ja = middle.optJSONArray("items");
                         if (ja.length() > 0) {
@@ -156,6 +171,7 @@ public class ActivityDetailActivity extends BaseActivity {
                                 data.setName(json.optString("item_name"));
                                 data.setCover(json.optString("item_pic"));
                                 data.setPrice(json.optString("item_price"));
+                                data.setIs_collect(json.optString("is_collect"));
                                 datas.add(data);
                             }
                         }
@@ -180,6 +196,12 @@ public class ActivityDetailActivity extends BaseActivity {
             super.handleMessage(msg);
             switch (msg.what){
                 case UPDATA_DETAIL_CODE:{
+                    isCollect=detailBean.getIs_collect();
+                    if ("1".equals(isCollect)) {
+                        rightSecondImageBack(R.mipmap.collect_check_logo, listener);
+                    } else {
+                        rightSecondImageBack(R.mipmap.collect_small_logo, listener);
+                    }
                     loadImageUtils.displayImage(detailBean.getPicture(),imageView);
                     titleTv.setText(detailBean.getName());
                     priceTv.setText("￥"+detailBean.getPrice());
@@ -218,12 +240,10 @@ public class ActivityDetailActivity extends BaseActivity {
                 }
                 break;
                 case R.id.title_right_before_imageButton: {//收藏
-                    if ("1".equals(isCollect)) {
-                        isCollect = "2";
-                        getCollectStatus(isCollect);
-                    } else {
-                        isCollect = "1";
-                        getCollectStatus(isCollect);
+                    if ("0".equals(isCollect)){
+                        getCollectStatus("1");
+                    }else {
+                        getCollectStatus("2");
                     }
                 }
                 break;
@@ -246,8 +266,9 @@ public class ActivityDetailActivity extends BaseActivity {
         proUtils.show();
         Map<String, String> map = new HashMap<String, String>();
         map.put("user_id", UserUtils.getId(this));
-        map.put("item_id", activityData.getId());
+        map.put("item_id", activity_id);
         map.put("action_id", isCollect);
+        map.put("is_activity", "1");
         httpHelper.postKeyValuePairAsync(this, URL.COLLECTION_EDIT, map, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {

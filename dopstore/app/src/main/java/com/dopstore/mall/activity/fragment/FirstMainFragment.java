@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -63,7 +64,7 @@ public class FirstMainFragment extends Fragment implements OnFooterRefreshListen
     private RollPagerView rollPagerView;
     private MyListView myListView;
     private MyGridView myGridView;
-    private TextView hotTv;
+    private LinearLayout hotLayout;
     private List<CarouselData> titleAdvertList = new ArrayList<CarouselData>();
     private List<MainMiddleData> midddleList = new ArrayList<MainMiddleData>();
     private List<ShopData> bottomList = new ArrayList<ShopData>();
@@ -91,7 +92,7 @@ public class FirstMainFragment extends Fragment implements OnFooterRefreshListen
         rollPagerView = (RollPagerView) v.findViewById(R.id.roll_view_pager);
         myListView = (MyListView) v.findViewById(R.id.main_middle_listview);
         myGridView = (MyGridView) v.findViewById(R.id.main_bottom_gridView);
-        hotTv = (TextView) v.findViewById(R.id.main_bottom_title_tv);
+        hotLayout = (LinearLayout) v.findViewById(R.id.first_main_fragment_hot_list_layout);
         pullToRefreshView.setOnHeaderRefreshListener(this);
         pullToRefreshView.setOnFooterRefreshListener(this);
     }
@@ -197,7 +198,6 @@ public class FirstMainFragment extends Fragment implements OnFooterRefreshListen
             @Override
             public void onFailure(Request request, IOException e) {
                 T.checkNet(getActivity());
-                hotTv.setVisibility(View.GONE);
                 dismissRefresh();
                 proUtils.dismiss();
             }
@@ -267,9 +267,9 @@ public class FirstMainFragment extends Fragment implements OnFooterRefreshListen
 
     private void refreshBottomAdapter() {
         if (bottomList.size() > 0) {
-            hotTv.setVisibility(View.VISIBLE);
+            hotLayout.setVisibility(View.VISIBLE);
         } else {
-            hotTv.setVisibility(View.GONE);
+            hotLayout.setVisibility(View.GONE);
         }
         myGridView.setAdapter(new BottomAdapter(getActivity(), bottomList));
         mainView.smoothScrollTo(0, 0);
@@ -277,11 +277,15 @@ public class FirstMainFragment extends Fragment implements OnFooterRefreshListen
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 ShopData data = bottomList.get(i);
-                Map<String, Object> map = new HashMap<String, Object>();
-                map.put(Constant.LIST, data);
+                String id=data.getId();
+                String isCollect=data.getIs_collect();
+                Map<String,Object> map=new HashMap<String, Object>();
+                map.put(Constant.ID,id);
+                map.put(Constant.IS_COLLECT,isCollect);
                 SkipUtils.jumpForMap(getActivity(), ShopDetailActivity.class, map, false);
             }
         });
+        mainView.smoothScrollTo(0, 0);
     }
 
 

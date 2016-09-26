@@ -1,5 +1,6 @@
 package com.dopstore.mall.activity.fragment;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -50,6 +51,7 @@ import java.util.Map;
  * 作者：xicheng on 16/9/21 17:57
  * 类别：
  */
+@SuppressLint("ValidFragment")
 public class SecondMainFragment extends Fragment implements OnFooterRefreshListener, OnHeaderRefreshListener {
     private PullToRefreshView pullToRefreshView;
     private MyGridView myGridView;
@@ -137,8 +139,8 @@ public class SecondMainFragment extends Fragment implements OnFooterRefreshListe
     private void getHotData(String type) {
         proUtils.show();
         Map<String, String> map = new HashMap<String, String>();
-        map.put(Constant.PAGESIZE, "10");
-        map.put(Constant.PAGE, page+"");
+//        map.put(Constant.PAGESIZE, "10");
+//        map.put(Constant.PAGE, page+"");
         map.put("category_id", type);
         httpHelper.postKeyValuePairAsync(getActivity(), URL.GOODS_LIST, map, new Callback() {
             @Override
@@ -151,41 +153,39 @@ public class SecondMainFragment extends Fragment implements OnFooterRefreshListe
             @Override
             public void onResponse(Response response) throws IOException {
                 String body = response.body().string();
-                analyData(body);
-                handler.sendEmptyMessage(UPDATA_OTHER_CODE);
+                try {
+                    JSONObject jo = new JSONObject(body);
+                    String code = jo.optString(Constant.ERROR_CODE);
+                    if ("0".equals(code)) {
+                        JSONArray ja = jo.getJSONArray(Constant.ITEMS);
+                        if (ja.length() > 0) {
+                            for (int i = 0; i < ja.length(); i++) {
+                                JSONObject job = ja.getJSONObject(i);
+                                ShopData data = new ShopData();
+                                data.setId(job.optString(Constant.ID));
+                                data.setCover(job.optString(Constant.COVER));
+                                data.setName(job.optString(Constant.NAME));
+                                data.setNumber(job.optString(Constant.NUMBER));
+                                data.setStock_number(job.optString(Constant.STOCK_NUMBER));
+                                data.setPrice(job.optString(Constant.PRICE));
+                                data.setIs_collect(job.optString("is_collect"));
+                                bottomList.add(data);
+                            }
+                        }
+                    } else {
+                        String msg = jo.optString(Constant.ERROR_MSG);
+                        T.show(getActivity(), msg);
+                    }
+                    handler.sendEmptyMessage(UPDATA_OTHER_CODE);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 dismissRefresh();
                 proUtils.dismiss();
             }
         }, null);
     }
 
-    private void analyData(String body){
-        try {
-            JSONObject jo = new JSONObject(body);
-            String code = jo.optString(Constant.ERROR_CODE);
-            if ("0".equals(code)) {
-                JSONArray ja = jo.getJSONArray(Constant.ITEMS);
-                if (ja.length() > 0) {
-                    for (int i = 0; i < ja.length(); i++) {
-                        JSONObject job = ja.getJSONObject(i);
-                        ShopData data = new ShopData();
-                        data.setId(job.optString(Constant.ID));
-                        data.setCover(job.optString(Constant.COVER));
-                        data.setName(job.optString(Constant.NAME));
-                        data.setNumber(job.optString(Constant.NUMBER));
-                        data.setStock_number(job.optString(Constant.STOCK_NUMBER));
-                        data.setPrice(job.optString(Constant.PRICE));
-                        bottomList.add(data);
-                    }
-                }
-            } else {
-                String msg = jo.optString(Constant.ERROR_MSG);
-                T.show(getActivity(), msg);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
 
     private final static int UPDATA_MIDDLE_CODE = 0;
     private final static int UPDATA_OTHER_CODE = 1;
@@ -221,8 +221,11 @@ public class SecondMainFragment extends Fragment implements OnFooterRefreshListe
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 ShopData data=bottomList.get(i);
+                String id=data.getId();
+                String isCollect=data.getIs_collect();
                 Map<String,Object> map=new HashMap<String, Object>();
-                map.put(Constant.LIST,data);
+                map.put(Constant.ID,id);
+                map.put(Constant.IS_COLLECT,isCollect);
                 SkipUtils.jumpForMap(getActivity(), ShopDetailActivity.class,map,false);
             }
         });
@@ -244,6 +247,7 @@ public class SecondMainFragment extends Fragment implements OnFooterRefreshListe
     public void onHeaderRefresh(PullToRefreshView view) {
         isRefresh=true;
         if (isRefresh) {
+            bottomList.clear();
             page = 1;
             getHotData(id);
         }

@@ -15,6 +15,7 @@ import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.util.ACache;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.DataCleanManager;
+import com.dopstore.mall.util.LoadImageUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.UserUtils;
@@ -113,6 +114,7 @@ public class SetActivity extends BaseActivity {
     private void exit() {
         UserUtils.clear(this);
         ACache.get(this).clear();
+        LoadImageUtils.getInstance(this).clear();
         Intent intent = new Intent();
         intent.setAction(Constant.UPDATA_USER_FLAG);
         sendBroadcast(intent);

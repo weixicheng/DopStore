@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.bean.GoodBean;
 import com.dopstore.mall.person.bean.MyCollectData;
+import com.dopstore.mall.util.LoadImageUtils;
 
 import java.util.List;
 
@@ -22,12 +23,12 @@ public class MyCollectAdapter extends BaseAdapter {
 
     private Context context;
     private List<MyCollectData> mListData;// 数据
-    private CheckBox mCheckAll; // 全选 全不选
+    private LoadImageUtils loadImageUtils;
 
-    public MyCollectAdapter(Context context, List<MyCollectData> mListData, CheckBox mCheckAll) {
+    public MyCollectAdapter(Context context, List<MyCollectData> mListData) {
         this.context = context;
         this.mListData = mListData;
-        this.mCheckAll = mCheckAll;
+        loadImageUtils=LoadImageUtils.getInstance(context);
     }
 
     @Override
@@ -45,9 +46,8 @@ public class MyCollectAdapter extends BaseAdapter {
         return position;
     }
 
-    public void upData(List<MyCollectData> mListData, CheckBox mCheckAll) {
+    public void upData(List<MyCollectData> mListData) {
         this.mListData = mListData;
-        this.mCheckAll = mCheckAll;
         notifyDataSetChanged();
     }
 
@@ -58,7 +58,6 @@ public class MyCollectAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(context).inflate(R.layout.item_my_collect, null);
             holder = new ViewHolder();
             holder.num = (TextView) convertView.findViewById(R.id.item_my_collect_price);
-            holder.checkBox = (CheckBox) convertView.findViewById(R.id.item_my_collect_check_box);
             holder.title = (TextView) convertView.findViewById(R.id.item_my_collect_title);
             holder.imageView = (ImageView) convertView.findViewById(R.id.item_my_collect_image);
             convertView.setTag(holder);
@@ -67,32 +66,9 @@ public class MyCollectAdapter extends BaseAdapter {
         }
 
         MyCollectData data = mListData.get(position);
+        loadImageUtils.displayImage(data.getImage(),holder.imageView);
         holder.title.setText(data.getTitle());
-        holder.num.setText("￥" + data.getPrice());
-        boolean selected = mListData.get(position).isChoose();
-        holder.checkBox.setChecked(selected);
-
-        holder.checkBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MyCollectData bean = mListData.get(position);
-                boolean selected = bean.isChoose();
-                ;
-                if (selected) {
-                    mListData.get(position).setChoose(false);
-                } else {
-                    mListData.get(position).setChoose(true);
-                }
-                for (MyCollectData bean1 : mListData) {
-                    if (bean1.isChoose() == false) {
-                        mCheckAll.setChecked(false);
-                    } else {
-                        mCheckAll.setChecked(true);
-                    }
-                }
-                notifyDataSetChanged();
-            }
-        });
+        holder.num.setText("￥" + Float.parseFloat(data.getPrice()));
         return convertView;
     }
 
@@ -101,5 +77,4 @@ public class MyCollectAdapter extends BaseAdapter {
  class ViewHolder {
     public TextView num, title;
     public ImageView imageView;
-    public CheckBox checkBox;
 }

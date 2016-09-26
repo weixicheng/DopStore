@@ -185,10 +185,10 @@ public class ConfirmActivityActivity extends BaseActivity {
                             JSONObject jo = new JSONObject(value);
                             String orderId = jo.optString("order_num");
                             String price = jo.optString("total_fee");
-                            Map<String, Object> map = new HashMap<String, Object>();
-                            map.put(Constant.ID, orderId);
-                            map.put(Constant.PRICE, price);
-                            SkipUtils.jumpForMap(ConfirmActivityActivity.this, CashierActivity.class, map, false);
+                            Map<String,Object> map=new HashMap<String,Object>();
+                            map.put(Constant.ID,orderId);
+                            map.put(Constant.PRICE,price);
+                            SkipUtils.jumpForMap(ConfirmActivityActivity.this, CashierActivity.class,map,false);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

@@ -82,7 +82,6 @@ public class WebActivity extends BaseActivity {
             });
 
             webView.setWebChromeClient(new chromeClient());
-            //webView.addJavascriptInterface(new JsObject(), "qifu");
         }
     }
 

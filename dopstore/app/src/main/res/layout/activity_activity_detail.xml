@@ -3,8 +3,7 @@
     android:id="@+id/activity_order_main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_color_ee"
-    android:orientation="vertical">
+    android:background="@color/gray_color_ee">
 
     <RelativeLayout
         android:id="@+id/activity_detail_bottom_layout"
@@ -30,7 +29,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:text="马上报名"
-
                 android:textColor="@color/white_color"
                 android:textSize="@dimen/textsize_16" />
         </LinearLayout>
@@ -56,6 +54,7 @@
                 android:orientation="vertical">
 
                 <com.dopstore.mall.view.scrollview.YsnowScrollViewPageOne
+                    android:id="@+id/activity_detail_title_ysnowpage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/gray_color_ee"

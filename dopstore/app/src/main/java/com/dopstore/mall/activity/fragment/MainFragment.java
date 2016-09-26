@@ -224,6 +224,7 @@ public class MainFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (data==null)return;
         Bundle bundle = data.getExtras();
 //        //显示扫描到的内容
 //        mTextView.setText(bundle.getString("result"));

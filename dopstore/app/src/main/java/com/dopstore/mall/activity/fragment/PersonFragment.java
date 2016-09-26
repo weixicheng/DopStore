@@ -119,7 +119,7 @@ public class PersonFragment extends Fragment {
             Long currentTime=System.currentTimeMillis();
             long time=currentTime-babytime;
             String babyName=UserUtils.getBabyName(getActivity());
-            introTv.setText(babyName+"  "+ Utils.formatMilli(time,"dd日HH时"));
+            introTv.setText(babyName+"  "+ Utils.formatMilli(babytime,"yyyy年MM月dd日"));
             loadImageUtils.displayImage(UserUtils.getAvatar(getActivity()), headImage);
             priceTv.setText(UserUtils.getBalance(getActivity()));
         } else {

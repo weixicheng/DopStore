@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -57,6 +58,7 @@ public class TrolleyFragment extends Fragment {
     private boolean isBatchModel;// 是否可删除模式
 
     private RelativeLayout mBottonLayout;
+    private LinearLayout checkLayout;
     private CheckBox mCheckAll; // 全选 全不选
 
     private TextView mEdit; // 切换到删除模式
@@ -142,6 +144,7 @@ public class TrolleyFragment extends Fragment {
         httpHelper=HttpHelper.getOkHttpClientUtils(getActivity());
         proUtils=new ProUtils(getActivity());
         mBottonLayout = (RelativeLayout) v.findViewById(R.id.cart_rl_allprie_total);
+        checkLayout = (LinearLayout) v.findViewById(R.id.trolley_check_box_layout);
         mCheckAll = (CheckBox) v.findViewById(R.id.check_box);
         mEdit = (TextView) v.findViewById(R.id.title_right_textButton);
         mEdit.setText("编辑");
@@ -166,6 +169,11 @@ public class TrolleyFragment extends Fragment {
     }
 
     private void refreshListView() {
+        if (mListData.size()>0){
+            checkLayout.setVisibility(View.VISIBLE);
+        }else {
+            checkLayout.setVisibility(View.GONE);
+        }
         if (mListAdapter == null) {
             mListAdapter = new TrolleyAdapter(getActivity(), mListData, mPriceAll, totalPrice, mCheckAll);
             mListView.setAdapter(mListAdapter);

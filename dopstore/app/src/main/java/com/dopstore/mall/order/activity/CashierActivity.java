@@ -3,6 +3,7 @@ package com.dopstore.mall.order.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -11,12 +12,14 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.base.BaseActivity;
+import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.SkipUtils;
 import com.pingplusplus.android.Pingpp;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by 喜成 on 16/9/13.
@@ -27,6 +30,8 @@ public class CashierActivity extends BaseActivity {
     private View bv,av,wv;
     private TextView priceTv;
     private Button sureBt;
+    private String order_id="";
+    private String order_price="";
     /**
      * 微信支付渠道
      */
@@ -59,7 +64,16 @@ public class CashierActivity extends BaseActivity {
         sureBt.setOnClickListener(listener);
     }
     private void initData() {
-        priceTv.setText("¥ 1122.00");
+        Map<String,Object> map=SkipUtils.getMap(this);
+        order_id=map.get(Constant.ID).toString();
+        order_price=map.get(Constant.PRICE).toString();
+        if (!TextUtils.isEmpty(order_price)){
+            float price=Float.parseFloat(order_price);
+            priceTv.setText("¥"+price);
+        }else {
+            order_price="0";
+            priceTv.setText("¥ 0");
+        }
     }
 
     View.OnClickListener listener=new View.OnClickListener() {
@@ -83,7 +97,6 @@ public class CashierActivity extends BaseActivity {
                     }break;
                     case R.id.cashier_sure_pay_bt:{
                         payPrice();
-                        SkipUtils.directJump(CashierActivity.this,PaySuccessActivity.class,true);
                     }break;
                 }
         }
