@@ -15,7 +15,6 @@ public class ShopData implements Serializable{
     private String detail;
     private String stock_surplus;
     private String stock_number;
-    private String is_collect;
 
     public String getId() {
         return id;
@@ -81,11 +80,4 @@ public class ShopData implements Serializable{
         this.stock_number = stock_number;
     }
 
-    public String getIs_collect() {
-        return is_collect;
-    }
-
-    public void setIs_collect(String is_collect) {
-        this.is_collect = is_collect;
-    }
 }

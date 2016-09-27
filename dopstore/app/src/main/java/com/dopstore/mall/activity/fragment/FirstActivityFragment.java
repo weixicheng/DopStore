@@ -2,16 +2,20 @@ package com.dopstore.mall.activity.fragment;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,8 +26,16 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationClient;
+import com.amap.api.location.AMapLocationClientOption;
+import com.amap.api.location.AMapLocationClientOption.AMapLocationProtocol;
+import com.amap.api.location.AMapLocationClientOption.AMapLocationMode;
+import com.amap.api.location.AMapLocationListener;
 import com.dopstore.mall.R;
+import com.dopstore.mall.activity.WebActivity;
 import com.dopstore.mall.activity.adapter.ActivityAdapter;
 import com.dopstore.mall.activity.adapter.HomeAdImageAdapter;
 import com.dopstore.mall.activity.bean.ActivityData;
@@ -36,10 +48,12 @@ import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
+import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.view.MyListView;
 import com.dopstore.mall.view.PullToRefreshView;
 import com.dopstore.mall.view.PullToRefreshView.OnFooterRefreshListener;
 import com.dopstore.mall.view.PullToRefreshView.OnHeaderRefreshListener;
+import com.dopstore.mall.view.rollviewpager.OnItemClickListener;
 import com.dopstore.mall.view.rollviewpager.RollPagerView;
 import com.dopstore.mall.view.rollviewpager.hintview.IconHintView;
 import com.squareup.okhttp.Callback;
@@ -60,7 +74,7 @@ import java.util.Map;
  * Created by 喜成 on 16/9/5
  * name 活动
  */
-public class FirstActivityFragment extends Fragment implements OnHeaderRefreshListener,OnFooterRefreshListener{
+public class FirstActivityFragment extends Fragment implements OnHeaderRefreshListener, OnFooterRefreshListener {
     private PullToRefreshView pullToRefreshView;
     private RelativeLayout firstLy, secondLy;
     private TextView firstTv, secondTv;
@@ -68,7 +82,7 @@ public class FirstActivityFragment extends Fragment implements OnHeaderRefreshLi
     private ScrollView mainView;
     private RollPagerView rollPagerView;
     private TextView emptyView;
-    private MyListView myListView,otherListView;
+    private MyListView myListView, otherListView;
     private List<CarouselData> titleAdvertList = new ArrayList<CarouselData>();
     private List<ActivityData> aList = new ArrayList<ActivityData>();
     private ActivityAdapter adapter;
@@ -76,9 +90,18 @@ public class FirstActivityFragment extends Fragment implements OnHeaderRefreshLi
     private ProUtils proUtils;
     private String latitude = "";
     private String longitude = "";
-    private int page=1;
-    private boolean isRefresh= false;
+    private int page = 1;
+    private boolean isRefresh = false;
     private boolean isUpRefresh = false;
+    private TextView leftTv;
+    //声明AMapLocationClient类对象
+    public AMapLocationClient mLocationClient = null;
+    //声明AMapLocationClientOption对象
+    public AMapLocationClientOption mLocationOption = null;
+
+    public FirstActivityFragment(TextView leftTv) {
+        this.leftTv = leftTv;
+    }
 
     @Nullable
     @Override
@@ -108,20 +131,21 @@ public class FirstActivityFragment extends Fragment implements OnHeaderRefreshLi
         secondLy.setOnClickListener(listener);
         pullToRefreshView.setOnHeaderRefreshListener(this);
         pullToRefreshView.setOnFooterRefreshListener(this);
+
     }
 
     private void initData() {
-        getGPSData();
         getMainData();
+        openGPSSettings();
+        mainView.smoothScrollTo(0, 0);
     }
 
-    private void getMainData(){
+    private void getMainData() {
         titleAdvertList.clear();
         aList.clear();
         getCarousel();
         getTdata();
     }
-
 
 
     /**
@@ -154,6 +178,20 @@ public class FirstActivityFragment extends Fragment implements OnHeaderRefreshLi
                 rollPagerView.setHintView(null);
             }
         }
+        rollPagerView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                CarouselData data = titleAdvertList.get(position);
+                String urlStr = data.getUrl();
+                if (!TextUtils.isEmpty(urlStr)) {
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map.put("title", titleAdvertList.get(position).getTitle());
+                    map.put("url", titleAdvertList.get(position).getUrl());
+                    SkipUtils.jumpForMap(getActivity(), WebActivity.class, map, false);
+                }
+            }
+        });
+        mainView.smoothScrollTo(0, 0);
     }
 
     View.OnClickListener listener = new View.OnClickListener() {
@@ -185,8 +223,8 @@ public class FirstActivityFragment extends Fragment implements OnHeaderRefreshLi
                     myListView.setVisibility(View.GONE);
                     otherListView.setVisibility(View.VISIBLE);
                     emptyView.setVisibility(View.GONE);
-                    aList.clear();
-                    getNdata();
+                    openGPSSettings();
+
                 }
                 break;
                 case R.id.title_right_imageButton: {
@@ -200,7 +238,10 @@ public class FirstActivityFragment extends Fragment implements OnHeaderRefreshLi
 
     private void getCarousel() {
         proUtils.show();
-        httpHelper.getDataAsync(getActivity(), URL.HOME_CAROUSEL + "2", new Callback() {
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("project_type", "2");
+        map.put("user_id", UserUtils.getId(getActivity()));
+        httpHelper.postKeyValuePairAsync(getActivity(), URL.HOME_CAROUSEL, map, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
                 T.checkNet(getActivity());
@@ -243,7 +284,7 @@ public class FirstActivityFragment extends Fragment implements OnHeaderRefreshLi
         proUtils.show();
         Map<String, String> map = new HashMap<String, String>();
         map.put(Constant.PAGESIZE, "10");
-        map.put(Constant.PAGE, page+"");
+        map.put(Constant.PAGE, page + "");
         httpHelper.postKeyValuePairAsync(getActivity(), URL.RECOMMENDED_ACT, map, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
@@ -292,7 +333,6 @@ public class FirstActivityFragment extends Fragment implements OnHeaderRefreshLi
     private final static int UPDATA_TOB_CODE = 1;
     private final static int UPDATA_MIDDLE_CODE = 2;
     private final static int UPDATA_NFC_CODE = 3;
-    private final static int UPDATA_OTHER_CODE = 4;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -314,7 +354,7 @@ public class FirstActivityFragment extends Fragment implements OnHeaderRefreshLi
         }
     };
 
-    private void analysisData(String body){
+    private void analysisData(String body) {
         try {
             JSONObject jo = new JSONObject(body);
             String code = jo.optString(Constant.ERROR_CODE);
@@ -353,101 +393,51 @@ public class FirstActivityFragment extends Fragment implements OnHeaderRefreshLi
     private void refreshAdapter() {
         emptyView.setVisibility(View.GONE);
         if (adapter == null) {
-            adapter = new ActivityAdapter(getActivity(), aList,0);
+            adapter = new ActivityAdapter(getActivity(), aList, 0);
             myListView.setAdapter(adapter);
         } else {
-            adapter.upData(aList,0);
+            adapter.upData(aList, 0);
         }
         myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Map<String,Object> map=new HashMap<String, Object>();
-                map.put(Constant.ID,aList.get(i).getId());
-                SkipUtils.jumpForMap(getActivity(), ActivityDetailActivity.class,map, false);
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put(Constant.ID, aList.get(i).getId());
+                SkipUtils.jumpForMap(getActivity(), ActivityDetailActivity.class, map, false);
             }
         });
         mainView.smoothScrollTo(0, 0);
     }
+
     private void refreshNAdapter() {
-        if (aList.size()>0){
+        if (aList.size() > 0) {
             emptyView.setVisibility(View.GONE);
             otherListView.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             emptyView.setVisibility(View.VISIBLE);
             otherListView.setVisibility(View.GONE);
         }
         if (adapter == null) {
-            adapter = new ActivityAdapter(getActivity(), aList,1);
+            adapter = new ActivityAdapter(getActivity(), aList, 1);
             otherListView.setAdapter(adapter);
         } else {
-            adapter.upData(aList,1);
+            adapter.upData(aList, 1);
         }
-        mainView.smoothScrollTo(0, 0);
         otherListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Map<String,Object> map=new HashMap<String, Object>();
-                map.put(Constant.ID,aList.get(i).getId());
-                SkipUtils.jumpForMap(getActivity(), ActivityDetailActivity.class,map, false);
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put(Constant.ID, aList.get(i).getId());
+                SkipUtils.jumpForMap(getActivity(), ActivityDetailActivity.class, map, false);
             }
         });
-    }
-
-    private void getGPSData() {
-        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return;
-            }
-            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if (location != null) {
-                latitude = location.getLatitude() + "";
-                longitude = location.getLongitude() + "";
-            }
-        } else {
-            LocationListener locationListener = new LocationListener() {
-
-                // Provider的状态在可用、暂时不可用和无服务三个状态直接切换时触发此函数
-                @Override
-                public void onStatusChanged(String provider, int status, Bundle extras) {
-
-                }
-
-                // Provider被enable时触发此函数，比如GPS被打开
-                @Override
-                public void onProviderEnabled(String provider) {
-
-                }
-
-                // Provider被disable时触发此函数，比如GPS被关闭
-                @Override
-                public void onProviderDisabled(String provider) {
-
-                }
-
-                //当坐标改变时触发此函数，如果Provider传进相同的坐标，它就不会被触发
-                @Override
-                public void onLocationChanged(Location location) {
-                    if (location != null) {
-                        Log.e("Map", "Location changed : Lat: "
-                                + location.getLatitude() + " Lng: "
-                                + location.getLongitude());
-                    }
-                }
-            };
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 0, locationListener);
-            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            if (location != null) {
-                latitude = location.getLatitude() + ""; //经度
-                longitude = location.getLongitude() + ""; //纬度
-            }
-        }
+        mainView.smoothScrollTo(0, 0);
     }
 
 
     @Override
     public void onFooterRefresh(PullToRefreshView view) {
-        isUpRefresh=true;
+        isUpRefresh = true;
         if (isUpRefresh) {
             page = page + 1;
             initData();
@@ -456,7 +446,7 @@ public class FirstActivityFragment extends Fragment implements OnHeaderRefreshLi
 
     @Override
     public void onHeaderRefresh(PullToRefreshView view) {
-        isRefresh=true;
+        isRefresh = true;
         if (isRefresh) {
             aList.clear();
             page = 1;
@@ -464,14 +454,66 @@ public class FirstActivityFragment extends Fragment implements OnHeaderRefreshLi
         }
     }
 
-    private void dismissRefresh(){
-        if (isRefresh){
+    private void dismissRefresh() {
+        if (isRefresh) {
             pullToRefreshView.onHeaderRefreshComplete();
-            isRefresh=false;
-        }else if (isUpRefresh){
+            isRefresh = false;
+        } else if (isUpRefresh) {
             pullToRefreshView.onFooterRefreshComplete();
-            isUpRefresh=false;
+            isUpRefresh = false;
         }
 
     }
+
+    private void openGPSSettings() {
+        LocationManager alm = (LocationManager) getActivity()
+                .getSystemService(Context.LOCATION_SERVICE);
+        if (alm.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)) {
+                   getLocation();
+        }else {
+            T.show(getActivity(), "请开启GPS");
+        }
+    }
+
+    private void getLocation() {
+        if (mLocationClient==null) {
+            mLocationClient = new AMapLocationClient(getActivity());
+        }
+        mLocationClient.setLocationListener(mLocationListener);
+        if (mLocationOption==null) {
+            mLocationOption = new AMapLocationClientOption();
+        }
+        mLocationOption.setLocationMode(AMapLocationMode.Hight_Accuracy);
+        mLocationOption.setNeedAddress(true);
+        mLocationOption.setWifiActiveScan(false);
+        mLocationOption.setMockEnable(false);
+        mLocationOption.setLocationProtocol(AMapLocationProtocol.HTTP);
+        mLocationOption.setOnceLocation(true);
+        mLocationOption.setOnceLocationLatest(true);
+        mLocationClient.setLocationOption(mLocationOption);
+        mLocationClient.startLocation();
+    }
+
+    //声明定位回调监听器
+    public AMapLocationListener mLocationListener = new AMapLocationListener(){
+
+        @Override
+        public void onLocationChanged(AMapLocation aMapLocation) {
+            if (aMapLocation != null) {
+                if (aMapLocation.getErrorCode() == 0) {
+                    latitude=aMapLocation.getLatitude()+"";//获取纬度
+                    longitude=aMapLocation.getLongitude()+"";//获取经度
+                    String city=aMapLocation.getCity();//城市信息
+                    leftTv.setText(city);
+                    getNdata();
+                }else {
+                    T.show(getActivity(),"location Error, ErrCode:"
+                            + aMapLocation.getErrorCode() + ", errInfo:"
+                            + aMapLocation.getErrorInfo());
+                }
+            }
+
+        }
+    };
+
 }

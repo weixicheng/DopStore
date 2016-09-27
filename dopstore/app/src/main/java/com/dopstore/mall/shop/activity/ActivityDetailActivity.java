@@ -120,7 +120,6 @@ public class ActivityDetailActivity extends BaseActivity {
                 ShopData data = datas.get(i);
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put(Constant.ID, data.getId());
-                map.put(Constant.IS_COLLECT, data.getIs_collect());
                 SkipUtils.jumpForMap(ActivityDetailActivity.this, ShopDetailActivity.class, map, false);
             }
         });
@@ -130,6 +129,9 @@ public class ActivityDetailActivity extends BaseActivity {
         proUtils.show();
         Map<String, String> map = new HashMap<String, String>();
         map.put("activity_id", activity_id);
+        if (UserUtils.haveLogin(this)){
+            map.put("user_id", UserUtils.getId(this));
+        }
         httpHelper.postKeyValuePairAsync(this, URL.ACTIVITY_DETAILS, map, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
@@ -141,7 +143,7 @@ public class ActivityDetailActivity extends BaseActivity {
             public void onResponse(Response response) throws IOException {
                 String body = response.body().string();
                 try {
-                    JSONObject jo = new JSONObject(body);
+                       JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
                     if ("0".equals(code)) {
                         JSONObject middle = jo.getJSONObject("details");
@@ -171,7 +173,6 @@ public class ActivityDetailActivity extends BaseActivity {
                                 data.setName(json.optString("item_name"));
                                 data.setCover(json.optString("item_pic"));
                                 data.setPrice(json.optString("item_price"));
-                                data.setIs_collect(json.optString("is_collect"));
                                 datas.add(data);
                             }
                         }
@@ -263,6 +264,10 @@ public class ActivityDetailActivity extends BaseActivity {
     };
 
     private void getCollectStatus(final String isCollect) {
+        if (!UserUtils.haveLogin(this)){
+            SkipUtils.directJump(this,LoginActivity.class,false);
+            return;
+        }
         proUtils.show();
         Map<String, String> map = new HashMap<String, String>();
         map.put("user_id", UserUtils.getId(this));

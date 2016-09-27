@@ -8,6 +8,7 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.amap.api.location.AMapLocationClient;
 import com.dopstore.mall.R;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.view.addresspicker.wheel.widget.model.CityModel;
@@ -63,6 +64,8 @@ public class BaseActivity extends AppCompatActivity {
      */
     protected String mCurrentZipCode = "";
 
+    public AMapLocationClient mLocationClient = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +79,10 @@ public class BaseActivity extends AppCompatActivity {
         super.onDestroy();
         ShareSDK.stopSDK(this);
         MyApplication.getInstance().removeActivity(this);
+        if (mLocationClient!=null) {
+            mLocationClient.stopLocation();
+            mLocationClient.onDestroy();
+        }
     }
 
 

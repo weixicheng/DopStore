@@ -12,6 +12,7 @@ public class MainMiddleData implements Serializable{
     private String picture;
     private String title;
     private String url;
+    private String is_collect;
     private List<ShopData> related_goods;
 
     public String getId() {
@@ -52,5 +53,13 @@ public class MainMiddleData implements Serializable{
 
     public void setRelated_goods(List<ShopData> related_goods) {
         this.related_goods = related_goods;
+    }
+
+    public String getIs_collect() {
+        return is_collect;
+    }
+
+    public void setIs_collect(String is_collect) {
+        this.is_collect = is_collect;
     }
 }

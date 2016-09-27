@@ -32,6 +32,7 @@ import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
+import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.view.MyGridView;
 import com.dopstore.mall.view.MyListView;
 import com.dopstore.mall.view.PullToRefreshView;
@@ -111,7 +112,9 @@ public class FirstMainFragment extends Fragment implements OnFooterRefreshListen
      */
     private void getTopData() {
         proUtils.show();
-        httpHelper.getDataAsync(getActivity(), URL.HOME_CAROUSEL + "1", new Callback() {
+        Map<String,String> map=new HashMap<String,String>();
+        map.put("project_type","1");
+        httpHelper.postKeyValuePairAsync(getActivity(), URL.HOME_CAROUSEL, map,new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
                 T.checkNet(getActivity());
@@ -154,6 +157,8 @@ public class FirstMainFragment extends Fragment implements OnFooterRefreshListen
 
     private void getMiddleData() {
         proUtils.show();
+        Map<String,String> map=new HashMap<String,String>();
+        map.put("category_id","");
         httpHelper.postKeyValuePairAsync(getActivity(), URL.HOME_THEME,null, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
@@ -278,10 +283,8 @@ public class FirstMainFragment extends Fragment implements OnFooterRefreshListen
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 ShopData data = bottomList.get(i);
                 String id=data.getId();
-                String isCollect=data.getIs_collect();
                 Map<String,Object> map=new HashMap<String, Object>();
                 map.put(Constant.ID,id);
-                map.put(Constant.IS_COLLECT,isCollect);
                 SkipUtils.jumpForMap(getActivity(), ShopDetailActivity.class, map, false);
             }
         });
@@ -329,10 +332,10 @@ public class FirstMainFragment extends Fragment implements OnFooterRefreshListen
                 CarouselData data = titleAdvertList.get(position);
                 String urlStr = data.getUrl();
                 if (!TextUtils.isEmpty(urlStr)) {
-                    Map<String, Object> map = new HashMap<String, Object>();
-                    map.put(Constant.TITLE, data.getTitle());
-                    map.put(Constant.URL, urlStr);
-                    SkipUtils.jumpForMap(getActivity(), WebActivity.class, map, false);
+                    Map<String,Object> map=new HashMap<String, Object>();
+                    map.put("title",titleAdvertList.get(position).getTitle());
+                    map.put("url",titleAdvertList.get(position).getUrl());
+                    SkipUtils.jumpForMap(getActivity(), WebActivity.class,map, false);
                 }
             }
         });

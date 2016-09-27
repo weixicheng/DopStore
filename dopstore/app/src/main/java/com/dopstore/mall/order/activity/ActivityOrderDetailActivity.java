@@ -40,7 +40,7 @@ import java.util.Map;
  * name
  */
 public class ActivityOrderDetailActivity extends BaseActivity {
-    private TextView idTv,stateTv,titleTv,addressTv,codeTv,timeTv,typeTv,priceTv,userMsgTv,totalPriceTv,cheapTv,passPriceTv,truePriceTv;
+    private TextView idTv,stateTv,titleTv,addressTv,codeTv,codeTime,timeTv,typeTv,priceTv,userMsgTv,totalPriceTv,cheapTv,passPriceTv,truePriceTv;
     private Button submitBt,kFBt;
     private LoadImageUtils loadImage;
     private ImageView shopImage,zxingImage;
@@ -72,6 +72,7 @@ public class ActivityOrderDetailActivity extends BaseActivity {
         zxingImage=(ImageView) findViewById(R.id.activity_detail_zxing);
         titleTv=(TextView) findViewById(R.id.activity_detail_title);
         addressTv=(TextView) findViewById(R.id.activity_detail_address);
+        codeTime=(TextView) findViewById(R.id.activity_detail_zxing_time);
         codeTv=(TextView) findViewById(R.id.activity_detail_zxing_tv);
         timeTv=(TextView) findViewById(R.id.activity_detail_time);
         typeTv=(TextView) findViewById(R.id.activity_detail_type);
@@ -105,6 +106,7 @@ public class ActivityOrderDetailActivity extends BaseActivity {
             case 4:
             case 5:
             case 6:
+            case 7:
             {
                 submitLayout.setVisibility(View.GONE);
             }break;
@@ -145,6 +147,10 @@ public class ActivityOrderDetailActivity extends BaseActivity {
                         detailBean.setTotal_fee(Long.parseLong(value.optString("total_fee")));
                         detailBean.setCode(value.optString("code"));
                         detailBean.setQ_code(value.optString("q_code"));
+                        detailBean.setUsed_time(value.optString("used_time"));
+                        detailBean.setFreight(value.optString("freight"));
+                        detailBean.setBenefit(value.optString("benefit"));
+                        detailBean.setNote(value.optString("note"));
                     } else {
                         String msg = jo.optString(Constant.ERROR_MSG);
                         T.show(ActivityOrderDetailActivity.this, msg);
@@ -209,6 +215,9 @@ public class ActivityOrderDetailActivity extends BaseActivity {
             case 6:{
                 typeName="退款成功";
             }break;
+            case 7:{
+                typeName="已完成";
+            }break;
         }
         stateTv.setText(typeName);
         loadImage.displayImage(detailBean.getPic(),shopImage);
@@ -226,10 +235,17 @@ public class ActivityOrderDetailActivity extends BaseActivity {
         timeTv.setText(time);
         typeTv.setText(detailBean.getCategory());
         priceTv.setText("¥"+detailBean.getPrice());
-        userMsgTv.setText("尽快发货");
+        userMsgTv.setText(detailBean.getNote());
+        String useTime=detailBean.getUsed_time();
+        if (TextUtils.isEmpty(useTime)){
+            codeTime.setVisibility(View.GONE);
+        }else {
+            codeTime.setText(useTime+" 已使用");
+            codeTime.setVisibility(View.VISIBLE);
+        }
         totalPriceTv.setText("¥"+detailBean.getTotal_fee());
-        cheapTv.setText("¥ 0");
-        passPriceTv.setText("¥ 0");
+        cheapTv.setText("¥"+detailBean.getBenefit());
+        passPriceTv.setText("¥"+detailBean.getFreight());
         truePriceTv.setText("¥"+detailBean.getTotal_fee());
     }
 

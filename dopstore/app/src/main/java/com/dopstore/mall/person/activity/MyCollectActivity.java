@@ -53,7 +53,6 @@ public class MyCollectActivity extends BaseActivity {
     private TextView firstTv, secondTv;
     private View firstV, secondV;
     private ListView mListView;// 列表
-    private MyCollectAdapter mListAdapter;// adapter
     private List<MyCollectData> mListData = new ArrayList<MyCollectData>();// 数据
 
     private HttpHelper httpHelper;
@@ -128,7 +127,6 @@ public class MyCollectActivity extends BaseActivity {
                         data.setImage(job.optString(Constant.COVER));
                         data.setTitle(job.optString(Constant.NAME));
                         data.setPrice(job.optString(Constant.PRICE));
-                        data.setChoose(false);
                         mListData.add(data);
                     }
                 }

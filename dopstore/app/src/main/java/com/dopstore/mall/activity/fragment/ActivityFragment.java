@@ -1,5 +1,6 @@
 package com.dopstore.mall.activity.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -46,8 +47,6 @@ import java.util.TimerTask;
 public class ActivityFragment extends Fragment {
     private TextView leftTv, titleTv;
     private ImageButton imageButton;
-    private Timer timer;
-    private TimerTask doing;
     private EScrollView eScrollView;
     private List<MainTabData> tabList = new ArrayList<MainTabData>();
     private TabAdapter tabAdapter;
@@ -65,31 +64,10 @@ public class ActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.layout_activity_fragment, null);
         initView(v);
+        initData();
         return v;
     }
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        if (isVisibleToUser) {
-            if (null != timer) {
-                return;
-            } else {
-                timer = new Timer();
-
-                doing = new TimerTask() {
-                    // 每个timerTask都要重写这个方法，因为是abstract的
-                    public void run() {
-                        handler.sendEmptyMessage(LAZY_LOADING_MSG);
-                        // 通过sendMessage函数将消息压入线程的消息队列。
-                    }
-                };
-                timer.schedule(doing, 100);
-            }
-        } else {
-            // 不可见时不执行操作
-        }
-        super.setUserVisibleHint(isVisibleToUser);
-    }
 
     private void initView(View v) {
         httpHelper = HttpHelper.getOkHttpClientUtils(getActivity());
@@ -182,7 +160,6 @@ public class ActivityFragment extends Fragment {
 
 
     private final static int UPDATA_TAB_CODE = 0;
-    private final static int LAZY_LOADING_MSG = 1;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -193,11 +170,6 @@ public class ActivityFragment extends Fragment {
 
                 }
                 break;
-                case LAZY_LOADING_MSG: {
-                    initData();
-                }
-                break;
-
             }
         }
     };
@@ -241,7 +213,7 @@ public class ActivityFragment extends Fragment {
         }
         switch (index) {
             case 0:
-                firstActivityFragment = new FirstActivityFragment();
+                firstActivityFragment = new FirstActivityFragment(leftTv);
                 fragmentTransaction.replace(R.id.fragment_activity_tab_layout, firstActivityFragment);
                 setCurrentFragment(firstActivityFragment);
                 break;
@@ -261,11 +233,11 @@ public class ActivityFragment extends Fragment {
     private void hideFragment(FragmentTransaction fragmentTransaction) {
 
         if (firstActivityFragment != null) {
-            fragmentTransaction.remove(firstActivityFragment);
+            fragmentTransaction.hide(firstActivityFragment);
         }
 
         if (secondActivityFragment != null) {
-            fragmentTransaction.remove(secondActivityFragment);
+            fragmentTransaction.hide(secondActivityFragment);
         }
     }
 
@@ -278,5 +250,9 @@ public class ActivityFragment extends Fragment {
     }
 
 
-
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        firstActivityFragment.onActivityResult(requestCode, resultCode, data);
+    }
 }

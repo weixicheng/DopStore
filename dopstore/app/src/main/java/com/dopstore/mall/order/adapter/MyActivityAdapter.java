@@ -91,6 +91,9 @@ public class MyActivityAdapter extends BaseAdapter {
                     case 6:{
                         typeName="退款成功";
                     }break;
+                    case 7:{
+                        typeName="已完成";
+                    }break;
                 }
                 holder.state.setText(typeName);
                 holder.title.setText(data.getTitle());

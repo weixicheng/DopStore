@@ -86,8 +86,8 @@ public class ConfirmActivityActivity extends BaseActivity {
         totalLayout=(LinearLayout) findViewById(R.id.confirm_activity_total_num_layout);
         phoneEt=(EditText) findViewById(R.id.confirm_activity_phone);
         hintEt=(EditText) findViewById(R.id.confirm_activity_hint);
-
     }
+
     private void initData() {
         loadImageUtils.displayImage(detailBean.getPicture(),imageView);
         totalPriceTv.setText("¥"+Float.parseFloat(detailBean.getPrice()));

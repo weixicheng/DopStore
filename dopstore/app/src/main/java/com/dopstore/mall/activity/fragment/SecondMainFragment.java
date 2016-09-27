@@ -27,6 +27,7 @@ import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
+import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.view.MyGridView;
 import com.dopstore.mall.view.MyListView;
 import com.dopstore.mall.view.PullToRefreshView;
@@ -168,7 +169,6 @@ public class SecondMainFragment extends Fragment implements OnFooterRefreshListe
                                 data.setNumber(job.optString(Constant.NUMBER));
                                 data.setStock_number(job.optString(Constant.STOCK_NUMBER));
                                 data.setPrice(job.optString(Constant.PRICE));
-                                data.setIs_collect(job.optString("is_collect"));
                                 bottomList.add(data);
                             }
                         }
@@ -222,10 +222,8 @@ public class SecondMainFragment extends Fragment implements OnFooterRefreshListe
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 ShopData data=bottomList.get(i);
                 String id=data.getId();
-                String isCollect=data.getIs_collect();
                 Map<String,Object> map=new HashMap<String, Object>();
                 map.put(Constant.ID,id);
-                map.put(Constant.IS_COLLECT,isCollect);
                 SkipUtils.jumpForMap(getActivity(), ShopDetailActivity.class,map,false);
             }
         });

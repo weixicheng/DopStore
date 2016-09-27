@@ -1,6 +1,8 @@
 package com.dopstore.mall.shop.activity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,6 +21,7 @@ import android.webkit.WebViewClient;
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.MainActivity;
 import com.dopstore.mall.base.BaseActivity;
+import com.dopstore.mall.login.activity.LoginActivity;
 import com.dopstore.mall.order.activity.CashierActivity;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.HttpHelper;
@@ -31,6 +34,7 @@ import com.dopstore.mall.util.UserUtils;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.pingplusplus.android.Pingpp;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -67,18 +71,18 @@ public class ShopDetailActivity extends BaseActivity {
         Map<String, Object> map = SkipUtils.getMap(this);
         if (map == null) return;
         shop_id = map.get(Constant.ID).toString();
-//       isCollect = map.get(Constant.IS_COLLECT).toString();
         webView = (WebView) findViewById(R.id.shop_detail_web);
         serviceV = findViewById(R.id.shop_detail_service_bt);
         setCustomTitle("商品详情", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         rightFirstImageBack(R.mipmap.share_logo, listener);
-        rightSecondImageBack(R.mipmap.collect_small_logo, listener);
+
         serviceV.setOnClickListener(listener);
+        getCollectStatus();
         initWebViewSetting();
     }
 
-    @SuppressLint("JavascriptInterface")
+    @SuppressLint({"JavascriptInterface", "SetJavaScriptEnabled"})
     private void initWebViewSetting() {
         if (webView != null) {
             webSetting = webView.getSettings();
@@ -114,47 +118,56 @@ public class ShopDetailActivity extends BaseActivity {
             if (!TextUtils.isEmpty(url)) {
                 webView.loadUrl(url);
             }
-            webView.addJavascriptInterface(new JsObject(), "");
+            webView.addJavascriptInterface(getHtmlObject(), "androidObj");
         }
     }
 
+    @SuppressLint("JavascriptInterface")
+    private Object getHtmlObject() {
+        Object insertObj = new Object() {
 
-    class JsObject {
-        @SuppressLint("JavascriptInterface")
-        public JsObject() {
-        }
+            public void backToMain() {
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
 
-        public void backToMain() {
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        SkipUtils.directJump(ShopDetailActivity.this, MainActivity.class, true);
+                    }
+                });
+            }
 
-                @Override
-                public void run() {
-                    SkipUtils.directJump(ShopDetailActivity.this, MainActivity.class, true);
-                }
-            });
-        }
+            public void backToCart() {
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
 
-        public void backToCart() {
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!UserUtils.haveLogin(ShopDetailActivity.this)) {
+                            SkipUtils.directJump(ShopDetailActivity.this, LoginActivity.class, false);
+                            return;
+                        }
+                        Map<String, Object> map = new HashMap<String, Object>();
+                        map.put(Constant.ID, "2");
+                        SkipUtils.jumpForMap(ShopDetailActivity.this, MainActivity.class, map, true);
+                    }
+                });
 
-                @Override
-                public void run() {
-                    Map<String, Object> map = new HashMap<String, Object>();
-                    map.put(Constant.ID, "2");
-                    SkipUtils.jumpForMap(ShopDetailActivity.this, MainActivity.class, map, true);
-                }
-            });
-        }
+            }
 
-        public void placeOrder(final String count, final String color, final String size) {
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
+            public void joinCart(final String count, final String color, final String size) {
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
 
-                @Override
-                public void run() {
-                    placeShopOrder(count, color, size);
-                }
-            });
-        }
+                    @Override
+                    public void run() {
+                        placeShopOrder(count, color, size);
+                    }
+                });
+            }
+
+            public void placeOrder(String charge) {
+                Pingpp.createPayment(ShopDetailActivity.this, charge, "qwalletXXXXXXX");
+            }
+        };
+        return insertObj;
     }
 
     protected class chromeClient extends WebChromeClient {
@@ -185,10 +198,10 @@ public class ShopDetailActivity extends BaseActivity {
                 }
                 break;
                 case R.id.title_right_before_imageButton: {//收藏
-                    if ("0".equals(isCollect)){
-                        getCollectStatus("1");
-                    }else {
-                        getCollectStatus("2");
+                    if ("0".equals(isCollect)) {
+                        setCollectStatus("1");
+                    } else {
+                        setCollectStatus("2");
                     }
                 }
                 break;
@@ -200,7 +213,52 @@ public class ShopDetailActivity extends BaseActivity {
         }
     };
 
-    private void getCollectStatus(final String isCollect) {
+    private void getCollectStatus() {
+        if (!UserUtils.haveLogin(this)) {
+            isCollect = "0";
+            rightSecondImageBack(R.mipmap.collect_small_logo, listener);
+            return;
+        }
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("user_id", UserUtils.getId(this));
+        map.put("goods_id", shop_id);
+        httpHelper.postKeyValuePairAsync(this, URL.COLLECTION_GOODS_STATUS, map, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                T.checkNet(ShopDetailActivity.this);
+                isCollect = "0";
+                handler.sendEmptyMessage(GET_COLLECT_STATUS_CODE);
+                proUtils.dismiss();
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String body = response.body().string();
+                try {
+                    JSONObject jo = new JSONObject(body);
+                    String code = jo.optString(Constant.ERROR_CODE);
+                    if ("0".equals(code)) {
+                        isCollect = jo.optString("is_collect");
+                        handler.sendEmptyMessage(GET_COLLECT_STATUS_CODE);
+                    } else {
+                        String msg = jo.optString(Constant.ERROR_MSG);
+                        T.show(ShopDetailActivity.this, msg);
+                        isCollect = "0";
+                        handler.sendEmptyMessage(GET_COLLECT_STATUS_CODE);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                proUtils.dismiss();
+            }
+        }, null);
+    }
+
+    private void setCollectStatus(final String isCollect) {
+        if (!UserUtils.haveLogin(this)) {
+            SkipUtils.directJump(this, LoginActivity.class, false);
+            return;
+        }
         rightSecondImageBack(R.mipmap.collect_small_logo, null);
         proUtils.show();
         Map<String, String> map = new HashMap<String, String>();
@@ -239,6 +297,10 @@ public class ShopDetailActivity extends BaseActivity {
     }
 
     public void placeShopOrder(String count, String color, String size) {
+        if (!UserUtils.haveLogin(this)) {
+            SkipUtils.directJump(this, LoginActivity.class, false);
+            return;
+        }
         proUtils.show();
         final Map<String, String> map = new HashMap<String, String>();
         map.put("user_id", UserUtils.getId(this));
@@ -286,6 +348,7 @@ public class ShopDetailActivity extends BaseActivity {
     private final static int COLLECT_SCUESS_CODE = 0;
     private final static int COLLECT_CANCEL_CODE = 1;
     private final static int PLACE_ORDER_CODE = 2;
+    private final static int GET_COLLECT_STATUS_CODE = 3;
 
     Handler handler = new Handler() {
         @Override
@@ -309,9 +372,38 @@ public class ShopDetailActivity extends BaseActivity {
                     SkipUtils.jumpForMap(ShopDetailActivity.this, CashierActivity.class, map, false);
                 }
                 break;
+                case GET_COLLECT_STATUS_CODE: {
+                    if ("0".equals(isCollect)) {
+                        rightSecondImageBack(R.mipmap.collect_small_logo, listener);
+                    } else {
+                        rightSecondImageBack(R.mipmap.collect_check_logo, listener);
+                    }
+
+                }
+                break;
             }
         }
     };
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //支付页面返回处理
+        if (requestCode == Pingpp.REQUEST_CODE_PAYMENT) {
+            if (resultCode == Activity.RESULT_OK) {
+                String result = data.getExtras().getString("pay_result");
+                /* 处理返回值
+                 * "success" - payment succeed
+                 * "fail"    - payment failed
+                 * "cancel"  - user canceld
+                 * "invalid" - payment plugin not installed
+                 */
+                String errorMsg = data.getExtras().getString("error_msg"); // 错误信息
+                String extraMsg = data.getExtras().getString("extra_msg"); // 错误信息
+            }
+        }
+    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

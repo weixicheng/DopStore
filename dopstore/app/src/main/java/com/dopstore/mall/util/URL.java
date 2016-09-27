@@ -18,7 +18,7 @@ public class URL {
     public static String UPLOAD_AVATAR = BASE_URL + "upload_avatar";//上传头像
     public static String OTHER_SIGNUPL = BASE_URL + "othersignup";//第三方注册
     public static String SHIPPINGADDRESS = BASE_URL + "user/";//收货地址列表
-    public static String HOME_CAROUSEL = BASE_URL + "home/carousel/";//轮播图
+    public static String HOME_CAROUSEL = BASE_URL + "home/carousel";//轮播图
     public static String USER_HELPS = BASE_URL + "helps";//帮助中心
     public static String GOODS_CATEGORY = BASE_URL + "goods/category";//商品分类
     public static String HOME_THEME = BASE_URL + "home/theme";//商城主题
@@ -34,4 +34,5 @@ public class URL {
     public static String ACTIVITY_DETAILS = BASE_URL + "home/activity_details";//活动详情
     public static String ORDER_ACTIVITY = BASE_URL + "order/activity";//确认活动单下单
     public static String ORDER_ACTIVITY_LIST = BASE_URL + "order/activity_list/";//活动订单列表
+    public static String COLLECTION_GOODS_STATUS = BASE_URL + "home/collection/goods";//判断商品是否收藏
 }

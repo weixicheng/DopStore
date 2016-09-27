@@ -15,6 +15,5 @@
     <FrameLayout
         android:id="@+id/fragment_main_tab_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@color/gray_color_ee" />
+        android:layout_height="match_parent" />
 </LinearLayout>

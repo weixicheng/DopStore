@@ -16,6 +16,10 @@ public class ActivityOrderDetailBean {
     private float  total_fee;
     private String  code;
     private String  q_code;
+    private String  used_time;
+    private String  freight;
+    private String  benefit;
+    private String  note;
 
     public String getOrder_num() {
         return order_num;
@@ -103,5 +107,37 @@ public class ActivityOrderDetailBean {
 
     public void setQ_code(String q_code) {
         this.q_code = q_code;
+    }
+
+    public String getUsed_time() {
+        return used_time;
+    }
+
+    public void setUsed_time(String used_time) {
+        this.used_time = used_time;
+    }
+
+    public String getFreight() {
+        return freight;
+    }
+
+    public void setFreight(String freight) {
+        this.freight = freight;
+    }
+
+    public String getBenefit() {
+        return benefit;
+    }
+
+    public void setBenefit(String benefit) {
+        this.benefit = benefit;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 }

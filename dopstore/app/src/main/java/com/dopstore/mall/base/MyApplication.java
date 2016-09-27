@@ -3,6 +3,8 @@ package com.dopstore.mall.base;
 import android.app.Activity;
 import android.app.Application;
 
+import com.amap.api.location.AMapLocationClient;
+import com.amap.api.location.AMapLocationListener;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.pingplusplus.android.PingppLog;
 
@@ -17,6 +19,7 @@ public class MyApplication extends Application {
     public static MyApplication instance = null;
     //用来管理所有打开的Activity
     public static List<Activity> activities = new ArrayList<Activity>();
+
 
     @Override
     public void onCreate() {

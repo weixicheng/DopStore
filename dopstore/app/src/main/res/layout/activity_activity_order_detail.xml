@@ -110,11 +110,24 @@
                     android:singleLine="true"
                     android:textColor="@color/gray_color_33"
                     android:textSize="@dimen/textsize_16" />
+                <TextView
+                    android:id="@+id/activity_detail_zxing_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_below="@id/activity_detail_zxing_tv"
+                    android:layout_marginLeft="@dimen/margin_10"
+                    android:layout_marginTop="3dp"
+                    android:layout_toRightOf="@id/activity_detail_zxing"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:textColor="@color/gray_color_33"
+                    android:textSize="@dimen/textsize_16" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/activity_detail_zxing_tv"
+                    android:layout_below="@id/activity_detail_zxing_time"
                     android:layout_marginLeft="@dimen/margin_10"
                     android:layout_marginTop="@dimen/margin_10"
                     android:layout_toRightOf="@id/activity_detail_zxing"
