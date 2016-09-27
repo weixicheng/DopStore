@@ -357,11 +357,13 @@ public class ShopDetailActivity extends BaseActivity {
             switch (msg.what) {
                 case COLLECT_SCUESS_CODE: {
                     T.show(ShopDetailActivity.this, "添加成功");
+                    isCollect="1";
                     rightSecondImageBack(R.mipmap.collect_check_logo, listener);
                 }
                 break;
                 case COLLECT_CANCEL_CODE: {
                     T.show(ShopDetailActivity.this, "取消成功");
+                    isCollect="0";
                     rightSecondImageBack(R.mipmap.collect_small_logo, listener);
                 }
                 break;

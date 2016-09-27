@@ -20,7 +20,7 @@ public class DetailMenu extends ScrollView {
 
 
     private YsnowScrollViewPageOne wrapperMenu;
-    private YsnowScrollView wrapperContent;
+    private YsnowWebView wrapperContent;
     private boolean isSetted = false;
     private boolean ispageOne = true;
 
@@ -47,7 +47,7 @@ public class DetailMenu extends ScrollView {
             //得到里面的控件
             final LinearLayout wrapper = (LinearLayout) getChildAt(0);
             wrapperMenu = (YsnowScrollViewPageOne) wrapper.getChildAt(0);
-            wrapperContent = (YsnowScrollView) wrapper.getChildAt(1);
+            wrapperContent = (YsnowWebView) wrapper.getChildAt(1);
             //设置两个子View的高度为手机的高度
             wrapperMenu.getLayoutParams().height = mScreenHeight;
             wrapperContent.getLayoutParams().height = mScreenHeight;

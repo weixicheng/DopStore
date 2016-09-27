@@ -299,25 +299,13 @@
 
                 </com.dopstore.mall.view.scrollview.YsnowScrollViewPageOne>
 
-                <com.dopstore.mall.view.scrollview.YsnowScrollView
+                <com.dopstore.mall.view.scrollview.YsnowWebView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/ripple_material_dark"
-                    android:scrollbars="none">
+                    android:id="@+id/activity_detail_bottom_web"
+                    android:background="@color/gray_color_ee">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="1400dp" />
-
-                    </LinearLayout>
-
-
-                </com.dopstore.mall.view.scrollview.YsnowScrollView>
+                </com.dopstore.mall.view.scrollview.YsnowWebView>
 
             </LinearLayout>
 

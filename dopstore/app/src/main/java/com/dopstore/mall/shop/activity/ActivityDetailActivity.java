@@ -32,6 +32,7 @@ import com.dopstore.mall.view.EScrollView;
 import com.dopstore.mall.view.scrollview.DetailMenu;
 import com.dopstore.mall.view.scrollview.YsnowScrollView;
 import com.dopstore.mall.view.scrollview.YsnowScrollViewPageOne;
+import com.dopstore.mall.view.scrollview.YsnowWebView;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -55,6 +56,7 @@ public class ActivityDetailActivity extends BaseActivity {
     private ProUtils proUtils;
     private String isCollect = "0";
     private DetailMenu detailMenu;
+    private YsnowWebView webView;
     private YsnowScrollViewPageOne pageOne;
     private ImageView imageView;
     private TextView titleTv, priceTv, numTv, timeTv, ageTv, addressTv,shopTv, phoneTv;
@@ -86,6 +88,7 @@ public class ActivityDetailActivity extends BaseActivity {
         imageView = (ImageView) findViewById(R.id.activity_detail_title_image);
         topLayout = (RelativeLayout) findViewById(R.id.brandsquare_title_layout);
         pageOne = (YsnowScrollViewPageOne) findViewById(R.id.activity_detail_title_ysnowpage);
+        webView = (YsnowWebView) findViewById(R.id.activity_detail_bottom_web);
         titleTv = (TextView) findViewById(R.id.activity_detail_title_name);
         priceTv = (TextView) findViewById(R.id.activity_detail_price);
         numTv = (TextView) findViewById(R.id.activity_detail_num);
@@ -191,11 +194,25 @@ public class ActivityDetailActivity extends BaseActivity {
     }
 
     private final static int UPDATA_DETAIL_CODE=0;
+    private final static int COLLECT_SCUESS_CODE = 1;
+    private final static int COLLECT_CANCEL_CODE = 2;
     Handler handler=new Handler(){
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what){
+                case COLLECT_SCUESS_CODE: {
+                    T.show(ActivityDetailActivity.this, "添加成功");
+                    isCollect="1";
+                    rightSecondImageBack(R.mipmap.collect_check_logo, listener);
+                }
+                break;
+                case COLLECT_CANCEL_CODE: {
+                    T.show(ActivityDetailActivity.this, "取消成功");
+                    isCollect="0";
+                    rightSecondImageBack(R.mipmap.collect_small_logo, listener);
+                }
+                break;
                 case UPDATA_DETAIL_CODE:{
                     isCollect=detailBean.getIs_collect();
                     if ("1".equals(isCollect)) {
@@ -227,6 +244,7 @@ public class ActivityDetailActivity extends BaseActivity {
                     }else {
                         shopLayout.setVisibility(View.GONE);
                     }
+                    webView.loadDataWithBaseURL(null,detailBean.getContent(), "text/html", "utf-8", null);
 
                 }break;
             }
@@ -242,9 +260,9 @@ public class ActivityDetailActivity extends BaseActivity {
                 break;
                 case R.id.title_right_before_imageButton: {//收藏
                     if ("0".equals(isCollect)){
-                        getCollectStatus("1");
+                        setCollectStatus("1");
                     }else {
-                        getCollectStatus("2");
+                        setCollectStatus("2");
                     }
                 }
                 break;
@@ -263,7 +281,7 @@ public class ActivityDetailActivity extends BaseActivity {
         }
     };
 
-    private void getCollectStatus(final String isCollect) {
+    private void setCollectStatus(final String isCollect) {
         if (!UserUtils.haveLogin(this)){
             SkipUtils.directJump(this,LoginActivity.class,false);
             return;
@@ -289,9 +307,9 @@ public class ActivityDetailActivity extends BaseActivity {
                     String code = jo.optString(Constant.ERROR_CODE);
                     if ("0".equals(code)) {
                         if ("1".equals(isCollect)) {
-                            T.show(ActivityDetailActivity.this, "添加成功");
+                            handler.sendEmptyMessage(COLLECT_SCUESS_CODE);
                         } else {
-                            T.show(ActivityDetailActivity.this, "取消成功");
+                            handler.sendEmptyMessage(COLLECT_CANCEL_CODE);
                         }
                     } else {
                         String msg = jo.optString(Constant.ERROR_MSG);
