@@ -3,6 +3,7 @@ package com.dopstore.mall.util;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 /**
@@ -28,7 +29,11 @@ public class T {
 
                 @Override
                 public void run() {
-                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                    String msg=message;
+                    if (TextUtils.isEmpty(message)){
+                        msg="暂无数据";
+                    }
+                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
                 }
             });
     }

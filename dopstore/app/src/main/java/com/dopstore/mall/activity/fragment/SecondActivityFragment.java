@@ -55,6 +55,7 @@ public class SecondActivityFragment extends Fragment implements OnFooterRefreshL
     private String id="";
     private boolean isRefresh= false;
     private boolean isUpRefresh = false;
+    private View v;
 
     public SecondActivityFragment(String id) {
         this.id = id;
@@ -63,7 +64,7 @@ public class SecondActivityFragment extends Fragment implements OnFooterRefreshL
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.layout_activity_second_fragment, null);
+        v = inflater.inflate(R.layout.layout_activity_second_fragment, null);
         initView(v);
         initData();
         return v;

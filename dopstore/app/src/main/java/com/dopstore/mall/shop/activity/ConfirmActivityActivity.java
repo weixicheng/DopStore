@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.bean.ShopData;
 import com.dopstore.mall.base.BaseActivity;
+import com.dopstore.mall.order.activity.ActivityCashierActivity;
 import com.dopstore.mall.order.activity.CashierActivity;
 import com.dopstore.mall.order.activity.NoPaySuccessActivity;
 import com.dopstore.mall.order.activity.PaySuccessActivity;
@@ -185,10 +186,14 @@ public class ConfirmActivityActivity extends BaseActivity {
                             JSONObject jo = new JSONObject(value);
                             String orderId = jo.optString("order_num");
                             String price = jo.optString("total_fee");
-                            Map<String,Object> map=new HashMap<String,Object>();
-                            map.put(Constant.ID,orderId);
-                            map.put(Constant.PRICE,price);
-                            SkipUtils.jumpForMap(ConfirmActivityActivity.this, CashierActivity.class,map,false);
+                            if ("0.0".equals(price)||"0".equals(price)||"0.00".equals(price)||TextUtils.isEmpty(price)) {
+                                SkipUtils.directJump(ConfirmActivityActivity.this, NoPaySuccessActivity.class, false);
+                            }else {
+                                Map<String, Object> map = new HashMap<String, Object>();
+                                map.put(Constant.ID, orderId);
+                                map.put(Constant.PRICE, price);
+                                SkipUtils.jumpForMap(ConfirmActivityActivity.this, ActivityCashierActivity.class, map, false);
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

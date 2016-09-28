@@ -75,15 +75,17 @@ public class FirstMainFragment extends Fragment implements OnFooterRefreshListen
     private int page = 1;
     private boolean isRefresh= false;
     private boolean isUpRefresh = false;
+    private View v;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.layout_main_first_fragment, null);
+        v = inflater.inflate(R.layout.layout_main_first_fragment, null);
         initView(v);
         initData();
         return v;
     }
+
 
     private void initView(View v) {
         httpHelper = HttpHelper.getOkHttpClientUtils(getActivity());
@@ -288,13 +290,13 @@ public class FirstMainFragment extends Fragment implements OnFooterRefreshListen
                 SkipUtils.jumpForMap(getActivity(), ShopDetailActivity.class, map, false);
             }
         });
-        mainView.smoothScrollTo(0, 0);
+        mainView.fullScroll(ScrollView.FOCUS_UP);
     }
 
 
     private void refreshMiddleAdapter() {
         myListView.setAdapter(new MiddleAdapter(getActivity(), midddleList));
-        mainView.smoothScrollTo(0, 0);
+        mainView.fullScroll(ScrollView.FOCUS_UP);
     }
 
     /**
@@ -339,8 +341,6 @@ public class FirstMainFragment extends Fragment implements OnFooterRefreshListen
                 }
             }
         });
-
-        mainView.scrollTo(0, 0);
     }
 
     @Override

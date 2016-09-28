@@ -98,6 +98,7 @@ public class FirstActivityFragment extends Fragment implements OnHeaderRefreshLi
     public AMapLocationClient mLocationClient = null;
     //声明AMapLocationClientOption对象
     public AMapLocationClientOption mLocationOption = null;
+    private View v;
 
     public FirstActivityFragment(TextView leftTv) {
         this.leftTv = leftTv;
@@ -106,7 +107,7 @@ public class FirstActivityFragment extends Fragment implements OnHeaderRefreshLi
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.layout_activity_first_fragment, null);
+        v = inflater.inflate(R.layout.layout_activity_first_fragment, null);
         initView(v);
         initData();
         return v;
@@ -131,13 +132,11 @@ public class FirstActivityFragment extends Fragment implements OnHeaderRefreshLi
         secondLy.setOnClickListener(listener);
         pullToRefreshView.setOnHeaderRefreshListener(this);
         pullToRefreshView.setOnFooterRefreshListener(this);
-
     }
+
 
     private void initData() {
         getMainData();
-        openGPSSettings();
-        mainView.smoothScrollTo(0, 0);
     }
 
     private void getMainData() {
@@ -145,6 +144,7 @@ public class FirstActivityFragment extends Fragment implements OnHeaderRefreshLi
         aList.clear();
         getCarousel();
         getTdata();
+        mainView.fullScroll(ScrollView.FOCUS_UP);
     }
 
 
@@ -191,7 +191,6 @@ public class FirstActivityFragment extends Fragment implements OnHeaderRefreshLi
                 }
             }
         });
-        mainView.smoothScrollTo(0, 0);
     }
 
     View.OnClickListener listener = new View.OnClickListener() {
@@ -267,11 +266,11 @@ public class FirstActivityFragment extends Fragment implements OnHeaderRefreshLi
                                 titleAdvertList.add(data);
                             }
                         }
+                        handler.sendEmptyMessage(UPDATA_TOB_CODE);
                     } else {
                         String msg = jo.optString(Constant.ERROR_MSG);
                         T.show(getActivity(), msg);
                     }
-                    handler.sendEmptyMessage(UPDATA_TOB_CODE);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -392,21 +391,23 @@ public class FirstActivityFragment extends Fragment implements OnHeaderRefreshLi
 
     private void refreshAdapter() {
         emptyView.setVisibility(View.GONE);
-        if (adapter == null) {
-            adapter = new ActivityAdapter(getActivity(), aList, 0);
-            myListView.setAdapter(adapter);
-        } else {
-            adapter.upData(aList, 0);
-        }
-        myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Map<String, Object> map = new HashMap<String, Object>();
-                map.put(Constant.ID, aList.get(i).getId());
-                SkipUtils.jumpForMap(getActivity(), ActivityDetailActivity.class, map, false);
+        if (aList.size()>0) {
+            if (adapter == null) {
+                adapter = new ActivityAdapter(getActivity(), aList, 0);
+                myListView.setAdapter(adapter);
+            } else {
+                adapter.upData(aList, 0);
             }
-        });
-        mainView.smoothScrollTo(0, 0);
+            myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map.put(Constant.ID, aList.get(i).getId());
+                    SkipUtils.jumpForMap(getActivity(), ActivityDetailActivity.class, map, false);
+                }
+            });
+        }
+        mainView.fullScroll(ScrollView.FOCUS_UP);
     }
 
     private void refreshNAdapter() {
@@ -417,21 +418,23 @@ public class FirstActivityFragment extends Fragment implements OnHeaderRefreshLi
             emptyView.setVisibility(View.VISIBLE);
             otherListView.setVisibility(View.GONE);
         }
-        if (adapter == null) {
-            adapter = new ActivityAdapter(getActivity(), aList, 1);
-            otherListView.setAdapter(adapter);
-        } else {
-            adapter.upData(aList, 1);
-        }
-        otherListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Map<String, Object> map = new HashMap<String, Object>();
-                map.put(Constant.ID, aList.get(i).getId());
-                SkipUtils.jumpForMap(getActivity(), ActivityDetailActivity.class, map, false);
+        if (aList.size()>0) {
+            if (adapter == null) {
+                adapter = new ActivityAdapter(getActivity(), aList, 1);
+                otherListView.setAdapter(adapter);
+            } else {
+                adapter.upData(aList, 1);
             }
-        });
-        mainView.smoothScrollTo(0, 0);
+            otherListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map.put(Constant.ID, aList.get(i).getId());
+                    SkipUtils.jumpForMap(getActivity(), ActivityDetailActivity.class, map, false);
+                }
+            });
+        }
+        mainView.fullScroll(ScrollView.FOCUS_UP);
     }
 
 
@@ -516,4 +519,8 @@ public class FirstActivityFragment extends Fragment implements OnHeaderRefreshLi
         }
     };
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }

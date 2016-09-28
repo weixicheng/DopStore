@@ -95,8 +95,7 @@
                     android:id="@+id/activity_detail_zxing"
                     android:layout_width="91dp"
                     android:layout_height="91dp"
-                    android:scaleType="centerCrop"
-                    android:src="@mipmap/ic_launcher" />
+                    android:scaleType="centerCrop"/>
 
                 <TextView
                     android:id="@+id/activity_detail_zxing_tv"

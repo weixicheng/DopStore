@@ -217,9 +217,6 @@ public class RegisterDetailActivity extends BaseActivity {
                         data.setMobile(user.optString(Constant.MOBILE));
                         data.setAddress(user.optString(Constant.CITY));
                         UserUtils.setData(RegisterDetailActivity.this, data);
-                        Intent intent = new Intent();
-                        intent.setAction(Constant.UPDATA_USER_FLAG);
-                        sendBroadcast(intent);
                         Intent it = new Intent(RegisterDetailActivity.this, MainActivity.class);
                         it.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(it);

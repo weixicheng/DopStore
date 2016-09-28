@@ -43,42 +43,20 @@ public class PersonFragment extends Fragment {
     private ImageButton rightBt;
     private CircleImageView headImage;
 
-    private Timer timer;
-    private TimerTask doing;
-    private final static int LAZY_LOADING_MSG = 0;
     private LoadImageUtils loadImageUtils;
 
     private final static int BALANCE_CODE = 0;
+    private final static int SETTING_CODE = 1;
+
+    private View v;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.layout_person_fragment, null);
+        v = inflater.inflate(R.layout.layout_person_fragment, null);
         initView(v);
+        loadData();
         return v;
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        if (isVisibleToUser) {
-            if (null != timer) {
-                return;
-            } else {
-                timer = new Timer();
-
-                doing = new TimerTask() {
-                    // 每个timerTask都要重写这个方法，因为是abstract的
-                    public void run() {
-                        handler.sendEmptyMessage(LAZY_LOADING_MSG);
-                        // 通过sendMessage函数将消息压入线程的消息队列。
-                    }
-                };
-                timer.schedule(doing, 100);
-            }
-        } else {
-            // 不可见时不执行操作
-        }
-        super.setUserVisibleHint(isVisibleToUser);
     }
 
     private void initView(View v) {
@@ -136,7 +114,7 @@ public class PersonFragment extends Fragment {
                     if (!UserUtils.haveLogin(getActivity())) {
                         SkipUtils.directJump(getActivity(), LoginActivity.class, false);
                     } else {
-                        SkipUtils.directJump(getActivity(), SetActivity.class, false);
+                        SkipUtils.directJumpForResult(getActivity(), SetActivity.class, SETTING_CODE);
                     }
                 }
                 break;
@@ -224,21 +202,6 @@ public class PersonFragment extends Fragment {
         }
     };
 
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case LAZY_LOADING_MSG: {
-                    loadData();
-                }
-                break;
-            }
-        }
-    };
-
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -247,6 +210,10 @@ public class PersonFragment extends Fragment {
             case BALANCE_CODE: {
                 Map<String, Object> map = (Map<String, Object>) data.getSerializableExtra("map");
                 priceTv.setText(map.get(Constant.BALANCE).toString());
+            }
+            break;
+            case SETTING_CODE: {
+                loadData();
             }
             break;
         }

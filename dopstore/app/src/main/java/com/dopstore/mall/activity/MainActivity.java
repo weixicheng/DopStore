@@ -7,9 +7,11 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,8 +20,10 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.fragment.ActivityFragment;
+import com.dopstore.mall.activity.fragment.FirstMainFragment;
 import com.dopstore.mall.activity.fragment.MainFragment;
 import com.dopstore.mall.activity.fragment.PersonFragment;
+import com.dopstore.mall.activity.fragment.SecondMainFragment;
 import com.dopstore.mall.activity.fragment.TrolleyFragment;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.base.MyApplication;
@@ -40,7 +44,6 @@ public class MainActivity extends BaseActivity {
     private RelativeLayout myRly;
     private TextView mainTxt, bilingTxt, headTxt, myTxt;
     private ImageView mainIv, bilingIv, headIv, myIv;
-    private MyViewPager viewPager;
 
     private final static int MAIN_CODE = 0;
     private final static int BILING_CODE = 1;
@@ -48,10 +51,13 @@ public class MainActivity extends BaseActivity {
     private final static int MY_CODE = 3;
     private final static int BACK_CODE = 5;
 
+    private FragmentTransaction fragmentTransaction;
+    private FragmentManager fragmentManager;
     private MainFragment mainFragment;
     private ActivityFragment activityFragment;
     private TrolleyFragment trolleyFragment;
     private PersonFragment personFragment;
+    private Fragment currentFragment;
 
 
     private CommonDialog dialog;
@@ -68,14 +74,8 @@ public class MainActivity extends BaseActivity {
      * 初始化
      */
     private void initView() {
-        // 注册广播接收
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Constant.UPDATA_USER_FLAG);
-        registerReceiver(receiver, filter);
-
-
+        fragmentManager = getSupportFragmentManager();
         mainRly = (RelativeLayout) findViewById(R.id.main_tab_button);
-        viewPager = (MyViewPager) findViewById(R.id.main_content_viewpager);
         bilingRly = (RelativeLayout) findViewById(R.id.billing_tab_button);
         headRly = (RelativeLayout) findViewById(R.id.head_tab_button);
         myRly = (RelativeLayout) findViewById(R.id.my_tab_button);
@@ -93,25 +93,122 @@ public class MainActivity extends BaseActivity {
         bilingIv = (ImageView) findViewById(R.id.billing_tab_image);
         headIv = (ImageView) findViewById(R.id.head_tab_image);
         myIv = (ImageView) findViewById(R.id.my_tab_image);
+    }
 
-        FragmentAdapter adapter = new FragmentAdapter(this.getSupportFragmentManager());
-        viewPager.setOffscreenPageLimit(5);
-        viewPager.setNoScroll(true);
-        viewPager.setAdapter(adapter);
 
-        Map<String, Object> map = SkipUtils.getMap(this);
-        if (map!=null){
-            String id= map.get(Constant.ID).toString();
-            if (id.equals("2")){
-                viewPager.setCurrentItem(ROB_CODE);
-            }
-        }
+    private void initData() {
+//        Map<String,Object> map=SkipUtils.getMap(this);
+//        if (map!=null){
+//            String id=map.get(Constant.ID).toString();
+//            if (id.equals("0")){
+//                setTabFragment(MAIN_CODE);
+//            }else if (id.equals("1")){
+//                setTabFragment(BILING_CODE);
+//            }else if (id.equals("2")){
+//                setTabFragment(ROB_CODE);
+//            }else if (id.equals("3")){
+//                setTabFragment(MY_CODE);
+//            }
+//        }else {
+            setTabFragment(MAIN_CODE);
+//        }
 
     }
 
-    private void initData() {
-        // TODO Auto-generated method stub
+    private void setTabFragment(int index) {
+        setTab(index);
+        fragmentTransaction = fragmentManager.beginTransaction();
+        hideFragment(fragmentTransaction);
+        if (null != getCurrentFragment()) {
+            getCurrentFragment().onPause();
+        }
+        switch (index) {
+            case MAIN_CODE:
+                if (mainFragment == null) {
+                    mainFragment = new MainFragment();
+                    fragmentTransaction.add(R.id.main_content_fragment, mainFragment);
+                } else {
+                    setCurrentFragment(mainFragment);
+                    fragmentTransaction.show(mainFragment);
+                    if (mainFragment.isAdded()) {
+                        mainFragment.onResume();
+                    }
+                }
+                setCurrentFragment(mainFragment);
+                break;
+            case BILING_CODE:
+                if (activityFragment == null) {
+                    activityFragment = new ActivityFragment();
+                    fragmentTransaction.add(R.id.main_content_fragment, activityFragment);
+                } else {
+                    setCurrentFragment(activityFragment);
+                    fragmentTransaction.show(activityFragment);
+                    if (activityFragment.isAdded()) {
+                        activityFragment.onResume();
+                    }
+                }
+                setCurrentFragment(activityFragment);
+                break;
+            case ROB_CODE:
+                if (UserUtils.haveLogin(MainActivity.this)) {
+                    if (trolleyFragment == null) {
+                        trolleyFragment = new TrolleyFragment();
+                        fragmentTransaction.add(R.id.main_content_fragment, trolleyFragment);
+                    } else {
+                        setCurrentFragment(trolleyFragment);
+                        fragmentTransaction.show(trolleyFragment);
+                        if (trolleyFragment.isAdded()) {
+                            trolleyFragment.onResume();
+                        }
+                    }
+                    setCurrentFragment(trolleyFragment);
+                }else {
+                    SkipUtils.directJump(MainActivity.this,LoginActivity.class,false);
+                }
+                break;
+            case MY_CODE:
+                if (personFragment == null) {
+                    personFragment = new PersonFragment();
+                    fragmentTransaction.add(R.id.main_content_fragment, personFragment);
+                } else {
+                    setCurrentFragment(personFragment);
+                    fragmentTransaction.show(personFragment);
+                    if (personFragment.isAdded()) {
+                        personFragment.onResume();
+                    }
+                }
+                setCurrentFragment(personFragment);
+                break;
+            default:
+                break;
+        }
+        fragmentTransaction.commit();
+    }
 
+
+    private void hideFragment(FragmentTransaction fragmentTransaction) {
+
+        if (mainFragment != null) {
+            fragmentTransaction.hide(mainFragment);
+        }
+
+        if (activityFragment != null) {
+            fragmentTransaction.hide(activityFragment);
+        }
+        if (trolleyFragment != null) {
+            fragmentTransaction.hide(trolleyFragment);
+        }
+        if (personFragment != null) {
+            fragmentTransaction.hide(personFragment);
+        }
+    }
+
+    public Fragment getCurrentFragment() {
+        return currentFragment;
+    }
+
+    public void setCurrentFragment(Fragment currentFragment) {
+        this.currentFragment = currentFragment;
     }
 
     /**
@@ -123,24 +220,20 @@ public class MainActivity extends BaseActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.main_tab_button:// 首页
-                    setTab(MAIN_CODE);
-                    viewPager.setCurrentItem(MAIN_CODE);
+                    setTabFragment(MAIN_CODE);
                     break;
                 case R.id.billing_tab_button:// 活动
-                    setTab(BILING_CODE);
-                    viewPager.setCurrentItem(BILING_CODE);
+                    setTabFragment(BILING_CODE);
                     break;
                 case R.id.head_tab_button:// 购物车
-                    setTab(ROB_CODE);
                     if (UserUtils.haveLogin(MainActivity.this)) {
-                        viewPager.setCurrentItem(ROB_CODE);
+                        setTabFragment(ROB_CODE);
                     }else {
                         SkipUtils.directJump(MainActivity.this, LoginActivity.class,false);
                     }
                     break;
                 case R.id.my_tab_button:// 我的
-                    setTab(MY_CODE);
-                    viewPager.setCurrentItem(MY_CODE);
+                    setTabFragment(MY_CODE);
                     break;
                 default:
                     break;
@@ -208,34 +301,6 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-
-    class FragmentAdapter extends FragmentStatePagerAdapter {
-        public FragmentAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            switch (position) {
-                case MAIN_CODE:// 首页
-                    return mainFragment = new MainFragment();
-                case BILING_CODE:// 活动
-                    return activityFragment = new ActivityFragment();
-                case ROB_CODE:// 购物车
-                    return trolleyFragment = new TrolleyFragment();
-                case MY_CODE:// 我的
-                    return personFragment = new PersonFragment();
-            }
-            return null;
-        }
-
-        @Override
-        public int getCount() {
-            return 4;
-        }
-    }
-
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -264,13 +329,6 @@ public class MainActivity extends BaseActivity {
         }
     };
 
-    BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            personFragment.loadData();
-        }
-    };
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

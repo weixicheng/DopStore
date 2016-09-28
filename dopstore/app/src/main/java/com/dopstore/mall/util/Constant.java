@@ -31,8 +31,6 @@ public class Constant {
     public static final String MOBILE = "mobile";
     public static final String BALANCE = "balance";
     /*****************************************************/
-    public final static String UPDATA_USER_FLAG = "com.dopstore.mall.user_updata";//更新用户数据
-    public final static String UPDATA_USER_ADDRESS_FLAG = "com.dopstore.mall.user_address_updata";//更新用户数据
     /*****************************************************/
     public static final String ERROR_CODE = "error_code";
     public static final String ERROR_MSG = "error_msg";

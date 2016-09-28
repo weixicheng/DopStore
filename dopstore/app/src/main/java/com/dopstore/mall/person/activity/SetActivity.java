@@ -1,5 +1,6 @@
 package com.dopstore.mall.person.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -7,11 +8,13 @@ import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.base.BaseActivity;
+import com.dopstore.mall.shop.activity.SearchActivity;
 import com.dopstore.mall.util.ACache;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.DataCleanManager;
@@ -40,7 +43,10 @@ public class SetActivity extends BaseActivity {
     }
 
     private void initview() {
-        leftImageBack(R.mipmap.back_arrow);
+        ImageButton id = (ImageButton) findViewById(R.id.title_left_imageButton);
+        id.setImageResource(R.mipmap.back_arrow);
+        id.setVisibility(View.VISIBLE);
+        id.setOnClickListener(listener);
         setCustomTitle("设置", getResources().getColor(R.color.white_color));
         textView_set_clear = (TextView) findViewById(R.id.setting_my_clean_data);
         try {
@@ -76,6 +82,11 @@ public class SetActivity extends BaseActivity {
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
+                case R.id.title_left_imageButton:
+                    Intent intent=new Intent();
+                    setResult(Activity.RESULT_OK,intent);
+                    SkipUtils.back(SetActivity.this);
+                    break;
                 case R.id.setting_my_detail_layout:
                     SkipUtils.directJump(SetActivity.this, MyDetailActivity.class, false);
                     break;
@@ -115,9 +126,6 @@ public class SetActivity extends BaseActivity {
         UserUtils.clear(this);
         ACache.get(this).clear();
         LoadImageUtils.getInstance(this).clear();
-        Intent intent = new Intent();
-        intent.setAction(Constant.UPDATA_USER_FLAG);
-        sendBroadcast(intent);
         SkipUtils.back(this);
     }
     private final static int CLEAR_CACHE_CODE=0;
@@ -139,7 +147,9 @@ public class SetActivity extends BaseActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            SkipUtils.back(this);
+            Intent intent=new Intent();
+            setResult(Activity.RESULT_OK,intent);
+            SkipUtils.back(SetActivity.this);
             return true;
         } else {
             return super.onKeyDown(keyCode, event);

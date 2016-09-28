@@ -70,42 +70,21 @@ public class TrolleyFragment extends Fragment {
 
     private int totalPrice = 0; // 商品总价
 
-    private Timer timer;
-    private TimerTask doing;
-
     private HttpHelper httpHelper;
     private ProUtils proUtils;
+
+    private View v;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.layout_trolley_fragment, null);
+        v = inflater.inflate(R.layout.layout_trolley_fragment, null);
         initView(v);
         initListener();
+        loadData();
         return v;
     }
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        if (isVisibleToUser) {
-            if (null != timer) {
-                return;
-            } else {
-                timer = new Timer();
-                doing = new TimerTask() {
-                    // 每个timerTask都要重写这个方法，因为是abstract的
-                    public void run() {
-                        handler.sendEmptyMessage(LAZY_LOADING_MSG);
-                        // 通过sendMessage函数将消息压入线程的消息队列。
-                    }
-                };
-                timer.schedule(doing, 100);
-            }
-        } else {
-            // 不可见时不执行操作
-        }
-        super.setUserVisibleHint(isVisibleToUser);
-    }
 
     private void deleteToService(List<GoodBean> mListData) {
         proUtils.show();
@@ -297,7 +276,6 @@ public class TrolleyFragment extends Fragment {
         }
     };
 
-    private final static int LAZY_LOADING_MSG = 0;
     private final static int UPDATA_CART_MSG = 1;
 
     Handler handler = new Handler() {
@@ -305,10 +283,6 @@ public class TrolleyFragment extends Fragment {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
-                case LAZY_LOADING_MSG: {
-                    loadData();
-                }
-                break;
                 case UPDATA_CART_MSG: {
                     refreshListView();
                 }

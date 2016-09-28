@@ -57,16 +57,18 @@ public class MainFragment extends Fragment {
     private FirstMainFragment firstMainFragment;
     private SecondMainFragment secondMainFragment;
     private Fragment currentFragment;
+    private View v;
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.layout_main_fragment, null);
+        v = inflater.inflate(R.layout.layout_main_fragment, null);
         initView(v);
         initData();
         return v;
     }
+
 
     private void initView(View v) {
         fragmentManager = getActivity().getSupportFragmentManager();
@@ -90,25 +92,6 @@ public class MainFragment extends Fragment {
         tabList.clear();
         getTabData();
         setTabSelection(0, "");
-        eScrollView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                for (int i = 0; i < tabList.size(); i++) {
-                    if (i == position) {
-                        tabList.get(i).setIsSelect("1");
-                    } else {
-                        tabList.get(i).setIsSelect("0");
-                    }
-                }
-                adapter.notifyDataSetChanged();
-                if (position == 0) {
-                    setTabSelection(0, "");
-                } else {
-                    String id = tabList.get(position).getId();
-                    setTabSelection(1, id);
-                }
-            }
-        });
     }
 
     private void setTabSelection(int index, String id) {
@@ -248,12 +231,35 @@ public class MainFragment extends Fragment {
     };
 
     private void refreshTabAdapter() {
-        if (adapter == null) {
-            adapter = new TabAdapter(getActivity(), tabList);
-            eScrollView.setAdapter(adapter);
-        } else {
-            adapter.notifyDataSetChanged();
+        if (tabList.size()>0) {
+            if (adapter == null) {
+                adapter = new TabAdapter(getActivity(), tabList);
+                eScrollView.setAdapter(adapter);
+            } else {
+                adapter.notifyDataSetChanged();
+            }
         }
+        eScrollView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                if (tabList.size()>0) {
+                    for (int i = 0; i < tabList.size(); i++) {
+                        if (i == position) {
+                            tabList.get(i).setIsSelect("1");
+                        } else {
+                            tabList.get(i).setIsSelect("0");
+                        }
+                    }
+                    adapter.notifyDataSetChanged();
+                    if (position == 0) {
+                        setTabSelection(0, "");
+                    } else {
+                        String id = tabList.get(position).getId();
+                        setTabSelection(1, id);
+                    }
+                }
+            }
+        });
     }
 
 }

@@ -35,4 +35,5 @@ public class URL {
     public static String ORDER_ACTIVITY = BASE_URL + "order/activity";//确认活动单下单
     public static String ORDER_ACTIVITY_LIST = BASE_URL + "order/activity_list/";//活动订单列表
     public static String COLLECTION_GOODS_STATUS = BASE_URL + "home/collection/goods";//判断商品是否收藏
+    public static String ACTIVITY_PAYMENT = BASE_URL + "order/activity/payment";//活动订单支付
 }

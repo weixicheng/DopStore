@@ -279,10 +279,6 @@ public class LoginActivity extends BaseActivity {
                 data.setMobile(user.optString(Constant.MOBILE));
                 data.setAddress(user.optString(Constant.CITY));
                 UserUtils.setData(LoginActivity.this, data);
-                Intent intent = new Intent();
-                intent.setAction(Constant.UPDATA_USER_FLAG);
-                sendBroadcast(intent);
-                MyApplication.getInstance().removeActivity(LoginActivity.this);
                 finish();
             } else {
                 String msg = jo.optString(Constant.ERROR_MSG);

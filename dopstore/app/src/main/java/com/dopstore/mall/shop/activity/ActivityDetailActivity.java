@@ -17,6 +17,7 @@ import com.dopstore.mall.activity.bean.ActivityData;
 import com.dopstore.mall.activity.bean.ShopData;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.login.activity.LoginActivity;
+import com.dopstore.mall.order.activity.ActivityCashierActivity;
 import com.dopstore.mall.shop.adapter.ActivityDetailAdapter;
 import com.dopstore.mall.shop.bean.ActivityDetailBean;
 import com.dopstore.mall.util.Constant;

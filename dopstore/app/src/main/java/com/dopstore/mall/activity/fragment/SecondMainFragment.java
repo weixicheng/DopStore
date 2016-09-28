@@ -66,6 +66,7 @@ public class SecondMainFragment extends Fragment implements OnFooterRefreshListe
     private boolean isRefresh= false;
     private boolean isUpRefresh = false;
     private ScrollView mainView;
+    private View v;
 
     private MiddleAdapter middleAdapter;
 
@@ -76,7 +77,7 @@ public class SecondMainFragment extends Fragment implements OnFooterRefreshListe
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.layout_main_second_fragment, null);
+        v = inflater.inflate(R.layout.layout_main_second_fragment, null);
         initView(v);
         initData();
         return v;

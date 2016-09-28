@@ -433,9 +433,6 @@ public class MyDetailActivity extends BaseActivity {
                         data.setMobile(user.optString(Constant.MOBILE));
                         data.setAddress(user.optString(Constant.CITY));
                         UserUtils.setData(MyDetailActivity.this, data);
-                        Intent intent = new Intent();
-                        intent.setAction(Constant.UPDATA_USER_FLAG);
-                        sendBroadcast(intent);
                         T.show(MyDetailActivity.this, "修改成功");
                     } else {
                         String msg = jo.optString(Constant.ERROR_MSG);

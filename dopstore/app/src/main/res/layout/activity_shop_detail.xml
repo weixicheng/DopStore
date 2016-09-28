@@ -17,24 +17,6 @@
         android:layout_height="match_parent"
         android:id="@+id/shop_detail_web" />
 
-    <View
-        android:id="@+id/shop_detail_service_bt"
-        android:layout_width="46dp"
-        android:layout_height="46dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="60dp"
-        android:layout_marginRight="@dimen/margin_10"
-        android:layout_alignParentRight="true"
-        android:background="@mipmap/kefu_logo" />
-
-    <LinearLayout
-        android:id="@+id/shop_detail_poup_bg"
-        android:layout_below="@id/shop_detail_title_layout"
-        android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        android:background="@drawable/darkening_background" />
 
 
 </RelativeLayout>

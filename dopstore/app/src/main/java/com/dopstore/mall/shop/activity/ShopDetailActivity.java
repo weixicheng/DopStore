@@ -3,6 +3,7 @@ package com.dopstore.mall.shop.activity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -50,13 +51,12 @@ import java.util.Map;
  * 作者：xicheng on 16/9/12
  */
 public class ShopDetailActivity extends BaseActivity {
-    private View serviceV;
     private WebView webView;
-    protected WebSettings webSetting;
     private HttpHelper httpHelper;
     private ProUtils proUtils;
     private String isCollect = "0";
     private String shop_id;
+    private JsInterface jsInterface;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,121 +72,130 @@ public class ShopDetailActivity extends BaseActivity {
         if (map == null) return;
         shop_id = map.get(Constant.ID).toString();
         webView = (WebView) findViewById(R.id.shop_detail_web);
-        serviceV = findViewById(R.id.shop_detail_service_bt);
         setCustomTitle("商品详情", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         rightFirstImageBack(R.mipmap.share_logo, listener);
 
-        serviceV.setOnClickListener(listener);
         getCollectStatus();
+        jsInterface = new JsInterface();
         initWebViewSetting();
     }
 
     @SuppressLint({"JavascriptInterface", "SetJavaScriptEnabled"})
     private void initWebViewSetting() {
-        if (webView != null) {
-            webSetting = webView.getSettings();
-            // 支持js
-            webSetting.setJavaScriptEnabled(true);
-            webSetting.setJavaScriptCanOpenWindowsAutomatically(true);
-            // 缩放
-            webSetting.setSupportZoom(true);
-            webSetting.setBuiltInZoomControls(false);
-            // 支持保存数据
-            webSetting.setSaveFormData(true);
-            webSetting.setDefaultTextEncodingName("UTF-8");
+        WebSettings settings = webView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        settings.setSupportZoom(true);
+        settings.setBuiltInZoomControls(true);
 
-            webSetting.setAppCacheEnabled(false);
-            webSetting.setDomStorageEnabled(true);
-            // webSetting.setAppCacheMaxSize(1024 * 1024 * 8);
-            String appCachePath = getApplicationContext().getCacheDir()
-                    .getAbsolutePath();
-            webSetting.setAppCachePath(appCachePath);
-            webSetting.setAllowFileAccess(true);
-            // webSetting.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-            webView.clearHistory();
+        webView.setWebChromeClient(new WebChromeClient() {
 
-            webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                super.onProgressChanged(view, newProgress);
+                if (newProgress == 100) {
+                    // 滚动条消失
+                }
+            }
+
+        });
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                webView.loadUrl(url);
+                return true;
+            }
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+            }
+
+        });
+        String url = URL.SHOP_GOOD_DETAIL_URL + shop_id;
+        webView.loadUrl(url);
+        webView.addJavascriptInterface(jsInterface, "androidObj");
+    }
+
+    class JsInterface {
+        String user_id = "";
+
+        @android.webkit.JavascriptInterface
+        public void backToMain() {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+
                 @Override
-                public void onPageFinished(WebView view, String url) {
-                    super.onPageFinished(view, url);
+                public void run() {
+                    SkipUtils.directJump(ShopDetailActivity.this, MainActivity.class, true);
+                }
+            });
+        }
+        @android.webkit.JavascriptInterface
+        public void backToCart() {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (!UserUtils.haveLogin(ShopDetailActivity.this)) {
+                        SkipUtils.directJump(ShopDetailActivity.this, LoginActivity.class, false);
+                        return;
+                    }
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map.put(Constant.ID, "2");
+                    SkipUtils.jumpForMap(ShopDetailActivity.this, MainActivity.class, map, true);
                 }
             });
 
-            webView.setWebChromeClient(new chromeClient());
-            String url = URL.SHOP_GOOD_DETAIL_URL + shop_id;
-            if (!TextUtils.isEmpty(url)) {
-                webView.loadUrl(url);
-            }
-            webView.addJavascriptInterface(getHtmlObject(), "androidObj");
         }
+        @android.webkit.JavascriptInterface
+        public void joinCart(final String goods_sku_id, final String goods_id, final String num) {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (UserUtils.haveLogin(ShopDetailActivity.this)) {
+                        user_id = UserUtils.getId(ShopDetailActivity.this);
+                        joinCartInApp(goods_sku_id, goods_id, num);
+                    } else {
+                        SkipUtils.directJump(ShopDetailActivity.this, LoginActivity.class, false);
+                        return;
+                    }
+                }
+            });
+
+        }
+        @android.webkit.JavascriptInterface
+        public void placeOrder(final String charge) {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (UserUtils.haveLogin(ShopDetailActivity.this)) {
+                        user_id = UserUtils.getId(ShopDetailActivity.this);
+                        Pingpp.createPayment(ShopDetailActivity.this, charge);
+                    } else {
+                        SkipUtils.directJump(ShopDetailActivity.this, LoginActivity.class, false);
+                        return;
+                    }
+                }
+            });
+        }
+
     }
 
-    @SuppressLint("JavascriptInterface")
-    private Object getHtmlObject() {
-        Object insertObj = new Object() {
-
-            public void backToMain() {
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        SkipUtils.directJump(ShopDetailActivity.this, MainActivity.class, true);
-                    }
-                });
-            }
-
-            public void backToCart() {
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        if (!UserUtils.haveLogin(ShopDetailActivity.this)) {
-                            SkipUtils.directJump(ShopDetailActivity.this, LoginActivity.class, false);
-                            return;
-                        }
-                        Map<String, Object> map = new HashMap<String, Object>();
-                        map.put(Constant.ID, "2");
-                        SkipUtils.jumpForMap(ShopDetailActivity.this, MainActivity.class, map, true);
-                    }
-                });
-
-            }
-
-            public void joinCart(final String count, final String color, final String size) {
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        placeShopOrder(count, color, size);
-                    }
-                });
-            }
-
-            public void placeOrder(String charge) {
-                Pingpp.createPayment(ShopDetailActivity.this, charge, "qwalletXXXXXXX");
-            }
-        };
-        return insertObj;
-    }
-
-    protected class chromeClient extends WebChromeClient {
-
-        @Override
-        public void onReceivedTitle(WebView view, String title) {
-            super.onReceivedTitle(view, title);
-
-        }
-
-        @Override
-        public void onProgressChanged(WebView view, int newProgress) {
-            super.onProgressChanged(view, newProgress);
-        }
-
-        @Override
-        public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
-            return super.onJsAlert(view, url, message, result);
-        }
+    /**
+     * 加入购物车
+     * @param goods_sku_id
+     * @param goods_id
+     * @param num
+     */
+    private void joinCartInApp(String goods_sku_id, String goods_id, String num) {
     }
 
     View.OnClickListener listener = new View.OnClickListener() {
@@ -203,9 +212,6 @@ public class ShopDetailActivity extends BaseActivity {
                     } else {
                         setCollectStatus("2");
                     }
-                }
-                break;
-                case R.id.shop_detail_service_bt: {
                 }
                 break;
             }
@@ -357,13 +363,13 @@ public class ShopDetailActivity extends BaseActivity {
             switch (msg.what) {
                 case COLLECT_SCUESS_CODE: {
                     T.show(ShopDetailActivity.this, "添加成功");
-                    isCollect="1";
+                    isCollect = "1";
                     rightSecondImageBack(R.mipmap.collect_check_logo, listener);
                 }
                 break;
                 case COLLECT_CANCEL_CODE: {
                     T.show(ShopDetailActivity.this, "取消成功");
-                    isCollect="0";
+                    isCollect = "0";
                     rightSecondImageBack(R.mipmap.collect_small_logo, listener);
                 }
                 break;

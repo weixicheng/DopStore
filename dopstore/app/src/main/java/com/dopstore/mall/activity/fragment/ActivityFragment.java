@@ -58,11 +58,12 @@ public class ActivityFragment extends Fragment {
     private FirstActivityFragment firstActivityFragment;
     private SecondActivityFragment secondActivityFragment;
     private Fragment currentFragment;
+    private View v;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.layout_activity_fragment, null);
+        v = inflater.inflate(R.layout.layout_activity_fragment, null);
         initView(v);
         initData();
         return v;
@@ -87,6 +88,7 @@ public class ActivityFragment extends Fragment {
         imageButton.setVisibility(View.VISIBLE);
         imageButton.setOnClickListener(listener);
     }
+
 
     private void initData() {
         tabList.clear();
@@ -167,7 +169,6 @@ public class ActivityFragment extends Fragment {
             switch (msg.what) {
                 case UPDATA_TAB_CODE: {
                     refreshTabAdapter();
-
                 }
                 break;
             }
@@ -175,28 +176,32 @@ public class ActivityFragment extends Fragment {
     };
 
     private void refreshTabAdapter() {
-        if (tabAdapter == null) {
-            tabAdapter = new TabAdapter(getActivity(), tabList);
-            eScrollView.setAdapter(tabAdapter);
-        } else {
-            tabAdapter.notifyDataSetChanged();
+        if (tabList.size()>0) {
+            if (tabAdapter == null) {
+                tabAdapter = new TabAdapter(getActivity(), tabList);
+                eScrollView.setAdapter(tabAdapter);
+            } else {
+                tabAdapter.notifyDataSetChanged();
+            }
         }
         eScrollView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                for (int i = 0; i < tabList.size(); i++) {
-                    if (i == position) {
-                        tabList.get(i).setIsSelect("1");
-                    } else {
-                        tabList.get(i).setIsSelect("0");
+                if (tabList.size()>0) {
+                    for (int i = 0; i < tabList.size(); i++) {
+                        if (i == position) {
+                            tabList.get(i).setIsSelect("1");
+                        } else {
+                            tabList.get(i).setIsSelect("0");
+                        }
                     }
-                }
-                tabAdapter.notifyDataSetChanged();
-                if (position == 0) {
-                    setTabSelection(0, "");
-                } else {
-                    String id = tabList.get(position).getId();
-                    setTabSelection(1, id);
+                    tabAdapter.notifyDataSetChanged();
+                    if (position == 0) {
+                        setTabSelection(0, "");
+                    } else {
+                        String id = tabList.get(position).getId();
+                        setTabSelection(1, id);
+                    }
                 }
 
             }

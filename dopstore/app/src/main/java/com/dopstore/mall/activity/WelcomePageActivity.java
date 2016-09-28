@@ -23,8 +23,8 @@ public class WelcomePageActivity extends BaseActivity {
     private Button jumpBt;
     private String activityStr;
     private LayoutInflater mInflater;
-    private int[] images = {R.mipmap.ic_launcher,
-            R.mipmap.ic_launcher, R.mipmap.ic_launcher};
+    private int[] images = {R.mipmap.ic,
+            R.mipmap.ic, R.mipmap.ic};
     private LinearLayout scrollIdentifying;
 
     @Override
@@ -92,7 +92,7 @@ public class WelcomePageActivity extends BaseActivity {
 
         // 初始化指示器
         CustomIndicatorStart customIndicator = new CustomIndicatorStart(WelcomePageActivity.this, images.length, scrollLayout, scrollIdentifying);
-        customIndicator.initIndicator(90, R.mipmap.ic_launcher,
+        customIndicator.initIndicator(90, R.mipmap.dop_normal,
                 new CustomIndicatorStart.OnScrollPageListener() {
 
                     @Override
