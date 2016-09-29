@@ -51,7 +51,6 @@ public final class CameraManager {
         try {
             sdkInt = Integer.parseInt(Build.VERSION.SDK);
         } catch (NumberFormatException nfe) {
-            // Just to be safe
             sdkInt = 10000;
         }
         SDK_INT = sdkInt;
@@ -131,11 +130,6 @@ public final class CameraManager {
             }
             configManager.setDesiredCameraParameters(camera);
 
-            //FIXME
-            //     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-//      if (prefs.getBoolean(PreferencesActivity.KEY_FRONT_LIGHT, false)) {
-//        FlashlightManager.enableFlashlight();
-//      }
             FlashlightManager.enableFlashlight();
         }
     }

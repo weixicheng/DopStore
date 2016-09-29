@@ -3,8 +3,6 @@ package com.dopstore.mall.base;
 import android.app.Activity;
 import android.app.Application;
 
-import com.amap.api.location.AMapLocationClient;
-import com.amap.api.location.AMapLocationListener;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.pingplusplus.android.PingppLog;
 

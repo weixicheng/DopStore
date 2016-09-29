@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.bean.ShopData;
-import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.LoadImageUtils;
 
 import java.util.List;

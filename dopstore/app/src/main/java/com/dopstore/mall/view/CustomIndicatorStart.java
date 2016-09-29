@@ -2,7 +2,6 @@ package com.dopstore.mall.view;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -14,7 +13,6 @@ import com.dopstore.mall.util.Constant;
 
 /**
  * @author weixicheng
- * @TODO 自定义指示器
  * @date: 2015-1-9 上午10:59:27
  * @version: V2.0
  */
@@ -27,13 +25,9 @@ public class CustomIndicatorStart {
 
     private int length = 0; // 指示器个数
     private boolean isTab = false; // 是不是滑动tab
-    // 适配用到
-    private int result_resolution = 0;// 分辨率
-    private int fsize = 0;// popwindow距离title高度
 
     public CustomIndicatorStart(Context context, final int length,
                                 MyScrollLayout scrollLayout, LinearLayout indicator) {
-        // TODO Auto-generated constructor stub
         mContext = context;
         this.length = length;
         this.scrollLayout = scrollLayout;
@@ -43,7 +37,6 @@ public class CustomIndicatorStart {
 
     public CustomIndicatorStart(Context context, final int length,
                                 MyScrollLayoutForStart scrollLayout, LinearLayout indicator) {
-        // TODO Auto-generated constructor stub
         mContext = context;
         this.length = length;
         this.scrollLayoutStart = scrollLayout;
@@ -51,22 +44,11 @@ public class CustomIndicatorStart {
         isTab = true;
     }
 
-    /**
-     * @param lineWidth            dip 线宽
-     * @param imageId              指示器图片资源
-     * @param onScrollPageListener 页滚动监听
-     * @return void
-     * @TODO 初始化指示器
-     * @throw
-     * @author shangxiaoxue
-     * @date: 2015-1-9 上午11:15:00
-     */
+
     public void initIndicator(int lineWidth, final int imageId,
                               final OnScrollPageListener onScrollPageListener) {
         // 设备屏幕分辨率
         getResolution(mContext);
-        result_resolution = Constant.WIDTH * Constant.HEIGHT;
-
         DisplayMetrics dm = mContext.getResources().getDisplayMetrics();
         // 获取线宽 px
         int widthLayout = dip2px(lineWidth, dm.density);
@@ -80,8 +62,8 @@ public class CustomIndicatorStart {
         // 设置imageView
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
-        Bitmap bm = BitmapFactory.decodeResource(mContext.getResources(),
-                imageId, options);
+//        Bitmap bm = BitmapFactory.decodeResource(mContext.getResources(),
+//                imageId, options);
         int imageWidth = options.outWidth;
         // 每个指示应该占的宽度
         int perWidth = widthLayout / length;
@@ -91,7 +73,7 @@ public class CustomIndicatorStart {
         int basicWeight = (int) (basicDensityDiff / 0.5f);
         if (marginWidth < 0) {
             // 负数
-            marginWidth = -((widthLayout - imageWidth * length) / (length - 1) + fsize);
+            marginWidth = -((widthLayout - imageWidth * length) / (length - 1) + 0);
         } else {
             // 正数
             marginWidth = marginWidth + basicWeight * 10;
@@ -158,8 +140,6 @@ public class CustomIndicatorStart {
 
                 @Override
                 public void page(int page) {
-                    // TODO Auto-generated method stub
-
                     onScrollPageListener.currentPage(page);
                     for (int i = 0; i < length; i++) {
                         if (i == page) {
@@ -186,14 +166,7 @@ public class CustomIndicatorStart {
         return (int) (dipValue * scale + 0.5f);
     }
 
-    /**
-     * @param context
-     * @return void
-     * @TODO 获取屏幕分辨率
-     * @throw
-     * @author XinYu.Yang
-     * @date: 2014-9-10 下午12:35:23
-     */
+
     public static void getResolution(Context context) {
         DisplayMetrics metrics = new DisplayMetrics();
         ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(metrics);

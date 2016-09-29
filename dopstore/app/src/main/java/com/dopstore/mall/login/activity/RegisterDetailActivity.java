@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
@@ -65,6 +66,7 @@ public class RegisterDetailActivity extends BaseActivity {
     private BabyAdapter adapter;
     private ACache aCache;
     private ProUtils proUtils;
+    private ScrollView scrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +85,8 @@ public class RegisterDetailActivity extends BaseActivity {
         v_code = intentMap.get(Constant.V_CODE).toString();
         pwd = intentMap.get(Constant.PASSWORD).toString();
         mobile = intentMap.get(Constant.MOBILE).toString();
-        topLayout = (RelativeLayout) findViewById(R.id.brandsquare_title);
+        topLayout = (RelativeLayout) findViewById(R.id.brandsquare_title_layout);
+        scrollView = (ScrollView) findViewById(R.id.register_mybaby_layout);
         topLayout.setBackgroundColor(getResources().getColor(R.color.white_color));
         leftTextBack("取消", getResources().getColor(R.color.red_color_f93448), listener);
         timeTv = (TextView) findViewById(R.id.register_mybaby_time);
@@ -103,7 +106,6 @@ public class RegisterDetailActivity extends BaseActivity {
                 (calendar.get(Calendar.MONTH) + 1) + "-" +
                 calendar.get(Calendar.DAY_OF_MONTH) + "");
         refreshAdapter();
-        hobbyGridView.setAdapter(new BabyAdapter(this, list));
 
         hobbyGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -121,6 +123,7 @@ public class RegisterDetailActivity extends BaseActivity {
         } else {
             adapter.upDataList(list);
         }
+        scrollView.fullScroll(ScrollView.FOCUS_UP);
     }
 
     View.OnClickListener listener = new View.OnClickListener() {
@@ -217,6 +220,9 @@ public class RegisterDetailActivity extends BaseActivity {
                         data.setMobile(user.optString(Constant.MOBILE));
                         data.setAddress(user.optString(Constant.CITY));
                         UserUtils.setData(RegisterDetailActivity.this, data);
+                        Intent intent=new Intent();
+                        intent.setAction(Constant.UP_USER_DATA);
+                        sendBroadcast(intent);
                         Intent it = new Intent(RegisterDetailActivity.this, MainActivity.class);
                         it.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(it);

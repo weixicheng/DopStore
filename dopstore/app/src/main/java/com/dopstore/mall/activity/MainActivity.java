@@ -7,10 +7,8 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 import android.view.View;
@@ -20,10 +18,8 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.fragment.ActivityFragment;
-import com.dopstore.mall.activity.fragment.FirstMainFragment;
 import com.dopstore.mall.activity.fragment.MainFragment;
 import com.dopstore.mall.activity.fragment.PersonFragment;
-import com.dopstore.mall.activity.fragment.SecondMainFragment;
 import com.dopstore.mall.activity.fragment.TrolleyFragment;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.base.MyApplication;
@@ -32,10 +28,6 @@ import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.view.CommonDialog;
-import com.dopstore.mall.view.MyViewPager;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class MainActivity extends BaseActivity {
     protected RelativeLayout mainRly;
@@ -58,6 +50,7 @@ public class MainActivity extends BaseActivity {
     private TrolleyFragment trolleyFragment;
     private PersonFragment personFragment;
     private Fragment currentFragment;
+    private Receiver receiver;
 
 
     private CommonDialog dialog;
@@ -93,26 +86,18 @@ public class MainActivity extends BaseActivity {
         bilingIv = (ImageView) findViewById(R.id.billing_tab_image);
         headIv = (ImageView) findViewById(R.id.head_tab_image);
         myIv = (ImageView) findViewById(R.id.my_tab_image);
+
+
+        receiver= new Receiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Constant.UP_USER_DATA);
+        filter.addAction(Constant.BACK_CART_DATA);
+        registerReceiver(receiver, filter);
     }
 
 
     private void initData() {
-//        Map<String,Object> map=SkipUtils.getMap(this);
-//        if (map!=null){
-//            String id=map.get(Constant.ID).toString();
-//            if (id.equals("0")){
-//                setTabFragment(MAIN_CODE);
-//            }else if (id.equals("1")){
-//                setTabFragment(BILING_CODE);
-//            }else if (id.equals("2")){
-//                setTabFragment(ROB_CODE);
-//            }else if (id.equals("3")){
-//                setTabFragment(MY_CODE);
-//            }
-//        }else {
             setTabFragment(MAIN_CODE);
-//        }
-
     }
 
     private void setTabFragment(int index) {
@@ -182,7 +167,7 @@ public class MainActivity extends BaseActivity {
             default:
                 break;
         }
-        fragmentTransaction.commit();
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
 
@@ -333,9 +318,34 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        mainFragment.onActivityResult(requestCode, resultCode, data);
-        activityFragment.onActivityResult(requestCode, resultCode, data);
-        personFragment.onActivityResult(requestCode, resultCode, data);
+        if (mainFragment!=null) {
+            mainFragment.onActivityResult(requestCode, resultCode, data);
+        }
+        if (activityFragment!=null){
+        activityFragment.onActivityResult(requestCode, resultCode, data);}
+        if (personFragment!=null){
+        personFragment.onActivityResult(requestCode, resultCode, data);}
     }
+
+    public class Receiver extends BroadcastReceiver
+    {
+
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            String action=intent.getAction();
+            if (action.equals(Constant.UP_USER_DATA)) {
+                if (personFragment != null) {
+                    personFragment.loadData();
+                }
+            }else if (action.equals(Constant.BACK_CART_DATA)){
+                setTabFragment(ROB_CODE);
+            }
+
+        }
+
+    }
+
+
 
 }

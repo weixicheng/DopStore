@@ -179,7 +179,6 @@ public class EScrollView extends HorizontalScrollView implements
 
     @Override
     public boolean onLongClick(View v) {
-        // TODO Auto-generated method stub
         if (null != mOnItemLongClickListener) {
             mOnItemLongClickListener.onItemLongClick(null, v, v.getId(),
                     v.getId());

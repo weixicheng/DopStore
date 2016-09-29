@@ -25,7 +25,7 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
             debuggable true
@@ -50,9 +50,9 @@ android {
             def fileName
             if (outputFile != null && outputFile.name.endsWith('.apk')) {
                 if (variant.buildType.name.equals('release')) {
-                    fileName = "XXX_v${defaultConfig.versionName}.apk"
+                    fileName = "dop_v${defaultConfig.versionName}.apk"
                 } else if (variant.buildType.name.equals('debug')) {
-                    fileName = "XXX_v${defaultConfig.versionName}_debug.apk"
+                    fileName = "dop_v${defaultConfig.versionName}_debug.apk"
                 }
                 output.outputFile = new File(outputFile.parent, fileName)
             }

@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.base.BaseActivity;
-import com.dopstore.mall.util.ACache;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.HttpHelper;
 import com.dopstore.mall.util.ProUtils;
@@ -45,8 +44,6 @@ public class LosePwdActivity extends BaseActivity {
     private TextView agressTxt, titleTv;
     private MyCount mc;
     private HttpHelper httpHelper;
-    private ACache aCache;
-    private String v_code;
     private String titleStr="忘记密码";
     private ProUtils proUtils;
 
@@ -67,8 +64,7 @@ public class LosePwdActivity extends BaseActivity {
         }
         httpHelper = HttpHelper.getOkHttpClientUtils(this);
         proUtils=new ProUtils(this);
-        aCache = ACache.get(this);
-        topLayout = (RelativeLayout) findViewById(R.id.brandsquare_title);
+        topLayout = (RelativeLayout) findViewById(R.id.brandsquare_title_layout);
         titleTv = (TextView) findViewById(R.id.register_title_tv);
         titleTv.setText(titleStr);
         thirdLayout = (LinearLayout) findViewById(R.id.login_third_lly);
@@ -184,11 +180,6 @@ public class LosePwdActivity extends BaseActivity {
             return;
         }
 
-        if (!v_code.equals(code)) {
-            T.show(this, "请检查验证码");
-            return;
-        }
-
         if (TextUtils.isEmpty(pwd)) {
             T.show(this, "请填写密码");
             return;
@@ -261,7 +252,7 @@ public class LosePwdActivity extends BaseActivity {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
                     if ("0".equals(code)) {
-                        v_code = jo.optString(Constant.V_CODE);
+
                     } else {
                         String msg = jo.optString(Constant.ERROR_MSG);
                         T.show(LosePwdActivity.this, msg);

@@ -1,15 +1,12 @@
 package com.dopstore.mall.activity.adapter;
 
-import android.app.Activity;
 import android.content.Context;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.bean.MainMiddleData;
@@ -18,7 +15,6 @@ import com.dopstore.mall.shop.activity.ShopDetailActivity;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.LoadImageUtils;
 import com.dopstore.mall.util.SkipUtils;
-import com.dopstore.mall.util.Utils;
 import com.dopstore.mall.view.EScrollView;
 
 import java.util.HashMap;
@@ -92,7 +88,7 @@ public class MiddleAdapter extends BaseAdapter {
                 String id=data.getId();
                 Map<String,Object> map=new HashMap<String, Object>();
                 map.put(Constant.ID,id);
-                SkipUtils.jumpForMap(context, ShopDetailActivity.class,map,false);
+                SkipUtils.jumpForMapResult(context, ShopDetailActivity.class, map, 0);
             }
         });
 

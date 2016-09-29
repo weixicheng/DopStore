@@ -13,7 +13,6 @@ import java.util.Map;
 
 /**
  * 作者：weixicheng on 16/7/18 09:50
- * TODO
  */
 public class SkipUtils {
     private static SkipUtils windowUtils = null;

@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.base.BaseActivity;
-import com.dopstore.mall.shop.activity.SearchActivity;
 import com.dopstore.mall.util.ACache;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.DataCleanManager;
@@ -126,6 +125,9 @@ public class SetActivity extends BaseActivity {
         UserUtils.clear(this);
         ACache.get(this).clear();
         LoadImageUtils.getInstance(this).clear();
+        Intent it=new Intent();
+        it.setAction(Constant.UP_USER_DATA);
+        sendBroadcast(it);
         SkipUtils.back(this);
     }
     private final static int CLEAR_CACHE_CODE=0;
@@ -139,7 +141,6 @@ public class SetActivity extends BaseActivity {
                     textView_set_clear.setText("0M");
                 }break;
             }
-
         }
     };
 

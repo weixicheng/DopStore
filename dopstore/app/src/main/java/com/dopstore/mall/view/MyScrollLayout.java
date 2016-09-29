@@ -30,8 +30,6 @@ public class MyScrollLayout extends ViewGroup {
     private int mTouchState = TOUCH_STATE_REST;
     private int mTouchSlop;
     private float mLastMotionX;
-    private float mLastMotionY;
-
     private boolean prePage = false; // 前页
     private boolean nextPage = false; // 后页
 
@@ -106,7 +104,6 @@ public class MyScrollLayout extends ViewGroup {
      */
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        // TODO Auto-generated method stub
         super.dispatchDraw(canvas);
         if (isLoop) {
             int scrollX = getScrollX();
@@ -332,7 +329,6 @@ public class MyScrollLayout extends ViewGroup {
                 break;
             case MotionEvent.ACTION_DOWN:
                 mLastMotionX = x;
-                mLastMotionY = y;
                 mTouchState = mScroller.isFinished() ? TOUCH_STATE_REST
                         : TOUCH_STATE_SCROLLING;
                 if (isParentUnableScroll) {
@@ -373,13 +369,7 @@ public class MyScrollLayout extends ViewGroup {
         this.isParentUnableScroll = isParentUnableScroll;
     }
 
-    /**
-     * @return void
-     * @TODO 从子控件到父控件调用
-     * @throw
-     * @author renzhihui
-     * @date: 2014-11-19 下午7:21:25
-     */
+
     public void parentSliding(int velocityx) {
 
         if (velocityx > SNAP_VELOCITY) {

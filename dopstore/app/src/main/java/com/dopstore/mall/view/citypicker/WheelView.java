@@ -1253,7 +1253,6 @@ public class WheelView extends View {
 		try {
 			getParent().requestDisallowInterceptTouchEvent(true);
 		} catch (Exception e) {
-			// TODO: handle exception
 			e.printStackTrace();
 		}
 		if (adapter == null) {

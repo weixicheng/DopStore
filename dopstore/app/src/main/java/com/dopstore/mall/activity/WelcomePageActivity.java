@@ -21,7 +21,6 @@ import com.dopstore.mall.view.MyScrollLayoutForStart;
  */
 public class WelcomePageActivity extends BaseActivity {
     private Button jumpBt;
-    private String activityStr;
     private LayoutInflater mInflater;
     private int[] images = {R.mipmap.ic,
             R.mipmap.ic, R.mipmap.ic};
@@ -29,7 +28,6 @@ public class WelcomePageActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome_page);
         initView();
@@ -63,7 +61,6 @@ public class WelcomePageActivity extends BaseActivity {
 
 
     protected void initScrollLayout() {
-        // TODO Auto-generated method stub
         MyScrollLayoutForStart scrollLayout = (MyScrollLayoutForStart) findViewById(R.id.before_start_img_scrollLayout);
         scrollLayout.setIsScroll(false);
         // 现在是一张图片，多张后再做处理
@@ -97,7 +94,6 @@ public class WelcomePageActivity extends BaseActivity {
 
                     @Override
                     public void currentPage(int currPage) {
-                        // TODO Auto-generated method stub
                         // currentPos = currPage;
                     }
                 });

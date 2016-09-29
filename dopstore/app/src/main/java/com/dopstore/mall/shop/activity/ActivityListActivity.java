@@ -82,7 +82,7 @@ public class ActivityListActivity extends BaseActivity {
         Map<String, String> map = new HashMap<String, String>();
         map.put(Constant.PAGESIZE, "10");
         map.put(Constant.PAGE, "1");
-        map.put("order_id", id);
+//        map.put("order_id", id);
         httpHelper.postKeyValuePairAsync(this, URL.RECOMMENDED_ACT, map, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {

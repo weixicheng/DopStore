@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.login.bean.DetailData;
-import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.LoadImageUtils;
 import com.dopstore.mall.util.Utils;
 import com.dopstore.mall.view.CircleImageView;

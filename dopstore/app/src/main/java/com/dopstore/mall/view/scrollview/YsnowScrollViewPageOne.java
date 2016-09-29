@@ -8,8 +8,6 @@ import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
-import com.dopstore.mall.R;
-
 /**
  * Created by ysnow on 2015/4/20.
  */

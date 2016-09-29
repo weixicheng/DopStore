@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.webkit.WebView;
-import android.widget.ScrollView;
 
 /**
  * Created by ysnow on 2015/4/20.

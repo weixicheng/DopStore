@@ -31,6 +31,8 @@ public class Constant {
     public static final String MOBILE = "mobile";
     public static final String BALANCE = "balance";
     /*****************************************************/
+    public static final String UP_USER_DATA = "com.dopstore.mall.updata_user";
+    public static final String BACK_CART_DATA = "com.dopstore.mall.updata_cart";
     /*****************************************************/
     public static final String ERROR_CODE = "error_code";
     public static final String ERROR_MSG = "error_msg";
@@ -38,7 +40,6 @@ public class Constant {
     public static final String PASSWORD = "password";
     public static final String U_STATUS = "u_status";
     public static final String HOBBYS = "hobbys";
-    public static final String NASERME = "naserme";
     public static final String PICTURE = "picture";
     public static final String LIST = "list";
     public static final String BABY_NAME = "baby_name";

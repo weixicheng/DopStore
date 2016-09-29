@@ -1,18 +1,14 @@
 package com.dopstore.mall.person.adapter;
 
 import android.content.Context;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
-import com.dopstore.mall.activity.bean.GoodBean;
 import com.dopstore.mall.person.bean.MyCollectData;
 import com.dopstore.mall.util.LoadImageUtils;
 

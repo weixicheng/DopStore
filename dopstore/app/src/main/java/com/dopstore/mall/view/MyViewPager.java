@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 
 /**
- * @TODO 可设置ViewPager是否滑动
+ * 可设置ViewPager是否滑动
  */
 public class MyViewPager extends ViewPager {
 
@@ -14,7 +14,6 @@ public class MyViewPager extends ViewPager {
 
     public MyViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
-        // TODO Auto-generated constructor stub
     }
 
     public MyViewPager(Context context) {

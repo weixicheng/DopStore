@@ -2,10 +2,9 @@ package com.dopstore.mall.activity.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,8 +29,6 @@ import com.dopstore.mall.view.CircleImageView;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by 喜成 on 16/9/5.
@@ -98,9 +95,15 @@ public class PersonFragment extends Fragment {
             long time=currentTime-babytime;
             String babyName=UserUtils.getBabyName(getActivity());
             introTv.setText(babyName+"  "+ Utils.formatMilli(babytime,"yyyy年MM月dd日"));
-            loadImageUtils.displayImage(UserUtils.getAvatar(getActivity()), headImage);
+            String avatar=UserUtils.getAvatar(getActivity());
+            if (TextUtils.isEmpty(avatar)){
+                headImage.setImageResource(R.mipmap.ic);
+            }else {
+                loadImageUtils.displayImage(avatar,headImage);
+            }
             priceTv.setText(UserUtils.getBalance(getActivity()));
         } else {
+            headImage.setImageResource(R.mipmap.ic);
             nameTv.setVisibility(View.INVISIBLE);
             introTv.setText("立即登录");
         }

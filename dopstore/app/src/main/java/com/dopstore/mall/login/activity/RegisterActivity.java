@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
+import com.dopstore.mall.activity.MainActivity;
 import com.dopstore.mall.activity.bean.CityBean;
 import com.dopstore.mall.activity.bean.UserData;
 import com.dopstore.mall.base.BaseActivity;
@@ -80,7 +81,7 @@ public class RegisterActivity extends BaseActivity {
         aCache=ACache.get(this);
         otherLoginUtils=new OtherLoginUtils(this);
         httpHelper = HttpHelper.getOkHttpClientUtils(this);
-        topLayout = (RelativeLayout) findViewById(R.id.brandsquare_title);
+        topLayout = (RelativeLayout) findViewById(R.id.brandsquare_title_layout);
         topLayout.setBackgroundColor(getResources().getColor(R.color.white_color));
         leftTextBack("取消", getResources().getColor(R.color.red_color_f93448), listener);
         phoneEt = (EditText) findViewById(R.id.register_phone_Et);
@@ -245,11 +246,6 @@ public class RegisterActivity extends BaseActivity {
             return;
         }
 
-        if (!v_code.equals(code)) {
-            T.show(this, "请检查验证码");
-            return;
-        }
-
         if (TextUtils.isEmpty(pwd)) {
             T.show(this, "请填写密码");
             return;
@@ -369,9 +365,9 @@ public class RegisterActivity extends BaseActivity {
                             for (int i = 0; i < ja.length(); i++) {
                                 JSONObject hobby = ja.getJSONObject(i);
                                 DetailData data = new DetailData();
-                                data.setId(hobby.optString(Constant.ID));
-                                data.setImage(hobby.optString(Constant.PICTURE));
-                                data.setName(hobby.optString(Constant.NASERME));
+                                data.setId(hobby.optString("id"));
+                                data.setImage(hobby.optString("picture"));
+                                data.setName(hobby.optString("name"));
                                 list.add(data);
                             }
                         }
@@ -398,9 +394,10 @@ public class RegisterActivity extends BaseActivity {
 
     private void jumpToNext(List<DetailData> list) {
         String phone = phoneEt.getText().toString().trim();
+        String code = codeEt.getText().toString().trim();
         String pwd = pwdEt.getText().toString().trim();
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put(Constant.V_CODE, v_code);
+        map.put(Constant.V_CODE, code);
         map.put(Constant.PASSWORD, pwd);
         map.put(Constant.MOBILE, phone);
         map.put(Constant.LIST, list);
@@ -473,7 +470,14 @@ public class RegisterActivity extends BaseActivity {
                         data.setMobile(user.optString(Constant.MOBILE));
                         data.setAddress(user.optString(Constant.CITY));
                         UserUtils.setData(RegisterActivity.this, data);
+                        Intent intent=new Intent();
+                        intent.setAction(Constant.UP_USER_DATA);
+                        sendBroadcast(intent);
+                        Intent it = new Intent(RegisterActivity.this, MainActivity.class);
+                        it.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(it);
                         finish();
+                        overridePendingTransition(R.anim.return_from_click, R.anim.return_out_click);
                     } else {
                         String msg = jo.optString(Constant.ERROR_MSG);
                         T.show(RegisterActivity.this, msg);

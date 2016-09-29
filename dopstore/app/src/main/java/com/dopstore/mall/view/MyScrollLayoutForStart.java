@@ -111,7 +111,6 @@ public class MyScrollLayoutForStart extends ViewGroup {
      */
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        // TODO Auto-generated method stub
         super.dispatchDraw(canvas);
         if (isLoop) {
             int scrollX = getScrollX();
@@ -391,13 +390,6 @@ public class MyScrollLayoutForStart extends ViewGroup {
         this.isParentUnableScroll = isParentUnableScroll;
     }
 
-    /**
-     * @return void
-     * @TODO 从子控件到父控件调用
-     * @throw
-     * @author renzhihui
-     * @date: 2014-11-19 下午7:21:25
-     */
     public void parentSliding(int velocityx) {
 
         if (velocityx > SNAP_VELOCITY) {

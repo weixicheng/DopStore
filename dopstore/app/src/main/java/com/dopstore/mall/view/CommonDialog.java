@@ -28,7 +28,6 @@ public class CommonDialog extends Dialog implements OnClickListener {
     public static final int CANCEL_MSG = -1; // 取消按钮被点击消息
 
     public CommonDialog(Context context, Handler handler_confirm, int what_confirm, String title, String message, int buttonStyle, String confirmText, String cancelText) {
-        // TODO Auto-generated constructor stub
         super(context, R.style.actionSheetdialog);
         this.handler_confirm = handler_confirm;
         this.what_confirm = what_confirm;
@@ -42,7 +41,6 @@ public class CommonDialog extends Dialog implements OnClickListener {
     }
 
     public CommonDialog(Context context, Handler handler_confirm, int what_confirm, String title, String message, int buttonStyle) {
-        // TODO Auto-generated constructor stub
         this(context, handler_confirm, what_confirm, title, message, buttonStyle, "", "");
     }
 
@@ -62,7 +60,6 @@ public class CommonDialog extends Dialog implements OnClickListener {
      * @param view
      */
     private void init(View view) {
-        // TODO Auto-generated method stub
         // 已由外部设置了view
         setContentView(view);
         // 触摸对话框以外的地方取消对话框
@@ -85,7 +82,6 @@ public class CommonDialog extends Dialog implements OnClickListener {
      * @param view
      */
     private void init(View view, int dialogWidth) {
-        // TODO Auto-generated method stub
         // 已由外部设置了view
         setContentView(view);
         // 触摸对话框以外的地方取消对话框
@@ -189,25 +185,21 @@ public class CommonDialog extends Dialog implements OnClickListener {
 
     @Override
     public void show() {
-        // TODO Auto-generated method stub
         super.show();
     }
 
     @Override
     public void dismiss() {
-        // TODO Auto-generated method stub
         super.dismiss();
     }
 
     @Override
     public boolean isShowing() {
-        // TODO Auto-generated method stub
         return super.isShowing();
     }
 
     @Override
     public void onClick(View v) {
-        // TODO Auto-generated method stub
         switch (v.getId()) {
             case R.id.cancel: // 取消被点击
                 handler_confirm.obtainMessage(CANCEL_MSG, object).sendToTarget();

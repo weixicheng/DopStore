@@ -1,208 +1,215 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/register_mybaby_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white_color"
-    android:overScrollMode="never"
-    android:scrollbars="none">
+    android:orientation="vertical">
 
-    <LinearLayout
+    <include layout="@layout/common_title" />
+
+    <ScrollView
+        android:id="@+id/register_mybaby_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/margin_50">
-
-        <include layout="@layout/common_title" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/margin_20"
-            android:text="宝宝的爱好"
-            android:textColor="@color/gray_color_33"
-            android:textSize="@dimen/textsize_24" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_15"
-            android:padding="@dimen/margin_10"
-            android:text="我的宝宝"
-            android:textColor="@color/gray_color_33"
-            android:textSize="@dimen/textsize_16" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="@dimen/margin_10"
-            android:layout_marginRight="@dimen/margin_10"
-            android:background="@color/gray_color_ee" />
+        android:layout_height="match_parent"
+        android:background="@color/white_color"
+        android:overScrollMode="never"
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="147dp"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:layout_weight="1">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical">
-
-                    <com.dopstore.mall.view.CircleImageView
-                        android:id="@+id/register_detail_man"
-                        android:layout_width="97dp"
-                        android:layout_height="97dp"
-                        android:background="@mipmap/man_logo"
-                        app:border_color="@color/white_color"
-                        android:scaleType="centerCrop" />
-
-                    <TextView
-                        android:id="@+id/register_detail_manname"
-                        android:layout_width="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:text="正太"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/gray_color_33"
-                        android:textSize="@dimen/textsize_14" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:layout_weight="1">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical">
-
-                    <com.dopstore.mall.view.CircleImageView
-                        android:id="@+id/register_detail_woman"
-                        android:layout_width="97dp"
-                        android:layout_height="97dp"
-                        android:background="@mipmap/woman_logo"
-                        app:border_color="@color/white_color"
-                        android:scaleType="centerCrop" />
-
-                    <TextView
-                        android:id="@+id/register_detail_woname"
-                        android:layout_width="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:text="萝莉"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/gray_color_33"
-                        android:textSize="@dimen/textsize_14" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_15"
-            android:padding="@dimen/margin_10"
-            android:text="选择兴趣爱好"
-            android:textColor="@color/gray_color_33"
-            android:textSize="@dimen/textsize_16" />
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/margin_50">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="@dimen/margin_10"
-            android:layout_marginRight="@dimen/margin_10"
-            android:background="@color/gray_color_ee" />
-
-        <com.dopstore.mall.view.MyGridView
-            android:id="@+id/register_mybaby_hobby"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_10"
-            android:horizontalSpacing="@dimen/margin_15"
-            android:numColumns="3"
-            android:scrollbars="none"
-            android:verticalSpacing="@dimen/margin_10" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/margin_50"
-            android:layout_marginLeft="@dimen/margin_10"
-            android:layout_marginRight="@dimen/margin_10"
-            android:layout_marginTop="@dimen/margin_30">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:text="出生年月日" />
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/margin_20"
+                android:text="宝宝的爱好"
+                android:textColor="@color/gray_color_33"
+                android:textSize="@dimen/textsize_24" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_15"
+                android:padding="@dimen/margin_10"
+                android:text="我的宝宝"
+                android:textColor="@color/gray_color_33"
+                android:textSize="@dimen/textsize_16" />
 
             <View
-                android:id="@+id/register_mybaby_time_logo"
-                android:layout_width="7dp"
-                android:layout_height="14dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:background="@mipmap/right_arrow" />
-
-            <TextView
-                android:id="@+id/register_mybaby_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
                 android:layout_marginLeft="@dimen/margin_10"
-                android:layout_toLeftOf="@id/register_mybaby_time_logo"
-                android:textColor="@color/gray_color_99"
-                android:textSize="@dimen/textsize_16" />
-        </RelativeLayout>
-
-        <LinearLayout
-            android:id="@+id/register_mybaby_complete_lly"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/margin_50"
-            android:layout_marginTop="@dimen/margin_20"
-            android:background="@color/red_color_f93448"
-            android:gravity="center"
-            android:orientation="horizontal">
+                android:layout_marginRight="@dimen/margin_10"
+                android:background="@color/gray_color_ee" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="147dp"
                 android:orientation="horizontal">
 
-                <View
-                    android:layout_width="21dp"
-                    android:layout_height="15dp"
-                    android:background="@mipmap/hook" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <com.dopstore.mall.view.CircleImageView
+                            android:id="@+id/register_detail_man"
+                            android:layout_width="97dp"
+                            android:layout_height="97dp"
+                            android:background="@mipmap/man_logo"
+                            android:scaleType="centerCrop"
+                            app:border_color="@color/white_color" />
+
+                        <TextView
+                            android:id="@+id/register_detail_manname"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="正太"
+                            android:textColor="@color/gray_color_33"
+                            android:textSize="@dimen/textsize_14" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <com.dopstore.mall.view.CircleImageView
+                            android:id="@+id/register_detail_woman"
+                            android:layout_width="97dp"
+                            android:layout_height="97dp"
+                            android:background="@mipmap/woman_logo"
+                            android:scaleType="centerCrop"
+                            app:border_color="@color/white_color" />
+
+                        <TextView
+                            android:id="@+id/register_detail_woname"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="萝莉"
+                            android:textColor="@color/gray_color_33"
+                            android:textSize="@dimen/textsize_14" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_15"
+                android:padding="@dimen/margin_10"
+                android:text="选择兴趣爱好"
+                android:textColor="@color/gray_color_33"
+                android:textSize="@dimen/textsize_16" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="@dimen/margin_10"
+                android:layout_marginRight="@dimen/margin_10"
+                android:background="@color/gray_color_ee" />
+
+            <com.dopstore.mall.view.MyGridView
+                android:id="@+id/register_mybaby_hobby"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_10"
+                android:horizontalSpacing="@dimen/margin_15"
+                android:numColumns="3"
+                android:scrollbars="none"
+                android:verticalSpacing="@dimen/margin_10" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/margin_50"
+                android:layout_marginLeft="@dimen/margin_10"
+                android:layout_marginRight="@dimen/margin_10"
+                android:layout_marginTop="@dimen/margin_30">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:text="完成"
-                    android:textColor="@color/white_color"
-                    android:textSize="@dimen/textsize_18" />
-            </LinearLayout>
-        </LinearLayout>
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:text="出生年月日" />
 
-    </LinearLayout>
-</ScrollView>
+                <View
+                    android:id="@+id/register_mybaby_time_logo"
+                    android:layout_width="7dp"
+                    android:layout_height="14dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@mipmap/right_arrow" />
+
+                <TextView
+                    android:id="@+id/register_mybaby_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/margin_10"
+                    android:layout_toLeftOf="@id/register_mybaby_time_logo"
+                    android:textColor="@color/gray_color_99"
+                    android:textSize="@dimen/textsize_16" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/register_mybaby_complete_lly"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/margin_50"
+                android:layout_marginTop="@dimen/margin_20"
+                android:background="@color/red_color_f93448"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="21dp"
+                        android:layout_height="15dp"
+                        android:background="@mipmap/hook" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:text="完成"
+                        android:textColor="@color/white_color"
+                        android:textSize="@dimen/textsize_18" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

@@ -12,11 +12,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
-import com.dopstore.mall.activity.MainActivity;
 import com.dopstore.mall.activity.bean.CityBean;
 import com.dopstore.mall.activity.bean.UserData;
 import com.dopstore.mall.base.BaseActivity;
-import com.dopstore.mall.base.MyApplication;
 import com.dopstore.mall.util.ACache;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.HttpHelper;
@@ -75,7 +73,7 @@ public class LoginActivity extends BaseActivity {
         proUtils=new ProUtils(this);
         aCache = ACache.get(this);
         otherLoginUtils=new OtherLoginUtils(this);
-        topLayout = (RelativeLayout) findViewById(R.id.brandsquare_title);
+        topLayout = (RelativeLayout) findViewById(R.id.brandsquare_title_layout);
         topLayout.setBackgroundColor(getResources().getColor(R.color.white_color));
         leftTextBack("取消", getResources().getColor(R.color.red_color_f93448), listener);
         phoneEt = (EditText) findViewById(R.id.login_phone_et);
@@ -279,6 +277,9 @@ public class LoginActivity extends BaseActivity {
                 data.setMobile(user.optString(Constant.MOBILE));
                 data.setAddress(user.optString(Constant.CITY));
                 UserUtils.setData(LoginActivity.this, data);
+                Intent it=new Intent();
+                it.setAction(Constant.UP_USER_DATA);
+                sendBroadcast(it);
                 finish();
             } else {
                 String msg = jo.optString(Constant.ERROR_MSG);

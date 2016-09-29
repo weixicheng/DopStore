@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.dopstore.mall.R;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.order.bean.ActivityOrderDetailBean;
-import com.dopstore.mall.order.bean.MyActivityData;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.HttpHelper;
 import com.dopstore.mall.util.LoadImageUtils;
@@ -22,13 +21,11 @@ import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
-import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.util.Utils;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 

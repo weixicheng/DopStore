@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.dopstore.mall.activity.bean.CarouselData;
-import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.LoadImageUtils;
 import com.dopstore.mall.view.rollviewpager.adapter.StaticPagerAdapter;
 

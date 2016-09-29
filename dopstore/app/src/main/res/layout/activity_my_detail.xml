@@ -54,7 +54,7 @@
                     android:layout_marginRight="@dimen/margin_10"
                     android:layout_toLeftOf="@id/my_detail_head_right"
                     android:scaleType="centerCrop"
-                    android:src="@mipmap/man_logo"/>
+                    android:src="@mipmap/ic"/>
             </RelativeLayout>
 
             <View

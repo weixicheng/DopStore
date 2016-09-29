@@ -4,16 +4,12 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
-import android.webkit.JavascriptInterface;
-import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -26,15 +22,11 @@ import com.dopstore.mall.login.activity.LoginActivity;
 import com.dopstore.mall.order.activity.CashierActivity;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.HttpHelper;
-import com.dopstore.mall.util.LoadImageUtils;
 import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.pingplusplus.android.Pingpp;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
@@ -146,9 +138,10 @@ public class ShopDetailActivity extends BaseActivity {
                         SkipUtils.directJump(ShopDetailActivity.this, LoginActivity.class, false);
                         return;
                     }
-                    Map<String, Object> map = new HashMap<String, Object>();
-                    map.put(Constant.ID, "2");
-                    SkipUtils.jumpForMap(ShopDetailActivity.this, MainActivity.class, map, true);
+                    Intent it=new Intent();
+                    it.setAction(Constant.BACK_CART_DATA);
+                    sendBroadcast(it);
+                    SkipUtils.directJump(ShopDetailActivity.this, MainActivity.class, true);
                 }
             });
 

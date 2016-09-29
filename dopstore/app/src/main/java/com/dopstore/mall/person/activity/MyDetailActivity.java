@@ -2,6 +2,7 @@ package com.dopstore.mall.person.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -146,7 +147,13 @@ public class MyDetailActivity extends BaseActivity {
                 cityName="";
             }
         }
-        loadImage.displayImage(UserUtils.getAvatar(this),headImage);
+        String avatar=UserUtils.getAvatar(this);
+        if (TextUtils.isEmpty(avatar)){
+            headImage.setImageResource(R.mipmap.ic);
+        }else {
+            loadImage.displayImage(avatar,headImage);
+        }
+
         cityTv.setText(cityName);
         babyTv.setText(UserUtils.getBabyName(this));
         String babygender=UserUtils.getBabyGender(this);
@@ -433,6 +440,9 @@ public class MyDetailActivity extends BaseActivity {
                         data.setMobile(user.optString(Constant.MOBILE));
                         data.setAddress(user.optString(Constant.CITY));
                         UserUtils.setData(MyDetailActivity.this, data);
+                        Intent it=new Intent();
+                        it.setAction(Constant.UP_USER_DATA);
+                        sendBroadcast(it);
                         T.show(MyDetailActivity.this, "修改成功");
                     } else {
                         String msg = jo.optString(Constant.ERROR_MSG);

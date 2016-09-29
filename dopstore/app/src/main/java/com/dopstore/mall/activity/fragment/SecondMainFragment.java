@@ -10,9 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ScrollView;
-import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.adapter.BottomAdapter;
@@ -27,7 +25,6 @@ import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
-import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.view.MyGridView;
 import com.dopstore.mall.view.MyListView;
 import com.dopstore.mall.view.PullToRefreshView;
@@ -225,7 +222,7 @@ public class SecondMainFragment extends Fragment implements OnFooterRefreshListe
                 String id=data.getId();
                 Map<String,Object> map=new HashMap<String, Object>();
                 map.put(Constant.ID,id);
-                SkipUtils.jumpForMap(getActivity(), ShopDetailActivity.class,map,false);
+                SkipUtils.jumpForMapResult(getActivity(), ShopDetailActivity.class, map, 0);
             }
         });
         mainView.smoothScrollTo(0, 0);
