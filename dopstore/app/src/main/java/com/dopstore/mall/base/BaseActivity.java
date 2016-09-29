@@ -126,10 +126,11 @@ public class BaseActivity extends AppCompatActivity {
      */
     protected void leftImageBack(int imageId) {
         ImageButton id = (ImageButton) findViewById(R.id.title_left_imageButton);
+        RelativeLayout leftLayout = (RelativeLayout) findViewById(R.id.title_left_imageButton_layout);
         id.setImageResource(imageId);
         id.setVisibility(View.VISIBLE);
-        if (id != null) {
-            id.setOnClickListener(new View.OnClickListener() {
+        if (leftLayout != null) {
+            leftLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     SkipUtils.back(BaseActivity.this);

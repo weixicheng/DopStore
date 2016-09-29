@@ -43,9 +43,10 @@ public class SetActivity extends BaseActivity {
 
     private void initview() {
         ImageButton id = (ImageButton) findViewById(R.id.title_left_imageButton);
+        RelativeLayout leftLayout = (RelativeLayout) findViewById(R.id.title_left_imageButton_layout);
         id.setImageResource(R.mipmap.back_arrow);
         id.setVisibility(View.VISIBLE);
-        id.setOnClickListener(listener);
+        leftLayout.setOnClickListener(listener);
         setCustomTitle("设置", getResources().getColor(R.color.white_color));
         textView_set_clear = (TextView) findViewById(R.id.setting_my_clean_data);
         try {
@@ -81,7 +82,7 @@ public class SetActivity extends BaseActivity {
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
-                case R.id.title_left_imageButton:
+                case R.id.title_left_imageButton_layout:
                     Intent intent=new Intent();
                     setResult(Activity.RESULT_OK,intent);
                     SkipUtils.back(SetActivity.this);

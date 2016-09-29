@@ -58,6 +58,7 @@ public class ActivityFragment extends Fragment {
     private Fragment currentFragment;
     private View v;
 
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
