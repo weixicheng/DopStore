@@ -241,7 +241,16 @@ public class ActivityCashierActivity extends BaseActivity {
                  * "invalid" - payment plugin not installed
                  */
                 String errorMsg = data.getExtras().getString("error_msg"); // 错误信息
-                String extraMsg = data.getExtras().getString("extra_msg"); // 错误信息
+                //String extraMsg = data.getExtras().getString("extra_msg"); // 错误信息
+                if (result.equals("success")) {
+                    SkipUtils.directJump(ActivityCashierActivity.this, PaySuccessActivity.class, true);
+                } else if (result.equals("fail")) {
+                    T.show(ActivityCashierActivity.this, "支付失败");
+                } else if (result.equals("cancel")) {
+                    T.show(ActivityCashierActivity.this, "取消支付");
+                } else if (result.equals("invalid")) {
+                    T.show(ActivityCashierActivity.this, errorMsg);
+                }
             }
         }
     }

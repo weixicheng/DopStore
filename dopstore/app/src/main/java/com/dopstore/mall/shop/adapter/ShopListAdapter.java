@@ -31,7 +31,7 @@ public class ShopListAdapter extends BaseAdapter {
         this.context = context;
         this.items = items;
         mInflater = LayoutInflater.from(context);
-        loadImageUtils=LoadImageUtils.getInstance(context);
+        loadImageUtils = LoadImageUtils.getInstance(context);
     }
 
     @Override
@@ -71,21 +71,21 @@ public class ShopListAdapter extends BaseAdapter {
         int marginPx = Utils.dip2px(10, dm.density);
         int picSize = (screenWidth - marginPx * 3) / 2;
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                picSize, picSize-marginPx);
+                picSize, picSize - marginPx);
         holder.imageView.setLayoutParams(layoutParams);
         if (items != null && items.size() > 0) {
             ShopListData data = items.get(position);
             if (data != null) {
                 holder.title.setText(data.getTitle());
-                holder.price.setText("¥ "+data.getPrice());
-                loadImageUtils.displayImage(data.getImage(),holder.imageView);
+                holder.price.setText("¥ " + data.getPrice());
+                loadImageUtils.displayImage(data.getImage(), holder.imageView);
             }
         }
         return convertView;
     }
 
     static class ViewHolder {
-        private TextView title,price;
+        private TextView title, price;
         private ImageView imageView;
     }
 

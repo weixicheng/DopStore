@@ -57,7 +57,7 @@ public class MiddleDataAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) view.getTag();
         }
-        if (list.size()>0){
+        if (list.size() > 0) {
             loadImageUtils.displayImage(list.get(i).getCover(), viewHolder.bigImageView);
             viewHolder.titleTv.setText(list.get(i).getName());
             viewHolder.priceTv.setText(list.get(i).getPrice());

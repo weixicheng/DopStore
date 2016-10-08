@@ -28,7 +28,7 @@ public class ActivityAdapter extends BaseAdapter {
     private LoadImageUtils loadImageUtils;
     private int isShow;
 
-    public ActivityAdapter(Context context, List<ActivityData> list,int isShow) {
+    public ActivityAdapter(Context context, List<ActivityData> list, int isShow) {
         this.context = context;
         this.list = list;
         this.isShow = isShow;
@@ -79,10 +79,10 @@ public class ActivityAdapter extends BaseAdapter {
 
         loadImageUtils.displayImage(list.get(i).getPicture(), viewHolder.bigImageView);
         viewHolder.titleTv.setText(list.get(i).getName());
-        viewHolder.priceTv.setText("￥"+list.get(i).getPrice());
-        if (isShow==0){
+        viewHolder.priceTv.setText("￥" + list.get(i).getPrice());
+        if (isShow == 0) {
             viewHolder.distanceTv.setVisibility(View.GONE);
-        }else {
+        } else {
             viewHolder.distanceTv.setVisibility(View.VISIBLE);
             viewHolder.distanceTv.setText(list.get(i).getId());//
         }
@@ -91,8 +91,8 @@ public class ActivityAdapter extends BaseAdapter {
     }
 
     public void upData(List<ActivityData> aList, int i) {
-        this.list=aList;
-        this.isShow=i;
+        this.list = aList;
+        this.isShow = i;
         notifyDataSetChanged();
     }
 

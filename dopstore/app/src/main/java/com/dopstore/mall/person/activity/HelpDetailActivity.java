@@ -29,12 +29,12 @@ public class HelpDetailActivity extends BaseActivity {
     private void initView() {
         leftImageBack(R.mipmap.back_arrow);
         tv = (TextView) findViewById(R.id.help_detail_content_text);
-        Map<String,Object> map=SkipUtils.getMap(this);
-        if (map!=null){
-            HelpData data=(HelpData) map.get(Constant.LIST);
+        Map<String, Object> map = SkipUtils.getMap(this);
+        if (map != null) {
+            HelpData data = (HelpData) map.get(Constant.LIST);
             setCustomTitle(data.getTitle(), getResources().getColor(R.color.white_color));
             tv.setText(data.getContent());
-        }else {
+        } else {
             SkipUtils.back(this);
         }
     }

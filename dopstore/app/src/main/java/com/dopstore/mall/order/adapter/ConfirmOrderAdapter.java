@@ -68,8 +68,8 @@ public class ConfirmOrderAdapter extends BaseAdapter {
             ConfirmOrderData data = items.get(position);
             if (data != null) {
                 holder.type.setText(data.getTitle());
-                holder.num.setText("✖️ "+data.getNum());
-                holder.price.setText("¥"+data.getPrice());
+                holder.num.setText("✖️ " + data.getNum());
+                holder.price.setText("¥" + data.getPrice());
                 holder.title.setText(data.getInfo());
                 loadImageUtils.displayImage(data.getImage(), holder.imageView);
             }
@@ -80,7 +80,7 @@ public class ConfirmOrderAdapter extends BaseAdapter {
     static class ViewHolder {
         private LinearLayout hintLayout;
         private EditText hintEt;
-        private TextView num, price, title,type;
+        private TextView num, price, title, type;
         private ImageView imageView;
     }
 

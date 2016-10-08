@@ -26,12 +26,12 @@ import java.util.Map;
  * name
  */
 public class CashierActivity extends BaseActivity {
-    private RelativeLayout balanceLy,alipayLy,wechatLy;
-    private View bv,av,wv;
+    private RelativeLayout balanceLy, alipayLy, wechatLy;
+    private View bv, av, wv;
     private TextView priceTv;
     private Button sureBt;
-    private String order_id="";
-    private String order_price="";
+    private String order_id = "";
+    private String order_price = "";
     /**
      * 微信支付渠道
      */
@@ -40,6 +40,7 @@ public class CashierActivity extends BaseActivity {
      * 支付支付渠道
      */
     private static final String CHANNEL_ALIPAY = "alipay";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,64 +48,70 @@ public class CashierActivity extends BaseActivity {
         initView();
         initData();
     }
+
     private void initView() {
         setCustomTitle("收银台", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
-        balanceLy=(RelativeLayout)findViewById(R.id.cashier_balance_layout);
-        bv=findViewById(R.id.cashier_balance_check);
-        alipayLy=(RelativeLayout)findViewById(R.id.cashier_alipay_layout);
-        av=findViewById(R.id.cashier_alipay_check);
-        wechatLy=(RelativeLayout)findViewById(R.id.cashier_wechat_layout);
-        wv=findViewById(R.id.cashier_wechat_check);
-        priceTv=(TextView)findViewById(R.id.cashier_price);
-        sureBt=(Button) findViewById(R.id.cashier_sure_pay_bt);
+        balanceLy = (RelativeLayout) findViewById(R.id.cashier_balance_layout);
+        bv = findViewById(R.id.cashier_balance_check);
+        alipayLy = (RelativeLayout) findViewById(R.id.cashier_alipay_layout);
+        av = findViewById(R.id.cashier_alipay_check);
+        wechatLy = (RelativeLayout) findViewById(R.id.cashier_wechat_layout);
+        wv = findViewById(R.id.cashier_wechat_check);
+        priceTv = (TextView) findViewById(R.id.cashier_price);
+        sureBt = (Button) findViewById(R.id.cashier_sure_pay_bt);
         balanceLy.setOnClickListener(listener);
         alipayLy.setOnClickListener(listener);
         wechatLy.setOnClickListener(listener);
         sureBt.setOnClickListener(listener);
     }
+
     private void initData() {
-        Map<String,Object> map=SkipUtils.getMap(this);
-        order_id=map.get(Constant.ID).toString();
-        order_price=map.get(Constant.PRICE).toString();
-        if (!TextUtils.isEmpty(order_price)){
-            float price=Float.parseFloat(order_price);
-            priceTv.setText("¥"+price);
-        }else {
-            order_price="0";
+        Map<String, Object> map = SkipUtils.getMap(this);
+        order_id = map.get(Constant.ID).toString();
+        order_price = map.get(Constant.PRICE).toString();
+        if (!TextUtils.isEmpty(order_price)) {
+            float price = Float.parseFloat(order_price);
+            priceTv.setText("¥" + price);
+        } else {
+            order_price = "0";
             priceTv.setText("¥ 0");
         }
     }
 
-    View.OnClickListener listener=new View.OnClickListener() {
+    View.OnClickListener listener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-                switch (view.getId()){
-                    case R.id.cashier_balance_layout:{
-                        bv.setBackgroundResource(R.mipmap.checkbox_checked);
-                        av.setBackgroundResource(R.mipmap.checkbox_normal);
-                        wv.setBackgroundResource(R.mipmap.checkbox_normal);
-                    }break;
-                    case R.id.cashier_alipay_layout:{
-                        bv.setBackgroundResource(R.mipmap.checkbox_normal);
-                        av.setBackgroundResource(R.mipmap.checkbox_checked);
-                        wv.setBackgroundResource(R.mipmap.checkbox_normal);
-                    }break;
-                    case R.id.cashier_wechat_layout:{
-                        bv.setBackgroundResource(R.mipmap.checkbox_normal);
-                        av.setBackgroundResource(R.mipmap.checkbox_normal);
-                        wv.setBackgroundResource(R.mipmap.checkbox_checked);
-                    }break;
-                    case R.id.cashier_sure_pay_bt:{
-                        payPrice();
-                    }break;
+            switch (view.getId()) {
+                case R.id.cashier_balance_layout: {
+                    bv.setBackgroundResource(R.mipmap.checkbox_checked);
+                    av.setBackgroundResource(R.mipmap.checkbox_normal);
+                    wv.setBackgroundResource(R.mipmap.checkbox_normal);
                 }
+                break;
+                case R.id.cashier_alipay_layout: {
+                    bv.setBackgroundResource(R.mipmap.checkbox_normal);
+                    av.setBackgroundResource(R.mipmap.checkbox_checked);
+                    wv.setBackgroundResource(R.mipmap.checkbox_normal);
+                }
+                break;
+                case R.id.cashier_wechat_layout: {
+                    bv.setBackgroundResource(R.mipmap.checkbox_normal);
+                    av.setBackgroundResource(R.mipmap.checkbox_normal);
+                    wv.setBackgroundResource(R.mipmap.checkbox_checked);
+                }
+                break;
+                case R.id.cashier_sure_pay_bt: {
+                    payPrice();
+                }
+                break;
+            }
         }
     };
 
     private void payPrice() {
         String priceNum = priceTv.getText().toString();
-        String price=priceNum.substring(1,priceNum.length());
+        String price = priceNum.substring(1, priceNum.length());
         if (price.equals("")) return;
         String replaceable = String.format("[%s, \\s.]", NumberFormat.getCurrencyInstance(Locale.CHINA).getCurrency().getSymbol(Locale.CHINA));
         String cleanString = price.toString().replaceAll(replaceable, "");

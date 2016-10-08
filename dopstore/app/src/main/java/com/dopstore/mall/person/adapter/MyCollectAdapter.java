@@ -24,7 +24,7 @@ public class MyCollectAdapter extends BaseAdapter {
     public MyCollectAdapter(Context context, List<MyCollectData> mListData) {
         this.context = context;
         this.mListData = mListData;
-        loadImageUtils=LoadImageUtils.getInstance(context);
+        loadImageUtils = LoadImageUtils.getInstance(context);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class MyCollectAdapter extends BaseAdapter {
         }
 
         MyCollectData data = mListData.get(position);
-        loadImageUtils.displayImage(data.getImage(),holder.imageView);
+        loadImageUtils.displayImage(data.getImage(), holder.imageView);
         holder.title.setText(data.getTitle());
         holder.num.setText("￥" + Float.parseFloat(data.getPrice()));
         return convertView;
@@ -70,7 +70,7 @@ public class MyCollectAdapter extends BaseAdapter {
 
 }
 
- class ViewHolder {
+class ViewHolder {
     public TextView num, title;
     public ImageView imageView;
 }

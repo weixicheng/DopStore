@@ -20,10 +20,12 @@ public class DeliveryInfoActivity extends BaseActivity {
         initView();
         initData();
     }
+
     private void initView() {
         setCustomTitle("配送信息", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
     }
+
     private void initData() {
     }
 

@@ -16,10 +16,11 @@ import com.dopstore.mall.util.SkipUtils;
  * name
  */
 public class RefundOrderActivity extends BaseActivity {
-    private TextView idTv,stateTv,titleTv,priceTv,numTv,userTv,userAddressTv;
+    private TextView idTv, stateTv, titleTv, priceTv, numTv, userTv, userAddressTv;
     private Button subBt;
     private ImageView shopImage;
     private LoadImageUtils loadImage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,24 +28,26 @@ public class RefundOrderActivity extends BaseActivity {
         initView();
         initData();
     }
+
     private void initView() {
-        loadImage=LoadImageUtils.getInstance(this);
+        loadImage = LoadImageUtils.getInstance(this);
         setCustomTitle("订单详情", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
-        idTv=(TextView) findViewById(R.id.refund_order_id);
-        stateTv=(TextView) findViewById(R.id.refund_order_state);
-        shopImage=(ImageView) findViewById(R.id.refund_order_image);
-        titleTv=(TextView) findViewById(R.id.refund_order_title);
-        priceTv=(TextView) findViewById(R.id.refund_order_price);
-        numTv=(TextView) findViewById(R.id.refund_order_num);
-        userTv=(TextView) findViewById(R.id.refund_order_user_detail);
-        userAddressTv=(TextView) findViewById(R.id.refund_order_user_address);
-        subBt=(Button) findViewById(R.id.refund_order_submit);
+        idTv = (TextView) findViewById(R.id.refund_order_id);
+        stateTv = (TextView) findViewById(R.id.refund_order_state);
+        shopImage = (ImageView) findViewById(R.id.refund_order_image);
+        titleTv = (TextView) findViewById(R.id.refund_order_title);
+        priceTv = (TextView) findViewById(R.id.refund_order_price);
+        numTv = (TextView) findViewById(R.id.refund_order_num);
+        userTv = (TextView) findViewById(R.id.refund_order_user_detail);
+        userAddressTv = (TextView) findViewById(R.id.refund_order_user_address);
+        subBt = (Button) findViewById(R.id.refund_order_submit);
     }
+
     private void initData() {
         idTv.setText("订单号:16160805071127");
         stateTv.setText("等待付款");
-        loadImage.displayImage("",shopImage);
+        loadImage.displayImage("", shopImage);
         titleTv.setText("宝贝可爱欧");
         priceTv.setText("¥ 87.00");
         numTv.setText("✖️ 1");

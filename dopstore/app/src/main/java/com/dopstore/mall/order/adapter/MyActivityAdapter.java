@@ -61,34 +61,42 @@ public class MyActivityAdapter extends BaseAdapter {
         if (items != null && items.size() > 0) {
             MyActivityData data = items.get(position);
             if (data != null) {
-                holder.num.setText("订单号:"+data.getId());
-                int type=Integer.parseInt(data.getState());
-                String typeName="";
-                switch (type){
-                    case 0:{
-                        typeName="等待付款";
-                    }break;
-                    case 1:{
-                        typeName="付款成功";
-                    }break;
-                    case 2:{
-                        typeName="订单取消";
-                    }break;
-                    case 3:{
-                        typeName="报名成功";
-                    }break;
-                    case 4:{
-                        typeName="退款申请中";
-                    }break;
-                    case 5:{
-                        typeName="退款中";
-                    }break;
-                    case 6:{
-                        typeName="退款成功";
-                    }break;
-                    case 7:{
-                        typeName="已完成";
-                    }break;
+                holder.num.setText("订单号:" + data.getId());
+                int type = Integer.parseInt(data.getState());
+                String typeName = "";
+                switch (type) {
+                    case 0: {
+                        typeName = "等待付款";
+                    }
+                    break;
+                    case 1: {
+                        typeName = "付款成功";
+                    }
+                    break;
+                    case 2: {
+                        typeName = "订单取消";
+                    }
+                    break;
+                    case 3: {
+                        typeName = "报名成功";
+                    }
+                    break;
+                    case 4: {
+                        typeName = "退款申请中";
+                    }
+                    break;
+                    case 5: {
+                        typeName = "退款中";
+                    }
+                    break;
+                    case 6: {
+                        typeName = "退款成功";
+                    }
+                    break;
+                    case 7: {
+                        typeName = "已完成";
+                    }
+                    break;
                 }
                 holder.state.setText(typeName);
                 holder.title.setText(data.getTitle());

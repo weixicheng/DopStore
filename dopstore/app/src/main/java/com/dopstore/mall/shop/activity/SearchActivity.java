@@ -55,8 +55,8 @@ public class SearchActivity extends BaseActivity {
     }
 
     private void initView() {
-        httpHelper=HttpHelper.getOkHttpClientUtils(this);
-        proUtils=new ProUtils(this);
+        httpHelper = HttpHelper.getOkHttpClientUtils(this);
+        proUtils = new ProUtils(this);
         setCustomTitle("分类", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         gridView = (GridView) findViewById(R.id.search_gridview);
@@ -69,16 +69,17 @@ public class SearchActivity extends BaseActivity {
         getTypeData();
     }
 
-    View.OnClickListener listener=new View.OnClickListener() {
+    View.OnClickListener listener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            switch (view.getId()){
-                case R.id.search_title_tv:{
-                    Map<String,Object> map=new HashMap<String, Object>();
-                    map.put(Constant.NAME,"");
-                    map.put(Constant.CATEGORY,"1");
-                    SkipUtils.jumpForMap(SearchActivity.this, ShopListActivity.class,map,false);
-                }break;
+            switch (view.getId()) {
+                case R.id.search_title_tv: {
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map.put(Constant.NAME, "");
+                    map.put(Constant.CATEGORY, "1");
+                    SkipUtils.jumpForMap(SearchActivity.this, ShopListActivity.class, map, false);
+                }
+                break;
             }
         }
     };
@@ -142,10 +143,10 @@ public class SearchActivity extends BaseActivity {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Map<String,Object> map=new HashMap<String, Object>();
-                map.put(Constant.ID,list.get(i).getId());
-                map.put(Constant.CATEGORY,"0");
-                SkipUtils.jumpForMap(SearchActivity.this, ShopListActivity.class,map,false);
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put(Constant.ID, list.get(i).getId());
+                map.put(Constant.CATEGORY, "0");
+                SkipUtils.jumpForMap(SearchActivity.this, ShopListActivity.class, map, false);
             }
         });
     }

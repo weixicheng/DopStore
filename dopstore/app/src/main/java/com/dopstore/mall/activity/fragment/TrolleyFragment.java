@@ -85,7 +85,7 @@ public class TrolleyFragment extends Fragment {
 
     private void deleteToService(List<GoodBean> mListData) {
         proUtils.show();
-        Map<String,String> map=new HashMap<String,String>();
+        Map<String, String> map = new HashMap<String, String>();
         map.put("user_id", UserUtils.getId(getActivity()));
         map.put("item_id", "");
         httpHelper.postKeyValuePairAsync(getActivity(), URL.CART_DELETE, map, new Callback() {
@@ -101,9 +101,9 @@ public class TrolleyFragment extends Fragment {
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
-                    if ("0".equals(code)){
+                    if ("0".equals(code)) {
                         T.show(getActivity(), "删除成功");
-                    }else {
+                    } else {
                         String msg = jo.optString(Constant.ERROR_MSG);
                         T.show(getActivity(), msg);
                     }
@@ -117,8 +117,8 @@ public class TrolleyFragment extends Fragment {
     }
 
     private void initView(View v) {
-        httpHelper=HttpHelper.getOkHttpClientUtils(getActivity());
-        proUtils=new ProUtils(getActivity());
+        httpHelper = HttpHelper.getOkHttpClientUtils(getActivity());
+        proUtils = new ProUtils(getActivity());
         mBottonLayout = (RelativeLayout) v.findViewById(R.id.cart_rl_allprie_total);
         checkLayout = (LinearLayout) v.findViewById(R.id.trolley_check_box_layout);
         mCheckAll = (CheckBox) v.findViewById(R.id.check_box);
@@ -145,9 +145,9 @@ public class TrolleyFragment extends Fragment {
     }
 
     private void refreshListView() {
-        if (mListData.size()>0){
+        if (mListData.size() > 0) {
             checkLayout.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             checkLayout.setVisibility(View.GONE);
         }
         if (mListAdapter == null) {
@@ -160,7 +160,7 @@ public class TrolleyFragment extends Fragment {
 
     private void getCartList() {
         proUtils.show();
-        Map<String,String> map=new HashMap<String,String>();
+        Map<String, String> map = new HashMap<String, String>();
         map.put("user_id", UserUtils.getId(getActivity()));
         httpHelper.postKeyValuePairAsync(getActivity(), URL.CART_QUERY, map, new Callback() {
             @Override
@@ -207,7 +207,6 @@ public class TrolleyFragment extends Fragment {
         }
 
     }
-
 
 
     View.OnClickListener listener = new View.OnClickListener() {
@@ -263,7 +262,7 @@ public class TrolleyFragment extends Fragment {
                         mPriceAll.setText("￥" + 0.00 + "");
                         mCheckAll.setChecked(false);
                     } else {
-                        SkipUtils.directJump(getActivity(),ConfirmOrderActivity.class,false);
+                        SkipUtils.directJump(getActivity(), ConfirmOrderActivity.class, false);
                         Toast.makeText(getActivity(), "结算", Toast.LENGTH_SHORT).show();
                     }
                     break;

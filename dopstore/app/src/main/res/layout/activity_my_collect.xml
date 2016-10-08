@@ -9,13 +9,13 @@
         android:id="@+id/my_collect_top"
         layout="@layout/common_title" />
 
-  
-        <LinearLayout
-            android:id="@+id/my_collect_title_layout"
-            android:layout_width="match_parent"
-            android:layout_below="@id/my_collect_top"
-            android:layout_height="@dimen/margin_50"
-            android:background="@color/white_color">
+
+    <LinearLayout
+        android:id="@+id/my_collect_title_layout"
+        android:layout_width="match_parent"
+        android:layout_below="@id/my_collect_top"
+        android:layout_height="@dimen/margin_50"
+        android:background="@color/white_color">
 
         <RelativeLayout
             android:id="@+id/my_collect_first_ly"
@@ -65,7 +65,7 @@
 
         </RelativeLayout>
     </LinearLayout>
-    
+
     <ListView
         android:id="@+id/my_collect_shop_list"
         android:layout_below="@id/my_collect_title_layout"

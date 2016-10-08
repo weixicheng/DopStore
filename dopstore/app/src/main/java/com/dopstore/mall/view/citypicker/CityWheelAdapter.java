@@ -25,44 +25,42 @@ import java.util.List;
  */
 public class CityWheelAdapter implements WheelAdapter {
 
-	// week list
-	private List<CityBean> listItem;
-	// format
-	private String format;
-	private int max;
+    // week list
+    private List<CityBean> listItem;
+    // format
+    private String format;
+    private int max;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param listItem
-	 *            the wheel region value
-	 * @param format
-	 *            the format string
-	 */
-	public CityWheelAdapter(List<CityBean> listItem, String format, int max) {
-		this.listItem = listItem;
-		this.format = format;
-		this.max = max;
-	}
+    /**
+     * Constructor
+     *
+     * @param listItem the wheel region value
+     * @param format   the format string
+     */
+    public CityWheelAdapter(List<CityBean> listItem, String format, int max) {
+        this.listItem = listItem;
+        this.format = format;
+        this.max = max;
+    }
 
-	@Override
-	public String getItem(int index) {
-		if (index >= 0 && index < listItem.size()) {
-			String regionName = (String) listItem.get(index).getName();
-			return format != null ? String.format(format, regionName)
-					: regionName;
-		}
-		return null;
-	}
+    @Override
+    public String getItem(int index) {
+        if (index >= 0 && index < listItem.size()) {
+            String regionName = (String) listItem.get(index).getName();
+            return format != null ? String.format(format, regionName)
+                    : regionName;
+        }
+        return null;
+    }
 
-	@Override
-	public int getItemsCount() {
-		return listItem.size();
-	}
+    @Override
+    public int getItemsCount() {
+        return listItem.size();
+    }
 
-	@Override
-	public int getMaximumLength() {
+    @Override
+    public int getMaximumLength() {
 
-		return max;
-	}
+        return max;
+    }
 }

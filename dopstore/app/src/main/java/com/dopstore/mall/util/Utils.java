@@ -32,44 +32,45 @@ public class Utils {
         return (int) (dipValue * scale + 0.5f);
     }
 
-    public static String formatSecond(Long time,String formatStr) {
+    public static String formatSecond(Long time, String formatStr) {
         SimpleDateFormat format = new SimpleDateFormat(formatStr);
-        return format.format(time*1000);
+        return format.format(time * 1000);
     }
 
     public static String formatTSecond(String times) {
-        long time=Long.parseLong(times);
+        long time = Long.parseLong(times);
         SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日");
-        return format.format(time*1000);
+        return format.format(time * 1000);
     }
+
     public static String formatTDSecond(String times) {
-        long time=Long.parseLong(times);
+        long time = Long.parseLong(times);
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        return format.format(time*1000);
+        return format.format(time * 1000);
     }
-    public static String formatMilli(Long time,String formatStr) {
+
+    public static String formatMilli(Long time, String formatStr) {
         SimpleDateFormat format = new SimpleDateFormat(formatStr);
         return format.format(time);
     }
 
 
-
-
     /**
      * File转换成Base64
+     *
      * @param path
      * @return
      * @throws Exception
      */
-    public static String encodeBase64File(String path){
+    public static String encodeBase64File(String path) {
         try {
             File file = new File(path);
             FileInputStream inputFile = new FileInputStream(file);
-            byte[] buffer = new byte[(int)file.length()];
+            byte[] buffer = new byte[(int) file.length()];
             inputFile.read(buffer);
             inputFile.close();
             return Base64.encodeToString(buffer, Base64.DEFAULT);
-        }catch (Exception e){
+        } catch (Exception e) {
             return null;
         }
     }

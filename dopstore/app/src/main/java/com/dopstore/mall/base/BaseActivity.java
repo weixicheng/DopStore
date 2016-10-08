@@ -79,7 +79,7 @@ public class BaseActivity extends AppCompatActivity {
         super.onDestroy();
         ShareSDK.stopSDK(this);
         MyApplication.getInstance().removeActivity(this);
-        if (mLocationClient!=null) {
+        if (mLocationClient != null) {
             mLocationClient.stopLocation();
             mLocationClient.onDestroy();
         }
@@ -126,11 +126,10 @@ public class BaseActivity extends AppCompatActivity {
      */
     protected void leftImageBack(int imageId) {
         ImageButton id = (ImageButton) findViewById(R.id.title_left_imageButton);
-        RelativeLayout leftLayout = (RelativeLayout) findViewById(R.id.title_left_imageButton_layout);
         id.setImageResource(imageId);
         id.setVisibility(View.VISIBLE);
-        if (leftLayout != null) {
-            leftLayout.setOnClickListener(new View.OnClickListener() {
+        if (id != null) {
+            id.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     SkipUtils.back(BaseActivity.this);
@@ -252,7 +251,6 @@ public class BaseActivity extends AppCompatActivity {
 
         }
     }
-
 
 
 }

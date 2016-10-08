@@ -23,29 +23,32 @@ import cn.sharesdk.wechat.friends.Wechat;
 public class OtherLoginUtils {
     private static Context context;
     private static final int MSG_AUTH_CANCEL = 0;
-    private static final int MSG_AUTH_ERROR= 1;
+    private static final int MSG_AUTH_ERROR = 1;
     private static final int MSG_AUTH_COMPLETE = 2;
     private static OtherCallBack callBack;
 
     public OtherLoginUtils(Context context) {
-        this.context=context;
+        this.context = context;
     }
 
     public static void authorize(int type) {
-        Platform plat=null;
-        switch (type){
-            case 0:{
+        Platform plat = null;
+        switch (type) {
+            case 0: {
                 Platform qq = ShareSDK.getPlatform(QQ.NAME);
-                plat=qq;
-            }break;
-            case 1:{
+                plat = qq;
+            }
+            break;
+            case 1: {
                 Platform wechat = ShareSDK.getPlatform(Wechat.NAME);
-                plat=wechat;
-            }break;
-            case 2:{
+                plat = wechat;
+            }
+            break;
+            case 2: {
                 Platform sina = ShareSDK.getPlatform(SinaWeibo.NAME);
-                plat=sina;
-            }break;
+                plat = sina;
+            }
+            break;
         }
         if (plat == null) {
             //popupOthers();
@@ -60,13 +63,13 @@ public class OtherLoginUtils {
 
     }
 
-    static PlatformActionListener listener=new PlatformActionListener() {
+    static PlatformActionListener listener = new PlatformActionListener() {
         @Override
         public void onComplete(Platform platform, int action, HashMap<String, Object> hashMap) {
             if (action == Platform.ACTION_USER_INFOR) {
                 Message msg = new Message();
                 msg.what = MSG_AUTH_COMPLETE;
-                msg.obj = new Object[] {platform.getName(), hashMap};
+                msg.obj = new Object[]{platform.getName(), hashMap};
                 handler.sendMessage(msg);
             }
         }
@@ -87,57 +90,62 @@ public class OtherLoginUtils {
         }
     };
 
-    static Handler handler=new Handler(){
+    static Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch(msg.what) {
+            switch (msg.what) {
                 case MSG_AUTH_CANCEL: {
                     //取消授权
                     callBack.failed("取消授权");
-                } break;
+                }
+                break;
                 case MSG_AUTH_ERROR: {
                     //授权失败
                     callBack.failed("授权失败");
-                } break;
+                }
+                break;
                 case MSG_AUTH_COMPLETE: {
                     //授权成功
                     Object[] objs = (Object[]) msg.obj;
                     String platform = (String) objs[0];
                     callBack.success(platform);
-                } break;
+                }
+                break;
             }
         }
     };
 
     public void setCallBack(OtherCallBack callBack) {
-        this.callBack =callBack;
+        this.callBack = callBack;
     }
 
-    public  void showShare(Context context, ShareData shareData) {
+    public void showShare(Context context, ShareData shareData) {
         OnekeyShare oks = new OnekeyShare();
         //关闭sso授权
         oks.disableSSOWhenAuthorize();
-        int type=shareData.getType();
-        switch (type){
-            case 0:{//QQ
+        int type = shareData.getType();
+        switch (type) {
+            case 0: {//QQ
                 oks.setTitle(shareData.getTitle());
                 oks.setText(shareData.getContent());
                 oks.setTitleUrl(shareData.getUrl());
-            }break;
-            case 1:{//微信
+            }
+            break;
+            case 1: {//微信
                 oks.setTitle(shareData.getTitle());
                 oks.setText(shareData.getContent());
                 oks.setUrl(shareData.getUrl());
-            }break;
-            case 2:{//新浪
-                oks.setText(shareData.getContent()+shareData.getUrl());
-            }break;
+            }
+            break;
+            case 2: {//新浪
+                oks.setText(shareData.getContent() + shareData.getUrl());
+            }
+            break;
         }
         // 启动分享GUI
         oks.show(context);
     }
-
 
 
 }

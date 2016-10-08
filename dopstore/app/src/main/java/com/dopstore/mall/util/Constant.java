@@ -96,5 +96,4 @@ public class Constant {
     public static final String IS_COLLECT = "is_collect";
 
 
-
 }

@@ -36,11 +36,11 @@ public final class PopupUtils {
     public static PopupWindow ShowBottomPopupWindow(Context context,
                                                     PopupWindow popupWindow, View view, int popupWindowWidth,
                                                     int popupWindowHieght, View parent) {
-        if (null == popupWindow && popupWindowHieght!=0) {
+        if (null == popupWindow && popupWindowHieght != 0) {
             DisplayMetrics dm = context.getResources().getDisplayMetrics();
             int heightPx = (int) (dm.density * popupWindowHieght);
             popupWindow = new PopupWindow(view, popupWindowWidth, heightPx);
-        }else {
+        } else {
             popupWindow = new PopupWindow(view, popupWindowWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
 

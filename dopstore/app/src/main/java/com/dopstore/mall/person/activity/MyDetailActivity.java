@@ -65,8 +65,8 @@ public class MyDetailActivity extends BaseActivity {
     private final static int MODIFY_BABY_CODE = 1;
     private final static int MODIFY_HEAD_CODE = 2;
     private PopupWindow popupWindow;
-    private int cityPositon=0;
-    private String imageUrl="";
+    private int cityPositon = 0;
+    private String imageUrl = "";
     private LoadImageUtils loadImage;
     private HttpHelper httpHelper;
     private ProUtils proUtils;
@@ -74,7 +74,7 @@ public class MyDetailActivity extends BaseActivity {
 
     private CommonDialog dialog;
     private ACache aCache;
-    private List<CityBean> cityList=new ArrayList<CityBean>();
+    private List<CityBean> cityList = new ArrayList<CityBean>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,11 +85,11 @@ public class MyDetailActivity extends BaseActivity {
     }
 
     private void initview() {
-        loadImage=LoadImageUtils.getInstance(this);
-        aCache=ACache.get(this);
-        proUtils=new ProUtils(this);
-        httpHelper=HttpHelper.getOkHttpClientUtils(this);
-        cityList=(List<CityBean>)aCache.getAsObject(Constant.CITYS);
+        loadImage = LoadImageUtils.getInstance(this);
+        aCache = ACache.get(this);
+        proUtils = new ProUtils(this);
+        httpHelper = HttpHelper.getOkHttpClientUtils(this);
+        cityList = (List<CityBean>) aCache.getAsObject(Constant.CITYS);
         leftImageBack(R.mipmap.back_arrow);
         setCustomTitle("修改资料", getResources().getColor(R.color.white_color));
 
@@ -126,49 +126,48 @@ public class MyDetailActivity extends BaseActivity {
     private void initData() {
         nickTv.setText(UserUtils.getNickName(this));
         phoneTv.setText(UserUtils.getMobile(this));
-        String gender=UserUtils.getGender(this);
-        imageUrl=UserUtils.getAvatar(this);
-        if ("1".equals(gender)){
+        String gender = UserUtils.getGender(this);
+        imageUrl = UserUtils.getAvatar(this);
+        if ("1".equals(gender)) {
             sexTv.setText("男");
-        }else {
+        } else {
             sexTv.setText("女");
         }
 
-        dateTv.setText(Utils.formatSecond(UserUtils.getBirthday(this),"yyyy-MM-dd"));
-        String cityId=UserUtils.getCity(this);
-        String cityName="北京";
-        if (cityList!=null){
-            for (CityBean bean:cityList){
-                if (bean.getId().equals(cityId)){
-                    cityName=bean.getName();
+        dateTv.setText(Utils.formatSecond(UserUtils.getBirthday(this), "yyyy-MM-dd"));
+        String cityId = UserUtils.getCity(this);
+        String cityName = "北京";
+        if (cityList != null) {
+            for (CityBean bean : cityList) {
+                if (bean.getId().equals(cityId)) {
+                    cityName = bean.getName();
                 }
             }
-            if ("0".equals(cityId)){
-                cityName="";
+            if ("0".equals(cityId)) {
+                cityName = "";
             }
         }
-        String avatar=UserUtils.getAvatar(this);
-        if (TextUtils.isEmpty(avatar)){
+        String avatar = UserUtils.getAvatar(this);
+        if (TextUtils.isEmpty(avatar)) {
             headImage.setImageResource(R.mipmap.ic);
-        }else {
-            loadImage.displayImage(avatar,headImage);
+        } else {
+            loadImage.displayImage(avatar, headImage);
         }
 
         cityTv.setText(cityName);
         babyTv.setText(UserUtils.getBabyName(this));
-        String babygender=UserUtils.getBabyGender(this);
-        if ("1".equals(babygender)){
+        String babygender = UserUtils.getBabyGender(this);
+        if ("1".equals(babygender)) {
             babySexTv.setText("男");
-        }else {
+        } else {
             babySexTv.setText("女");
         }
-        babyDateTv.setText(Utils.formatSecond(UserUtils.getBabyBirthday(this),"yyyy-MM-dd"));
+        babyDateTv.setText(Utils.formatSecond(UserUtils.getBabyBirthday(this), "yyyy-MM-dd"));
     }
 
 
-
-    private void dismissPop(){
-        if (popupWindow.isShowing()){
+    private void dismissPop() {
+        if (popupWindow.isShowing()) {
             popupWindow.dismiss();
         }
     }
@@ -176,25 +175,25 @@ public class MyDetailActivity extends BaseActivity {
     private void showCityPoup() {
         bgLayout.setVisibility(View.VISIBLE);
         int screenWidth = getWindowManager().getDefaultDisplay().getWidth();
-        View v=LayoutInflater.from(this).inflate(R.layout.common_poup,null);
-        LinearLayout top=(LinearLayout) v.findViewById(R.id.popup_top_layout);
-        TextView cancleTv=(TextView) v.findViewById(R.id.popup_cancel);
-        TextView confirmBt=(TextView) v.findViewById(R.id.popup_confirm);
-        final CityPicker cityPicker=new CityPicker(this);
+        View v = LayoutInflater.from(this).inflate(R.layout.common_poup, null);
+        LinearLayout top = (LinearLayout) v.findViewById(R.id.popup_top_layout);
+        TextView cancleTv = (TextView) v.findViewById(R.id.popup_cancel);
+        TextView confirmBt = (TextView) v.findViewById(R.id.popup_confirm);
+        final CityPicker cityPicker = new CityPicker(this);
         cityPicker.init(cityList);
         top.addView(cityPicker);
-        popupWindow= PopupUtils.ShowBottomPopupWindow(this,popupWindow,v,screenWidth,192,findViewById(R.id.my_detail_main_layout));
+        popupWindow = PopupUtils.ShowBottomPopupWindow(this, popupWindow, v, screenWidth, 192, findViewById(R.id.my_detail_main_layout));
         popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
-                popupWindow=null;
+                popupWindow = null;
                 bgLayout.setVisibility(View.GONE);
             }
         });
         cityPicker.setOnChangeListener(new CityPicker.OnChangeListener() {
             @Override
             public void onChange(int position) {
-                cityPositon=position;
+                cityPositon = position;
             }
         });
         cancleTv.setOnClickListener(new View.OnClickListener() {
@@ -206,7 +205,7 @@ public class MyDetailActivity extends BaseActivity {
         confirmBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String cityName=cityList.get(cityPositon).getName();
+                String cityName = cityList.get(cityPositon).getName();
                 cityTv.setText(cityName);
                 dismissPop();
             }
@@ -221,7 +220,7 @@ public class MyDetailActivity extends BaseActivity {
         manTv.setOnClickListener(listener);
         womanTvv.setOnClickListener(listener);
         int screenWidth = getWindowManager().getDefaultDisplay().getWidth();
-        dialog = new CommonDialog(this, v, screenWidth-100);
+        dialog = new CommonDialog(this, v, screenWidth - 100);
         dialog.show();
     }
 
@@ -269,7 +268,7 @@ public class MyDetailActivity extends BaseActivity {
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.my_detail_head_image:
-                    mListResult=new ArrayList<String>();
+                    mListResult = new ArrayList<String>();
                     Intent intent = new Intent(MyDetailActivity.this, ImagesSelectorActivity.class);
                     // max number of images to be selected
                     intent.putExtra(SelectorSettings.SELECTOR_MAX_IMAGE_NUMBER, 1);
@@ -328,10 +327,10 @@ public class MyDetailActivity extends BaseActivity {
     };
 
     private void savePicture() {
-        if (mListResult!=null&&mListResult.size()>0){
+        if (mListResult != null && mListResult.size() > 0) {
             proUtils.show();
-            String imageStr=mListResult.get(0);
-            String imageBase=Utils.encodeBase64File(imageStr);
+            String imageStr = mListResult.get(0);
+            String imageBase = Utils.encodeBase64File(imageStr);
             Map<String, String> map = new HashMap<String, String>();
             map.put(Constant.AVATAR_BINARY, imageBase);
             httpHelper.postKeyValuePairAsync(this, URL.UPLOAD_AVATAR, map, new Callback() {
@@ -359,7 +358,7 @@ public class MyDetailActivity extends BaseActivity {
                     proUtils.dismiss();
                 }
             }, null);
-        }else {
+        } else {
             saveToService();
         }
 
@@ -367,15 +366,15 @@ public class MyDetailActivity extends BaseActivity {
 
     private void saveToService() {
         proUtils.show();
-        String sexStr=sexTv.getText().toString().trim();
-        String babySexStr=babySexTv.getText().toString().trim();
-        String cityStr=cityTv.getText().toString();
-        String cityId="0";
-        if (cityList!=null){
-            for (CityBean city:cityList){
-                String cityName=city.getName();
-                if (cityName.equals(cityStr)){
-                    cityId=city.getId();
+        String sexStr = sexTv.getText().toString().trim();
+        String babySexStr = babySexTv.getText().toString().trim();
+        String cityStr = cityTv.getText().toString();
+        String cityId = "0";
+        if (cityList != null) {
+            for (CityBean city : cityList) {
+                String cityName = city.getName();
+                if (cityName.equals(cityStr)) {
+                    cityId = city.getId();
                 }
             }
         }
@@ -384,17 +383,17 @@ public class MyDetailActivity extends BaseActivity {
         map.put(Constant.AVATAR, imageUrl);
         map.put(Constant.MOBILE, phoneTv.getText().toString().trim());
         map.put(Constant.NICKNAME, nickTv.getText().toString().trim());
-        if ("男".equals(sexStr)){
+        if ("男".equals(sexStr)) {
             map.put(Constant.GENDER, "1");
-        }else {
+        } else {
             map.put(Constant.GENDER, "0");
         }
         map.put(Constant.BIRTHDAY, dateTv.getText().toString().trim());
         map.put(Constant.CITY, cityId);
         map.put(Constant.BABY_NAME, babyTv.getText().toString());
-        if ("男".equals(babySexStr)){
+        if ("男".equals(babySexStr)) {
             map.put(Constant.BABY_GENDER, "1");
-        }else {
+        } else {
             map.put(Constant.BABY_GENDER, "0");
         }
         map.put(Constant.BABY_BIRTHDAY, babyDateTv.getText().toString().trim());
@@ -412,7 +411,7 @@ public class MyDetailActivity extends BaseActivity {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
                     if ("0".equals(code)) {
-                        aCache.put(Constant.TOKEN,jo.optString(Constant.TOKEN));
+                        aCache.put(Constant.TOKEN, jo.optString(Constant.TOKEN));
                         JSONObject user = jo.optJSONObject(Constant.USER);
                         JSONArray citys = jo.optJSONArray(Constant.CITYS);
                         List<CityBean> cityList = new ArrayList<CityBean>();
@@ -440,7 +439,7 @@ public class MyDetailActivity extends BaseActivity {
                         data.setMobile(user.optString(Constant.MOBILE));
                         data.setAddress(user.optString(Constant.CITY));
                         UserUtils.setData(MyDetailActivity.this, data);
-                        Intent it=new Intent();
+                        Intent it = new Intent();
                         it.setAction(Constant.UP_USER_DATA);
                         sendBroadcast(it);
                         T.show(MyDetailActivity.this, "修改成功");
@@ -484,8 +483,8 @@ public class MyDetailActivity extends BaseActivity {
             case MODIFY_HEAD_CODE:
                 if (resultCode == RESULT_OK) {
                     mListResult = data.getStringArrayListExtra(SelectorSettings.SELECTOR_RESULTS);
-                    String image=mListResult.get(0);
-                    loadImage.displayImage("file://"+image,headImage);
+                    String image = mListResult.get(0);
+                    loadImage.displayImage("file://" + image, headImage);
                 }
                 break;
         }

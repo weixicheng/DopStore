@@ -7,5 +7,6 @@ package com.dopstore.mall.util;
 public interface OtherCallBack {
 
     void success(String name);
+
     void failed(String erroe);
 }

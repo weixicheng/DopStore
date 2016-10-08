@@ -95,7 +95,7 @@
                     android:id="@+id/activity_detail_zxing"
                     android:layout_width="91dp"
                     android:layout_height="91dp"
-                    android:scaleType="centerCrop"/>
+                    android:scaleType="centerCrop" />
 
                 <TextView
                     android:id="@+id/activity_detail_zxing_tv"
@@ -109,6 +109,7 @@
                     android:singleLine="true"
                     android:textColor="@color/gray_color_33"
                     android:textSize="@dimen/textsize_16" />
+
                 <TextView
                     android:id="@+id/activity_detail_zxing_time"
                     android:layout_width="match_parent"

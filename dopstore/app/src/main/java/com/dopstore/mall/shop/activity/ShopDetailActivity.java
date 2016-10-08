@@ -128,6 +128,7 @@ public class ShopDetailActivity extends BaseActivity {
                 }
             });
         }
+
         @android.webkit.JavascriptInterface
         public void backToCart() {
             new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -138,7 +139,7 @@ public class ShopDetailActivity extends BaseActivity {
                         SkipUtils.directJump(ShopDetailActivity.this, LoginActivity.class, false);
                         return;
                     }
-                    Intent it=new Intent();
+                    Intent it = new Intent();
                     it.setAction(Constant.BACK_CART_DATA);
                     sendBroadcast(it);
                     SkipUtils.directJump(ShopDetailActivity.this, MainActivity.class, true);
@@ -146,6 +147,7 @@ public class ShopDetailActivity extends BaseActivity {
             });
 
         }
+
         @android.webkit.JavascriptInterface
         public void joinCart(final String goods_sku_id, final String goods_id, final String num) {
             new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -163,6 +165,7 @@ public class ShopDetailActivity extends BaseActivity {
             });
 
         }
+
         @android.webkit.JavascriptInterface
         public void placeOrder(final String charge) {
             new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -184,6 +187,7 @@ public class ShopDetailActivity extends BaseActivity {
 
     /**
      * 加入购物车
+     *
      * @param goods_sku_id
      * @param goods_id
      * @param num

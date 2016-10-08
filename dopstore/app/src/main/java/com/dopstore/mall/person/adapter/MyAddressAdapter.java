@@ -26,7 +26,7 @@ public class MyAddressAdapter extends BaseAdapter {
 
     private List<MyAddressData> items;
     private LayoutInflater mInflater;
-    public Context  context;
+    public Context context;
 
     public MyAddressAdapter(Context context, List<MyAddressData> items) {
         super();
@@ -73,7 +73,7 @@ public class MyAddressAdapter extends BaseAdapter {
             if (data != null) {
                 holder.name.setText(data.getShipping_user());
                 holder.phone.setText(data.getMobile());
-                holder.address.setText(data.getProvince()+data.getCity()+data.getArea()+data.getAddress());
+                holder.address.setText(data.getProvince() + data.getCity() + data.getArea() + data.getAddress());
                 String isDefault = data.getIs_default();
                 String isCheck = data.getIs_check();
                 if ("1".equals(isDefault)) {
@@ -91,22 +91,22 @@ public class MyAddressAdapter extends BaseAdapter {
                 } else {
                     holder.line.setVisibility(View.VISIBLE);
                 }
-                final int mPosition=position;
+                final int mPosition = position;
                 holder.editLy.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Map<String,Object> map=new HashMap<String, Object>();
-                        map.put(Constant.LIST,items.get(mPosition));
-                        SkipUtils.jumpForMapResult(context, NewAddressActivity.class,map, 1);
+                        Map<String, Object> map = new HashMap<String, Object>();
+                        map.put(Constant.LIST, items.get(mPosition));
+                        SkipUtils.jumpForMapResult(context, NewAddressActivity.class, map, 1);
                     }
                 });
                 holder.checkBoxLayout.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        String isCheck=items.get(mPosition).getIs_check();
-                        if ("1".equals(isCheck)){
+                        String isCheck = items.get(mPosition).getIs_check();
+                        if ("1".equals(isCheck)) {
                             items.get(mPosition).setIs_check("0");
-                        }else {
+                        } else {
                             items.get(mPosition).setIs_check("1");
                         }
                         notifyDataSetChanged();
@@ -118,7 +118,7 @@ public class MyAddressAdapter extends BaseAdapter {
     }
 
     public void upData(List<MyAddressData> listData) {
-        this.items=listData;
+        this.items = listData;
         notifyDataSetChanged();
     }
 

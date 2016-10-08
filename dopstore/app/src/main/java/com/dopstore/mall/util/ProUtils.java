@@ -27,7 +27,7 @@ public class ProUtils extends Dialog {
         init();
     }
 
-    private void init(){
+    private void init() {
         setContentView(R.layout.comm_net_layout);
         setCancelable(false);
         setCanceledOnTouchOutside(false);

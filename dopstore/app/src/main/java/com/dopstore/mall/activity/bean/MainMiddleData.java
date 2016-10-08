@@ -7,7 +7,7 @@ import java.util.List;
  * Created by 喜成 on 16/9/5.
  * name 首页中间数据
  */
-public class MainMiddleData implements Serializable{
+public class MainMiddleData implements Serializable {
     private String id;
     private String picture;
     private String title;

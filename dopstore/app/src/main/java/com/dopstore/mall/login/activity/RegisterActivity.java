@@ -77,9 +77,9 @@ public class RegisterActivity extends BaseActivity {
     }
 
     private void initView() {
-        proUtils=new ProUtils(this);
-        aCache=ACache.get(this);
-        otherLoginUtils=new OtherLoginUtils(this);
+        proUtils = new ProUtils(this);
+        aCache = ACache.get(this);
+        otherLoginUtils = new OtherLoginUtils(this);
         httpHelper = HttpHelper.getOkHttpClientUtils(this);
         topLayout = (RelativeLayout) findViewById(R.id.brandsquare_title_layout);
         topLayout.setBackgroundColor(getResources().getColor(R.color.white_color));
@@ -155,21 +155,21 @@ public class RegisterActivity extends BaseActivity {
         otherLoginUtils.setCallBack(new OtherCallBack() {
             @Override
             public void success(String name) {
-                    loginOther(name,numStr);
+                loginOther(name, numStr);
             }
 
             @Override
             public void failed(String erroe) {
-                T.show(RegisterActivity.this,erroe);
+                T.show(RegisterActivity.this, erroe);
             }
         });
 
     }
 
-    private void loginOther(String platform,int numStr) {
-        mPlatform= ShareSDK.getPlatform(platform);
+    private void loginOther(String platform, int numStr) {
+        mPlatform = ShareSDK.getPlatform(platform);
         String gender = "";
-        if(platform != null) {
+        if (platform != null) {
             gender = mPlatform.getDb().getUserGender();
             if (gender.equals("m")) {
                 gender = "1";
@@ -405,27 +405,30 @@ public class RegisterActivity extends BaseActivity {
     }
 
 
-    private void otherLogin(String name, String gender, String picture, String uid,int id) {
+    private void otherLogin(String name, String gender, String picture, String uid, int id) {
         proUtils.show();
         Map<String, String> map = new HashMap<String, String>();
         map.put("nickname", name);
         map.put("avatar", picture);
-        switch (id){
-            case 0:{
+        switch (id) {
+            case 0: {
                 map.put("wx_unionid", "");
                 map.put("weibo_uid", "");
                 map.put("qq_uid", uid);
-            }break;
-            case 1:{
+            }
+            break;
+            case 1: {
                 map.put("wx_unionid", uid);
                 map.put("weibo_uid", "");
                 map.put("qq_uid", "");
-            }break;
-            case 2:{
+            }
+            break;
+            case 2: {
                 map.put("wx_unionid", "");
                 map.put("weibo_uid", uid);
                 map.put("qq_uid", "");
-            }break;
+            }
+            break;
         }
         map.put("gender", gender);
         httpHelper.postKeyValuePairAsync(this, URL.OTHER_SIGNUPL, map, new Callback() {
@@ -470,7 +473,7 @@ public class RegisterActivity extends BaseActivity {
                         data.setMobile(user.optString(Constant.MOBILE));
                         data.setAddress(user.optString(Constant.CITY));
                         UserUtils.setData(RegisterActivity.this, data);
-                        Intent intent=new Intent();
+                        Intent intent = new Intent();
                         intent.setAction(Constant.UP_USER_DATA);
                         sendBroadcast(intent);
                         Intent it = new Intent(RegisterActivity.this, MainActivity.class);

@@ -9,7 +9,7 @@ import java.util.List;
  * 作者：xicheng on 16/9/23 10:31
  * 类别：
  */
-public class ActivityDetailBean implements Serializable{
+public class ActivityDetailBean implements Serializable {
     private String id;
     private String name;
     private String picture;

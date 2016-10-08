@@ -16,26 +16,17 @@
         <!-- 以下为title栏常用按钮，请根据实际使用情况酌情增减 -->
 
         <!-- 左图片按钮 -->
-        <RelativeLayout
-            android:id="@+id/title_left_imageButton_layout"
-            android:layout_width="50dp"
+
+
+        <ImageButton
+            android:id="@+id/title_left_imageButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-
-            android:minHeight="45.0dip">
-
-            <ImageButton
-                android:id="@+id/title_left_imageButton"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="10.0dip"
-                android:background="@null"
-                android:contentDescription="@null"
-                android:visibility="gone" />
-
-        </RelativeLayout>
+            android:layout_marginLeft="10.0dip"
+            android:background="@null"
+            android:contentDescription="@null"
+            android:visibility="gone" />
 
 
         <!-- 左边返回文本 -->
@@ -46,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10.0dip"
-            android:layout_toRightOf="@id/title_left_imageButton_layout"
+            android:layout_toRightOf="@id/title_left_imageButton"
             android:clickable="true"
             android:textSize="14sp"
             android:visibility="gone" />
@@ -80,8 +71,8 @@
 
         <ImageButton
             android:id="@+id/title_right_imageButton"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="10.0dip"

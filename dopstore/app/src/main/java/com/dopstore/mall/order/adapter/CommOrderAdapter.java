@@ -60,8 +60,8 @@ public class CommOrderAdapter extends BaseAdapter {
         if (items != null && items.size() > 0) {
             CommOrderData data = items.get(position);
             if (data != null) {
-                holder.num.setText("✖️ "+data.getNum());
-                holder.price.setText("¥"+data.getPrice());
+                holder.num.setText("✖️ " + data.getNum());
+                holder.price.setText("¥" + data.getPrice());
                 holder.title.setText(data.getInfo());
                 loadImageUtils.displayImage(data.getImage(), holder.imageView);
             }

@@ -43,10 +43,9 @@ public class SetActivity extends BaseActivity {
 
     private void initview() {
         ImageButton id = (ImageButton) findViewById(R.id.title_left_imageButton);
-        RelativeLayout leftLayout = (RelativeLayout) findViewById(R.id.title_left_imageButton_layout);
         id.setImageResource(R.mipmap.back_arrow);
         id.setVisibility(View.VISIBLE);
-        leftLayout.setOnClickListener(listener);
+        id.setOnClickListener(listener);
         setCustomTitle("设置", getResources().getColor(R.color.white_color));
         textView_set_clear = (TextView) findViewById(R.id.setting_my_clean_data);
         try {
@@ -82,9 +81,9 @@ public class SetActivity extends BaseActivity {
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
-                case R.id.title_left_imageButton_layout:
-                    Intent intent=new Intent();
-                    setResult(Activity.RESULT_OK,intent);
+                case R.id.title_left_imageButton:
+                    Intent intent = new Intent();
+                    setResult(Activity.RESULT_OK, intent);
                     SkipUtils.back(SetActivity.this);
                     break;
                 case R.id.setting_my_detail_layout:
@@ -106,7 +105,7 @@ public class SetActivity extends BaseActivity {
                     SkipUtils.directJump(SetActivity.this, HelpActivity.class, false);
                     break;
                 case R.id.setting_my_clean_layout:
-                    dialog=new CommonDialog(SetActivity.this,handler,CLEAR_CACHE_CODE,"提示","是否清理缓存?",Constant.SHOWALLBUTTON);
+                    dialog = new CommonDialog(SetActivity.this, handler, CLEAR_CACHE_CODE, "提示", "是否清理缓存?", Constant.SHOWALLBUTTON);
                     dialog.show();
                     break;
                 case R.id.setting_my_good_layout:
@@ -126,21 +125,23 @@ public class SetActivity extends BaseActivity {
         UserUtils.clear(this);
         ACache.get(this).clear();
         LoadImageUtils.getInstance(this).clear();
-        Intent it=new Intent();
+        Intent it = new Intent();
         it.setAction(Constant.UP_USER_DATA);
         sendBroadcast(it);
         SkipUtils.back(this);
     }
-    private final static int CLEAR_CACHE_CODE=0;
-    Handler handler=new Handler(){
+
+    private final static int CLEAR_CACHE_CODE = 0;
+    Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
-                case CLEAR_CACHE_CODE:{
+            switch (msg.what) {
+                case CLEAR_CACHE_CODE: {
                     DataCleanManager.clearAllCache(SetActivity.this);
                     textView_set_clear.setText("0M");
-                }break;
+                }
+                break;
             }
         }
     };
@@ -149,8 +150,8 @@ public class SetActivity extends BaseActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Intent intent=new Intent();
-            setResult(Activity.RESULT_OK,intent);
+            Intent intent = new Intent();
+            setResult(Activity.RESULT_OK, intent);
             SkipUtils.back(SetActivity.this);
             return true;
         } else {

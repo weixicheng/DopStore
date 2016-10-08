@@ -54,8 +54,8 @@ public class MyAddressActivity extends BaseActivity {
     }
 
     private void initView() {
-        httpHelper=HttpHelper.getOkHttpClientUtils(this);
-        proUtils=new ProUtils(this);
+        httpHelper = HttpHelper.getOkHttpClientUtils(this);
+        proUtils = new ProUtils(this);
         setCustomTitle("选择收货地址", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         my_address = (ListView) findViewById(R.id.lv_my_address);
@@ -69,8 +69,8 @@ public class MyAddressActivity extends BaseActivity {
 
     private void getAddress() {
         proUtils.show();
-        String id=UserUtils.getId(this);
-        httpHelper.getDataAsync(this, URL.SHIPPINGADDRESS+id+"/shippingaddress", new Callback() {
+        String id = UserUtils.getId(this);
+        httpHelper.getDataAsync(this, URL.SHIPPINGADDRESS + id + "/shippingaddress", new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
                 T.checkNet(MyAddressActivity.this);
@@ -84,8 +84,8 @@ public class MyAddressActivity extends BaseActivity {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
                     if ("0".equals(code)) {
-                        JSONArray ja=jo.getJSONArray(Constant.SHIPPINGADDRESS);
-                        if (ja.length()>0) {
+                        JSONArray ja = jo.getJSONArray(Constant.SHIPPINGADDRESS);
+                        if (ja.length() > 0) {
                             for (int i = 0; i < ja.length(); i++) {
                                 JSONObject addjo = ja.getJSONObject(i);
                                 MyAddressData data = new MyAddressData();
@@ -112,14 +112,14 @@ public class MyAddressActivity extends BaseActivity {
                 }
                 proUtils.dismiss();
             }
-        },null);
+        }, null);
     }
 
     private void refreshAdapter() {
-        if (mAdapter==null){
-            mAdapter=new MyAddressAdapter(this,listData);
+        if (mAdapter == null) {
+            mAdapter = new MyAddressAdapter(this, listData);
             my_address.setAdapter(mAdapter);
-        }else {
+        } else {
             mAdapter.upData(listData);
         }
 
@@ -148,8 +148,9 @@ public class MyAddressActivity extends BaseActivity {
     };
 
 
-    private final static int NEW_ADDRESS_CODE=0;
-    private  final static int UPDATE_ADDRESS_CODE=1;
+    private final static int NEW_ADDRESS_CODE = 0;
+    private final static int UPDATE_ADDRESS_CODE = 1;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -157,14 +158,15 @@ public class MyAddressActivity extends BaseActivity {
         getAddress();
     }
 
-    Handler handler=new Handler(){
+    Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
-                case UPDATE_ADDRESS_CODE:{
+            switch (msg.what) {
+                case UPDATE_ADDRESS_CODE: {
                     refreshAdapter();
-                }break;
+                }
+                break;
             }
         }
     };

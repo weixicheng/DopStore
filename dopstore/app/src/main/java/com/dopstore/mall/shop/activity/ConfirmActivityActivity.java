@@ -45,14 +45,15 @@ public class ConfirmActivityActivity extends BaseActivity {
     private Button payBt;
     private TextView totalPriceTv;
     private ImageView imageView;
-    private TextView titleTv,addressTv,timeTv,typeTv,priceTv,numTv;
+    private TextView titleTv, addressTv, timeTv, typeTv, priceTv, numTv;
     private LinearLayout totalLayout;
-    private EditText phoneEt,hintEt;
+    private EditText phoneEt, hintEt;
     private LoadImageUtils loadImageUtils;
     private ActivityDetailBean detailBean;
     private HttpHelper httpHelper;
     private ProUtils proUtils;
     private String price;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,77 +61,79 @@ public class ConfirmActivityActivity extends BaseActivity {
         initView();
         initData();
     }
+
     private void initView() {
-        httpHelper=HttpHelper.getOkHttpClientUtils(this);
-        proUtils=new ProUtils(this);
-        Map<String,Object> map=SkipUtils.getMap(this);
-        if (map==null)return;
-        detailBean=(ActivityDetailBean) map.get(Constant.LIST);
-        loadImageUtils=LoadImageUtils.getInstance(this);
+        httpHelper = HttpHelper.getOkHttpClientUtils(this);
+        proUtils = new ProUtils(this);
+        Map<String, Object> map = SkipUtils.getMap(this);
+        if (map == null) return;
+        detailBean = (ActivityDetailBean) map.get(Constant.LIST);
+        loadImageUtils = LoadImageUtils.getInstance(this);
         setCustomTitle("活动详情", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
-        payBt=(Button) findViewById(R.id.confirm_activity_pay_bt);
+        payBt = (Button) findViewById(R.id.confirm_activity_pay_bt);
         payBt.setOnClickListener(listener);
-        totalPriceTv=(TextView) findViewById(R.id.confirm_activity_total_price);
-        titleTv=(TextView) findViewById(R.id.confirm_activity_title);
-        imageView=(ImageView) findViewById(R.id.confirm_activity_image);
-        addressTv=(TextView) findViewById(R.id.confirm_activity_address);
-        timeTv=(TextView) findViewById(R.id.confirm_activity_time);
-        typeTv=(TextView) findViewById(R.id.confirm_activity_type);
-        priceTv=(TextView) findViewById(R.id.confirm_activity_price);
-        numTv=(TextView) findViewById(R.id.confirm_activity_num);
-        totalLayout=(LinearLayout) findViewById(R.id.confirm_activity_total_num_layout);
-        phoneEt=(EditText) findViewById(R.id.confirm_activity_phone);
-        hintEt=(EditText) findViewById(R.id.confirm_activity_hint);
+        totalPriceTv = (TextView) findViewById(R.id.confirm_activity_total_price);
+        titleTv = (TextView) findViewById(R.id.confirm_activity_title);
+        imageView = (ImageView) findViewById(R.id.confirm_activity_image);
+        addressTv = (TextView) findViewById(R.id.confirm_activity_address);
+        timeTv = (TextView) findViewById(R.id.confirm_activity_time);
+        typeTv = (TextView) findViewById(R.id.confirm_activity_type);
+        priceTv = (TextView) findViewById(R.id.confirm_activity_price);
+        numTv = (TextView) findViewById(R.id.confirm_activity_num);
+        totalLayout = (LinearLayout) findViewById(R.id.confirm_activity_total_num_layout);
+        phoneEt = (EditText) findViewById(R.id.confirm_activity_phone);
+        hintEt = (EditText) findViewById(R.id.confirm_activity_hint);
     }
 
     private void initData() {
-        loadImageUtils.displayImage(detailBean.getPicture(),imageView);
-        totalPriceTv.setText("¥"+Float.parseFloat(detailBean.getPrice()));
+        loadImageUtils.displayImage(detailBean.getPicture(), imageView);
+        totalPriceTv.setText("¥" + Float.parseFloat(detailBean.getPrice()));
         titleTv.setText(detailBean.getName());
         addressTv.setText(detailBean.getAddress());
-        String startTime=detailBean.getStart_time();
-        String start=Utils.formatTDSecond(startTime);
+        String startTime = detailBean.getStart_time();
+        String start = Utils.formatTDSecond(startTime);
         timeTv.setText(start);
-        price=detailBean.getPrice();
-        if (TextUtils.isEmpty(price)){
+        price = detailBean.getPrice();
+        if (TextUtils.isEmpty(price)) {
             totalLayout.setVisibility(View.GONE);
             priceTv.setText("免费");
-        }else {
+        } else {
             totalLayout.setVisibility(View.VISIBLE);
-            priceTv.setText("¥"+price);
-            totalPriceTv.setText("¥"+price);
+            priceTv.setText("¥" + price);
+            totalPriceTv.setText("¥" + price);
         }
-   }
+    }
 
-    View.OnClickListener listener=new View.OnClickListener() {
+    View.OnClickListener listener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            switch (view.getId()){
-                case R.id.confirm_activity_pay_bt:{
+            switch (view.getId()) {
+                case R.id.confirm_activity_pay_bt: {
                     checkEdit();
-                }break;
+                }
+                break;
             }
         }
     };
 
     private void checkEdit() {
-        String phone=phoneEt.getText().toString().trim();
-        if (TextUtils.isEmpty(phone)){
-            T.show(this,"请输入联系方式");
+        String phone = phoneEt.getText().toString().trim();
+        if (TextUtils.isEmpty(phone)) {
+            T.show(this, "请输入联系方式");
             return;
-        }else {
-            if (!Utils.isPhoneNumberValid(phone)){
-                T.show(this,"请输入正确手机号");
+        } else {
+            if (!Utils.isPhoneNumberValid(phone)) {
+                T.show(this, "请输入正确手机号");
                 return;
-            }else {
+            } else {
                 confirmOrder(phone);
             }
         }
     }
 
     private void confirmOrder(String phone) {
-        String hintStr=hintEt.getText().toString().trim();
+        String hintStr = hintEt.getText().toString().trim();
         proUtils.show();
         Map<String, String> map = new HashMap<String, String>();
         map.put("activity_id", detailBean.getId());
@@ -151,10 +154,10 @@ public class ConfirmActivityActivity extends BaseActivity {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
                     if ("0".equals(code)) {
-                        String value=jo.optJSONObject("value").toString();
-                        Message msg=new Message();
-                        msg.what=SURE_ORDER_CODE;
-                        msg.obj=value;
+                        String value = jo.optJSONObject("value").toString();
+                        Message msg = new Message();
+                        msg.what = SURE_ORDER_CODE;
+                        msg.obj = value;
                         handler.sendMessage(msg);
                     } else {
                         String msg = jo.optString(Constant.ERROR_MSG);
@@ -168,22 +171,22 @@ public class ConfirmActivityActivity extends BaseActivity {
         }, null);
     }
 
-    private final static int SURE_ORDER_CODE=0;
-    Handler handler=new Handler(){
+    private final static int SURE_ORDER_CODE = 0;
+    Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
-                case SURE_ORDER_CODE:{
+            switch (msg.what) {
+                case SURE_ORDER_CODE: {
                     if (!TextUtils.isEmpty(price)) {
                         String value = msg.obj.toString();
                         try {
                             JSONObject jo = new JSONObject(value);
                             String orderId = jo.optString("order_num");
                             String price = jo.optString("total_fee");
-                            if ("0.0".equals(price)||"0".equals(price)||"0.00".equals(price)||TextUtils.isEmpty(price)) {
-                                SkipUtils.directJump(ConfirmActivityActivity.this, NoPaySuccessActivity.class, false);
-                            }else {
+                            if ("0.0".equals(price) || "0".equals(price) || "0.00".equals(price) || TextUtils.isEmpty(price)) {
+                                SkipUtils.directJump(ConfirmActivityActivity.this, NoPaySuccessActivity.class, true);
+                            } else {
                                 Map<String, Object> map = new HashMap<String, Object>();
                                 map.put(Constant.ID, orderId);
                                 map.put(Constant.PRICE, price);
@@ -192,10 +195,11 @@ public class ConfirmActivityActivity extends BaseActivity {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    }else {
+                    } else {
                         SkipUtils.directJump(ConfirmActivityActivity.this, NoPaySuccessActivity.class, false);
                     }
-                }break;
+                }
+                break;
             }
         }
     };

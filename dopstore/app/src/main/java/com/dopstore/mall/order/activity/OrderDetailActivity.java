@@ -24,8 +24,8 @@ import java.util.Map;
  * name
  */
 public class OrderDetailActivity extends BaseActivity {
-    private TextView idTv,stateTv,passTv,passTimeTv,userTv,userAddressTv,userMsgTv,totalPriceTv,cheapTv,passPriceTv,truePriceTv;
-    private Button submitBt,kFBt;
+    private TextView idTv, stateTv, passTv, passTimeTv, userTv, userAddressTv, userMsgTv, totalPriceTv, cheapTv, passPriceTv, truePriceTv;
+    private Button submitBt, kFBt;
     private RelativeLayout wLayout;
     private LoadImageUtils loadImage;
     private MyListView myListView;
@@ -40,10 +40,10 @@ public class OrderDetailActivity extends BaseActivity {
     }
 
     private void initView() {
-        loadImage=LoadImageUtils.getInstance(this);
+        loadImage = LoadImageUtils.getInstance(this);
         Map<String, Object> map = SkipUtils.getMap(this);
         String type = map.get("title").toString();
-       int  typeId = Integer.parseInt(type);
+        int typeId = Integer.parseInt(type);
         switch (typeId) {
 //            case 0: {
 //                titleStr = "我的订单";
@@ -64,28 +64,28 @@ public class OrderDetailActivity extends BaseActivity {
         }
         setCustomTitle("订单详情", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
-        idTv=(TextView) findViewById(R.id.order_detail_id);
-        stateTv=(TextView) findViewById(R.id.order_detail_state);
-        wLayout=(RelativeLayout) findViewById(R.id.order_detail_wuliu_layout);
-        passTv=(TextView) findViewById(R.id.order_detail_wuliu);
-        passTimeTv=(TextView) findViewById(R.id.order_detail_wuliu_time);
-        userTv=(TextView) findViewById(R.id.order_detail_user_detail);
-        userAddressTv=(TextView) findViewById(R.id.order_detail_user_address);
-        userMsgTv=(TextView) findViewById(R.id.order_detail_user_msg);
-        totalPriceTv=(TextView) findViewById(R.id.order_detail_total_price);
-        cheapTv=(TextView) findViewById(R.id.order_detail_cheap_price);
-        passPriceTv=(TextView) findViewById(R.id.order_detail_pass_price);
-        truePriceTv=(TextView) findViewById(R.id.order_detail_true_price);
-        submitBt=(Button) findViewById(R.id.order_detail_submit);
-        kFBt=(Button) findViewById(R.id.order_detail_cheap_kefu);
-        myListView=(MyListView) findViewById(R.id.order_detail_listview);
+        idTv = (TextView) findViewById(R.id.order_detail_id);
+        stateTv = (TextView) findViewById(R.id.order_detail_state);
+        wLayout = (RelativeLayout) findViewById(R.id.order_detail_wuliu_layout);
+        passTv = (TextView) findViewById(R.id.order_detail_wuliu);
+        passTimeTv = (TextView) findViewById(R.id.order_detail_wuliu_time);
+        userTv = (TextView) findViewById(R.id.order_detail_user_detail);
+        userAddressTv = (TextView) findViewById(R.id.order_detail_user_address);
+        userMsgTv = (TextView) findViewById(R.id.order_detail_user_msg);
+        totalPriceTv = (TextView) findViewById(R.id.order_detail_total_price);
+        cheapTv = (TextView) findViewById(R.id.order_detail_cheap_price);
+        passPriceTv = (TextView) findViewById(R.id.order_detail_pass_price);
+        truePriceTv = (TextView) findViewById(R.id.order_detail_true_price);
+        submitBt = (Button) findViewById(R.id.order_detail_submit);
+        kFBt = (Button) findViewById(R.id.order_detail_cheap_kefu);
+        myListView = (MyListView) findViewById(R.id.order_detail_listview);
         submitBt.setOnClickListener(listener);
         wLayout.setOnClickListener(listener);
         kFBt.setOnClickListener(listener);
     }
 
     private void initData() {
-        List<CommOrderData> lists=new ArrayList<CommOrderData>();
+        List<CommOrderData> lists = new ArrayList<CommOrderData>();
         idTv.setText("订单号:16160805071127");
         stateTv.setText("等待付款");
         wLayout.setVisibility(View.VISIBLE);
@@ -98,27 +98,32 @@ public class OrderDetailActivity extends BaseActivity {
         cheapTv.setText("¥ 0");
         passPriceTv.setText("¥ 0");
         truePriceTv.setText("¥ 87.00");
-        for (int i=0;i<1;i++){
-            CommOrderData data=new CommOrderData();
+        for (int i = 0; i < 1; i++) {
+            CommOrderData data = new CommOrderData();
             data.setImage("");
             data.setInfo("商品介绍片");
             data.setPrice("156");
             data.setNum("1");
             lists.add(data);
         }
-        myListView.setAdapter(new CommOrderAdapter(this,lists));
+        myListView.setAdapter(new CommOrderAdapter(this, lists));
 
     }
 
-    View.OnClickListener listener=new View.OnClickListener() {
+    View.OnClickListener listener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            switch (view.getId()){
-                case R.id.order_detail_submit:{}break;
-                case R.id.order_detail_cheap_kefu:{}break;
-                case R.id.order_detail_wuliu_layout:{
-                    SkipUtils.directJump(OrderDetailActivity.this,DeliveryInfoActivity.class,false);
-                }break;
+            switch (view.getId()) {
+                case R.id.order_detail_submit: {
+                }
+                break;
+                case R.id.order_detail_cheap_kefu: {
+                }
+                break;
+                case R.id.order_detail_wuliu_layout: {
+                    SkipUtils.directJump(OrderDetailActivity.this, DeliveryInfoActivity.class, false);
+                }
+                break;
 
             }
 

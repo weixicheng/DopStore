@@ -78,7 +78,7 @@ public class RegisterDetailActivity extends BaseActivity {
 
     private void initView() {
         aCache = ACache.get(this);
-        proUtils=new ProUtils(this);
+        proUtils = new ProUtils(this);
         httpHelper = HttpHelper.getOkHttpClientUtils(this);
         Map<String, Object> intentMap = SkipUtils.getMap(this);
         list = (List<DetailData>) intentMap.get(Constant.LIST);
@@ -220,7 +220,7 @@ public class RegisterDetailActivity extends BaseActivity {
                         data.setMobile(user.optString(Constant.MOBILE));
                         data.setAddress(user.optString(Constant.CITY));
                         UserUtils.setData(RegisterDetailActivity.this, data);
-                        Intent intent=new Intent();
+                        Intent intent = new Intent();
                         intent.setAction(Constant.UP_USER_DATA);
                         sendBroadcast(intent);
                         Intent it = new Intent(RegisterDetailActivity.this, MainActivity.class);

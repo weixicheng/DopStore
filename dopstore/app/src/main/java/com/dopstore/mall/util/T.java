@@ -29,9 +29,9 @@ public class T {
 
                 @Override
                 public void run() {
-                    String msg=message;
-                    if (TextUtils.isEmpty(message)){
-                        msg="暂无数据";
+                    String msg = message;
+                    if (TextUtils.isEmpty(message)) {
+                        msg = "暂无数据";
                     }
                     Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
                 }

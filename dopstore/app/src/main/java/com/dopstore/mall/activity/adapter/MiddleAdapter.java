@@ -79,15 +79,15 @@ public class MiddleAdapter extends BaseAdapter {
 //            }
 //        });
 
-        datas=list.get(i).getRelated_goods();
+        datas = list.get(i).getRelated_goods();
         viewHolder.eScrollView.setAdapter(new MiddleDataAdapter(context, datas));
         viewHolder.eScrollView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                ShopData data=datas.get(i);
-                String id=data.getId();
-                Map<String,Object> map=new HashMap<String, Object>();
-                map.put(Constant.ID,id);
+                ShopData data = datas.get(i);
+                String id = data.getId();
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put(Constant.ID, id);
                 SkipUtils.jumpForMapResult(context, ShopDetailActivity.class, map, 0);
             }
         });
@@ -96,7 +96,7 @@ public class MiddleAdapter extends BaseAdapter {
     }
 
     public void upData(List<MainMiddleData> midddleList) {
-        this.list=midddleList;
+        this.list = midddleList;
         notifyDataSetChanged();
     }
 

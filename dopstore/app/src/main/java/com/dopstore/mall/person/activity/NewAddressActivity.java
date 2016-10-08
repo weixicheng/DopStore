@@ -60,8 +60,8 @@ public class NewAddressActivity extends BaseActivity {
     private TextView mBtnConfirm;
     private TextView mBtnCancle;
     private HttpHelper httpHelper;
-    private String is_default="0";
-    private String address_id="";
+    private String is_default = "0";
+    private String address_id = "";
     private ProUtils proUtils;
 
     @Override
@@ -73,8 +73,8 @@ public class NewAddressActivity extends BaseActivity {
 
     private void initView() {
 
-        httpHelper=HttpHelper.getOkHttpClientUtils(this);
-        proUtils=new ProUtils(this);
+        httpHelper = HttpHelper.getOkHttpClientUtils(this);
+        proUtils = new ProUtils(this);
         setCustomTitle("新增收货地址", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
 
@@ -96,32 +96,33 @@ public class NewAddressActivity extends BaseActivity {
         deleBt.setOnClickListener(listener);
         getIntentData();
     }
+
     private void getIntentData() {
-        Map<String,Object> map=SkipUtils.getMap(this);
-        if (map!=null) {
+        Map<String, Object> map = SkipUtils.getMap(this);
+        if (map != null) {
             MyAddressData data = (MyAddressData) map.get(Constant.LIST);
-            address_id=data.getId();
+            address_id = data.getId();
             Address_phone.setText(data.getMobile());
             Address_name.setText(data.getShipping_user());
             mAddress.setText(data.getAddress());
-            mCurrentProviceName=data.getProvince();
-            mCurrentCityName=data.getCity();
-            mCurrentDistrictName=data.getArea();
+            mCurrentProviceName = data.getProvince();
+            mCurrentCityName = data.getCity();
+            mCurrentDistrictName = data.getArea();
             mProvince_city_area.setTextColor(getResources().getColor(R.color.gray_color_33));
-            mProvince_city_area.setText(mCurrentProviceName+mCurrentCityName +mCurrentDistrictName);
+            mProvince_city_area.setText(mCurrentProviceName + mCurrentCityName + mCurrentDistrictName);
             card_num.setText(data.getId_card());
-            is_default=data.is_default;
-            if ("0".equals(is_default)){
+            is_default = data.is_default;
+            if ("0".equals(is_default)) {
                 clcik_address = false;
                 mLv_click.setImageResource(R.mipmap.checkbox_normal);
-            }else {
-                clcik_address=true;
+            } else {
+                clcik_address = true;
                 mLv_click.setImageResource(R.mipmap.checkbox_checked);
             }
             deleBt.setVisibility(View.VISIBLE);
             hintV.setVisibility(View.GONE);
-        }else {
-            address_id="";
+        } else {
+            address_id = "";
             deleBt.setVisibility(View.GONE);
             hintV.setVisibility(View.VISIBLE);
         }
@@ -139,24 +140,32 @@ public class NewAddressActivity extends BaseActivity {
                     if (clcik_address) {
                         mLv_click.setImageResource(R.mipmap.checkbox_normal);
                         clcik_address = false;
-                        is_default="0";
+                        is_default = "0";
                     } else {
                         mLv_click.setImageResource(R.mipmap.checkbox_checked);
                         clcik_address = true;
-                        is_default="1";
+                        is_default = "1";
                     }
                 }
                 break;
-                case R.id.popup_cancel:{
-                   dismissPoup();
-                }break;
-                case R.id.popup_confirm:{
-                    mProvince_city_area.setTextColor(getResources().getColor(R.color.gray_color_33));
-                    mProvince_city_area.setText(mCurrentProviceName+mCurrentCityName +mCurrentDistrictName);
+                case R.id.popup_cancel: {
                     dismissPoup();
-                }break;
-                case R.id.new_address_save:{saveMsg();}break;
-                case R.id.new_address_delete:{deleteMsg();}break;
+                }
+                break;
+                case R.id.popup_confirm: {
+                    mProvince_city_area.setTextColor(getResources().getColor(R.color.gray_color_33));
+                    mProvince_city_area.setText(mCurrentProviceName + mCurrentCityName + mCurrentDistrictName);
+                    dismissPoup();
+                }
+                break;
+                case R.id.new_address_save: {
+                    saveMsg();
+                }
+                break;
+                case R.id.new_address_delete: {
+                    deleteMsg();
+                }
+                break;
             }
 
         }
@@ -164,7 +173,7 @@ public class NewAddressActivity extends BaseActivity {
 
     private void deleteMsg() {
         proUtils.show();
-        httpHelper.getDataAsync(this, URL.SHIPPINGADDRESS+"shippingaddress/"+address_id+"/delete", new Callback() {
+        httpHelper.getDataAsync(this, URL.SHIPPINGADDRESS + "shippingaddress/" + address_id + "/delete", new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
                 T.checkNet(NewAddressActivity.this);
@@ -179,7 +188,7 @@ public class NewAddressActivity extends BaseActivity {
                     String code = jo.optString(Constant.ERROR_CODE);
                     if ("0".equals(code)) {
                         T.show(NewAddressActivity.this, "成功");
-                        handler.sendEmptyMessageDelayed(0,300);
+                        handler.sendEmptyMessageDelayed(0, 300);
                     } else {
                         String msg = jo.optString(Constant.ERROR_MSG);
                         T.show(NewAddressActivity.this, msg);
@@ -189,10 +198,10 @@ public class NewAddressActivity extends BaseActivity {
                 }
                 proUtils.dismiss();
             }
-        },null);
+        }, null);
     }
 
-    Handler handler=new Handler(){
+    Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -201,43 +210,43 @@ public class NewAddressActivity extends BaseActivity {
     };
 
     private void saveMsg() {
-        String name=Address_name.getText().toString();
-        if (TextUtils.isEmpty(name)){
-            T.show(this,"请输入姓名");
+        String name = Address_name.getText().toString();
+        if (TextUtils.isEmpty(name)) {
+            T.show(this, "请输入姓名");
             return;
         }
-        String phone=Address_phone.getText().toString();
-        if (TextUtils.isEmpty(name)){
-            T.show(this,"请输入手机号");
+        String phone = Address_phone.getText().toString();
+        if (TextUtils.isEmpty(name)) {
+            T.show(this, "请输入手机号");
             return;
         }
-        if (!Utils.isPhoneNumberValid(phone)){
-            T.show(this,"请检查手机号");
+        if (!Utils.isPhoneNumberValid(phone)) {
+            T.show(this, "请检查手机号");
             return;
         }
-        String cardNum=card_num.getText().toString();
-        if (TextUtils.isEmpty(name)){
-            T.show(this,"请输入身份证号");
+        String cardNum = card_num.getText().toString();
+        if (TextUtils.isEmpty(name)) {
+            T.show(this, "请输入身份证号");
             return;
         }
-        String addressStr=mAddress.getText().toString();
-        if (TextUtils.isEmpty(name)){
-            T.show(this,"请输入详细地址");
+        String addressStr = mAddress.getText().toString();
+        if (TextUtils.isEmpty(name)) {
+            T.show(this, "请输入详细地址");
             return;
         }
         proUtils.show();
-        String id= UserUtils.getId(this);
-        Map<String,String> map=new HashMap<String,String>();
-        map.put(Constant.ID,address_id);
-        map.put(Constant.SHIPPING_USER,name);
-        map.put(Constant.MOBILE,phone);
-        map.put(Constant.PROVINCE,mCurrentProviceName);
-        map.put(Constant.CITY,mCurrentCityName);
-        map.put(Constant.AREA,mCurrentDistrictName);
-        map.put(Constant.ID_CARD,cardNum);
-        map.put(Constant.ADDRESS,addressStr);
-        map.put(Constant.IS_DEFAULT,is_default);
-        httpHelper.postKeyValuePairAsync(this, URL.SHIPPINGADDRESS+id+"/update_shippingaddress",map, new Callback() {
+        String id = UserUtils.getId(this);
+        Map<String, String> map = new HashMap<String, String>();
+        map.put(Constant.ID, address_id);
+        map.put(Constant.SHIPPING_USER, name);
+        map.put(Constant.MOBILE, phone);
+        map.put(Constant.PROVINCE, mCurrentProviceName);
+        map.put(Constant.CITY, mCurrentCityName);
+        map.put(Constant.AREA, mCurrentDistrictName);
+        map.put(Constant.ID_CARD, cardNum);
+        map.put(Constant.ADDRESS, addressStr);
+        map.put(Constant.IS_DEFAULT, is_default);
+        httpHelper.postKeyValuePairAsync(this, URL.SHIPPINGADDRESS + id + "/update_shippingaddress", map, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
                 T.checkNet(NewAddressActivity.this);
@@ -252,7 +261,7 @@ public class NewAddressActivity extends BaseActivity {
                     String code = jo.optString(Constant.ERROR_CODE);
                     if ("0".equals(code)) {
                         T.show(NewAddressActivity.this, "成功");
-                        handler.sendEmptyMessageDelayed(0,300);
+                        handler.sendEmptyMessageDelayed(0, 300);
                     } else {
                         String msg = jo.optString(Constant.ERROR_MSG);
                         T.show(NewAddressActivity.this, msg);
@@ -262,25 +271,27 @@ public class NewAddressActivity extends BaseActivity {
                 }
                 proUtils.dismiss();
             }
-        },null);
+        }, null);
     }
 
-    private void dismissPoup(){
-        if (popupWindow.isShowing()){popupWindow.dismiss();}
+    private void dismissPoup() {
+        if (popupWindow.isShowing()) {
+            popupWindow.dismiss();
+        }
     }
 
     private void showPop() {
         bgLayout.setVisibility(View.VISIBLE);
         int screenWidth = getWindowManager().getDefaultDisplay().getWidth();
-        View v= LayoutInflater.from(this).inflate(R.layout.poup_city_list,null);
+        View v = LayoutInflater.from(this).inflate(R.layout.poup_city_list, null);
         setUpViews(v);
         setUpData();
-        popupWindow= PopupUtils.ShowBottomPopupWindow(this,popupWindow,v,screenWidth,200,findViewById(R.id.new_address_main_relalayout));
+        popupWindow = PopupUtils.ShowBottomPopupWindow(this, popupWindow, v, screenWidth, 200, findViewById(R.id.new_address_main_relalayout));
         popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
                 bgLayout.setVisibility(View.GONE);
-                popupWindow=null;
+                popupWindow = null;
             }
         });
     }
@@ -302,7 +313,7 @@ public class NewAddressActivity extends BaseActivity {
         mBtnConfirm.setOnClickListener(listener);
     }
 
-    OnWheelChangedListener onWheelChangedListener=new OnWheelChangedListener() {
+    OnWheelChangedListener onWheelChangedListener = new OnWheelChangedListener() {
         @Override
         public void onChanged(WheelView wheel, int oldValue, int newValue) {
             if (wheel == mViewProvince) {
@@ -338,7 +349,7 @@ public class NewAddressActivity extends BaseActivity {
         String[] areas = mDistrictDatasMap.get(mCurrentCityName);
 
         if (areas == null) {
-            areas = new String[] { "" };
+            areas = new String[]{""};
         }
         mViewDistrict.setViewAdapter(new ArrayWheelAdapter<String>(this, areas));
         mViewDistrict.setCurrentItem(0);
@@ -352,7 +363,7 @@ public class NewAddressActivity extends BaseActivity {
         mCurrentProviceName = mProvinceDatas[pCurrent];
         String[] cities = mCitisDatasMap.get(mCurrentProviceName);
         if (cities == null) {
-            cities = new String[] { "" };
+            cities = new String[]{""};
         }
         mViewCity.setViewAdapter(new ArrayWheelAdapter<String>(this, cities));
         mViewCity.setCurrentItem(0);

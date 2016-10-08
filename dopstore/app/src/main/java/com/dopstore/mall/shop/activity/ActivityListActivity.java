@@ -38,13 +38,14 @@ import java.util.Map;
  * name
  */
 public class ActivityListActivity extends BaseActivity {
-    private TextView firstTv,secondTv,thirdTv,fourTv;
-    private View firstv,secondv,thirdv,fourv;
+    private TextView firstTv, secondTv, thirdTv, fourTv;
+    private View firstv, secondv, thirdv, fourv;
     private ListView listView;
     private ActivityAdapter adapter;
     private List<ActivityData> aList = new ArrayList<ActivityData>();
     private HttpHelper httpHelper;
     private ProUtils proUtils;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,27 +54,27 @@ public class ActivityListActivity extends BaseActivity {
         initData();
     }
 
-    private void initView(){
-        httpHelper=HttpHelper.getOkHttpClientUtils(this);
-        proUtils=new ProUtils(this);
+    private void initView() {
+        httpHelper = HttpHelper.getOkHttpClientUtils(this);
+        proUtils = new ProUtils(this);
         setCustomTitle("列表", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
-        firstTv=(TextView) findViewById(R.id.shop_list_first);
-        secondTv=(TextView) findViewById(R.id.shop_list_second);
-        thirdTv=(TextView) findViewById(R.id.shop_list_third);
-        fourTv=(TextView) findViewById(R.id.shop_list_four);
-        firstv=findViewById(R.id.shop_list_firstv);
-        secondv=findViewById(R.id.shop_list_secondv);
-        thirdv=findViewById(R.id.shop_list_thirdv);
-        fourv=findViewById(R.id.shop_list_fourv);
-        listView=(ListView) findViewById(R.id.shop_list_listview);
+        firstTv = (TextView) findViewById(R.id.shop_list_first);
+        secondTv = (TextView) findViewById(R.id.shop_list_second);
+        thirdTv = (TextView) findViewById(R.id.shop_list_third);
+        fourTv = (TextView) findViewById(R.id.shop_list_four);
+        firstv = findViewById(R.id.shop_list_firstv);
+        secondv = findViewById(R.id.shop_list_secondv);
+        thirdv = findViewById(R.id.shop_list_thirdv);
+        fourv = findViewById(R.id.shop_list_fourv);
+        listView = (ListView) findViewById(R.id.shop_list_listview);
         firstTv.setOnClickListener(listener);
         secondTv.setOnClickListener(listener);
         thirdTv.setOnClickListener(listener);
         fourTv.setOnClickListener(listener);
     }
 
-    private void initData(){
+    private void initData() {
         getOtherData("");
     }
 
@@ -101,11 +102,11 @@ public class ActivityListActivity extends BaseActivity {
     }
 
 
-    View.OnClickListener listener=new View.OnClickListener() {
+    View.OnClickListener listener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            switch (view.getId()){
-                case R.id.shop_list_first:{
+            switch (view.getId()) {
+                case R.id.shop_list_first: {
                     firstTv.setTextColor(getResources().getColor(R.color.red_color_f93448));
                     firstv.setVisibility(View.VISIBLE);
                     secondTv.setTextColor(getResources().getColor(R.color.gray_color_33));
@@ -116,8 +117,9 @@ public class ActivityListActivity extends BaseActivity {
                     fourv.setVisibility(View.INVISIBLE);
                     aList.clear();
                     getOtherData("1");
-                }break;
-                case R.id.shop_list_second:{
+                }
+                break;
+                case R.id.shop_list_second: {
                     firstTv.setTextColor(getResources().getColor(R.color.gray_color_33));
                     firstv.setVisibility(View.INVISIBLE);
                     secondTv.setTextColor(getResources().getColor(R.color.red_color_f93448));
@@ -128,8 +130,9 @@ public class ActivityListActivity extends BaseActivity {
                     fourv.setVisibility(View.INVISIBLE);
                     aList.clear();
                     getOtherData("2");
-                }break;
-                case R.id.shop_list_third:{
+                }
+                break;
+                case R.id.shop_list_third: {
                     firstTv.setTextColor(getResources().getColor(R.color.gray_color_33));
                     firstv.setVisibility(View.INVISIBLE);
                     secondTv.setTextColor(getResources().getColor(R.color.gray_color_33));
@@ -141,8 +144,9 @@ public class ActivityListActivity extends BaseActivity {
                     aList.clear();
                     getOtherData("3");
 
-                }break;
-                case R.id.shop_list_four:{
+                }
+                break;
+                case R.id.shop_list_four: {
                     firstTv.setTextColor(getResources().getColor(R.color.gray_color_33));
                     firstv.setVisibility(View.INVISIBLE);
                     secondTv.setTextColor(getResources().getColor(R.color.gray_color_33));
@@ -154,11 +158,11 @@ public class ActivityListActivity extends BaseActivity {
                     aList.clear();
                     getOtherData("4");
 
-                }break;
+                }
+                break;
             }
         }
     };
-
 
 
     private final static int UPDATA_OTHER_CODE = 0;
@@ -176,7 +180,7 @@ public class ActivityListActivity extends BaseActivity {
         }
     };
 
-    private void analysisData(String body){
+    private void analysisData(String body) {
         try {
             JSONObject jo = new JSONObject(body);
             String code = jo.optString(Constant.ERROR_CODE);
@@ -214,17 +218,17 @@ public class ActivityListActivity extends BaseActivity {
 
     private void refreshOtherAdapter() {
         if (adapter == null) {
-            adapter = new ActivityAdapter(this, aList,0);
+            adapter = new ActivityAdapter(this, aList, 0);
             listView.setAdapter(adapter);
         } else {
-            adapter.upData(aList,0);
+            adapter.upData(aList, 0);
         }
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Map<String,Object> map=new HashMap<String, Object>();
-                map.put(Constant.ID,aList.get(i).getId());
-                SkipUtils.jumpForMap(ActivityListActivity.this, ActivityDetailActivity.class,map, false);
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put(Constant.ID, aList.get(i).getId());
+                SkipUtils.jumpForMap(ActivityListActivity.this, ActivityDetailActivity.class, map, false);
             }
         });
     }

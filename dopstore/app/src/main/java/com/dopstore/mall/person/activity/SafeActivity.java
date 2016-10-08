@@ -53,9 +53,9 @@ public class SafeActivity extends BaseActivity {
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.safe_pwd_layout: {
-                    Map<String,Object> map=new HashMap<String,Object>();
-                    map.put("title","safe");
-                    SkipUtils.jumpForMap(SafeActivity.this, LosePwdActivity.class,map, false);
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map.put("title", "safe");
+                    SkipUtils.jumpForMap(SafeActivity.this, LosePwdActivity.class, map, false);
                 }
                 break;
                 case R.id.safe_phone_layout: {

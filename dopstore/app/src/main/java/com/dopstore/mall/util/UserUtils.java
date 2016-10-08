@@ -59,9 +59,10 @@ public class UserUtils {
         SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
         return sp.getString(Constant.GENDER, "");
     }
+
     public static Long getBirthday(Context context) {
         SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
-        return sp.getLong(Constant.BIRTHDAY,0);
+        return sp.getLong(Constant.BIRTHDAY, 0);
     }
 
     public static String getAvatar(Context context) {
@@ -82,7 +83,7 @@ public class UserUtils {
 
     public static Long getBabyBirthday(Context context) {
         SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
-        return sp.getLong(Constant.BABY_BIRTHDAY,0);
+        return sp.getLong(Constant.BABY_BIRTHDAY, 0);
     }
 
     public static String getMobile(Context context) {
@@ -94,6 +95,7 @@ public class UserUtils {
         SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
         return sp.getString(Constant.BALANCE, "");
     }
+
     public static String getCity(Context context) {
         SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
         return sp.getString(Constant.CITY, "");

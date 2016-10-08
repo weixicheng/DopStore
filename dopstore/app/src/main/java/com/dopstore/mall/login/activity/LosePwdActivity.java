@@ -44,7 +44,7 @@ public class LosePwdActivity extends BaseActivity {
     private TextView agressTxt, titleTv;
     private MyCount mc;
     private HttpHelper httpHelper;
-    private String titleStr="忘记密码";
+    private String titleStr = "忘记密码";
     private ProUtils proUtils;
 
     @Override
@@ -55,15 +55,15 @@ public class LosePwdActivity extends BaseActivity {
     }
 
     private void initView() {
-        Map<String,Object> map=SkipUtils.getMap(this);
-        if (map!=null) {
+        Map<String, Object> map = SkipUtils.getMap(this);
+        if (map != null) {
             String saftStr = map.get("title").toString();
             if ("safe".equals(saftStr)) {
                 titleStr = "重置密码";
             }
         }
         httpHelper = HttpHelper.getOkHttpClientUtils(this);
-        proUtils=new ProUtils(this);
+        proUtils = new ProUtils(this);
         topLayout = (RelativeLayout) findViewById(R.id.brandsquare_title_layout);
         titleTv = (TextView) findViewById(R.id.register_title_tv);
         titleTv.setText(titleStr);
@@ -295,7 +295,7 @@ public class LosePwdActivity extends BaseActivity {
                         SkipUtils.back(LosePwdActivity.this);
                     } else {
                         String msg = jo.optString(Constant.ERROR_MSG);
-                                T.show(LosePwdActivity.this, msg);
+                        T.show(LosePwdActivity.this, msg);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

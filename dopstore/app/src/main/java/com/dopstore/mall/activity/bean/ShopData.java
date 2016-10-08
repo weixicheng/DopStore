@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by 喜成 on 16/9/5.
  * name 首页底部数据
  */
-public class ShopData implements Serializable{
+public class ShopData implements Serializable {
     private String id;
     private String name;
     private String price;

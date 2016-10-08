@@ -7,7 +7,7 @@ import java.util.List;
  * 作者：xicheng on 16/9/20 15:30
  * 类别：
  */
-public class MiddleData implements Serializable{
+public class MiddleData implements Serializable {
     private String error_code;
     private List<MainMiddleData> themes;
 

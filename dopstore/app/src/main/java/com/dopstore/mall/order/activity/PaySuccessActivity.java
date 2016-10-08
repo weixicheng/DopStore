@@ -8,7 +8,11 @@ import android.widget.Button;
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.MainActivity;
 import com.dopstore.mall.base.BaseActivity;
+import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.SkipUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by 喜成 on 16/9/13.
@@ -35,19 +39,26 @@ public class PaySuccessActivity extends BaseActivity {
         continueBt.setOnClickListener(listener);
     }
 
-    private void initData(){
+    private void initData() {
 
-}
-    View.OnClickListener listener=new View.OnClickListener() {
+    }
+
+    View.OnClickListener listener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            switch (view.getId()){
-                case R.id.pay_success_check_bt:{
-                    SkipUtils.directJump(PaySuccessActivity.this,MyOrderActivity.class,true);
-                }break;
-                case R.id.pay_success_continue_bt:{
-                    SkipUtils.directJump(PaySuccessActivity.this,MainActivity.class,true);
-                }break;
+            switch (view.getId()) {
+                case R.id.pay_success_check_bt: {
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map.put(Constant.ID, "3");
+                    SkipUtils.jumpForMap(PaySuccessActivity.this, MainActivity.class, map, true);
+                }
+                break;
+                case R.id.pay_success_continue_bt: {
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map.put(Constant.ID, "1");
+                    SkipUtils.jumpForMap(PaySuccessActivity.this, MainActivity.class, map, true);
+                }
+                break;
             }
         }
     };

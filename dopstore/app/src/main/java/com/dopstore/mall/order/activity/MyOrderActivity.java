@@ -38,6 +38,7 @@ public class MyOrderActivity extends BaseActivity {
 
     private void initView() {
         Map<String, Object> map = SkipUtils.getMap(this);
+        if (map == null) return;
         String type = map.get("title").toString();
         typeId = Integer.parseInt(type);
         switch (typeId) {
@@ -80,11 +81,12 @@ public class MyOrderActivity extends BaseActivity {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i==0){
-                Map<String,Object> map=new HashMap<String, Object>();
-                map.put("title",typeId);
-                SkipUtils.jumpForMap(MyOrderActivity.this,OrderDetailActivity.class,map,false);}else {
-                    SkipUtils.directJump(MyOrderActivity.this,RefundOrderActivity.class,false);
+                if (i == 0) {
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map.put("title", typeId);
+                    SkipUtils.jumpForMap(MyOrderActivity.this, OrderDetailActivity.class, map, false);
+                } else {
+                    SkipUtils.directJump(MyOrderActivity.this, RefundOrderActivity.class, false);
                 }
             }
         });

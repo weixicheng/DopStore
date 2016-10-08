@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by 喜成 on 16/9/6.
  * name
  */
-public class ActivityData implements Serializable{
+public class ActivityData implements Serializable {
     private String id;
     private String name;
     private String picture;

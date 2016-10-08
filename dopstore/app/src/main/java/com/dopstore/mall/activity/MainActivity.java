@@ -17,8 +17,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
-import com.dopstore.mall.activity.fragment.ActivityFragment;
-import com.dopstore.mall.activity.fragment.MainFragment;
+import com.dopstore.mall.activity.fragment.MainShopFragment;
+import com.dopstore.mall.activity.fragment.MainSportFragment;
 import com.dopstore.mall.activity.fragment.PersonFragment;
 import com.dopstore.mall.activity.fragment.TrolleyFragment;
 import com.dopstore.mall.base.BaseActivity;
@@ -45,8 +45,8 @@ public class MainActivity extends BaseActivity {
 
     private FragmentTransaction fragmentTransaction;
     private FragmentManager fragmentManager;
-    private MainFragment mainFragment;
-    private ActivityFragment activityFragment;
+    private MainShopFragment mainFragment;
+    private MainSportFragment activityFragment;
     private TrolleyFragment trolleyFragment;
     private PersonFragment personFragment;
     private Fragment currentFragment;
@@ -88,7 +88,7 @@ public class MainActivity extends BaseActivity {
         myIv = (ImageView) findViewById(R.id.my_tab_image);
 
 
-        receiver= new Receiver();
+        receiver = new Receiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(Constant.UP_USER_DATA);
         filter.addAction(Constant.BACK_CART_DATA);
@@ -97,7 +97,7 @@ public class MainActivity extends BaseActivity {
 
 
     private void initData() {
-            setTabFragment(MAIN_CODE);
+        setTabFragment(MAIN_CODE);
     }
 
     private void setTabFragment(int index) {
@@ -110,7 +110,7 @@ public class MainActivity extends BaseActivity {
         switch (index) {
             case MAIN_CODE:
                 if (mainFragment == null) {
-                    mainFragment = new MainFragment();
+                    mainFragment = new MainShopFragment();
                     fragmentTransaction.add(R.id.main_content_fragment, mainFragment);
                 } else {
                     setCurrentFragment(mainFragment);
@@ -123,7 +123,7 @@ public class MainActivity extends BaseActivity {
                 break;
             case BILING_CODE:
                 if (activityFragment == null) {
-                    activityFragment = new ActivityFragment();
+                    activityFragment = new MainSportFragment();
                     fragmentTransaction.add(R.id.main_content_fragment, activityFragment);
                 } else {
                     setCurrentFragment(activityFragment);
@@ -147,8 +147,8 @@ public class MainActivity extends BaseActivity {
                         }
                     }
                     setCurrentFragment(trolleyFragment);
-                }else {
-                    SkipUtils.directJump(MainActivity.this,LoginActivity.class,false);
+                } else {
+                    SkipUtils.directJump(MainActivity.this, LoginActivity.class, false);
                 }
                 break;
             case MY_CODE:
@@ -213,8 +213,8 @@ public class MainActivity extends BaseActivity {
                 case R.id.head_tab_button:// 购物车
                     if (UserUtils.haveLogin(MainActivity.this)) {
                         setTabFragment(ROB_CODE);
-                    }else {
-                        SkipUtils.directJump(MainActivity.this, LoginActivity.class,false);
+                    } else {
+                        SkipUtils.directJump(MainActivity.this, LoginActivity.class, false);
                     }
                     break;
                 case R.id.my_tab_button:// 我的
@@ -318,34 +318,33 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (mainFragment!=null) {
+        if (mainFragment != null) {
             mainFragment.onActivityResult(requestCode, resultCode, data);
         }
-        if (activityFragment!=null){
-        activityFragment.onActivityResult(requestCode, resultCode, data);}
-        if (personFragment!=null){
-        personFragment.onActivityResult(requestCode, resultCode, data);}
+        if (activityFragment != null) {
+            activityFragment.onActivityResult(requestCode, resultCode, data);
+        }
+        if (personFragment != null) {
+            personFragment.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
-    public class Receiver extends BroadcastReceiver
-    {
+    public class Receiver extends BroadcastReceiver {
 
         @Override
-        public void onReceive(Context context, Intent intent)
-        {
-            String action=intent.getAction();
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
             if (action.equals(Constant.UP_USER_DATA)) {
                 if (personFragment != null) {
                     personFragment.loadData();
                 }
-            }else if (action.equals(Constant.BACK_CART_DATA)){
+            } else if (action.equals(Constant.BACK_CART_DATA)) {
                 setTabFragment(ROB_CODE);
             }
 
         }
 
     }
-
 
 
 }

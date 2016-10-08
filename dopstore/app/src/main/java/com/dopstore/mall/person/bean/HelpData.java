@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by 喜成 on 16/9/12.
  * name
  */
-public class HelpData implements Serializable{
+public class HelpData implements Serializable {
     private String id;
     private String title;
     private String content;

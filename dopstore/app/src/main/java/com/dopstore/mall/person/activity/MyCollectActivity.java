@@ -197,11 +197,11 @@ public class MyCollectActivity extends BaseActivity {
         }, null);
     }
 
-    private void getCollectStatus(int id,String type) {
+    private void getCollectStatus(int id, String type) {
         proUtils.show();
         Map<String, String> map = new HashMap<String, String>();
         map.put("user_id", UserUtils.getId(this));
-        map.put("item_id", id+"");
+        map.put("item_id", id + "");
         map.put("action_id", "2");
         map.put("is_activity", type);
         httpHelper.postKeyValuePairAsync(this, URL.COLLECTION_EDIT, map, new Callback() {
@@ -304,7 +304,7 @@ public class MyCollectActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode==UPDATA_DETAIL_CODE){
+        if (requestCode == UPDATA_DETAIL_CODE) {
             mListData.clear();
             if (type == 0) {
                 getCollectList("");

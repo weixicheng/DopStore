@@ -52,9 +52,9 @@ public class TrolleyAdapter extends BaseAdapter {
         this.mPriceAll = mPriceAll;
         this.totalPrice = totalPrice;
         this.mCheckAll = mCheckAll;
-        httpHelper=HttpHelper.getOkHttpClientUtils(context);
-        proUtils=new ProUtils(context);
-        loadImageUtils=LoadImageUtils.getInstance(context);
+        httpHelper = HttpHelper.getOkHttpClientUtils(context);
+        proUtils = new ProUtils(context);
+        loadImageUtils = LoadImageUtils.getInstance(context);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class TrolleyAdapter extends BaseAdapter {
         return position;
     }
 
-    public void upData(List<GoodBean> mListData, TextView mPriceAll, int totalPrice, CheckBox mCheckAll){
+    public void upData(List<GoodBean> mListData, TextView mPriceAll, int totalPrice, CheckBox mCheckAll) {
         this.mListData = mListData;
         this.mPriceAll = mPriceAll;
         this.totalPrice = totalPrice;
@@ -82,7 +82,7 @@ public class TrolleyAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-       ViewHolder holder = null;
+        ViewHolder holder = null;
         View view = convertView;
         if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.cart_list_item, null);
@@ -103,14 +103,15 @@ public class TrolleyAdapter extends BaseAdapter {
         holder.content.setText(data.getContent());
         holder.price.setText("￥" + data.getPrice());
         holder.carNum.setText(data.getCarNum() + "");
-        loadImageUtils.displayImage(data.getCover(),holder.image);
+        loadImageUtils.displayImage(data.getCover(), holder.image);
         boolean selected = data.isChoose();
         holder.checkBox.setChecked(selected);
         holder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 GoodBean bean = mListData.get(position);
-                boolean selected = bean.isChoose();;
+                boolean selected = bean.isChoose();
+                ;
                 if (selected) {
                     mListData.get(position).setChoose(false);
                     totalPrice -= bean.getCarNum() * bean.getPrice();
@@ -119,10 +120,10 @@ public class TrolleyAdapter extends BaseAdapter {
                     totalPrice += bean.getCarNum() * bean.getPrice();
                 }
                 mPriceAll.setText("￥" + totalPrice + "");
-                for (GoodBean bean1:mListData){
-                    if (bean1.isChoose()==false){
+                for (GoodBean bean1 : mListData) {
+                    if (bean1.isChoose() == false) {
                         mCheckAll.setChecked(false);
-                    }else {
+                    } else {
                         mCheckAll.setChecked(true);
                     }
                 }
@@ -134,7 +135,7 @@ public class TrolleyAdapter extends BaseAdapter {
 
             @Override
             public void onClick(View v) {
-                addToService(mListData,position);
+                addToService(mListData, position);
             }
         });
 
@@ -144,109 +145,111 @@ public class TrolleyAdapter extends BaseAdapter {
             public void onClick(View v) {
                 if (mListData.get(position).getCarNum() == 1)
                     return;
-                redToService(mListData,position);
+                redToService(mListData, position);
             }
         });
         return view;
     }
 
     private void addToService(List<GoodBean> mListData, final int i) {
-            proUtils.show();
-            final Map<String,String> map=new HashMap<String,String>();
-            map.put("user_id", UserUtils.getId(context));
-            map.put("item_id", (mListData.get(i).getId())+"");
-            map.put("count", (mListData.get(i).getCarNum()+1)+"");
-            map.put("edit", "1");
-            httpHelper.postKeyValuePairAsync(context, URL.CART_EDIT, map, new Callback() {
-                @Override
-                public void onFailure(Request request, IOException e) {
-                    T.checkNet(context);
-                    proUtils.dismiss();
-                }
+        proUtils.show();
+        final Map<String, String> map = new HashMap<String, String>();
+        map.put("user_id", UserUtils.getId(context));
+        map.put("item_id", (mListData.get(i).getId()) + "");
+        map.put("count", (mListData.get(i).getCarNum() + 1) + "");
+        map.put("edit", "1");
+        httpHelper.postKeyValuePairAsync(context, URL.CART_EDIT, map, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                T.checkNet(context);
+                proUtils.dismiss();
+            }
 
-                @Override
-                public void onResponse(Response response) throws IOException {
-                    String body = response.body().string();
-                    try {
-                        JSONObject jo = new JSONObject(body);
-                        String code = jo.optString(Constant.ERROR_CODE);
-                        if ("0".equals(code)){
-                            Message msg=new Message();
-                            msg.what=UPDATA_ADD_CART_MSG;
-                            msg.arg1=i;
-                            handler.sendMessage(msg);
-                        }else {
-                            String msg = jo.optString(Constant.ERROR_MSG);
-                            T.show(context, msg);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String body = response.body().string();
+                try {
+                    JSONObject jo = new JSONObject(body);
+                    String code = jo.optString(Constant.ERROR_CODE);
+                    if ("0".equals(code)) {
+                        Message msg = new Message();
+                        msg.what = UPDATA_ADD_CART_MSG;
+                        msg.arg1 = i;
+                        handler.sendMessage(msg);
+                    } else {
+                        String msg = jo.optString(Constant.ERROR_MSG);
+                        T.show(context, msg);
                     }
-                    proUtils.dismiss();
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-            }, null);
+                proUtils.dismiss();
+            }
+        }, null);
     }
+
     private void redToService(List<GoodBean> mListData, final int i) {
-            proUtils.show();
-            final Map<String,String> map=new HashMap<String,String>();
-            map.put("user_id", UserUtils.getId(context));
-            map.put("item_id", (mListData.get(i).getId())+"");
-            map.put("count", (mListData.get(i).getCarNum()-1)+"");
-            map.put("edit", "1");
-            httpHelper.postKeyValuePairAsync(context, URL.CART_EDIT, map, new Callback() {
-                @Override
-                public void onFailure(Request request, IOException e) {
-                    T.checkNet(context);
-                    proUtils.dismiss();
-                }
+        proUtils.show();
+        final Map<String, String> map = new HashMap<String, String>();
+        map.put("user_id", UserUtils.getId(context));
+        map.put("item_id", (mListData.get(i).getId()) + "");
+        map.put("count", (mListData.get(i).getCarNum() - 1) + "");
+        map.put("edit", "1");
+        httpHelper.postKeyValuePairAsync(context, URL.CART_EDIT, map, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                T.checkNet(context);
+                proUtils.dismiss();
+            }
 
-                @Override
-                public void onResponse(Response response) throws IOException {
-                    String body = response.body().string();
-                    try {
-                        JSONObject jo = new JSONObject(body);
-                        String code = jo.optString(Constant.ERROR_CODE);
-                        if ("0".equals(code)){
-                            Message msg=new Message();
-                            msg.what=UPDATA_RED_CART_MSG;
-                            msg.arg1=i;
-                            handler.sendMessage(msg);
-                        }else {
-                            String msg = jo.optString(Constant.ERROR_MSG);
-                            T.show(context, msg);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String body = response.body().string();
+                try {
+                    JSONObject jo = new JSONObject(body);
+                    String code = jo.optString(Constant.ERROR_CODE);
+                    if ("0".equals(code)) {
+                        Message msg = new Message();
+                        msg.what = UPDATA_RED_CART_MSG;
+                        msg.arg1 = i;
+                        handler.sendMessage(msg);
+                    } else {
+                        String msg = jo.optString(Constant.ERROR_MSG);
+                        T.show(context, msg);
                     }
-                    proUtils.dismiss();
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-            }, null);
+                proUtils.dismiss();
+            }
+        }, null);
     }
 
 
+    private final static int UPDATA_RED_CART_MSG = 0;
+    private final static int UPDATA_ADD_CART_MSG = 1;
 
-    private final static int UPDATA_RED_CART_MSG=0;
-    private final static int UPDATA_ADD_CART_MSG=1;
-
-    Handler handler=new Handler(){
+    Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
-                case UPDATA_RED_CART_MSG:{
-                    int position=msg.arg1;
+            switch (msg.what) {
+                case UPDATA_RED_CART_MSG: {
+                    int position = msg.arg1;
                     mListData.get(position).setCarNum(mListData.get(position).getCarNum() - 1);
                     totalPrice -= mListData.get(position).getPrice();
                     mPriceAll.setText("￥" + totalPrice + "");
                     notifyDataSetChanged();
-                }break;
-                case UPDATA_ADD_CART_MSG:{
-                    int position=msg.arg1;
+                }
+                break;
+                case UPDATA_ADD_CART_MSG: {
+                    int position = msg.arg1;
                     mListData.get(position).setCarNum(mListData.get(position).getCarNum() + 1);
                     totalPrice += mListData.get(position).getPrice();
                     mPriceAll.setText("￥" + totalPrice + "");
                     notifyDataSetChanged();
-                }break;
+                }
+                break;
             }
         }
     };

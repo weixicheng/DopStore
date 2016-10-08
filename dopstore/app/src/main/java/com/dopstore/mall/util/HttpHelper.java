@@ -40,7 +40,7 @@ public class HttpHelper {
 
     private HttpHelper(Context context) {
         okHttpClient = getOkHttpSingletonInstance();
-        aCache=ACache.get(context);
+        aCache = ACache.get(context);
 
         //开启响应缓存
         okHttpClient.setCookieHandler(new CookieManager(null, CookiePolicy.ACCEPT_ORIGINAL_SERVER));
@@ -96,9 +96,9 @@ public class HttpHelper {
      */
     private Request buildGetRequest(String urlString, Object tag) {
         Request.Builder builder = new Request.Builder();
-        String token=aCache.getAsString(Constant.TOKEN);
-        if (!TextUtils.isEmpty(token)){
-            builder.addHeader("Authorization","JWT "+token);
+        String token = aCache.getAsString(Constant.TOKEN);
+        if (!TextUtils.isEmpty(token)) {
+            builder.addHeader("Authorization", "JWT " + token);
         }
         builder.url(urlString);
         if (tag != null) {
@@ -188,9 +188,9 @@ public class HttpHelper {
      */
     private Request buildPostRequest(String urlString, RequestBody requestBody, Object tag) {
         Request.Builder builder = new Request.Builder();
-        String token=aCache.getAsString(Constant.TOKEN);
-        if (!TextUtils.isEmpty(token)){
-            builder.addHeader("Authorization","JWT "+token);
+        String token = aCache.getAsString(Constant.TOKEN);
+        if (!TextUtils.isEmpty(token)) {
+            builder.addHeader("Authorization", "JWT " + token);
         }
         builder.url(urlString).post(requestBody);
         //builder.addHeader("Accept", "application/json; q=0.5");
@@ -280,7 +280,6 @@ public class HttpHelper {
      * 作用：post提交数据，返回服务器端返回的字节数组
      *
      * @param urlString ：访问网络的url地址
-     *
      */
     private void postRequestBodyAsync(String urlString, RequestBody requestBody, Callback
             callback, Object tag) {

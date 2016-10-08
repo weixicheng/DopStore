@@ -65,10 +65,7 @@ public class MipcaActivityCapture extends BaseActivity implements Callback {
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
         setCustomTitle("扫一扫", getResources().getColor(R.color.white_color));
-        ImageButton leftTv = (ImageButton) findViewById(R.id.title_left_imageButton);
-        leftTv.setImageResource(R.mipmap.back_arrow);
-        leftTv.setVisibility(View.VISIBLE);
-        leftTv.setOnClickListener(listener);
+        leftImageBack(R.mipmap.back_arrow);
         rightTextBack("相册", getResources().getColor(R.color.white_color), listener);
     }
 
@@ -76,11 +73,6 @@ public class MipcaActivityCapture extends BaseActivity implements Callback {
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
-                case R.id.title_left_imageButton: {
-                    Intent resultIntent = new Intent();
-                    setResult(RESULT_OK, resultIntent);
-                }
-                break;
                 case R.id.title_right_textButton: {
 
                 }

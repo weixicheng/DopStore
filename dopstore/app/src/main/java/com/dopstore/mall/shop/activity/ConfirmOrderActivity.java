@@ -26,12 +26,13 @@ import java.util.List;
 public class ConfirmOrderActivity extends BaseActivity {
     private Button payBt;
     private TextView totalPriceTv;
-    private TextView priceTv,passTv;
-    private TextView userTv,userAddressTv;
+    private TextView priceTv, passTv;
+    private TextView userTv, userAddressTv;
     private RelativeLayout addressLayout;
     private MyListView myListView;
     private ConfirmOrderAdapter adapter;
-    private List<ConfirmOrderData> lists=new ArrayList<ConfirmOrderData>();
+    private List<ConfirmOrderData> lists = new ArrayList<ConfirmOrderData>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,29 +40,31 @@ public class ConfirmOrderActivity extends BaseActivity {
         initView();
         initData();
     }
+
     private void initView() {
         setCustomTitle("确认订单", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
-        payBt=(Button) findViewById(R.id.confirm_order_pay_bt);
+        payBt = (Button) findViewById(R.id.confirm_order_pay_bt);
         payBt.setOnClickListener(listener);
-        totalPriceTv=(TextView) findViewById(R.id.confirm_order_total_price);
-        priceTv=(TextView) findViewById(R.id.confirm_order_price);
-        passTv=(TextView) findViewById(R.id.confirm_order_pass_price);
-        userTv=(TextView) findViewById(R.id.confirm_order_user_detail);
-        userAddressTv=(TextView) findViewById(R.id.confirm_order_user_address);
-        addressLayout=(RelativeLayout) findViewById(R.id.confirm_order_address_layout);
+        totalPriceTv = (TextView) findViewById(R.id.confirm_order_total_price);
+        priceTv = (TextView) findViewById(R.id.confirm_order_price);
+        passTv = (TextView) findViewById(R.id.confirm_order_pass_price);
+        userTv = (TextView) findViewById(R.id.confirm_order_user_detail);
+        userAddressTv = (TextView) findViewById(R.id.confirm_order_user_address);
+        addressLayout = (RelativeLayout) findViewById(R.id.confirm_order_address_layout);
         addressLayout.setOnClickListener(listener);
-        myListView=(MyListView) findViewById(R.id.confirm_order_listview);
+        myListView = (MyListView) findViewById(R.id.confirm_order_listview);
 
     }
+
     private void initData() {
         totalPriceTv.setText("¥158.00");
         priceTv.setText("¥158.00");
         passTv.setText("免运费");
         userTv.setText("李阳  123456");
         userAddressTv.setText("北京朝阳区");
-        for (int i=0;i<1;i++){
-            ConfirmOrderData data=new ConfirmOrderData();
+        for (int i = 0; i < 1; i++) {
+            ConfirmOrderData data = new ConfirmOrderData();
             data.setImage("");
             data.setInfo("商品介绍片");
             data.setTitle("自营");
@@ -70,21 +73,23 @@ public class ConfirmOrderActivity extends BaseActivity {
             lists.add(data);
         }
 
-        myListView.setAdapter(new ConfirmOrderAdapter(this,lists));
+        myListView.setAdapter(new ConfirmOrderAdapter(this, lists));
 
 
-   }
+    }
 
-    View.OnClickListener listener=new View.OnClickListener() {
+    View.OnClickListener listener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            switch (view.getId()){
-                case R.id.confirm_order_pay_bt:{
-                    SkipUtils.directJump(ConfirmOrderActivity.this,CashierActivity.class,false);
-                }break;
-                case R.id.confirm_order_address_layout:{
-                    SkipUtils.directJump(ConfirmOrderActivity.this,MyAddressActivity.class,false);
-                }break;
+            switch (view.getId()) {
+                case R.id.confirm_order_pay_bt: {
+                    SkipUtils.directJump(ConfirmOrderActivity.this, CashierActivity.class, false);
+                }
+                break;
+                case R.id.confirm_order_address_layout: {
+                    SkipUtils.directJump(ConfirmOrderActivity.this, MyAddressActivity.class, false);
+                }
+                break;
             }
         }
     };

@@ -90,16 +90,16 @@ public class PersonFragment extends Fragment {
         if (UserUtils.haveLogin(getActivity())) {
             nameTv.setVisibility(View.VISIBLE);
             nameTv.setText(UserUtils.getNickName(getActivity()));
-            long babytime=UserUtils.getBabyBirthday(getActivity())*1000;
-            Long currentTime=System.currentTimeMillis();
-            long time=currentTime-babytime;
-            String babyName=UserUtils.getBabyName(getActivity());
-            introTv.setText(babyName+"  "+ Utils.formatMilli(babytime,"yyyy年MM月dd日"));
-            String avatar=UserUtils.getAvatar(getActivity());
-            if (TextUtils.isEmpty(avatar)){
+            long babytime = UserUtils.getBabyBirthday(getActivity()) * 1000;
+            Long currentTime = System.currentTimeMillis();
+            long time = currentTime - babytime;
+            String babyName = UserUtils.getBabyName(getActivity());
+            introTv.setText(babyName + "  " + Utils.formatMilli(babytime, "yyyy年MM月dd日"));
+            String avatar = UserUtils.getAvatar(getActivity());
+            if (TextUtils.isEmpty(avatar)) {
                 headImage.setImageResource(R.mipmap.ic);
-            }else {
-                loadImageUtils.displayImage(avatar,headImage);
+            } else {
+                loadImageUtils.displayImage(avatar, headImage);
             }
             priceTv.setText(UserUtils.getBalance(getActivity()));
         } else {

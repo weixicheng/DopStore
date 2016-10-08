@@ -25,7 +25,6 @@ public class YsnowWebView extends WebView {
     }
 
 
-
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
 
@@ -35,7 +34,7 @@ public class YsnowWebView extends WebView {
                 float Y = ev.getY();
                 float Ys = Y - oldY;
                 //Ys>0��ʾ�������»���->t==0��ʾһ���������˶���
-                if (Ys >0 &&t==0) {
+                if (Ys > 0 && t == 0) {
                     //Ȼ���ö����Ǹ�scrolLview���������¼�
                     getParent().getParent().requestDisallowInterceptTouchEvent(false);
                 }
@@ -56,7 +55,7 @@ public class YsnowWebView extends WebView {
 
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
-                    this.t=t;
+        this.t = t;
         super.onScrollChanged(l, t, oldl, oldt);
     }
 

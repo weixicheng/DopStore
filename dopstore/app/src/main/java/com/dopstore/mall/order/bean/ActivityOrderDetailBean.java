@@ -5,21 +5,21 @@ package com.dopstore.mall.order.bean;
  * 类别：
  */
 public class ActivityOrderDetailBean {
-    private String  order_num;
-    private int  status;
-    private String  pic;
-    private String  name;
-    private String  address;
-    private long  start_time;
-    private String  category;
-    private float  price;
-    private float  total_fee;
-    private String  code;
-    private String  q_code;
-    private String  used_time;
-    private String  freight;
-    private String  benefit;
-    private String  note;
+    private String order_num;
+    private int status;
+    private String pic;
+    private String name;
+    private String address;
+    private long start_time;
+    private String category;
+    private double price;
+    private double total_fee;
+    private String code;
+    private String q_code;
+    private String used_time;
+    private String freight;
+    private String benefit;
+    private String note;
 
     public String getOrder_num() {
         return order_num;
@@ -77,19 +77,19 @@ public class ActivityOrderDetailBean {
         this.category = category;
     }
 
-    public float getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
-    public float getTotal_fee() {
+    public double getTotal_fee() {
         return total_fee;
     }
 
-    public void setTotal_fee(float total_fee) {
+    public void setTotal_fee(double total_fee) {
         this.total_fee = total_fee;
     }
 

@@ -49,7 +49,7 @@ import java.util.Map;
  * 作者：xicheng on 16/9/13
  */
 public class ActivityDetailActivity extends BaseActivity {
-    private RelativeLayout topLayout,bottomLy;
+    private RelativeLayout topLayout, bottomLy;
     private HttpHelper httpHelper;
     private ProUtils proUtils;
     private String isCollect = "0";
@@ -57,14 +57,14 @@ public class ActivityDetailActivity extends BaseActivity {
     private YsnowWebView webView;
     private YsnowScrollViewPageOne pageOne;
     private ImageView imageView;
-    private TextView titleTv, priceTv, numTv, timeTv, ageTv, addressTv,shopTv, phoneTv;
+    private TextView titleTv, priceTv, numTv, timeTv, ageTv, addressTv, shopTv, phoneTv;
     private EScrollView eScrollView;
     private LinearLayout shopLayout;
 
     private ActivityDetailBean detailBean;
     private List<ShopData> datas;
     private LoadImageUtils loadImageUtils;
-    private String  activity_id;
+    private String activity_id;
 
 
     @Override
@@ -78,7 +78,7 @@ public class ActivityDetailActivity extends BaseActivity {
     private void initView() {
         httpHelper = HttpHelper.getOkHttpClientUtils(this);
         proUtils = new ProUtils(this);
-        loadImageUtils=LoadImageUtils.getInstance(this);
+        loadImageUtils = LoadImageUtils.getInstance(this);
         Map<String, Object> map = SkipUtils.getMap(this);
         if (map == null) return;
         activity_id = map.get(Constant.ID).toString();
@@ -103,9 +103,9 @@ public class ActivityDetailActivity extends BaseActivity {
         setCustomTitle("活动详情", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         rightFirstImageBack(R.mipmap.share_logo, listener);
-        if (isCollect.equals("0")){
+        if (isCollect.equals("0")) {
             rightSecondImageBack(R.mipmap.collect_small_logo, listener);
-        }else {
+        } else {
             rightSecondImageBack(R.mipmap.collect_check_logo, listener);
         }
         detailMenu.openMenu();
@@ -130,7 +130,7 @@ public class ActivityDetailActivity extends BaseActivity {
         proUtils.show();
         Map<String, String> map = new HashMap<String, String>();
         map.put("activity_id", activity_id);
-        if (UserUtils.haveLogin(this)){
+        if (UserUtils.haveLogin(this)) {
             map.put("user_id", UserUtils.getId(this));
         }
         httpHelper.postKeyValuePairAsync(this, URL.ACTIVITY_DETAILS, map, new Callback() {
@@ -144,7 +144,7 @@ public class ActivityDetailActivity extends BaseActivity {
             public void onResponse(Response response) throws IOException {
                 String body = response.body().string();
                 try {
-                       JSONObject jo = new JSONObject(body);
+                    JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
                     if ("0".equals(code)) {
                         JSONObject middle = jo.getJSONObject("details");
@@ -155,21 +155,21 @@ public class ActivityDetailActivity extends BaseActivity {
                         detailBean.setAge(middle.optString("age"));
                         detailBean.setMerchant(middle.optString("merchant"));
                         detailBean.setPhone(middle.optString("phone"));
-                        detailBean.setStart_time(middle.optLong("start_time")+"");
-                        detailBean.setEnd_time(middle.optLong("end_time")+"");
+                        detailBean.setStart_time(middle.optLong("start_time") + "");
+                        detailBean.setEnd_time(middle.optLong("end_time") + "");
                         detailBean.setLimit(middle.optString("limit"));
                         detailBean.setPrice(middle.optString("price"));
                         detailBean.setAddress(middle.optString("address"));
                         detailBean.setContent(middle.optString("content"));
                         detailBean.setCategory(middle.optString("category"));
-                        isCollect=middle.optString("is_collect");
+                        isCollect = middle.optString("is_collect");
                         detailBean.setIs_collect(middle.optString("is_collect"));
                         datas = new ArrayList<ShopData>();
                         JSONArray ja = middle.optJSONArray("items");
                         if (ja.length() > 0) {
                             for (int i = 0; i < ja.length(); i++) {
                                 ShopData data = new ShopData();
-                                JSONObject json=ja.getJSONObject(i);
+                                JSONObject json = ja.getJSONObject(i);
                                 data.setId(json.optString("item_id"));
                                 data.setName(json.optString("item_name"));
                                 data.setCover(json.optString("item_pic"));
@@ -191,60 +191,61 @@ public class ActivityDetailActivity extends BaseActivity {
         }, null);
     }
 
-    private final static int UPDATA_DETAIL_CODE=0;
+    private final static int UPDATA_DETAIL_CODE = 0;
     private final static int COLLECT_SCUESS_CODE = 1;
     private final static int COLLECT_CANCEL_CODE = 2;
-    Handler handler=new Handler(){
+    Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case COLLECT_SCUESS_CODE: {
                     T.show(ActivityDetailActivity.this, "添加成功");
-                    isCollect="1";
+                    isCollect = "1";
                     rightSecondImageBack(R.mipmap.collect_check_logo, listener);
                 }
                 break;
                 case COLLECT_CANCEL_CODE: {
                     T.show(ActivityDetailActivity.this, "取消成功");
-                    isCollect="0";
+                    isCollect = "0";
                     rightSecondImageBack(R.mipmap.collect_small_logo, listener);
                 }
                 break;
-                case UPDATA_DETAIL_CODE:{
-                    isCollect=detailBean.getIs_collect();
+                case UPDATA_DETAIL_CODE: {
+                    isCollect = detailBean.getIs_collect();
                     if ("1".equals(isCollect)) {
                         rightSecondImageBack(R.mipmap.collect_check_logo, listener);
                     } else {
                         rightSecondImageBack(R.mipmap.collect_small_logo, listener);
                     }
-                    loadImageUtils.displayImage(detailBean.getPicture(),imageView);
+                    loadImageUtils.displayImage(detailBean.getPicture(), imageView);
                     titleTv.setText(detailBean.getName());
-                    priceTv.setText("￥"+detailBean.getPrice());
-                    String limit=detailBean.getLimit();
-                    if (TextUtils.isEmpty(limit)){
+                    priceTv.setText("￥" + detailBean.getPrice());
+                    String limit = detailBean.getLimit();
+                    if (TextUtils.isEmpty(limit)) {
                         numTv.setVisibility(View.GONE);
-                    }else {
+                    } else {
                         numTv.setText("限制" + limit + "人");
                         numTv.setVisibility(View.VISIBLE);
                     }
-                    String startTime=detailBean.getStart_time();
-                    String endTime=detailBean.getEnd_time();
-                    timeTv.setText(Utils.formatTSecond(startTime)+ "——" + Utils.formatTSecond(endTime));
+                    String startTime = detailBean.getStart_time();
+                    String endTime = detailBean.getEnd_time();
+                    timeTv.setText(Utils.formatTSecond(startTime) + "——" + Utils.formatTSecond(endTime));
                     ageTv.setText(detailBean.getAge());
                     addressTv.setText(detailBean.getAddress());
                     shopTv.setText(detailBean.getMerchant());
                     phoneTv.setText(detailBean.getPhone());
-                    List<ShopData> beens=detailBean.getItems();
-                    if (beens.size()>0){
+                    List<ShopData> beens = detailBean.getItems();
+                    if (beens.size() > 0) {
                         shopLayout.setVisibility(View.VISIBLE);
                         eScrollView.setAdapter(new ActivityDetailAdapter(ActivityDetailActivity.this, beens));
-                    }else {
+                    } else {
                         shopLayout.setVisibility(View.GONE);
                     }
-                    webView.loadDataWithBaseURL(null,detailBean.getContent(), "text/html", "utf-8", null);
+                    webView.loadDataWithBaseURL(null, detailBean.getContent(), "text/html", "utf-8", null);
 
-                }break;
+                }
+                break;
             }
         }
     };
@@ -257,9 +258,9 @@ public class ActivityDetailActivity extends BaseActivity {
                 }
                 break;
                 case R.id.title_right_before_imageButton: {//收藏
-                    if ("0".equals(isCollect)){
+                    if ("0".equals(isCollect)) {
                         setCollectStatus("1");
-                    }else {
+                    } else {
                         setCollectStatus("2");
                     }
                 }
@@ -269,10 +270,10 @@ public class ActivityDetailActivity extends BaseActivity {
                         Map<String, Object> map = new HashMap<String, Object>();
                         map.put(Constant.LIST, detailBean);
                         SkipUtils.jumpForMap(ActivityDetailActivity.this, ConfirmActivityActivity.class, map, false);
-                    }else {
-                        SkipUtils.directJump(ActivityDetailActivity.this, LoginActivity.class,false);
+                    } else {
+                        SkipUtils.directJump(ActivityDetailActivity.this, LoginActivity.class, false);
                     }
-                    }
+                }
                 break;
             }
 
@@ -280,8 +281,8 @@ public class ActivityDetailActivity extends BaseActivity {
     };
 
     private void setCollectStatus(final String isCollect) {
-        if (!UserUtils.haveLogin(this)){
-            SkipUtils.directJump(this,LoginActivity.class,false);
+        if (!UserUtils.haveLogin(this)) {
+            SkipUtils.directJump(this, LoginActivity.class, false);
             return;
         }
         proUtils.show();

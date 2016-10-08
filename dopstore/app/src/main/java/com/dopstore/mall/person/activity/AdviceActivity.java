@@ -34,7 +34,7 @@ import java.util.Map;
  * name
  */
 public class AdviceActivity extends BaseActivity {
-    private EditText adviceEt,postEt;
+    private EditText adviceEt, postEt;
     private Button submit;
     private HttpHelper httpHelper;
     private ProUtils proUtils;
@@ -48,14 +48,14 @@ public class AdviceActivity extends BaseActivity {
     }
 
     private void initView() {
-        proUtils=new ProUtils(this);
+        proUtils = new ProUtils(this);
         setCustomTitle("意见反馈", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         adviceEt = (EditText) findViewById(R.id.advice_input_et);
         postEt = (EditText) findViewById(R.id.advice_input_post_et);
         submit = (Button) findViewById(R.id.advice_submit_bt);
         submit.setOnClickListener(listener);
-        httpHelper=HttpHelper.getOkHttpClientUtils(this);
+        httpHelper = HttpHelper.getOkHttpClientUtils(this);
     }
 
 
@@ -67,27 +67,27 @@ public class AdviceActivity extends BaseActivity {
     View.OnClickListener listener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            String adviceStr=adviceEt.getText().toString().trim();
-            String postStr=postEt.getText().toString().trim();
-            if (TextUtils.isEmpty(adviceStr)){
-                T.show(AdviceActivity.this,"请输入您的宝贵意见");
+            String adviceStr = adviceEt.getText().toString().trim();
+            String postStr = postEt.getText().toString().trim();
+            if (TextUtils.isEmpty(adviceStr)) {
+                T.show(AdviceActivity.this, "请输入您的宝贵意见");
                 return;
             }
-            if (TextUtils.isEmpty(postStr)){
-                T.show(AdviceActivity.this,"请留下您的联系方式(QQ/邮箱/电话号码)");
+            if (TextUtils.isEmpty(postStr)) {
+                T.show(AdviceActivity.this, "请留下您的联系方式(QQ/邮箱/电话号码)");
                 return;
             }
-            adviceToUs(adviceStr,postStr);
+            adviceToUs(adviceStr, postStr);
         }
     };
 
     private void adviceToUs(String adviceStr, String postStr) {
         proUtils.show();
-        String id=UserUtils.getId(this);
-        Map<String,String> map=new HashMap<String,String>();
-        map.put(Constant.CONTENT,adviceStr);
-        map.put(Constant.INFORMATION,postStr);
-        httpHelper.postKeyValuePairAsync(this, URL.SHIPPINGADDRESS+id+"/add_feedback",map, new Callback() {
+        String id = UserUtils.getId(this);
+        Map<String, String> map = new HashMap<String, String>();
+        map.put(Constant.CONTENT, adviceStr);
+        map.put(Constant.INFORMATION, postStr);
+        httpHelper.postKeyValuePairAsync(this, URL.SHIPPINGADDRESS + id + "/add_feedback", map, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
                 T.checkNet(AdviceActivity.this);
@@ -102,7 +102,7 @@ public class AdviceActivity extends BaseActivity {
                     String code = jo.optString(Constant.ERROR_CODE);
                     if ("0".equals(code)) {
                         T.show(AdviceActivity.this, "提交成功");
-                        handler.sendEmptyMessageDelayed(0,300);
+                        handler.sendEmptyMessageDelayed(0, 300);
 
                     } else {
                         String msg = jo.optString(Constant.ERROR_MSG);
@@ -116,7 +116,7 @@ public class AdviceActivity extends BaseActivity {
         }, null);
     }
 
-    Handler handler=new Handler(){
+    Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);

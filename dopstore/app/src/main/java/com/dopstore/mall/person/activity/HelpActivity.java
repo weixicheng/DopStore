@@ -37,8 +37,8 @@ import java.util.Map;
  * name
  */
 public class HelpActivity extends BaseActivity {
-    private ListView  listView;
-    private List<HelpData> lists=new ArrayList<HelpData>();
+    private ListView listView;
+    private List<HelpData> lists = new ArrayList<HelpData>();
     private HttpHelper httpHelper;
     private ProUtils proUtils;
 
@@ -51,11 +51,11 @@ public class HelpActivity extends BaseActivity {
     }
 
     private void initView() {
-        proUtils=new ProUtils(this);
+        proUtils = new ProUtils(this);
         setCustomTitle("帮助中心", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         listView = (ListView) findViewById(R.id.help_list);
-        httpHelper=HttpHelper.getOkHttpClientUtils(this);
+        httpHelper = HttpHelper.getOkHttpClientUtils(this);
     }
 
 
@@ -64,9 +64,9 @@ public class HelpActivity extends BaseActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Map<String,Object> map=new HashMap<String, Object>();
-                map.put(Constant.LIST,lists.get(i));
-                SkipUtils.jumpForMap(HelpActivity.this,HelpDetailActivity.class,map,false);
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put(Constant.LIST, lists.get(i));
+                SkipUtils.jumpForMap(HelpActivity.this, HelpDetailActivity.class, map, false);
             }
         });
     }
@@ -110,12 +110,13 @@ public class HelpActivity extends BaseActivity {
             }
         }, null);
     }
-    private final static int UPDATA_CODE=0;
-    Handler handler=new Handler(){
+
+    private final static int UPDATA_CODE = 0;
+    Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            listView.setAdapter(new HelpAdapter(HelpActivity.this,lists));
+            listView.setAdapter(new HelpAdapter(HelpActivity.this, lists));
         }
     };
 

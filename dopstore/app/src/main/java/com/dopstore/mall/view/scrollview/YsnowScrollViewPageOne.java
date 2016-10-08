@@ -22,16 +22,16 @@ public class YsnowScrollViewPageOne extends ScrollView {
     }
 
     public YsnowScrollViewPageOne(Context context, AttributeSet attrs) {
-        this(context, attrs,0);
+        this(context, attrs, 0);
     }
 
     public YsnowScrollViewPageOne(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics metrics=new DisplayMetrics();
+        DisplayMetrics metrics = new DisplayMetrics();
         windowManager.getDefaultDisplay().getMetrics(metrics);
-        mScreenHeight=metrics.heightPixels;//得到屏幕的宽度(像素)
+        mScreenHeight = metrics.heightPixels;//得到屏幕的宽度(像素)
     }
 
 
@@ -48,7 +48,7 @@ public class YsnowScrollViewPageOne extends ScrollView {
                 //子控件高度减去scrollview向上滑动的距离
                 int padding = childHeight - t;
                 //Ys<0表示手指正在向上滑动，padding==mScreenHeight表示本scrollview已经滑动到了底部
-                if (Ys <0 &&padding==mScreenHeight) {
+                if (Ys < 0 && padding == mScreenHeight) {
                     //让顶级的scrollview重新获得滑动事件
                     getParent().getParent().requestDisallowInterceptTouchEvent(false);
                 }
@@ -72,7 +72,7 @@ public class YsnowScrollViewPageOne extends ScrollView {
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         //t表示本scrollview向上滑动的距离
-            this.t=t;
+        this.t = t;
         super.onScrollChanged(l, t, oldl, oldt);
     }
 

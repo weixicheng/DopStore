@@ -21,8 +21,8 @@ import java.util.Map;
 public class WebActivity extends BaseActivity {
     private WebView webView;
     protected WebSettings webSetting;
-    private String titleStr="";
-    private String urlStr="";
+    private String titleStr = "";
+    private String urlStr = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +35,7 @@ public class WebActivity extends BaseActivity {
     private void initView() {
         webView = (WebView) findViewById(R.id.web_main_web);
         Map<String, Object> map = SkipUtils.getMap(this);
-        if (map!=null) {
+        if (map != null) {
             titleStr = map.get("title").toString().trim();
             urlStr = map.get("url").toString().trim();
         }
