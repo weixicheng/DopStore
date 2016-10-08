@@ -1,6 +1,8 @@
 package com.dopstore.mall.activity.bean;
 
-public class GoodBean {
+import java.io.Serializable;
+
+public class GoodBean implements Serializable{
     private int id;
     private int carNum;
     private String content;

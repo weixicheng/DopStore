@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebChromeClient;
@@ -20,6 +21,7 @@ import com.dopstore.mall.activity.MainActivity;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.login.activity.LoginActivity;
 import com.dopstore.mall.order.activity.CashierActivity;
+import com.dopstore.mall.order.activity.PaySuccessActivity;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.HttpHelper;
 import com.dopstore.mall.util.ProUtils;
@@ -116,7 +118,6 @@ public class ShopDetailActivity extends BaseActivity {
     }
 
     class JsInterface {
-        String user_id = "";
 
         @android.webkit.JavascriptInterface
         public void backToMain() {
@@ -155,7 +156,6 @@ public class ShopDetailActivity extends BaseActivity {
                 @Override
                 public void run() {
                     if (UserUtils.haveLogin(ShopDetailActivity.this)) {
-                        user_id = UserUtils.getId(ShopDetailActivity.this);
                         joinCartInApp(goods_sku_id, goods_id, num);
                     } else {
                         SkipUtils.directJump(ShopDetailActivity.this, LoginActivity.class, false);
@@ -163,7 +163,6 @@ public class ShopDetailActivity extends BaseActivity {
                     }
                 }
             });
-
         }
 
         @android.webkit.JavascriptInterface
@@ -173,8 +172,10 @@ public class ShopDetailActivity extends BaseActivity {
                 @Override
                 public void run() {
                     if (UserUtils.haveLogin(ShopDetailActivity.this)) {
-                        user_id = UserUtils.getId(ShopDetailActivity.this);
-                        Pingpp.createPayment(ShopDetailActivity.this, charge);
+                        Message msg = new Message();
+                        msg.what = PAY_CHARGE_CODE;
+                        msg.obj = charge;
+                        handler.sendMessage(msg);
                     } else {
                         SkipUtils.directJump(ShopDetailActivity.this, LoginActivity.class, false);
                         return;
@@ -183,6 +184,18 @@ public class ShopDetailActivity extends BaseActivity {
             });
         }
 
+        @android.webkit.JavascriptInterface
+        public String getUserID() {
+            String userID = "";
+            if (UserUtils.haveLogin(ShopDetailActivity.this)) {
+                userID = UserUtils.getId(ShopDetailActivity.this);
+                return userID;
+            } else {
+                userID="";
+                SkipUtils.directJump(ShopDetailActivity.this, LoginActivity.class, false);
+                return userID;
+            }
+        }
     }
 
     /**
@@ -193,6 +206,36 @@ public class ShopDetailActivity extends BaseActivity {
      * @param num
      */
     private void joinCartInApp(String goods_sku_id, String goods_id, String num) {
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("user_id", UserUtils.getId(this));
+        map.put("goods_id", goods_id);
+        map.put("num", num);
+        map.put("goods_sku_id", goods_sku_id);
+        httpHelper.postKeyValuePairAsync(this, URL.CART_GOODS_ADD, map, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                T.checkNet(ShopDetailActivity.this);
+                proUtils.dismiss();
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String body = response.body().string();
+                try {
+                    JSONObject jo = new JSONObject(body);
+                    String code = jo.optString(Constant.ERROR_CODE);
+                    if ("0".equals(code)) {
+                        T.show(ShopDetailActivity.this, "加入成功");
+                    } else {
+                        String msg = jo.optString(Constant.ERROR_MSG);
+                        T.show(ShopDetailActivity.this, msg);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                proUtils.dismiss();
+            }
+        }, null);
     }
 
     View.OnClickListener listener = new View.OnClickListener() {
@@ -352,6 +395,7 @@ public class ShopDetailActivity extends BaseActivity {
     private final static int COLLECT_CANCEL_CODE = 1;
     private final static int PLACE_ORDER_CODE = 2;
     private final static int GET_COLLECT_STATUS_CODE = 3;
+    private final static int PAY_CHARGE_CODE = 4;
 
     Handler handler = new Handler() {
         @Override
@@ -386,6 +430,13 @@ public class ShopDetailActivity extends BaseActivity {
 
                 }
                 break;
+                case PAY_CHARGE_CODE: {
+                    String charge = msg.obj.toString();
+                    if (!TextUtils.isEmpty(charge)) {
+                        Pingpp.createPayment(ShopDetailActivity.this, charge);
+                    }
+                }
+                break;
             }
         }
     };
@@ -396,16 +447,28 @@ public class ShopDetailActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         //支付页面返回处理
         if (requestCode == Pingpp.REQUEST_CODE_PAYMENT) {
-            if (resultCode == Activity.RESULT_OK) {
-                String result = data.getExtras().getString("pay_result");
+            //支付页面返回处理
+            if (requestCode == Pingpp.REQUEST_CODE_PAYMENT) {
+                if (resultCode == Activity.RESULT_OK) {
+                    String result = data.getExtras().getString("pay_result");
                 /* 处理返回值
                  * "success" - payment succeed
                  * "fail"    - payment failed
                  * "cancel"  - user canceld
                  * "invalid" - payment plugin not installed
                  */
-                String errorMsg = data.getExtras().getString("error_msg"); // 错误信息
-                String extraMsg = data.getExtras().getString("extra_msg"); // 错误信息
+                    String errorMsg = data.getExtras().getString("error_msg"); // 错误信息
+                    //String extraMsg = data.getExtras().getString("extra_msg"); // 错误信息
+                    if (result.equals("success")) {
+                        SkipUtils.directJump(ShopDetailActivity.this, PaySuccessActivity.class, true);
+                    } else if (result.equals("fail")) {
+                        T.show(ShopDetailActivity.this, "支付失败");
+                    } else if (result.equals("cancel")) {
+                        T.show(ShopDetailActivity.this, "取消支付");
+                    } else if (result.equals("invalid")) {
+                        T.show(ShopDetailActivity.this, errorMsg);
+                    }
+                }
             }
         }
     }

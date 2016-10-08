@@ -13,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.adapter.TrolleyAdapter;
@@ -26,6 +25,9 @@ import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
+import com.dopstore.mall.view.PullToRefreshView;
+import com.dopstore.mall.view.PullToRefreshView.OnFooterRefreshListener;
+import com.dopstore.mall.view.PullToRefreshView.OnHeaderRefreshListener;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -44,8 +46,8 @@ import java.util.Map;
  * Created by 喜成 on 16/9/5.
  * name 购物车
  */
-public class TrolleyFragment extends Fragment {
-
+public class TrolleyFragment extends Fragment implements OnHeaderRefreshListener, OnFooterRefreshListener {
+    private PullToRefreshView pullToRefreshView;
     private ListView mListView;// 列表
 
     private TrolleyAdapter mListAdapter;// adapter
@@ -69,6 +71,7 @@ public class TrolleyFragment extends Fragment {
 
     private HttpHelper httpHelper;
     private ProUtils proUtils;
+    private boolean isRefresh=false;
 
     private View v;
 
@@ -120,6 +123,7 @@ public class TrolleyFragment extends Fragment {
         httpHelper = HttpHelper.getOkHttpClientUtils(getActivity());
         proUtils = new ProUtils(getActivity());
         mBottonLayout = (RelativeLayout) v.findViewById(R.id.cart_rl_allprie_total);
+        pullToRefreshView = (PullToRefreshView) v.findViewById(R.id.main_trolley_fragment_pulltorefreshview);
         checkLayout = (LinearLayout) v.findViewById(R.id.trolley_check_box_layout);
         mCheckAll = (CheckBox) v.findViewById(R.id.check_box);
         mEdit = (TextView) v.findViewById(R.id.title_right_textButton);
@@ -132,6 +136,9 @@ public class TrolleyFragment extends Fragment {
         mPriceAll = (TextView) v.findViewById(R.id.tv_cart_total);
         mDelete = (TextView) v.findViewById(R.id.tv_cart_buy_or_del);
         mListView = (ListView) v.findViewById(R.id.listview);
+        pullToRefreshView.setOnFooterRefreshListener(this);
+        pullToRefreshView.setOnHeaderRefreshListener(this);
+        pullToRefreshView.onFooterRefreshComplete();
     }
 
     private void initListener() {
@@ -166,6 +173,7 @@ public class TrolleyFragment extends Fragment {
             @Override
             public void onFailure(Request request, IOException e) {
                 T.checkNet(getActivity());
+                dismissRefresh();
                 proUtils.dismiss();
             }
 
@@ -174,6 +182,7 @@ public class TrolleyFragment extends Fragment {
                 String body = response.body().string();
                 analyData(body);
                 handler.sendEmptyMessage(UPDATA_CART_MSG);
+                dismissRefresh();
                 proUtils.dismiss();
             }
         }, null);
@@ -262,8 +271,7 @@ public class TrolleyFragment extends Fragment {
                         mPriceAll.setText("￥" + 0.00 + "");
                         mCheckAll.setChecked(false);
                     } else {
-                        SkipUtils.directJump(getActivity(), ConfirmOrderActivity.class, false);
-                        Toast.makeText(getActivity(), "结算", Toast.LENGTH_SHORT).show();
+                        checkOrder();
                     }
                     break;
                 default:
@@ -271,6 +279,23 @@ public class TrolleyFragment extends Fragment {
             }
         }
     };
+
+    private void checkOrder() {
+        List<GoodBean> newListData = new ArrayList<GoodBean>();// 数据
+        for (int i = 0; i < mListData.size(); i++) {
+            boolean flag = mListData.get(i).isChoose();
+            if (flag == true) {
+                newListData.add(mListData.get(i));
+            }
+        }
+        if (newListData.size() > 0) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put(Constant.LIST, newListData);
+            SkipUtils.jumpForMap(getActivity(), ConfirmOrderActivity.class, map, false);
+        } else {
+            T.show(getActivity(), "未选中商品");
+        }
+    }
 
     private final static int UPDATA_CART_MSG = 1;
 
@@ -286,5 +311,26 @@ public class TrolleyFragment extends Fragment {
             }
         }
     };
+
+    @Override
+    public void onFooterRefresh(PullToRefreshView view) {
+        pullToRefreshView.onFooterRefreshComplete();
+    }
+
+    @Override
+    public void onHeaderRefresh(PullToRefreshView view) {
+        isRefresh=true;
+        if (isRefresh) {
+            mListData.clear();
+            getCartList();
+        }
+    }
+
+    private void dismissRefresh(){
+        if (isRefresh) {
+            pullToRefreshView.onHeaderRefreshComplete();
+            isRefresh = false;
+        }
+    }
 
 }

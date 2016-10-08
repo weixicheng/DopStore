@@ -1,5 +1,6 @@
 package com.dopstore.mall.shop.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -8,16 +9,32 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
+import com.dopstore.mall.activity.bean.GoodBean;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.order.activity.CashierActivity;
 import com.dopstore.mall.order.adapter.ConfirmOrderAdapter;
 import com.dopstore.mall.order.bean.ConfirmOrderData;
 import com.dopstore.mall.person.activity.MyAddressActivity;
+import com.dopstore.mall.person.bean.MyAddressData;
+import com.dopstore.mall.util.Constant;
+import com.dopstore.mall.util.HttpHelper;
 import com.dopstore.mall.util.SkipUtils;
+import com.dopstore.mall.util.T;
+import com.dopstore.mall.util.URL;
+import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.view.MyListView;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by 喜成 on 16/9/13.
@@ -30,8 +47,10 @@ public class ConfirmOrderActivity extends BaseActivity {
     private TextView userTv, userAddressTv;
     private RelativeLayout addressLayout;
     private MyListView myListView;
-    private ConfirmOrderAdapter adapter;
-    private List<ConfirmOrderData> lists = new ArrayList<ConfirmOrderData>();
+    private List<GoodBean> newListData;
+    private List<MyAddressData> addressList = new ArrayList<MyAddressData>();
+    private HttpHelper httpHelper;
+    private int totalPrice = 0; // 商品总价
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +61,7 @@ public class ConfirmOrderActivity extends BaseActivity {
     }
 
     private void initView() {
+        httpHelper=HttpHelper.getOkHttpClientUtils(this);
         setCustomTitle("确认订单", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         payBt = (Button) findViewById(R.id.confirm_order_pay_bt);
@@ -54,28 +74,74 @@ public class ConfirmOrderActivity extends BaseActivity {
         addressLayout = (RelativeLayout) findViewById(R.id.confirm_order_address_layout);
         addressLayout.setOnClickListener(listener);
         myListView = (MyListView) findViewById(R.id.confirm_order_listview);
-
+        Map<String,Object> map=SkipUtils.getMap(this);
+        if (map==null)return;
+        newListData=(List<GoodBean>) map.get(Constant.LIST);
     }
 
     private void initData() {
-        totalPriceTv.setText("¥158.00");
-        priceTv.setText("¥158.00");
-        passTv.setText("免运费");
+        if (newListData.size()>0){
+            for (GoodBean goodBean:newListData){
+                totalPrice += goodBean.getCarNum() * goodBean.getPrice();
+            }
+            totalPriceTv.setText("¥"+totalPrice);
+            priceTv.setText("¥"+totalPrice);
+            passTv.setText("免运费");
+        }else {
+            totalPriceTv.setText("¥ 0.00");
+            priceTv.setText("¥ 0.00");
+            passTv.setText("免运费");
+        }
+        getAddress();
         userTv.setText("李阳  123456");
         userAddressTv.setText("北京朝阳区");
-        for (int i = 0; i < 1; i++) {
-            ConfirmOrderData data = new ConfirmOrderData();
-            data.setImage("");
-            data.setInfo("商品介绍片");
-            data.setTitle("自营");
-            data.setPrice("156");
-            data.setNum("1");
-            lists.add(data);
-        }
-
-        myListView.setAdapter(new ConfirmOrderAdapter(this, lists));
+        myListView.setAdapter(new ConfirmOrderAdapter(this, newListData));
+    }
 
 
+    private void getAddress() {
+        String id = UserUtils.getId(this);
+        httpHelper.getDataAsync(this, URL.SHIPPINGADDRESS + id + "/shippingaddress", new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                T.checkNet(ConfirmOrderActivity.this);
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String body = response.body().string();
+                try {
+                    JSONObject jo = new JSONObject(body);
+                    String code = jo.optString(Constant.ERROR_CODE);
+                    if ("0".equals(code)) {
+                        JSONArray ja = jo.getJSONArray(Constant.SHIPPINGADDRESS);
+                        if (ja.length() > 0) {
+                            for (int i = 0; i < ja.length(); i++) {
+                                JSONObject addjo = ja.getJSONObject(i);
+                                MyAddressData data = new MyAddressData();
+                                data.setId(addjo.optString(Constant.ID));
+                                data.setShipping_user(addjo.optString(Constant.SHIPPING_USER));
+                                data.setMobile(addjo.optString(Constant.MOBILE));
+                                data.setProvince(addjo.optString(Constant.PROVINCE));
+                                data.setCity(addjo.optString(Constant.CITY));
+                                data.setArea(addjo.optString(Constant.AREA));
+                                data.setId_card(addjo.optString(Constant.ID_CARD));
+                                data.setAddress(addjo.optString(Constant.ADDRESS));
+                                data.setIs_default(addjo.optString(Constant.IS_DEFAULT));
+                                data.setIs_check("0");
+                                addressList.add(data);
+                            }
+                        }
+                    } else {
+                        String msg = jo.optString(Constant.ERROR_MSG);
+                        T.show(ConfirmOrderActivity.this, msg);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, null);
     }
 
     View.OnClickListener listener = new View.OnClickListener() {
@@ -87,12 +153,24 @@ public class ConfirmOrderActivity extends BaseActivity {
                 }
                 break;
                 case R.id.confirm_order_address_layout: {
-                    SkipUtils.directJump(ConfirmOrderActivity.this, MyAddressActivity.class, false);
+                    SkipUtils.directJumpForResult(ConfirmOrderActivity.this, MyAddressActivity.class, GET_ADDRESS_CODE);
                 }
                 break;
             }
         }
     };
+
+    private final static int GET_ADDRESS_CODE=0;
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data==null)return;
+        Map<String,Object> map=(Map<String, Object>) data.getSerializableExtra("map");
+        if (map==null)return;
+        MyAddressData myAddressData=(MyAddressData) map.get(Constant.LIST);
+        userTv.setText(myAddressData.getShipping_user()+"   "+myAddressData.getMobile());
+        userAddressTv.setText(myAddressData.getProvince() + myAddressData.getCity() + myAddressData.getArea() + myAddressData.getAddress());
+    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

@@ -111,7 +111,6 @@ public class TrolleyAdapter extends BaseAdapter {
             public void onClick(View view) {
                 GoodBean bean = mListData.get(position);
                 boolean selected = bean.isChoose();
-                ;
                 if (selected) {
                     mListData.get(position).setChoose(false);
                     totalPrice -= bean.getCarNum() * bean.getPrice();
@@ -135,7 +134,13 @@ public class TrolleyAdapter extends BaseAdapter {
 
             @Override
             public void onClick(View v) {
-                addToService(mListData, position);
+                GoodBean bean = mListData.get(position);
+                boolean selected = bean.isChoose();
+                if (selected==true) {
+                    addToService(mListData, position);
+                }else {
+                    T.show(context,"请选中");
+                }
             }
         });
 
@@ -143,9 +148,15 @@ public class TrolleyAdapter extends BaseAdapter {
 
             @Override
             public void onClick(View v) {
-                if (mListData.get(position).getCarNum() == 1)
-                    return;
-                redToService(mListData, position);
+                GoodBean bean = mListData.get(position);
+                boolean selected = bean.isChoose();
+                if (selected==true) {
+                    if (mListData.get(position).getCarNum() == 1)
+                        return;
+                    redToService(mListData, position);
+                }else {
+                    T.show(context,"请选中");
+                }
             }
         });
         return view;

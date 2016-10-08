@@ -28,7 +28,6 @@ import java.util.Map;
 public class MiddleAdapter extends BaseAdapter {
     private Context context;
     private List<MainMiddleData> list;
-    private List<ShopData> datas;
     private LoadImageUtils loadImageUtils;
 
     public MiddleAdapter(Context context, List<MainMiddleData> list) {
@@ -79,12 +78,13 @@ public class MiddleAdapter extends BaseAdapter {
 //            }
 //        });
 
-        datas = list.get(i).getRelated_goods();
+        List<ShopData> datas = list.get(i).getRelated_goods();
         viewHolder.eScrollView.setAdapter(new MiddleDataAdapter(context, datas));
+        final  List<ShopData> newDatas=datas;
         viewHolder.eScrollView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                ShopData data = datas.get(i);
+                ShopData data = newDatas.get(i);
                 String id = data.getId();
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put(Constant.ID, id);

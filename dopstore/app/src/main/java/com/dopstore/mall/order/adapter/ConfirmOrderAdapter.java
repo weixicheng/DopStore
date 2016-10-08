@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
+import com.dopstore.mall.activity.bean.GoodBean;
 import com.dopstore.mall.order.bean.ConfirmOrderData;
 import com.dopstore.mall.util.LoadImageUtils;
 
@@ -19,11 +20,11 @@ import java.util.List;
 
 public class ConfirmOrderAdapter extends BaseAdapter {
 
-    private List<ConfirmOrderData> items;
+    private List<GoodBean> items;
     private LayoutInflater mInflater;
     private LoadImageUtils loadImageUtils;
 
-    public ConfirmOrderAdapter(Context context, List<ConfirmOrderData> items) {
+    public ConfirmOrderAdapter(Context context, List<GoodBean> items) {
         super();
         this.items = items;
         mInflater = LayoutInflater.from(context);
@@ -62,16 +63,16 @@ public class ConfirmOrderAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.type.setVisibility(View.VISIBLE);
+        holder.type.setVisibility(View.GONE);
         holder.hintLayout.setVisibility(View.VISIBLE);
         if (items != null && items.size() > 0) {
-            ConfirmOrderData data = items.get(position);
+            GoodBean data = items.get(position);
             if (data != null) {
-                holder.type.setText(data.getTitle());
-                holder.num.setText("✖️ " + data.getNum());
+                holder.type.setText(data.getContent());
+                holder.num.setText("✖️ " + data.getCarNum());
                 holder.price.setText("¥" + data.getPrice());
-                holder.title.setText(data.getInfo());
-                loadImageUtils.displayImage(data.getImage(), holder.imageView);
+                holder.title.setText(data.getContent());
+                loadImageUtils.displayImage(data.getCover(), holder.imageView);
             }
         }
         return convertView;

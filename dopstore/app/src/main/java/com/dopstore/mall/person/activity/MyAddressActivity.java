@@ -7,6 +7,7 @@ import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
@@ -14,6 +15,7 @@ import com.dopstore.mall.R;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.person.adapter.MyAddressAdapter;
 import com.dopstore.mall.person.bean.MyAddressData;
+import com.dopstore.mall.util.ACache;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.HttpHelper;
 import com.dopstore.mall.util.ProUtils;
@@ -31,7 +33,10 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 
 /**
@@ -123,6 +128,14 @@ public class MyAddressActivity extends BaseActivity {
             mAdapter.upData(listData);
         }
 
+        my_address.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Map<String,Object> map=new HashMap<String, Object>();
+                map.put(Constant.LIST,listData.get(position));
+                SkipUtils.backForMapResult(MyAddressActivity.this,map);
+            }
+        });
     }
 
     OnClickListener listener = new OnClickListener() {
