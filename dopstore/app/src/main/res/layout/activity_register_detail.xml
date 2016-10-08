@@ -175,6 +175,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/margin_10"
+                    android:layout_marginRight="@dimen/margin_10"
                     android:layout_toLeftOf="@id/register_mybaby_time_logo"
                     android:textColor="@color/gray_color_99"
                     android:textSize="@dimen/textsize_16" />

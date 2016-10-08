@@ -342,44 +342,6 @@ public class ShopDetailActivity extends BaseActivity {
         }, null);
     }
 
-    public void placeShopOrder(String count, String color, String size) {
-        if (!UserUtils.haveLogin(this)) {
-            SkipUtils.directJump(this, LoginActivity.class, false);
-            return;
-        }
-        proUtils.show();
-        final Map<String, String> map = new HashMap<String, String>();
-        map.put("user_id", UserUtils.getId(this));
-        map.put("item_id", shop_id);
-        map.put("count", count);
-        map.put("edit", "");
-        httpHelper.postKeyValuePairAsync(this, URL.CART_EDIT, map, new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
-                T.checkNet(ShopDetailActivity.this);
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Response response) throws IOException {
-                String body = response.body().string();
-                try {
-                    JSONObject jo = new JSONObject(body);
-                    String code = jo.optString(Constant.ERROR_CODE);
-                    if ("0".equals(code)) {
-                        handler.sendEmptyMessage(PLACE_ORDER_CODE);
-                    } else {
-                        String msg = jo.optString(Constant.ERROR_MSG);
-                        T.show(ShopDetailActivity.this, msg);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                proUtils.dismiss();
-            }
-        }, null);
-    }
-
 
     public void onResume() {
         super.onResume();
@@ -393,7 +355,6 @@ public class ShopDetailActivity extends BaseActivity {
 
     private final static int COLLECT_SCUESS_CODE = 0;
     private final static int COLLECT_CANCEL_CODE = 1;
-    private final static int PLACE_ORDER_CODE = 2;
     private final static int GET_COLLECT_STATUS_CODE = 3;
     private final static int PAY_CHARGE_CODE = 4;
 
@@ -412,13 +373,6 @@ public class ShopDetailActivity extends BaseActivity {
                     T.show(ShopDetailActivity.this, "取消成功");
                     isCollect = "0";
                     rightSecondImageBack(R.mipmap.collect_small_logo, listener);
-                }
-                break;
-                case PLACE_ORDER_CODE: {
-                    Map<String, Object> map = new HashMap<String, Object>();
-                    map.put(Constant.ID, "");
-                    map.put(Constant.PRICE, "");
-                    SkipUtils.jumpForMap(ShopDetailActivity.this, CashierActivity.class, map, false);
                 }
                 break;
                 case GET_COLLECT_STATUS_CODE: {

@@ -2,6 +2,8 @@ package com.dopstore.mall.shop.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -26,6 +28,7 @@ import com.dopstore.mall.view.MyListView;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+import com.squareup.okhttp.internal.framed.FrameReader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -93,8 +96,6 @@ public class ConfirmOrderActivity extends BaseActivity {
             passTv.setText("免运费");
         }
         getAddress();
-        userTv.setText("李阳  123456");
-        userAddressTv.setText("北京朝阳区");
         myListView.setAdapter(new ConfirmOrderAdapter(this, newListData));
     }
 
@@ -136,7 +137,7 @@ public class ConfirmOrderActivity extends BaseActivity {
                         String msg = jo.optString(Constant.ERROR_MSG);
                         T.show(ConfirmOrderActivity.this, msg);
                     }
-
+                    handler.sendEmptyMessage(UPDATA_ADDRESS_CODE);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -154,6 +155,37 @@ public class ConfirmOrderActivity extends BaseActivity {
                 break;
                 case R.id.confirm_order_address_layout: {
                     SkipUtils.directJumpForResult(ConfirmOrderActivity.this, MyAddressActivity.class, GET_ADDRESS_CODE);
+                }
+                break;
+            }
+        }
+    };
+
+    private final static int UPDATA_ADDRESS_CODE = 1;
+
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case UPDATA_ADDRESS_CODE: {
+                    if (addressList.size()>0){
+                        for (int i=0;i<addressList.size();i++){
+                            String isDefault=addressList.get(i).getIs_default();
+                            if ("1".equals(isDefault)){
+                                MyAddressData myAddressData=addressList.get(i);
+                                userTv.setText(myAddressData.getShipping_user()+"   "+myAddressData.getMobile());
+                                userAddressTv.setText(myAddressData.getProvince() + myAddressData.getCity() + myAddressData.getArea() + myAddressData.getAddress());
+                            }else {
+                                MyAddressData myAddressData=addressList.get(0);
+                                userTv.setText(myAddressData.getShipping_user()+"   "+myAddressData.getMobile());
+                                userAddressTv.setText(myAddressData.getProvince() + myAddressData.getCity() + myAddressData.getArea() + myAddressData.getAddress());
+                            }
+                        }
+                    }else {
+                        userTv.setText("");
+                        userAddressTv.setText("");
+                    }
                 }
                 break;
             }
