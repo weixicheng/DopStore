@@ -297,7 +297,7 @@ public class OrderDetailActivity extends BaseActivity {
         proUtils.show();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("order_num", order_num);
-        httpHelper.postKeyValuePairAsync(this, URL.ORDER_GOODS, map, new Callback() {
+        httpHelper.postKeyValuePairAsync(this, URL.ORDER_CONFIRM, map, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 T.checkNet(OrderDetailActivity.this);

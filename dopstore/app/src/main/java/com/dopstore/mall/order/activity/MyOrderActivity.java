@@ -66,7 +66,7 @@ public class MyOrderActivity extends BaseActivity {
             }
             break;
             case 1: {
-                idStr = "0";
+                idStr = "9";
                 titleStr = "待付款";
             }
             break;

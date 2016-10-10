@@ -45,4 +45,5 @@ public class URL {
     public static String ACTIVITY_REFUND = BASE_URL + "order/activity/refund";//活动订单退款
     public static String LOGISTICS_URL = BASE_URL + "logistics";//物流信息
     public static String USER_RECHARGE = BASE_URL + "user/recharge";//充值
+    public static String ORDER_CONFIRM = BASE_URL + "order/confirm";//确认收货
 }
