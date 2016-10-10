@@ -107,6 +107,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="10dp"
                                 android:padding="10dp"
+                                android:visibility="gone"
                                 android:background="@drawable/shape_grey_corner_all"
                                 android:textColor="@color/white_color"
                                 android:textSize="10sp" />

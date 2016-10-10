@@ -20,9 +20,6 @@ import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,6 +28,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 /**
  * Created by 喜成 on 16/9/7.
@@ -119,12 +120,16 @@ public class TrolleyAdapter extends BaseAdapter {
                     totalPrice += bean.getCarNum() * bean.getPrice();
                 }
                 mPriceAll.setText("￥" + totalPrice + "");
+                int allCount=0;
                 for (GoodBean bean1 : mListData) {
-                    if (bean1.isChoose() == false) {
-                        mCheckAll.setChecked(false);
-                    } else {
-                        mCheckAll.setChecked(true);
+                    if (bean1.isChoose() == true) {
+                        allCount=allCount+1;
                     }
+                }
+                if (allCount==mListData.size()){
+                    mCheckAll.setChecked(true);
+                }else {
+                    mCheckAll.setChecked(false);
                 }
                 notifyDataSetChanged();
             }
@@ -164,20 +169,20 @@ public class TrolleyAdapter extends BaseAdapter {
 
     private void addToService(List<GoodBean> mListData, final int i) {
         proUtils.show();
-        final Map<String, String> map = new HashMap<String, String>();
+        final Map<String, Object> map = new HashMap<String, Object>();
         map.put("user_id", UserUtils.getId(context));
         map.put("item_id", (mListData.get(i).getId()) + "");
         map.put("count", (mListData.get(i).getCarNum() + 1) + "");
         map.put("edit", "1");
         httpHelper.postKeyValuePairAsync(context, URL.CART_EDIT, map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 T.checkNet(context);
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call, Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);
@@ -201,20 +206,20 @@ public class TrolleyAdapter extends BaseAdapter {
 
     private void redToService(List<GoodBean> mListData, final int i) {
         proUtils.show();
-        final Map<String, String> map = new HashMap<String, String>();
+        final Map<String, Object> map = new HashMap<String, Object>();
         map.put("user_id", UserUtils.getId(context));
         map.put("item_id", (mListData.get(i).getId()) + "");
         map.put("count", (mListData.get(i).getCarNum() - 1) + "");
         map.put("edit", "1");
         httpHelper.postKeyValuePairAsync(context, URL.CART_EDIT, map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 T.checkNet(context);
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call,Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);

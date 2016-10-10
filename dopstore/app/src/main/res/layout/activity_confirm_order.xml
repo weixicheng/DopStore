@@ -73,10 +73,43 @@
                 android:layout_height="wrap_content"
                 android:divider="@color/gray_color_ee"
                 android:dividerHeight="1dp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/margin_10"
+                android:background="@color/gray_color_ee" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/margin_10"
+                android:paddingRight="@dimen/margin_10"
+                android:layout_height="@dimen/margin_50">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="订单备注:"
+                    android:textColor="@color/gray_color_33"
+                    android:textSize="@dimen/textsize_14" />
+
+                <EditText
+                    android:id="@+id/comm_order_hint_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white_color"
+                    android:paddingLeft="@dimen/margin_10"
+                    android:paddingRight="@dimen/margin_10"
+                    android:gravity="center_vertical"
+                    android:hint="请输入文字"
+                    android:textColorHint="@color/gray_color_99"
+                    android:textColor="@color/gray_color_33"
+                    android:textSize="@dimen/textsize_14" />
+
+            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/margin_20"
+                android:layout_height="@dimen/margin_10"
                 android:background="@color/gray_color_ee" />
 
             <RelativeLayout

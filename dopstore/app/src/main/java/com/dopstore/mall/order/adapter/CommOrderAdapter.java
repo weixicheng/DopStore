@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.order.bean.CommOrderData;
+import com.dopstore.mall.order.bean.DetailOrderListData;
 import com.dopstore.mall.util.LoadImageUtils;
 
 import java.util.List;
@@ -17,11 +18,11 @@ import java.util.List;
 
 public class CommOrderAdapter extends BaseAdapter {
 
-    private List<CommOrderData> items;
+    private List<DetailOrderListData> items;
     private LayoutInflater mInflater;
     private LoadImageUtils loadImageUtils;
 
-    public CommOrderAdapter(Context context, List<CommOrderData> items) {
+    public CommOrderAdapter(Context context, List<DetailOrderListData> items) {
         super();
         this.items = items;
         mInflater = LayoutInflater.from(context);
@@ -58,12 +59,12 @@ public class CommOrderAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         if (items != null && items.size() > 0) {
-            CommOrderData data = items.get(position);
+            DetailOrderListData data = items.get(position);
             if (data != null) {
-                holder.num.setText("✖️ " + data.getNum());
-                holder.price.setText("¥" + data.getPrice());
-                holder.title.setText(data.getInfo());
-                loadImageUtils.displayImage(data.getImage(), holder.imageView);
+                holder.num.setText("✖️ " + data.getGoods_num());
+                holder.price.setText("¥" + data.getGoods_price());
+                holder.title.setText(data.getGoods_name());
+                loadImageUtils.displayImage(data.getGoods_cover(), holder.imageView);
             }
         }
         return convertView;

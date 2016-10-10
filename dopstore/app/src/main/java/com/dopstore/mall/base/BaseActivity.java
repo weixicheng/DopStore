@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import com.amap.api.location.AMapLocationClient;
 import com.dopstore.mall.R;
+import com.dopstore.mall.util.HttpHelper;
+import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.view.addresspicker.wheel.widget.model.CityModel;
 import com.dopstore.mall.view.addresspicker.wheel.widget.model.DistrictModel;
@@ -64,25 +66,26 @@ public class BaseActivity extends AppCompatActivity {
      */
     protected String mCurrentZipCode = "";
 
-    public AMapLocationClient mLocationClient = null;
+
+    public HttpHelper httpHelper;
+    public ProUtils proUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MyApplication.getInstance().addActivity(this);
         ShareSDK.initSDK(this);
+        httpHelper = HttpHelper.getOkHttpClientUtils(this);
+        proUtils = new ProUtils(this);
     }
 
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (proUtils.isShowing()){proUtils.dismiss();}
         ShareSDK.stopSDK(this);
         MyApplication.getInstance().removeActivity(this);
-        if (mLocationClient != null) {
-            mLocationClient.stopLocation();
-            mLocationClient.onDestroy();
-        }
     }
 
 

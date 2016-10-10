@@ -1,6 +1,7 @@
 package com.dopstore.mall.activity.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
@@ -15,6 +16,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -35,6 +38,7 @@ import com.dopstore.mall.activity.adapter.TabAdapter;
 import com.dopstore.mall.activity.bean.ActivityData;
 import com.dopstore.mall.activity.bean.CarouselData;
 import com.dopstore.mall.activity.bean.MainTabData;
+import com.dopstore.mall.base.BaseFragment;
 import com.dopstore.mall.shop.activity.ActivityDetailActivity;
 import com.dopstore.mall.shop.activity.ActivityListActivity;
 import com.dopstore.mall.util.Constant;
@@ -51,9 +55,7 @@ import com.dopstore.mall.view.PullToRefreshView.OnHeaderRefreshListener;
 import com.dopstore.mall.view.rollviewpager.OnItemClickListener;
 import com.dopstore.mall.view.rollviewpager.RollPagerView;
 import com.dopstore.mall.view.rollviewpager.hintview.IconHintView;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -65,17 +67,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
 /**
  * Created by 喜成 on 16/9/5
  * name 活动
  */
 @SuppressLint("ValidFragment")
-public class MainSportFragment extends Fragment implements OnHeaderRefreshListener, OnFooterRefreshListener {
+public class MainSportFragment extends BaseFragment implements OnHeaderRefreshListener, OnFooterRefreshListener {
     private PullToRefreshView pullToRefreshView;
     private ScrollView scrollView;
     private MyListView listView;
-    private TextView leftTv, titleTv;
-    private ImageButton imageButton;
+    private TextView leftTv;
+    private ImageButton rightBt;
+    private LinearLayout searchLayout;
+    private EditText seartchEt;
+    private TextView seartchBt;
     private EScrollView eScrollView;
     private List<MainTabData> tabList = new ArrayList<MainTabData>();
     private TabAdapter tabAdapter;
@@ -86,9 +95,6 @@ public class MainSportFragment extends Fragment implements OnHeaderRefreshListen
     private RollPagerView rollPagerView;
     private List<CarouselData> titleAdvertList = new ArrayList<CarouselData>();
     private List<ActivityData> aList = new ArrayList<ActivityData>();
-    private ActivityAdapter adapter;
-    private HttpHelper httpHelper;
-    private ProUtils proUtils;
     private String latitude = "";
     private String longitude = "";
     private int page = 1;
@@ -99,6 +105,13 @@ public class MainSportFragment extends Fragment implements OnHeaderRefreshListen
     //声明AMapLocationClientOption对象
     public AMapLocationClientOption mLocationOption = null;
     private View v;
+    private int viewType=0;
+    private String typeId="";
+    private Context context;
+
+    public MainSportFragment(Context context) {
+        this.context = context;
+    }
 
     @Nullable
     @Override
@@ -110,20 +123,14 @@ public class MainSportFragment extends Fragment implements OnHeaderRefreshListen
     }
 
     private void initView(View v) {
-        httpHelper = HttpHelper.getOkHttpClientUtils(getActivity());
-        proUtils = new ProUtils(getActivity());
-        leftTv = (TextView) v.findViewById(R.id.title_left_textView);
-        imageButton = (ImageButton) v.findViewById(R.id.title_right_imageButton);
-        titleTv = (TextView) v.findViewById(R.id.title_main_txt);
-        titleTv.setText("亲子活动");
-        leftTv.setText("北京");
-        leftTv.setVisibility(View.VISIBLE);
-        titleTv.setTextColor(getActivity().getResources().getColor(R.color.white_color));
-        leftTv.setTextColor(getActivity().getResources().getColor(R.color.white_color));
+        leftTv = (TextView) v.findViewById(R.id.sport_title_left_textView);
+        rightBt = (ImageButton) v.findViewById(R.id.sport_title_right_imageButton);
+        searchLayout = (LinearLayout) v.findViewById(R.id.sport_search_title_layout);
+        seartchEt = (EditText) v.findViewById(R.id.sport_search_title_et);
+        seartchBt = (TextView) v.findViewById(R.id.sport_search_title_tv);
         leftTv.setOnClickListener(listener);
-        imageButton.setImageResource(R.mipmap.search_logo);
-        imageButton.setVisibility(View.VISIBLE);
-        imageButton.setOnClickListener(listener);
+        rightBt.setOnClickListener(listener);
+        seartchBt.setOnClickListener(listener);
         eScrollView = (EScrollView) v.findViewById(R.id.main_sport_fragment_tab_escrollview);
         scrollView = (ScrollView) v.findViewById(R.id.main_sport_fragment_main_scrollview);
         pullToRefreshView = (PullToRefreshView) v.findViewById(R.id.main_sport_fragment_pulltorefreshview);
@@ -157,15 +164,15 @@ public class MainSportFragment extends Fragment implements OnHeaderRefreshListen
 
     private void getTabData() {
         proUtils.show();
-        httpHelper.getDataAsync(getActivity(), URL.ACT_CATEGORIES, new Callback() {
+        httpHelper.getDataAsync(context, URL.ACT_CATEGORIES, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
-                T.checkNet(getActivity());
+            public void onFailure(Call call, IOException e) {
+                T.checkNet(context);
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call, Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);
@@ -189,7 +196,7 @@ public class MainSportFragment extends Fragment implements OnHeaderRefreshListen
                         }
                     } else {
                         String msg = jo.optString(Constant.ERROR_MSG);
-                        T.show(getActivity(), msg);
+                        T.show(context, msg);
                     }
                     handler.sendEmptyMessage(UPDATA_TAB_CODE);
                 } catch (JSONException e) {
@@ -202,17 +209,17 @@ public class MainSportFragment extends Fragment implements OnHeaderRefreshListen
 
     private void getCarousel() {
         proUtils.show();
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put("project_type", "2");
-        httpHelper.postKeyValuePairAsync(getActivity(), URL.HOME_CAROUSEL, map, new Callback() {
+        httpHelper.postKeyValuePairAsync(context, URL.HOME_CAROUSEL, map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
-                T.checkNet(getActivity());
+            public void onFailure(Call call, IOException e) {
+                T.checkNet(context);
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call,Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);
@@ -232,7 +239,7 @@ public class MainSportFragment extends Fragment implements OnHeaderRefreshListen
                         }
                     } else {
                         String msg = jo.optString(Constant.ERROR_MSG);
-                        T.show(getActivity(), msg);
+                        T.show(context, msg);
                     }
                     handler.sendEmptyMessage(UPDATA_HEAD_CODE);
                 } catch (JSONException e) {
@@ -245,22 +252,22 @@ public class MainSportFragment extends Fragment implements OnHeaderRefreshListen
     }
 
     private void getTdata(final String id) {
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put(Constant.PAGESIZE, "10");
         map.put(Constant.PAGE, page + "");
         if (!TextUtils.isEmpty(id)) {
             map.put(Constant.CATEGORY_ID, id);
         }
-        httpHelper.postKeyValuePairAsync(getActivity(), URL.RECOMMENDED_ACT, map, new Callback() {
+        httpHelper.postKeyValuePairAsync(context, URL.RECOMMENDED_ACT, map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
-                T.checkNet(getActivity());
+            public void onFailure(Call call, IOException e) {
+                T.checkNet(context);
                 dismissRefresh();
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call,Response response) throws IOException {
                 String body = response.body().string();
                 analysisData(body);
                 if (!TextUtils.isEmpty(id)) {
@@ -276,21 +283,21 @@ public class MainSportFragment extends Fragment implements OnHeaderRefreshListen
 
     private void getNdata() {
         proUtils.show();
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put(Constant.PAGESIZE, "10");
         map.put(Constant.PAGE, "1");
         map.put(Constant.LAT, latitude);
         map.put(Constant.LNG, longitude);
-        httpHelper.postKeyValuePairAsync(getActivity(), URL.RECOMMENDED_ACT, map, new Callback() {
+        httpHelper.postKeyValuePairAsync(context, URL.RECOMMENDED_ACT, map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
-                T.checkNet(getActivity());
+            public void onFailure(Call call, IOException e) {
+                T.checkNet(context);
                 dismissRefresh();
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call,Response response) throws IOException {
                 String body = response.body().string();
                 analysisData(body);
                 handler.sendEmptyMessage(UPDATA_NFC_CODE);
@@ -306,10 +313,10 @@ public class MainSportFragment extends Fragment implements OnHeaderRefreshListen
      */
     private void setAdvertisementData() {
         DisplayMetrics dm = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay()
+        ((Activity)context).getWindowManager().getDefaultDisplay()
                 .getMetrics(dm);
         // 设置图片宽高
-        int screenWidth = getActivity().getWindowManager()
+        int screenWidth = ((Activity)context).getWindowManager()
                 .getDefaultDisplay().getWidth();
         int picSize = screenWidth / 2;
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
@@ -322,9 +329,9 @@ public class MainSportFragment extends Fragment implements OnHeaderRefreshListen
             //设置透明度
             rollPagerView.setAnimationDurtion(500);
             //设置适配器
-            rollPagerView.setAdapter(new HomeAdImageAdapter(getActivity(), titleAdvertList));
+            rollPagerView.setAdapter(new HomeAdImageAdapter(context, titleAdvertList));
             //设置指示器（顺序依次）
-            rollPagerView.setHintView(new IconHintView(getActivity(), R.mipmap.dop_press, R.mipmap.dop_normal));
+            rollPagerView.setHintView(new IconHintView(context, R.mipmap.dop_press, R.mipmap.dop_normal));
 
             if (titleAdvertList.size() == 1) {
                 rollPagerView.pause();
@@ -336,16 +343,16 @@ public class MainSportFragment extends Fragment implements OnHeaderRefreshListen
             public void onItemClick(int position) {
                 CarouselData data = titleAdvertList.get(position);
                 String urlStr = data.getUrl();
-                if (!TextUtils.isEmpty(urlStr)) {
-                    Map<String, Object> map = new HashMap<String, Object>();
-                    map.put("title", titleAdvertList.get(position).getTitle());
-                    map.put("url", titleAdvertList.get(position).getUrl());
-                    SkipUtils.jumpForMap(getActivity(), WebActivity.class, map, false);
-                }else {
+//                if (!TextUtils.isEmpty(urlStr)) {
+//                    Map<String, Object> map = new HashMap<String, Object>();
+//                    map.put("title", titleAdvertList.get(position).getTitle());
+//                    map.put("url", titleAdvertList.get(position).getUrl());
+//                    SkipUtils.jumpForMap(context, WebActivity.class, map, false);
+//                }else {
                     Map<String, Object> map = new HashMap<String, Object>();
                     map.put(Constant.ID, titleAdvertList.get(position).getId());
-                    SkipUtils.jumpForMap(getActivity(), ActivityDetailActivity.class, map, false);
-                }
+                    SkipUtils.jumpForMap(context, ActivityDetailActivity.class, map, false);
+//                }
             }
         });
     }
@@ -354,7 +361,7 @@ public class MainSportFragment extends Fragment implements OnHeaderRefreshListen
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
-                case R.id.title_left_textView: {
+                case R.id.sport_title_left_textView: {
                 }
                 break;
                 case R.id.main_sport_head_first_ly: {
@@ -374,11 +381,37 @@ public class MainSportFragment extends Fragment implements OnHeaderRefreshListen
                     secondTv.setTextColor(getResources().getColor(R.color.red_color_f93448));
                     secondV.setBackgroundColor(getResources().getColor(R.color.red_color_f93448));
                     openGPSSettings();
-
                 }
                 break;
-                case R.id.title_right_imageButton: {
-                    SkipUtils.directJump(getActivity(), ActivityListActivity.class, false);
+                case R.id.sport_title_right_imageButton: {
+                    if (searchLayout.getVisibility()==View.VISIBLE){
+                        searchLayout.setVisibility(View.GONE);
+                        leftTv.setVisibility(View.VISIBLE);
+                        rightBt.setVisibility(View.VISIBLE);
+
+                    }else {
+                        searchLayout.setVisibility(View.VISIBLE);
+                        leftTv.setVisibility(View.GONE);
+                        rightBt.setVisibility(View.GONE);
+                    }
+                }
+                break;
+                case R.id.sport_search_title_tv: {
+                    String searchStr=seartchEt.getText().toString();
+                    if (TextUtils.isEmpty(searchStr)){
+                        searchLayout.setVisibility(View.GONE);
+                        leftTv.setVisibility(View.VISIBLE);
+                        rightBt.setVisibility(View.VISIBLE);
+                    }else {
+                        seartchEt.setText("");
+                        searchLayout.setVisibility(View.GONE);
+                        leftTv.setVisibility(View.VISIBLE);
+                        rightBt.setVisibility(View.VISIBLE);
+                        Map<String,Object> map=new HashMap<String,Object>();
+                        map.put(Constant.ID,searchStr);
+                        SkipUtils.jumpForMap(context, ActivityListActivity.class, map,false);
+                    }
+
                 }
                 break;
             }
@@ -423,7 +456,7 @@ public class MainSportFragment extends Fragment implements OnHeaderRefreshListen
     private void refreshTabAdapter() {
         if (tabList.size() > 0) {
             if (tabAdapter == null) {
-                tabAdapter = new TabAdapter(getActivity(), tabList);
+                tabAdapter = new TabAdapter(context, tabList);
                 eScrollView.setAdapter(tabAdapter);
             } else {
                 tabAdapter.notifyDataSetChanged();
@@ -442,9 +475,10 @@ public class MainSportFragment extends Fragment implements OnHeaderRefreshListen
                     }
                     tabAdapter.notifyDataSetChanged();
                     if (position == 0) {
+                        viewType=0;
                         headLayout.setVisibility(View.VISIBLE);
                         aList.clear();
-                        listView.setAdapter(new ActivityAdapter(getActivity(), aList, 0));
+                        listView.setAdapter(new ActivityAdapter(context, aList, 0));
                         isRefresh = true;
                         if (isRefresh) {
                             aList.clear();
@@ -452,11 +486,12 @@ public class MainSportFragment extends Fragment implements OnHeaderRefreshListen
                             initData();
                         }
                     } else {
+                        viewType=1;
                         headLayout.setVisibility(View.GONE);
-                        String id = tabList.get(position).getId();
+                        typeId= tabList.get(position).getId();
                         aList.clear();
-                        listView.setAdapter(new ActivityAdapter(getActivity(), aList, 0));
-                        getTdata(id);
+                        listView.setAdapter(new ActivityAdapter(context, aList, 0));
+                        getTdata(typeId);
                     }
                 }
 
@@ -493,7 +528,7 @@ public class MainSportFragment extends Fragment implements OnHeaderRefreshListen
                 }
             } else {
                 String msg = jo.optString(Constant.ERROR_MSG);
-                T.show(getActivity(), msg);
+                T.show(context, msg);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -503,14 +538,14 @@ public class MainSportFragment extends Fragment implements OnHeaderRefreshListen
     private void refreshAdapter() {
         if (aList.size() > 0) {
 
-            listView.setAdapter(new ActivityAdapter(getActivity(), aList, 0));
+            listView.setAdapter(new ActivityAdapter(context, aList, 0));
 
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                     Map<String, Object> map = new HashMap<String, Object>();
                     map.put(Constant.ID, aList.get(i).getId());
-                    SkipUtils.jumpForMap(getActivity(), ActivityDetailActivity.class, map, false);
+                    SkipUtils.jumpForMap(context, ActivityDetailActivity.class, map, false);
                 }
             });
             scrollView.smoothScrollTo(0, 0);
@@ -519,32 +554,32 @@ public class MainSportFragment extends Fragment implements OnHeaderRefreshListen
 
     private void refreshNAdapter() {
         if (aList.size() > 0) {
-            listView.setAdapter(new ActivityAdapter(getActivity(), aList, 1));
+            listView.setAdapter(new ActivityAdapter(context, aList, 1));
 
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                     Map<String, Object> map = new HashMap<String, Object>();
                     map.put(Constant.ID, aList.get(i).getId());
-                    SkipUtils.jumpForMap(getActivity(), ActivityDetailActivity.class, map, false);
+                    SkipUtils.jumpForMap(context, ActivityDetailActivity.class, map, false);
                 }
             });
         } else {
-            listView.setAdapter(new ActivityAdapter(getActivity(), aList, 1));
+            listView.setAdapter(new ActivityAdapter(context, aList, 1));
         }
         scrollView.smoothScrollTo(0, 0);
     }
 
     private void refreshOtherAdapter() {
 
-        listView.setAdapter(new ActivityAdapter(getActivity(), aList, 0));
+        listView.setAdapter(new ActivityAdapter(context, aList, 0));
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put(Constant.ID, aList.get(i).getId());
-                SkipUtils.jumpForMap(getActivity(), ActivityDetailActivity.class, map, false);
+                SkipUtils.jumpForMap(context, ActivityDetailActivity.class, map, false);
             }
         });
     }
@@ -562,13 +597,19 @@ public class MainSportFragment extends Fragment implements OnHeaderRefreshListen
 
     @Override
     public void onHeaderRefresh(PullToRefreshView view) {
-//        isRefresh = true;
-//        if (isRefresh) {
-//            aList.clear();
-//            page = 1;
-//            initData();
-//        }
-        pullToRefreshView.onHeaderRefreshComplete();
+        isRefresh = true;
+        if (isRefresh) {
+            if (viewType==0){
+                aList.clear();
+                page = 1;
+                initData();
+            }else {
+                headLayout.setVisibility(View.GONE);
+                aList.clear();
+                listView.setAdapter(new ActivityAdapter(context, aList, 0));
+                getTdata(typeId);
+            }
+        }
     }
 
     private void dismissRefresh() {
@@ -583,20 +624,20 @@ public class MainSportFragment extends Fragment implements OnHeaderRefreshListen
     }
 
     private void openGPSSettings() {
-        LocationManager alm = (LocationManager) getActivity()
+        LocationManager alm = (LocationManager) context
                 .getSystemService(Context.LOCATION_SERVICE);
         if (alm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             getLocation();
         } else {
             aList.clear();
-            listView.setAdapter(new ActivityAdapter(getActivity(), aList, 1));
-            T.show(getActivity(), "请开启GPS");
+            listView.setAdapter(new ActivityAdapter(context, aList, 1));
+            T.show(context, "请开启GPS");
         }
     }
 
     private void getLocation() {
         if (mLocationClient == null) {
-            mLocationClient = new AMapLocationClient(getActivity());
+            mLocationClient = new AMapLocationClient(context);
         }
         mLocationClient.setLocationListener(mLocationListener);
         if (mLocationOption == null) {
@@ -626,7 +667,7 @@ public class MainSportFragment extends Fragment implements OnHeaderRefreshListen
                     leftTv.setText(city);
                     getNdata();
                 } else {
-                    T.show(getActivity(), "location Error, ErrCode:"
+                    T.show(context, "location Error, ErrCode:"
                             + aMapLocation.getErrorCode() + ", errInfo:"
                             + aMapLocation.getErrorInfo());
                 }

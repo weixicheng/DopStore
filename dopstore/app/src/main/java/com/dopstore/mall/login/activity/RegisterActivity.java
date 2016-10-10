@@ -32,9 +32,6 @@ import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.util.Utils;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,6 +46,9 @@ import java.util.Map;
 
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.ShareSDK;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 /**
  * 作者：xicheng on 16/7/30 13:00
@@ -61,9 +61,7 @@ public class RegisterActivity extends BaseActivity {
     private TextView agressTxt;
     private ImageView weChatIv, qqIv, sinaIv;
     private MyCount mc;
-    private HttpHelper httpHelper;
     private String v_code = "";
-    private ProUtils proUtils;
     private OtherLoginUtils otherLoginUtils;
     private Platform mPlatform;
     private ACache aCache;
@@ -77,10 +75,8 @@ public class RegisterActivity extends BaseActivity {
     }
 
     private void initView() {
-        proUtils = new ProUtils(this);
         aCache = ACache.get(this);
         otherLoginUtils = new OtherLoginUtils(this);
-        httpHelper = HttpHelper.getOkHttpClientUtils(this);
         topLayout = (RelativeLayout) findViewById(R.id.brandsquare_title_layout);
         topLayout.setBackgroundColor(getResources().getColor(R.color.white_color));
         leftTextBack("取消", getResources().getColor(R.color.red_color_f93448), listener);
@@ -184,16 +180,16 @@ public class RegisterActivity extends BaseActivity {
     }
 
     private void getVoiceCode(String phone) {
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put(Constant.MOBILE, phone);
         httpHelper.postKeyValuePairAsync(this, URL.SEND_VOICE_CODE, map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 T.checkNet(RegisterActivity.this);
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call, Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);
@@ -303,16 +299,16 @@ public class RegisterActivity extends BaseActivity {
      * @param phone
      */
     private void getCode(String phone) {
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put(Constant.MOBILE, phone);
         httpHelper.postKeyValuePairAsync(this, URL.SEND_V_CODE, map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 T.checkNet(RegisterActivity.this);
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call,Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);
@@ -342,18 +338,18 @@ public class RegisterActivity extends BaseActivity {
 
     private void upToService(String phone, String code) {
         proUtils.show();
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put("mobile", phone);
         map.put("v_code", code);
         httpHelper.postKeyValuePairAsync(this, URL.CHECK_V_CODE, map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 T.checkNet(RegisterActivity.this);
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call,Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);
@@ -407,7 +403,7 @@ public class RegisterActivity extends BaseActivity {
 
     private void otherLogin(String name, String gender, String picture, String uid, int id) {
         proUtils.show();
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put("nickname", name);
         map.put("avatar", picture);
         switch (id) {
@@ -433,13 +429,13 @@ public class RegisterActivity extends BaseActivity {
         map.put("gender", gender);
         httpHelper.postKeyValuePairAsync(this, URL.OTHER_SIGNUPL, map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 T.checkNet(RegisterActivity.this);
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call,Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);

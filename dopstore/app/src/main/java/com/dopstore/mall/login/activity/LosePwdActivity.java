@@ -21,9 +21,6 @@ import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.Utils;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,6 +28,10 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 /**
  * 作者：xicheng on 16/7/30 15:18
@@ -43,9 +44,7 @@ public class LosePwdActivity extends BaseActivity {
     private Button getBt, registBt;
     private TextView agressTxt, titleTv;
     private MyCount mc;
-    private HttpHelper httpHelper;
     private String titleStr = "忘记密码";
-    private ProUtils proUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +61,6 @@ public class LosePwdActivity extends BaseActivity {
                 titleStr = "重置密码";
             }
         }
-        httpHelper = HttpHelper.getOkHttpClientUtils(this);
-        proUtils = new ProUtils(this);
         topLayout = (RelativeLayout) findViewById(R.id.brandsquare_title_layout);
         titleTv = (TextView) findViewById(R.id.register_title_tv);
         titleTv.setText(titleStr);
@@ -118,16 +115,16 @@ public class LosePwdActivity extends BaseActivity {
     };
 
     private void getVoiceCode(String phone) {
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put(Constant.MOBILE, phone);
         httpHelper.postKeyValuePairAsync(this, URL.SEND_VOICE_CODE, map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 T.checkNet(LosePwdActivity.this);
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call, Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);
@@ -237,16 +234,16 @@ public class LosePwdActivity extends BaseActivity {
      * @param phone
      */
     private void getCode(String phone) {
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put(Constant.MOBILE, phone);
         httpHelper.postKeyValuePairAsync(this, URL.SEND_V_CODE, map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 T.checkNet(LosePwdActivity.this);
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call,Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);
@@ -273,19 +270,19 @@ public class LosePwdActivity extends BaseActivity {
      */
     private void upToService(String phone, String code, String pwd) {
         proUtils.show();
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put(Constant.MOBILE, phone);
         map.put(Constant.PASSWORD, pwd);
         map.put(Constant.V_CODE, code);
         httpHelper.postKeyValuePairAsync(this, URL.RESET_PASSWORD, map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 T.checkNet(LosePwdActivity.this);
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call,Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);

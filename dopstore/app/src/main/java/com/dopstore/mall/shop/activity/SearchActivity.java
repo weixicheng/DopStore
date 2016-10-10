@@ -20,9 +20,6 @@ import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,6 +31,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
 /**
  * Created by 喜成 on 16/9/9.
  * name
@@ -41,8 +42,6 @@ import java.util.Map;
 public class SearchActivity extends BaseActivity {
     private GridView gridView;
     private List<MainTabData> list = new ArrayList<MainTabData>();
-    private HttpHelper httpHelper;
-    private ProUtils proUtils;
     private EditText editText;
     private TextView searTv;
 
@@ -55,8 +54,6 @@ public class SearchActivity extends BaseActivity {
     }
 
     private void initView() {
-        httpHelper = HttpHelper.getOkHttpClientUtils(this);
-        proUtils = new ProUtils(this);
         setCustomTitle("分类", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         gridView = (GridView) findViewById(R.id.search_gridview);
@@ -74,8 +71,9 @@ public class SearchActivity extends BaseActivity {
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.search_title_tv: {
+                    String seartchStr=editText.getText().toString();
                     Map<String, Object> map = new HashMap<String, Object>();
-                    map.put(Constant.NAME, "");
+                    map.put(Constant.NAME, seartchStr);
                     map.put(Constant.CATEGORY, "1");
                     SkipUtils.jumpForMap(SearchActivity.this, ShopListActivity.class, map, false);
                 }
@@ -88,13 +86,13 @@ public class SearchActivity extends BaseActivity {
         proUtils.show();
         httpHelper.getDataAsync(this, URL.GOODS_CATEGORY, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 T.checkNet(SearchActivity.this);
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call, Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);

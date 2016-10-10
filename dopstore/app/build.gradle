@@ -71,8 +71,8 @@ dependencies {
     compile project(':lib:pingpp_one')
     compile project(':lib:bdwallet_pay_sdk')
     compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.squareup.okhttp:okhttp:2.7.5'
-    compile 'com.squareup.okio:okio:1.5.0'
+    compile 'com.squareup.okhttp3:okhttp:3.2.0'
+    compile 'com.squareup.okio:okio:1.6.0'
     compile files('libs/zxing.jar')
     compile files('libs/universal-image-loader-1.9.2_sources.jar')
     compile files('libs/MobCommons-2016.0830.1940.jar')
@@ -85,6 +85,6 @@ dependencies {
     compile files('libs/ShareSDK-Wechat-Moments-2.7.7.jar')
     compile files('libs/gson-2.3.1.jar')
     compile files('libs/jpush-android-2.1.9.jar')
-    compile 'com.google.android.gms:play-services-appindexing:8.1.0'
+    compile 'com.google.android.gms:play-services-appindexing:8.4.0'
     compile files('libs/AMap_Location_V3.00_20160922.jar')
 }

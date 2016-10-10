@@ -19,9 +19,6 @@ import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,6 +30,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
 /**
  * Created by 喜成 on 16/9/8.
  * name
@@ -41,8 +42,6 @@ public class MyActivityActivity extends BaseActivity {
     private ListView lv;
     private List<MyActivityData> items = new ArrayList<MyActivityData>();
     private MyActivityAdapter adapter;
-    private HttpHelper httpHelper;
-    private ProUtils proUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +54,6 @@ public class MyActivityActivity extends BaseActivity {
     private void initView() {
         setCustomTitle("我的活动", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
-        httpHelper = HttpHelper.getOkHttpClientUtils(this);
-        proUtils = new ProUtils(this);
         lv = (ListView) findViewById(R.id.my_activity_lv);
     }
 
@@ -69,13 +66,13 @@ public class MyActivityActivity extends BaseActivity {
         String id = UserUtils.getId(this);
         httpHelper.getDataAsync(this, URL.ORDER_ACTIVITY_LIST + id, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 T.checkNet(MyActivityActivity.this);
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call, Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);

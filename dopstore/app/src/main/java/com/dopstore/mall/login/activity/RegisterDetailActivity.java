@@ -29,9 +29,7 @@ import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.view.CircleImageView;
 import com.dopstore.mall.view.MyGridView;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,6 +45,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
 /**
  * Created by 喜成 on 16/9/6.
  * name 注册资料页
@@ -59,13 +61,11 @@ public class RegisterDetailActivity extends BaseActivity {
     private LinearLayout bottomBt;
     private int sexType = 1;
     private List<DetailData> list = new ArrayList<DetailData>();
-    private HttpHelper httpHelper;
     private String v_code;
     private String pwd;
     private String mobile;
     private BabyAdapter adapter;
     private ACache aCache;
-    private ProUtils proUtils;
     private ScrollView scrollView;
 
     @Override
@@ -78,8 +78,6 @@ public class RegisterDetailActivity extends BaseActivity {
 
     private void initView() {
         aCache = ACache.get(this);
-        proUtils = new ProUtils(this);
-        httpHelper = HttpHelper.getOkHttpClientUtils(this);
         Map<String, Object> intentMap = SkipUtils.getMap(this);
         list = (List<DetailData>) intentMap.get(Constant.LIST);
         v_code = intentMap.get(Constant.V_CODE).toString();
@@ -170,7 +168,7 @@ public class RegisterDetailActivity extends BaseActivity {
         String str = "[" + num.substring(0, num.length() - 1) + "]";
 
         String time = timeTv.getText().toString();
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put(Constant.MOBILE, mobile);
         map.put(Constant.V_CODE, v_code);
         map.put(Constant.PASSWORD, pwd);
@@ -180,13 +178,13 @@ public class RegisterDetailActivity extends BaseActivity {
         map.put(Constant.BABY_BIRTHDAY, time);
         httpHelper.postKeyValuePairAsync(this, URL.SIGN_UP, map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 T.checkNet(RegisterDetailActivity.this);
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call, Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);

@@ -21,9 +21,6 @@ import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.pingplusplus.android.Pingpp;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,6 +31,10 @@ import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 /**
  * Created by 喜成 on 16/9/13.
@@ -46,8 +47,6 @@ public class ActivityCashierActivity extends BaseActivity {
     private Button sureBt;
     private String order_id = "";
     private String order_price = "";
-    private ProUtils proUtils;
-    private HttpHelper httpHelper;
 
     //余额支付渠道
     private static final String CHANNEL_BALANCE = "balance";
@@ -68,8 +67,6 @@ public class ActivityCashierActivity extends BaseActivity {
     }
 
     private void initView() {
-        proUtils = new ProUtils(this);
-        httpHelper = HttpHelper.getOkHttpClientUtils(this);
         setCustomTitle("收银台", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         balanceLy = (RelativeLayout) findViewById(R.id.cashier_balance_layout);
@@ -148,18 +145,18 @@ public class ActivityCashierActivity extends BaseActivity {
         wechatLy.setOnClickListener(null);
         proUtils.show();
         String type = getPay();
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put("order_num", order_id);
         map.put("channel", type);
         httpHelper.postKeyValuePairAsync(this, URL.ACTIVITY_PAYMENT, map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 T.checkNet(ActivityCashierActivity.this);
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call, Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);
@@ -196,11 +193,11 @@ public class ActivityCashierActivity extends BaseActivity {
             }
             break;
             case 1: {
-                pay_type = CHANNEL_WECHAT;
+                pay_type = CHANNEL_ALIPAY;
             }
             break;
             case 2: {
-                pay_type = CHANNEL_ALIPAY;
+                pay_type = CHANNEL_WECHAT;
             }
             break;
         }

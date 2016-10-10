@@ -111,15 +111,6 @@
                 android:textColor="@color/red_color_f93448"
                 android:textSize="@dimen/textsize_14" />
         </LinearLayout>
-
-        <View
-            android:id="@+id/item_my_order_pay"
-            android:layout_width="76dp"
-            android:layout_height="29dp"
-            android:visibility="gone"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="@mipmap/pay_li_logo" />
     </RelativeLayout>
 
 

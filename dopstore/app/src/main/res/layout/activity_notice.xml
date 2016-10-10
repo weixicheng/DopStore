@@ -19,6 +19,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
+                android:background="@color/white"
                 android:layout_height="wrap_content">
 
                 <TextView
@@ -44,7 +45,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="要开启或停用,您可以在设置>小海囤>通知中心手动设置"
+                android:text="开启后可接收新消息提醒"
                 android:layout_marginTop="5dp"
                 android:textSize="@dimen/textsize_12"
                 android:textColor="@color/gray_color_99" />

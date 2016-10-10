@@ -20,8 +20,8 @@ import com.dopstore.mall.R;
 import com.dopstore.mall.activity.MainActivity;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.login.activity.LoginActivity;
-import com.dopstore.mall.order.activity.CashierActivity;
 import com.dopstore.mall.order.activity.PaySuccessActivity;
+import com.dopstore.mall.order.activity.ShopPaySuccessActivity;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.HttpHelper;
 import com.dopstore.mall.util.ProUtils;
@@ -30,9 +30,6 @@ import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
 import com.pingplusplus.android.Pingpp;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,13 +38,15 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
 /**
  * 作者：xicheng on 16/9/12
  */
 public class ShopDetailActivity extends BaseActivity {
     private WebView webView;
-    private HttpHelper httpHelper;
-    private ProUtils proUtils;
     private String isCollect = "0";
     private String shop_id;
     private JsInterface jsInterface;
@@ -60,8 +59,6 @@ public class ShopDetailActivity extends BaseActivity {
     }
 
     private void initView() {
-        httpHelper = HttpHelper.getOkHttpClientUtils(this);
-        proUtils = new ProUtils(this);
         Map<String, Object> map = SkipUtils.getMap(this);
         if (map == null) return;
         shop_id = map.get(Constant.ID).toString();
@@ -189,6 +186,7 @@ public class ShopDetailActivity extends BaseActivity {
             String userID = "";
             if (UserUtils.haveLogin(ShopDetailActivity.this)) {
                 userID = UserUtils.getId(ShopDetailActivity.this);
+                T.show(ShopDetailActivity.this,userID);
                 return userID;
             } else {
                 userID="";
@@ -206,20 +204,20 @@ public class ShopDetailActivity extends BaseActivity {
      * @param num
      */
     private void joinCartInApp(String goods_sku_id, String goods_id, String num) {
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put("user_id", UserUtils.getId(this));
         map.put("goods_id", goods_id);
         map.put("num", num);
         map.put("goods_sku_id", goods_sku_id);
         httpHelper.postKeyValuePairAsync(this, URL.CART_GOODS_ADD, map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 T.checkNet(ShopDetailActivity.this);
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call, Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);
@@ -265,12 +263,12 @@ public class ShopDetailActivity extends BaseActivity {
             rightSecondImageBack(R.mipmap.collect_small_logo, listener);
             return;
         }
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put("user_id", UserUtils.getId(this));
         map.put("goods_id", shop_id);
         httpHelper.postKeyValuePairAsync(this, URL.COLLECTION_GOODS_STATUS, map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 T.checkNet(ShopDetailActivity.this);
                 isCollect = "0";
                 handler.sendEmptyMessage(GET_COLLECT_STATUS_CODE);
@@ -278,7 +276,7 @@ public class ShopDetailActivity extends BaseActivity {
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call,Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);
@@ -307,19 +305,19 @@ public class ShopDetailActivity extends BaseActivity {
         }
         rightSecondImageBack(R.mipmap.collect_small_logo, null);
         proUtils.show();
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put("user_id", UserUtils.getId(this));
         map.put("item_id", shop_id);
         map.put("action_id", isCollect);
         httpHelper.postKeyValuePairAsync(this, URL.COLLECTION_EDIT, map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 T.checkNet(ShopDetailActivity.this);
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call,Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);
@@ -414,7 +412,7 @@ public class ShopDetailActivity extends BaseActivity {
                     String errorMsg = data.getExtras().getString("error_msg"); // 错误信息
                     //String extraMsg = data.getExtras().getString("extra_msg"); // 错误信息
                     if (result.equals("success")) {
-                        SkipUtils.directJump(ShopDetailActivity.this, PaySuccessActivity.class, true);
+                        SkipUtils.directJump(ShopDetailActivity.this, ShopPaySuccessActivity.class, true);
                     } else if (result.equals("fail")) {
                         T.show(ShopDetailActivity.this, "支付失败");
                     } else if (result.equals("cancel")) {

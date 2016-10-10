@@ -4,30 +4,23 @@ package com.dopstore.mall.util;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.squareup.okhttp.Cache;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.FormEncodingBuilder;
-import com.squareup.okhttp.Headers;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.MultipartBuilder;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.ResponseBody;
-
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.CookieManager;
-import java.net.CookiePolicy;
 import java.net.FileNameMap;
 import java.net.URLConnection;
+import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import java.util.Set;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSession;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 /**
  * Created by Steven
@@ -41,26 +34,6 @@ public class HttpHelper {
     private HttpHelper(Context context) {
         okHttpClient = getOkHttpSingletonInstance();
         aCache = ACache.get(context);
-
-        //开启响应缓存
-        okHttpClient.setCookieHandler(new CookieManager(null, CookiePolicy.ACCEPT_ORIGINAL_SERVER));
-        //设置缓存目录和大小
-        int cacheSize = 10 << 20; // 10 MiB
-        Cache cache = new Cache(context.getCacheDir(), cacheSize);
-        okHttpClient.setCache(cache);
-
-        //设置合理的超时
-        okHttpClient.setConnectTimeout(15, TimeUnit.SECONDS);
-        okHttpClient.setReadTimeout(20, TimeUnit.SECONDS);
-        okHttpClient.setWriteTimeout(20, TimeUnit.SECONDS);
-
-        //以下验证不设置，那么默认就已经设置了验证
-        okHttpClient.setHostnameVerifier(new HostnameVerifier() {
-            @Override
-            public boolean verify(String hostname, SSLSession session) {
-                return true;
-            }
-        });
     }
 
     public static HttpHelper getOkHttpClientUtils(Context context) {
@@ -229,7 +202,7 @@ public class HttpHelper {
     public static String postKeyValuePair(Context context, String urlString, Map<String, String>
             map, Object tag) {
         //往FormEncodingBuilder对象中放置键值对
-        FormEncodingBuilder formBuilder = new FormEncodingBuilder();
+        FormBody.Builder formBuilder = new FormBody.Builder();
         if (map != null && !map.isEmpty()) {
             for (Map.Entry<String, String> entry : map.entrySet()) {
                 formBuilder.add(entry.getKey(), entry.getValue());
@@ -288,12 +261,12 @@ public class HttpHelper {
             new Callback() {
 
                 @Override
-                public void onFailure(Request request, IOException e) {
+                public void onFailure(Call call, IOException e) {
 
                 }
 
                 @Override
-                public void onResponse(Response response) throws IOException {
+                public void onResponse(Call call, Response response) throws IOException {
 
                 }
             };
@@ -309,96 +282,22 @@ public class HttpHelper {
      * @param map       ：访问url时，需要传递给服务器的键值对数据。
      */
     public static void postKeyValuePairAsync(Context context, String urlString, Map<String,
-            String> map, Callback callback, Object tag) {
+            Object> map, Callback callback, Object tag) {
         //往FormEncodingBuilder对象中放置键值对
-        FormEncodingBuilder formBuilder = new FormEncodingBuilder();
+        FormBody.Builder builder = new FormBody.Builder();
         if (map != null && !map.isEmpty()) {
-            for (Map.Entry<String, String> entry : map.entrySet()) {
-                formBuilder.add(entry.getKey(), entry.getValue());
+            Set set = map.entrySet();
+            for (Iterator iter = set.iterator(); iter.hasNext(); ) {
+                Map.Entry entry = (Map.Entry) iter.next();
+                String key = (String) entry.getKey();
+                Object value = entry.getValue();
+                builder.add(key, value.toString());
             }
         }
         //生成请求体对象
-        RequestBody requestBody = formBuilder.build();
+        RequestBody body = builder.build();
         //将请求提放置到请求对象中
-        getOkHttpClientUtils(context).postRequestBodyAsync(urlString, requestBody, callback, tag);
-    }
-
-
-    /**
-     * 作用：post异步上传文件，提交分块请求
-     *
-     * @param urlString     网络地址
-     * @param map           提交给服务器的表单信息键值对
-     * @param files         提交的文件
-     * @param formFieldName 每个需要提交的文件对应的文件input的name值
-     * @param callback      异步上传回调方法
-     * @throws IOException
-     */
-    public static void postUploadFilesAsync(Context context, String urlString, Map<String,
-            String> map, File[] files, String[] formFieldName, Callback callback, Object tag)
-            throws IOException {
-        RequestBody requestBody = getOkHttpClientUtils(context).buildRequestBody(map, files,
-                formFieldName);
-        getOkHttpClientUtils(context).postRequestBodyAsync(urlString, requestBody, callback, tag);
-    }
-    ///////////////////////////////////////////////////////////////////////////
-    // POST方式提交分块请求，实现文件上传
-    ///////////////////////////////////////////////////////////////////////////
-
-    /**
-     * 同步基于post的文件上传:上传多个文件以及携带key-value对：主方法
-     *
-     * @param urlString
-     * @param formFiledName
-     * @param files
-     * @param map
-     * @param tag
-     * @return String
-     * @throws IOException
-     */
-    public static String postUploadFiles(Context context, String urlString, Map<String, String>
-            map, File[] files, String[] formFiledName, Object tag) throws IOException {
-        RequestBody requestBody = getOkHttpClientUtils(context).buildRequestBody(map, files,
-                formFiledName);
-        return getOkHttpClientUtils(context).postRequestBody(urlString, requestBody, tag);
-    }
-
-    /**
-     * 创建post上传附件的request对象
-     * Post方式提交分块请求——上传文件及其它表单数据
-     *
-     * @param files
-     * @param formFiledName
-     * @param map
-     * @return
-     */
-    private RequestBody buildRequestBody(Map<String, String> map, File[] files, String[]
-            formFiledName) {
-        MultipartBuilder builder = new MultipartBuilder().type(MultipartBuilder.FORM);
-        //往MultipartBuilder对象中添加普通input控件的内容
-        if (map != null) {
-            for (Map.Entry<String, String> entry : map.entrySet()) {
-                //添加普通input块的数据
-                builder.addPart(Headers.of("Content-Disposition", "form-data; name=\"" + entry
-                                .getKey() + "\""),
-                        RequestBody.create(null, entry.getValue()));
-            }
-        }
-        //往MultipartBuilder对象中添加file input控件的内容
-        if (files != null && formFiledName != null) {
-            for (int i = 0; i < files.length; i++) {
-                File file = files[i];
-                String fileName = file.getName();
-                RequestBody requestBody = RequestBody.create(MediaType.parse
-                        ("multipart/form-data"), file);
-                //添加file input块的数据
-                builder.addPart(Headers.of("Content-Disposition",
-                        "form-data; name=\"" + formFiledName[i] + "\"; filename=\"" + fileName +
-                                "\""), requestBody);
-            }
-        }
-        //生成RequestBody对象
-        return builder.build();
+        getOkHttpClientUtils(context).postRequestBodyAsync(urlString, body, callback, tag);
     }
 
     /**
@@ -416,9 +315,5 @@ public class HttpHelper {
         return contentTypeFor;
     }
 
-
-    public static void cancelCall(Object tag) {
-        getOkHttpSingletonInstance().cancel(tag);
-    }
 
 }

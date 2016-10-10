@@ -26,10 +26,10 @@
                 android:textSize="@dimen/textsize_14" />
 
             <TextView
+                android:id="@+id/delivery_info_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:text="123456"
                 android:textColor="@color/gray_color_33"
                 android:textSize="@dimen/textsize_14" />
         </LinearLayout>
@@ -47,20 +47,24 @@
                 android:textSize="@dimen/textsize_14" />
 
             <TextView
+                android:id="@+id/delivery_info_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:text="中通速递"
                 android:textColor="@color/gray_color_33"
                 android:textSize="@dimen/textsize_14" />
         </LinearLayout>
 
     </LinearLayout>
 
-    <LinearLayout
+    <ListView
+        android:id="@+id/delivery_info_listview"
         android:layout_width="match_parent"
+        android:scrollbars="none"
+        android:layout_height="match_parent"
         android:layout_marginTop="@dimen/margin_20"
         android:background="@color/white_color"
-        android:layout_height="match_parent"></LinearLayout>
+        android:divider="@null"
+        android:dividerHeight="0dp" />
 
 </LinearLayout>

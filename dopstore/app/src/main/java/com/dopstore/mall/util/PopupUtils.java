@@ -47,7 +47,7 @@ public final class PopupUtils {
         popupWindow.setAnimationStyle(R.style.AnimationBottomFade);
         // popupWindow.setBackgroundDrawable(new BitmapDrawable());
         popupWindow.setFocusable(true);
-        popupWindow.setOutsideTouchable(false);
+        popupWindow.setOutsideTouchable(true);
         //实例化一个ColorDrawable颜色为半透明
         ColorDrawable dw = new ColorDrawable(0xb0000000);
         //设置SelectPicPopupWindow弹出窗体的背景

@@ -20,15 +20,13 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-
     <!-- Optional for location -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-
-    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name = "android.hardware.camera" android:required = "false" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <uses-permission android:name="android.permission.GET_TASKS" />
@@ -305,13 +303,16 @@
         <!--  确认订单 -->
         <activity android:name=".shop.activity.ConfirmOrderActivity" />
         <!--  收银台 -->
-        <activity android:name=".order.activity.CashierActivity" />
+        <activity android:name=".order.activity.ShopCashierActivity" />
+        <activity android:name=".order.activity.ReChargeActivity" />
         <activity android:name=".order.activity.ActivityCashierActivity" />
         <!--   付款成功  -->
         <activity android:name=".order.activity.PaySuccessActivity" />
+        <activity android:name=".order.activity.ShopPaySuccessActivity" />
         <activity android:name=".order.activity.NoPaySuccessActivity" />
         <!--  申请退款 -->
-        <activity android:name=".order.activity.RefundOrderActivity" />
+        <activity android:name=".order.activity.RefundActivityOrderActivity" />
+        <activity android:name=".order.activity.RefundShopOrderActivity" />
         <!--  商城列表 -->
         <activity android:name=".shop.activity.ShopListActivity" />
         <!--  商城详情 -->

@@ -5,7 +5,84 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/common_title" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/red_color_f93448"
+        android:minHeight="45dp">
+        <!-- 左边返回文本 -->
+
+        <TextView
+            android:id="@+id/sport_title_left_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textColor="@color/white"
+            android:layout_marginLeft="10.0dip"
+            android:layout_toRightOf="@id/title_left_imageButton"
+            android:text="北京"
+            android:textSize="14sp" />
+        <!-- 标题 -->
+
+        <TextView
+            android:id="@+id/sport_title_main_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:ellipsize="end"
+            android:text="亲子活动"
+            android:textColor="@color/white"
+            android:singleLine="true"
+            android:textSize="16sp" />
+
+        <!-- 右图片按钮 -->
+
+        <ImageButton
+            android:id="@+id/sport_title_right_imageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10.0dip"
+            android:background="@null"
+            android:src="@mipmap/search_logo"
+            android:contentDescription="@null" />
+        <LinearLayout
+            android:id="@+id/sport_search_title_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:gravity="right|center"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true">
+
+            <EditText
+                android:id="@+id/sport_search_title_et"
+                android:layout_width="283dp"
+                android:layout_height="34dp"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/margin_10"
+                android:paddingRight="@dimen/margin_10"
+                android:textSize="@dimen/textsize_14"
+                android:textColor="@color/gray_color_33"
+                android:background="@mipmap/search_logo_bg" />
+
+            <TextView
+                android:id="@+id/sport_search_title_tv"
+                android:paddingLeft="@dimen/margin_10"
+                android:paddingRight="@dimen/margin_10"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:textSize="@dimen/textsize_16"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:text="搜索" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <com.dopstore.mall.view.EScrollView
         android:id="@+id/main_sport_fragment_tab_escrollview"

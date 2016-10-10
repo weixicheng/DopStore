@@ -1,5 +1,6 @@
 package com.dopstore.mall.activity.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.adapter.TrolleyAdapter;
 import com.dopstore.mall.activity.bean.GoodBean;
+import com.dopstore.mall.base.BaseFragment;
 import com.dopstore.mall.shop.activity.ConfirmOrderActivity;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.HttpHelper;
@@ -28,9 +30,6 @@ import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.view.PullToRefreshView;
 import com.dopstore.mall.view.PullToRefreshView.OnFooterRefreshListener;
 import com.dopstore.mall.view.PullToRefreshView.OnHeaderRefreshListener;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,11 +41,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
 /**
  * Created by 喜成 on 16/9/5.
  * name 购物车
  */
-public class TrolleyFragment extends Fragment implements OnHeaderRefreshListener, OnFooterRefreshListener {
+public class TrolleyFragment extends BaseFragment implements OnHeaderRefreshListener, OnFooterRefreshListener {
     private PullToRefreshView pullToRefreshView;
     private ListView mListView;// 列表
 
@@ -69,11 +72,15 @@ public class TrolleyFragment extends Fragment implements OnHeaderRefreshListener
 
     private int totalPrice = 0; // 商品总价
 
-    private HttpHelper httpHelper;
-    private ProUtils proUtils;
     private boolean isRefresh=false;
 
     private View v;
+    
+    private Context context;
+
+    public TrolleyFragment(Context context) {
+        this.context = context;
+    }
 
     @Nullable
     @Override
@@ -88,27 +95,27 @@ public class TrolleyFragment extends Fragment implements OnHeaderRefreshListener
 
     private void deleteToService(List<GoodBean> mListData) {
         proUtils.show();
-        Map<String, String> map = new HashMap<String, String>();
-        map.put("user_id", UserUtils.getId(getActivity()));
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("user_id", UserUtils.getId(context));
         map.put("item_id", "");
-        httpHelper.postKeyValuePairAsync(getActivity(), URL.CART_DELETE, map, new Callback() {
+        httpHelper.postKeyValuePairAsync(context, URL.CART_DELETE, map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
-                T.checkNet(getActivity());
+            public void onFailure(Call call, IOException e) {
+                T.checkNet(context);
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call, Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
                     if ("0".equals(code)) {
-                        T.show(getActivity(), "删除成功");
+                        T.show(context, "删除成功");
                     } else {
                         String msg = jo.optString(Constant.ERROR_MSG);
-                        T.show(getActivity(), msg);
+                        T.show(context, msg);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -120,8 +127,6 @@ public class TrolleyFragment extends Fragment implements OnHeaderRefreshListener
     }
 
     private void initView(View v) {
-        httpHelper = HttpHelper.getOkHttpClientUtils(getActivity());
-        proUtils = new ProUtils(getActivity());
         mBottonLayout = (RelativeLayout) v.findViewById(R.id.cart_rl_allprie_total);
         pullToRefreshView = (PullToRefreshView) v.findViewById(R.id.main_trolley_fragment_pulltorefreshview);
         checkLayout = (LinearLayout) v.findViewById(R.id.trolley_check_box_layout);
@@ -130,8 +135,8 @@ public class TrolleyFragment extends Fragment implements OnHeaderRefreshListener
         mEdit.setText("编辑");
         mEdit.setVisibility(View.VISIBLE);
         titleTv = (TextView) v.findViewById(R.id.title_main_txt);
-        titleTv.setTextColor(getActivity().getResources().getColor(R.color.white_color));
-        mEdit.setTextColor(getActivity().getResources().getColor(R.color.white_color));
+        titleTv.setTextColor(context.getResources().getColor(R.color.white_color));
+        mEdit.setTextColor(context.getResources().getColor(R.color.white_color));
         titleTv.setText("购物车");
         mPriceAll = (TextView) v.findViewById(R.id.tv_cart_total);
         mDelete = (TextView) v.findViewById(R.id.tv_cart_buy_or_del);
@@ -158,7 +163,7 @@ public class TrolleyFragment extends Fragment implements OnHeaderRefreshListener
             checkLayout.setVisibility(View.GONE);
         }
         if (mListAdapter == null) {
-            mListAdapter = new TrolleyAdapter(getActivity(), mListData, mPriceAll, totalPrice, mCheckAll);
+            mListAdapter = new TrolleyAdapter(context, mListData, mPriceAll, totalPrice, mCheckAll);
             mListView.setAdapter(mListAdapter);
         } else {
             mListAdapter.upData(mListData, mPriceAll, totalPrice, mCheckAll);
@@ -167,18 +172,18 @@ public class TrolleyFragment extends Fragment implements OnHeaderRefreshListener
 
     private void getCartList() {
         proUtils.show();
-        Map<String, String> map = new HashMap<String, String>();
-        map.put("user_id", UserUtils.getId(getActivity()));
-        httpHelper.postKeyValuePairAsync(getActivity(), URL.CART_QUERY, map, new Callback() {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("user_id", UserUtils.getId(context));
+        httpHelper.postKeyValuePairAsync(context, URL.CART_QUERY, map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
-                T.checkNet(getActivity());
+            public void onFailure(Call call, IOException e) {
+                T.checkNet(context);
                 dismissRefresh();
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call,Response response) throws IOException {
                 String body = response.body().string();
                 analyData(body);
                 handler.sendEmptyMessage(UPDATA_CART_MSG);
@@ -201,6 +206,7 @@ public class TrolleyFragment extends Fragment implements OnHeaderRefreshListener
                         data.setId(Integer.parseInt(job.optString(Constant.ID)));
                         data.setCarNum(Integer.parseInt(job.optString(Constant.NUMBER)));
                         data.setContent(job.optString(Constant.NAME));
+                        data.setGoods_sku_id(job.optString("goods_sku_id"));
                         data.setPrice(Float.parseFloat(job.optString(Constant.PRICE)));
                         data.setCover(job.optString(Constant.COVER));
                         data.setChoose(false);
@@ -209,7 +215,7 @@ public class TrolleyFragment extends Fragment implements OnHeaderRefreshListener
                 }
             } else {
                 String msg = jo.optString(Constant.ERROR_MSG);
-                T.show(getActivity(), msg);
+                T.show(context, msg);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -291,9 +297,9 @@ public class TrolleyFragment extends Fragment implements OnHeaderRefreshListener
         if (newListData.size() > 0) {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put(Constant.LIST, newListData);
-            SkipUtils.jumpForMap(getActivity(), ConfirmOrderActivity.class, map, false);
+            SkipUtils.jumpForMap(context, ConfirmOrderActivity.class, map, false);
         } else {
-            T.show(getActivity(), "未选中商品");
+            T.show(context, "未选中商品");
         }
     }
 

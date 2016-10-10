@@ -25,9 +25,7 @@ import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.view.CommonDialog;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,6 +36,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 /**
  * Created by 喜成 on 16/9/8.
@@ -50,8 +52,6 @@ public class MyCollectActivity extends BaseActivity {
     private ListView mListView;// 列表
     private List<MyCollectData> mListData = new ArrayList<MyCollectData>();// 数据
 
-    private HttpHelper httpHelper;
-    private ProUtils proUtils;
     private CommonDialog dialog;
     private int mPosition = 0;
     private int type = 0;
@@ -66,8 +66,6 @@ public class MyCollectActivity extends BaseActivity {
 
 
     private void initView() {
-        httpHelper = HttpHelper.getOkHttpClientUtils(this);
-        proUtils = new ProUtils(this);
         setCustomTitle("我的收藏", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         mListView = (ListView) findViewById(R.id.my_collect_shop_list);
@@ -88,18 +86,18 @@ public class MyCollectActivity extends BaseActivity {
     private void getCollectList(String typeStr) {
         mListData.clear();
         proUtils.show();
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put("user_id", UserUtils.getId(this));
         map.put("is_activity", typeStr);
         httpHelper.postKeyValuePairAsync(this, URL.COLLECTION_QUERY, map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 T.checkNet(MyCollectActivity.this);
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call, Response response) throws IOException {
                 String body = response.body().string();
                 analyData(body);
                 handler.sendEmptyMessage(UPDATA_COLLECT_CODE);
@@ -166,19 +164,19 @@ public class MyCollectActivity extends BaseActivity {
     private void deleteToService(int id, String typeStr) {
         String ids = "[" + id + "]";
         proUtils.show();
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put("user_id", UserUtils.getId(this));
         map.put("item_list", ids);
         map.put("is_activity", typeStr);
         httpHelper.postKeyValuePairAsync(this, URL.COLLECTION_DEL, map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 T.checkNet(MyCollectActivity.this);
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call,Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);
@@ -199,20 +197,20 @@ public class MyCollectActivity extends BaseActivity {
 
     private void getCollectStatus(int id, String type) {
         proUtils.show();
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put("user_id", UserUtils.getId(this));
         map.put("item_id", id + "");
         map.put("action_id", "2");
         map.put("is_activity", type);
         httpHelper.postKeyValuePairAsync(this, URL.COLLECTION_EDIT, map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 T.checkNet(MyCollectActivity.this);
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call,Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);

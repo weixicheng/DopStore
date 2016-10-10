@@ -32,9 +32,6 @@ import com.dopstore.mall.util.Utils;
 import com.dopstore.mall.view.CircleImageView;
 import com.dopstore.mall.view.CommonDialog;
 import com.dopstore.mall.view.citypicker.CityPicker;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 import com.zfdang.multiple_images_selector.ImagesSelectorActivity;
 import com.zfdang.multiple_images_selector.SelectorSettings;
 
@@ -50,6 +47,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 
 public class MyDetailActivity extends BaseActivity {
@@ -68,8 +69,6 @@ public class MyDetailActivity extends BaseActivity {
     private int cityPositon = 0;
     private String imageUrl = "";
     private LoadImageUtils loadImage;
-    private HttpHelper httpHelper;
-    private ProUtils proUtils;
 
 
     private CommonDialog dialog;
@@ -87,8 +86,6 @@ public class MyDetailActivity extends BaseActivity {
     private void initview() {
         loadImage = LoadImageUtils.getInstance(this);
         aCache = ACache.get(this);
-        proUtils = new ProUtils(this);
-        httpHelper = HttpHelper.getOkHttpClientUtils(this);
         cityList = (List<CityBean>) aCache.getAsObject(Constant.CITYS);
         leftImageBack(R.mipmap.back_arrow);
         setCustomTitle("修改资料", getResources().getColor(R.color.white_color));
@@ -331,16 +328,16 @@ public class MyDetailActivity extends BaseActivity {
             proUtils.show();
             String imageStr = mListResult.get(0);
             String imageBase = Utils.encodeBase64File(imageStr);
-            Map<String, String> map = new HashMap<String, String>();
+            Map<String, Object> map = new HashMap<String, Object>();
             map.put(Constant.AVATAR_BINARY, imageBase);
             httpHelper.postKeyValuePairAsync(this, URL.UPLOAD_AVATAR, map, new Callback() {
                 @Override
-                public void onFailure(Request request, IOException e) {
+                public void onFailure(Call call, IOException e) {
                     T.checkNet(MyDetailActivity.this);
                 }
 
                 @Override
-                public void onResponse(Response response) throws IOException {
+                public void onResponse(Call call, Response response) throws IOException {
                     String body = response.body().string();
                     try {
                         JSONObject jo = new JSONObject(body);
@@ -378,7 +375,7 @@ public class MyDetailActivity extends BaseActivity {
                 }
             }
         }
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put(Constant.USER_ID, UserUtils.getId(this));
         map.put(Constant.AVATAR, imageUrl);
         map.put(Constant.MOBILE, phoneTv.getText().toString().trim());
@@ -399,13 +396,13 @@ public class MyDetailActivity extends BaseActivity {
         map.put(Constant.BABY_BIRTHDAY, babyDateTv.getText().toString().trim());
         httpHelper.postKeyValuePairAsync(this, URL.USER_UPDATE, map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 T.checkNet(MyDetailActivity.this);
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call,Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);

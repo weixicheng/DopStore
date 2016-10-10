@@ -30,9 +30,6 @@ import com.dopstore.mall.util.Utils;
 import com.dopstore.mall.view.addresspicker.wheel.widget.OnWheelChangedListener;
 import com.dopstore.mall.view.addresspicker.wheel.widget.WheelView;
 import com.dopstore.mall.view.addresspicker.wheel.widget.adapters.ArrayWheelAdapter;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,6 +37,10 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 
 /**
@@ -59,10 +60,8 @@ public class NewAddressActivity extends BaseActivity {
     private WheelView mViewDistrict;
     private TextView mBtnConfirm;
     private TextView mBtnCancle;
-    private HttpHelper httpHelper;
     private String is_default = "0";
     private String address_id = "";
-    private ProUtils proUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,9 +71,6 @@ public class NewAddressActivity extends BaseActivity {
     }
 
     private void initView() {
-
-        httpHelper = HttpHelper.getOkHttpClientUtils(this);
-        proUtils = new ProUtils(this);
         setCustomTitle("新增收货地址", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
 
@@ -133,6 +129,7 @@ public class NewAddressActivity extends BaseActivity {
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.new_address_city: {
+                    Utils.hideKeyboard(NewAddressActivity.this);
                     showPop();
                 }
                 break;
@@ -175,13 +172,13 @@ public class NewAddressActivity extends BaseActivity {
         proUtils.show();
         httpHelper.getDataAsync(this, URL.SHIPPINGADDRESS + "shippingaddress/" + address_id + "/delete", new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 T.checkNet(NewAddressActivity.this);
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call, Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);
@@ -236,7 +233,7 @@ public class NewAddressActivity extends BaseActivity {
         }
         proUtils.show();
         String id = UserUtils.getId(this);
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put(Constant.ID, address_id);
         map.put(Constant.SHIPPING_USER, name);
         map.put(Constant.MOBILE, phone);
@@ -248,13 +245,13 @@ public class NewAddressActivity extends BaseActivity {
         map.put(Constant.IS_DEFAULT, is_default);
         httpHelper.postKeyValuePairAsync(this, URL.SHIPPINGADDRESS + id + "/update_shippingaddress", map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 T.checkNet(NewAddressActivity.this);
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call,Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);

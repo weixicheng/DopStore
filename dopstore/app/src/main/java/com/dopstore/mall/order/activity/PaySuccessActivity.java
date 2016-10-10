@@ -48,9 +48,7 @@ public class PaySuccessActivity extends BaseActivity {
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.pay_success_check_bt: {
-                    Map<String, Object> map = new HashMap<String, Object>();
-                    map.put(Constant.ID, "3");
-                    SkipUtils.jumpForMap(PaySuccessActivity.this, MainActivity.class, map, true);
+                    SkipUtils.directJump(PaySuccessActivity.this, MyActivityActivity.class,true);
                 }
                 break;
                 case R.id.pay_success_continue_bt: {

@@ -14,18 +14,18 @@ import com.dopstore.mall.util.LoadImageUtils;
 
 import java.util.List;
 
+import static android.R.attr.type;
+
 
 public class MyOrderAdapter extends BaseAdapter {
 
     private List<OrderData> items;
     private LayoutInflater mInflater;
     private LoadImageUtils loadImageUtils;
-    private int type;
 
-    public MyOrderAdapter(Context context, List<OrderData> items, int type) {
+    public MyOrderAdapter(Context context, List<OrderData> items) {
         super();
         this.items = items;
-        this.type = type;
         mInflater = LayoutInflater.from(context);
         loadImageUtils = LoadImageUtils.getInstance(context);
     }
@@ -57,7 +57,6 @@ public class MyOrderAdapter extends BaseAdapter {
             holder.type = (TextView) convertView.findViewById(R.id.item_my_order_type);
             holder.num = (TextView) convertView.findViewById(R.id.item_my_order_num);
             holder.price = (TextView) convertView.findViewById(R.id.item_my_order_price);
-            holder.payV = convertView.findViewById(R.id.item_my_order_pay);
             holder.imageView = (ImageView) convertView.findViewById(R.id.item_my_order_image);
             convertView.setTag(holder);
         } else {
@@ -66,26 +65,48 @@ public class MyOrderAdapter extends BaseAdapter {
         if (items != null && items.size() > 0) {
             final OrderData data = items.get(position);
             if (data != null) {
-                holder.id.setText(data.getId());
-                holder.num.setText(data.getNum());
-                holder.type.setText(data.getType());
-                holder.state.setText(data.getState());
-                holder.title.setText(data.getTitle());
-                holder.price.setText(data.getPrice());
-                loadImageUtils.displayImage(data.getImage(), holder.imageView);
-                if (type == 1) {
-                    holder.payV.setVisibility(View.VISIBLE);
-                } else {
-                    holder.payV.setVisibility(View.GONE);
-                }
+                holder.id.setText(data.getOrder_num());
+                holder.num.setText(data.getGoods_relateds().get(0).getGoods_num());
+                holder.type.setText(data.getGoods_relateds().get(0).getGoods_sku_str());
+                String status=data.getStatus();
+                String statusStr=getType(status);
+                holder.state.setText(statusStr);
+                holder.title.setText(data.getGoods_relateds().get(0).getGoods_name());
+                holder.price.setText(data.getGoods_relateds().get(0).getGoods_price());
+                loadImageUtils.displayImage(data.getGoods_relateds().get(0).getGoods_cover(), holder.imageView);
             }
         }
         return convertView;
     }
 
+    private String getType(String status){
+        String nameStr="";
+        if ("0".equals(status)){
+            nameStr="待下单";
+        }else if ("1".equals(status)){
+            nameStr="付款成功";
+        }else if ("2".equals(status)){
+            nameStr="订单取消";
+        }else if ("3".equals(status)){
+            nameStr="待发货";
+        }else if ("4".equals(status)){
+            nameStr="配送中";
+        }else if ("5".equals(status)){
+            nameStr="已完成";
+        }else if ("6".equals(status)){
+            nameStr="退款申请中";
+        }else if ("7".equals(status)){
+            nameStr="退款中";
+        }else if ("8".equals(status)){
+            nameStr="退款成功";
+        }else if ("9".equals(status)){
+            nameStr="等待付款";
+        }
+        return  nameStr;
+    }
+
     static class ViewHolder {
         private TextView id, state, title, type, num, price;
-        private View payV;
         private ImageView imageView;
     }
 

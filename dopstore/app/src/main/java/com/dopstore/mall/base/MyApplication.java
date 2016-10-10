@@ -3,6 +3,7 @@ package com.dopstore.mall.base;
 import android.app.Activity;
 import android.app.Application;
 
+import com.dopstore.mall.util.CrashHandler;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.pingplusplus.android.PingppLog;
 
@@ -23,9 +24,11 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Fresco.initialize(getApplicationContext());
-        JPushInterface.setDebugMode(true);
+        JPushInterface.setDebugMode(false);
         JPushInterface.init(this);
-        PingppLog.DEBUG = true;
+        PingppLog.DEBUG = false;
+//        CrashHandler catchHandler = CrashHandler.getInstance();
+//        catchHandler.init(getApplicationContext());
     }
 
 

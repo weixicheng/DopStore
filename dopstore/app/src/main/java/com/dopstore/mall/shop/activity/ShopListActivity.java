@@ -3,6 +3,7 @@ package com.dopstore.mall.shop.activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,9 +22,6 @@ import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,6 +32,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 /**
  * Created by 喜成 on 16/9/12.
@@ -46,8 +48,9 @@ public class ShopListActivity extends BaseActivity {
     private ShopListAdapter shopListAdapter;
     private List<ShopListData> lists = new ArrayList<ShopListData>();
     private List<ShopData> bottomList = new ArrayList<ShopData>();
-    private HttpHelper httpHelper;
-    private ProUtils proUtils;
+    private String typeId="";
+    private String seartchStr="";
+    private String seartchID="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +61,6 @@ public class ShopListActivity extends BaseActivity {
     }
 
     private void initView() {
-        httpHelper = HttpHelper.getOkHttpClientUtils(this);
-        proUtils = new ProUtils(this);
         setCustomTitle("列表", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         firstTv = (TextView) findViewById(R.id.shop_list_first);
@@ -80,32 +81,39 @@ public class ShopListActivity extends BaseActivity {
     private void initData() {
         Map<String, Object> map = SkipUtils.getMap(this);
         if (map != null) {
-            String type = map.get(Constant.CATEGORY).toString();
+            typeId = map.get(Constant.CATEGORY).toString();
             bottomList.clear();
-            if ("1".equals(type)) {
-                String name = map.get(Constant.NAME).toString();
+            if ("1".equals(typeId)) {
+                seartchStr = map.get(Constant.NAME).toString();
             } else {
-                String id = map.get(Constant.ID).toString();
-                getHotData(id);
+                seartchID = map.get(Constant.ID).toString();
             }
+            getHotData();
         }
     }
 
-    private void getHotData(String type) {
+    /**
+     * 排序不考虑
+     */
+    private void getHotData() {
         proUtils.show();
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put(Constant.PAGESIZE, "10");
         map.put(Constant.PAGE, "1");
-//        map.put("category_id", type);
+        if (TextUtils.isEmpty(seartchStr)){
+            map.put("category_id", seartchID);
+        }else {
+            map.put("query_str", seartchStr);
+        }
         httpHelper.postKeyValuePairAsync(this, URL.GOODS_LIST, map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 T.checkNet(ShopListActivity.this);
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call, Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);

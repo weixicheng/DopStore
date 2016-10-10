@@ -94,7 +94,7 @@
         <TextView
             android:id="@+id/tv_cart_buy_or_del"
             android:layout_width="121dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:background="@color/red_color_f93448"

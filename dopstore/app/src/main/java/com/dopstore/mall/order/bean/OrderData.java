@@ -1,17 +1,18 @@
 package com.dopstore.mall.order.bean;
 
+import java.io.Serializable;
+import java.util.List;
+
 /**
  * Created by 喜成 on 16/9/8.
  * name
  */
-public class OrderData {
+public class OrderData implements Serializable{
     private String id;
-    private String state;
-    private String image;
-    private String title;
-    private String type;
-    private String num;
-    private String price;
+    private String order_num;
+    private String status;
+    private String real_fee;
+    private List<OrderDataData> goods_relateds;
 
     public String getId() {
         return id;
@@ -21,51 +22,35 @@ public class OrderData {
         this.id = id;
     }
 
-    public String getState() {
-        return state;
+    public String getOrder_num() {
+        return order_num;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public void setOrder_num(String order_num) {
+        this.order_num = order_num;
     }
 
-    public String getImage() {
-        return image;
+    public String getStatus() {
+        return status;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
-    public String getTitle() {
-        return title;
+    public String getReal_fee() {
+        return real_fee;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setReal_fee(String real_fee) {
+        this.real_fee = real_fee;
     }
 
-    public String getType() {
-        return type;
+    public List<OrderDataData> getGoods_relateds() {
+        return goods_relateds;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getNum() {
-        return num;
-    }
-
-    public void setNum(String num) {
-        this.num = num;
-    }
-
-    public String getPrice() {
-        return price;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
+    public void setGoods_relateds(List<OrderDataData> goods_relateds) {
+        this.goods_relateds = goods_relateds;
     }
 }

@@ -8,6 +8,7 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.os.Vibrator;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
@@ -21,6 +22,8 @@ import android.widget.Toast;
 import com.dopstore.mall.R;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.util.SkipUtils;
+import com.dopstore.mall.util.T;
+import com.dopstore.mall.util.Utils;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 import com.mining.app.zxing.camera.CameraManager;
@@ -66,8 +69,9 @@ public class MipcaActivityCapture extends BaseActivity implements Callback {
         inactivityTimer = new InactivityTimer(this);
         setCustomTitle("扫一扫", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
-        rightTextBack("相册", getResources().getColor(R.color.white_color), listener);
+//        rightTextBack("相册", getResources().getColor(R.color.white_color), listener);
     }
+
 
     OnClickListener listener = new OnClickListener() {
         @Override

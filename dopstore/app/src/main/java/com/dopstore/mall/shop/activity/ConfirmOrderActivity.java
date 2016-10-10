@@ -4,31 +4,30 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.bean.GoodBean;
 import com.dopstore.mall.base.BaseActivity;
-import com.dopstore.mall.order.activity.CashierActivity;
+import com.dopstore.mall.order.activity.ShopCashierActivity;
 import com.dopstore.mall.order.adapter.ConfirmOrderAdapter;
-import com.dopstore.mall.order.bean.ConfirmOrderData;
 import com.dopstore.mall.person.activity.MyAddressActivity;
 import com.dopstore.mall.person.bean.MyAddressData;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.HttpHelper;
+import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.view.MyListView;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.internal.framed.FrameReader;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,8 +35,14 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by 喜成 on 16/9/13.
@@ -47,13 +52,14 @@ public class ConfirmOrderActivity extends BaseActivity {
     private Button payBt;
     private TextView totalPriceTv;
     private TextView priceTv, passTv;
+    private EditText hintText;
     private TextView userTv, userAddressTv;
     private RelativeLayout addressLayout;
     private MyListView myListView;
     private List<GoodBean> newListData;
     private List<MyAddressData> addressList = new ArrayList<MyAddressData>();
-    private HttpHelper httpHelper;
     private int totalPrice = 0; // 商品总价
+    private String address_id="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,12 +70,12 @@ public class ConfirmOrderActivity extends BaseActivity {
     }
 
     private void initView() {
-        httpHelper=HttpHelper.getOkHttpClientUtils(this);
         setCustomTitle("确认订单", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         payBt = (Button) findViewById(R.id.confirm_order_pay_bt);
         payBt.setOnClickListener(listener);
         totalPriceTv = (TextView) findViewById(R.id.confirm_order_total_price);
+        hintText = (EditText) findViewById(R.id.comm_order_hint_et);
         priceTv = (TextView) findViewById(R.id.confirm_order_price);
         passTv = (TextView) findViewById(R.id.confirm_order_pass_price);
         userTv = (TextView) findViewById(R.id.confirm_order_user_detail);
@@ -104,12 +110,12 @@ public class ConfirmOrderActivity extends BaseActivity {
         String id = UserUtils.getId(this);
         httpHelper.getDataAsync(this, URL.SHIPPINGADDRESS + id + "/shippingaddress", new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 T.checkNet(ConfirmOrderActivity.this);
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call,Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);
@@ -150,7 +156,7 @@ public class ConfirmOrderActivity extends BaseActivity {
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.confirm_order_pay_bt: {
-                    SkipUtils.directJump(ConfirmOrderActivity.this, CashierActivity.class, false);
+                    checkData();
                 }
                 break;
                 case R.id.confirm_order_address_layout: {
@@ -161,7 +167,70 @@ public class ConfirmOrderActivity extends BaseActivity {
         }
     };
 
+    private void checkData() {
+        JSONArray ja=new JSONArray();
+        if (newListData.size()>0){
+            for (GoodBean goodBean:newListData){
+                try {
+                    JSONObject jo=new JSONObject();
+                    jo.put("goods_id",goodBean.getId());
+                    jo.put("goods_sku_id",goodBean.getGoods_sku_id());
+                    jo.put("num",goodBean.getCarNum());
+                    ja.put(jo);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }else {
+            ja=null;
+        }
+        String noteStr=hintText.getText().toString().trim();
+
+        Map<String,Object> map=new HashMap<String,Object>();
+        map.put("user_id",UserUtils.getId(this));
+        map.put("goods_relateds",ja);
+        map.put("address_id",address_id);
+        if (!TextUtils.isEmpty(noteStr)){
+            map.put("note",noteStr);
+        }
+        getOrderID(map);
+    }
+
+    private void getOrderID(Map<String,Object> map) {
+        proUtils.show();
+        httpHelper.postKeyValuePairAsync(this, URL.CART_CREATE_ORDER, map, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                T.checkNet(ConfirmOrderActivity.this);
+                proUtils.dismiss();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String body = response.body().string();
+                try {
+                    JSONObject jo = new JSONObject(body);
+                    String code = jo.optString(Constant.ERROR_CODE);
+                    if ("0".equals(code)) {
+                        String order_num = jo.optString("order_num");
+                        Message msg=new Message();
+                        msg.what=INTENT_TO_PAY_CODE;
+                        msg.obj=order_num;
+                        handler.sendMessage(msg);
+                    } else {
+                        String msg = jo.optString(Constant.ERROR_MSG);
+                        T.show(ConfirmOrderActivity.this, msg);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                proUtils.dismiss();
+            }
+        }, null);
+    }
+
     private final static int UPDATA_ADDRESS_CODE = 1;
+    private final static int INTENT_TO_PAY_CODE = 2;
 
     Handler handler = new Handler() {
         @Override
@@ -174,20 +243,29 @@ public class ConfirmOrderActivity extends BaseActivity {
                             String isDefault=addressList.get(i).getIs_default();
                             if ("1".equals(isDefault)){
                                 MyAddressData myAddressData=addressList.get(i);
+                                address_id=myAddressData.getId();
                                 userTv.setText(myAddressData.getShipping_user()+"   "+myAddressData.getMobile());
                                 userAddressTv.setText(myAddressData.getProvince() + myAddressData.getCity() + myAddressData.getArea() + myAddressData.getAddress());
                             }else {
                                 MyAddressData myAddressData=addressList.get(0);
+                                address_id=myAddressData.getId();
                                 userTv.setText(myAddressData.getShipping_user()+"   "+myAddressData.getMobile());
                                 userAddressTv.setText(myAddressData.getProvince() + myAddressData.getCity() + myAddressData.getArea() + myAddressData.getAddress());
                             }
                         }
                     }else {
+                        address_id="";
                         userTv.setText("");
                         userAddressTv.setText("");
                     }
                 }
                 break;
+                case INTENT_TO_PAY_CODE:{
+                    Map<String,Object> map=new HashMap<String,Object>();
+                    map.put(Constant.ID,msg.obj);
+                    map.put(Constant.PRICE,totalPrice);
+                    SkipUtils.jumpForMap(ConfirmOrderActivity.this, ShopCashierActivity.class,map, false);
+                }break;
             }
         }
     };
@@ -200,6 +278,7 @@ public class ConfirmOrderActivity extends BaseActivity {
         Map<String,Object> map=(Map<String, Object>) data.getSerializableExtra("map");
         if (map==null)return;
         MyAddressData myAddressData=(MyAddressData) map.get(Constant.LIST);
+        address_id=myAddressData.getId();
         userTv.setText(myAddressData.getShipping_user()+"   "+myAddressData.getMobile());
         userAddressTv.setText(myAddressData.getProvince() + myAddressData.getCity() + myAddressData.getArea() + myAddressData.getAddress());
     }

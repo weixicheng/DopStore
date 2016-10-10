@@ -15,7 +15,6 @@ import com.dopstore.mall.R;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.person.adapter.MyAddressAdapter;
 import com.dopstore.mall.person.bean.MyAddressData;
-import com.dopstore.mall.util.ACache;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.HttpHelper;
 import com.dopstore.mall.util.ProUtils;
@@ -23,9 +22,6 @@ import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,6 +34,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
 
 /**
  * 我的地址薄
@@ -47,8 +47,6 @@ public class MyAddressActivity extends BaseActivity {
     private RelativeLayout addLayout;
     private List<MyAddressData> listData = new ArrayList<MyAddressData>();
     private MyAddressAdapter mAdapter;
-    private HttpHelper httpHelper;
-    private ProUtils proUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +57,6 @@ public class MyAddressActivity extends BaseActivity {
     }
 
     private void initView() {
-        httpHelper = HttpHelper.getOkHttpClientUtils(this);
-        proUtils = new ProUtils(this);
         setCustomTitle("选择收货地址", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         my_address = (ListView) findViewById(R.id.lv_my_address);
@@ -77,13 +73,13 @@ public class MyAddressActivity extends BaseActivity {
         String id = UserUtils.getId(this);
         httpHelper.getDataAsync(this, URL.SHIPPINGADDRESS + id + "/shippingaddress", new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 T.checkNet(MyAddressActivity.this);
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call, Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);

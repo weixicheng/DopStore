@@ -23,10 +23,6 @@ import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.Utils;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -34,6 +30,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 /**
  * Created by 喜成 on 16/9/12.
@@ -46,8 +46,6 @@ public class ActivityOrderDetailActivity extends BaseActivity {
     private ImageView shopImage, zxingImage;
     private RelativeLayout zxingLayout, submitLayout;
     private String id;
-    private HttpHelper httpHelper;
-    private ProUtils proUtils;
     private ActivityOrderDetailBean detailBean;
 
 
@@ -61,8 +59,6 @@ public class ActivityOrderDetailActivity extends BaseActivity {
 
     private void initView() {
         loadImage = LoadImageUtils.getInstance(this);
-        httpHelper = HttpHelper.getOkHttpClientUtils(this);
-        proUtils = new ProUtils(this);
         setCustomTitle("订单详情", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         idTv = (TextView) findViewById(R.id.activity_detail_id);
@@ -124,13 +120,13 @@ public class ActivityOrderDetailActivity extends BaseActivity {
         proUtils.show();
         httpHelper.getDataAsync(this, URL.ORDER_ACTIVITY + "/" + id, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 T.checkNet(ActivityOrderDetailActivity.this);
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call, Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);
@@ -178,7 +174,9 @@ public class ActivityOrderDetailActivity extends BaseActivity {
                         map.put(Constant.PRICE,detailBean.getTotal_fee());
                         SkipUtils.jumpForMap(ActivityOrderDetailActivity.this,ActivityCashierActivity.class,map,false);
                     }else if ("申请退款".equals(submitText)){
-
+                        Map<String,Object> map=new HashMap<String,Object>();
+                        map.put(Constant.LIST,detailBean);
+                        SkipUtils.jumpForMap(ActivityOrderDetailActivity.this,RefundActivityOrderActivity.class,map,false);
                     }
                 }
                 break;

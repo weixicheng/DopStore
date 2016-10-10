@@ -15,8 +15,8 @@
     </LinearLayout>
 
 
-    <FrameLayout
-        android:id="@+id/main_content_fragment"
+    <com.dopstore.mall.view.MyViewPager
+        android:id="@+id/main_content_viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/main_tab_bottom_llt" />

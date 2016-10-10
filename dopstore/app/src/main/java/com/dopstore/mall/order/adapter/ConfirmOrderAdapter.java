@@ -64,7 +64,7 @@ public class ConfirmOrderAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         holder.type.setVisibility(View.GONE);
-        holder.hintLayout.setVisibility(View.VISIBLE);
+        holder.hintLayout.setVisibility(View.GONE);
         if (items != null && items.size() > 0) {
             GoodBean data = items.get(position);
             if (data != null) {

@@ -52,6 +52,7 @@
                 android:id="@+id/order_detail_wuliu_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:background="@color/white_color"
                 android:padding="@dimen/margin_10">
 
@@ -264,10 +265,12 @@
             </LinearLayout>
 
             <RelativeLayout
+                android:id="@+id/order_detail_submit_layout"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/margin_50"
+                android:visibility="gone"
                 android:layout_marginTop="@dimen/margin_20"
-                android:background="@color/gray_color_ee">
+                android:background="@color/white">
 
                 <Button
                     android:id="@+id/order_detail_submit"

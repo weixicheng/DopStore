@@ -1,5 +1,6 @@
 package com.dopstore.mall.activity.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,6 +26,7 @@ import com.dopstore.mall.activity.bean.MainMiddleData;
 import com.dopstore.mall.activity.bean.MainTabData;
 import com.dopstore.mall.activity.bean.MiddleData;
 import com.dopstore.mall.activity.bean.ShopData;
+import com.dopstore.mall.base.BaseFragment;
 import com.dopstore.mall.shop.activity.SearchActivity;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.HttpHelper;
@@ -37,9 +39,6 @@ import com.dopstore.mall.view.PullToRefreshView;
 import com.dopstore.mall.view.PullToRefreshView.OnFooterRefreshListener;
 import com.dopstore.mall.view.PullToRefreshView.OnHeaderRefreshListener;
 import com.google.gson.Gson;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,11 +50,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
 /**
  * 作者：xicheng on 16/9/21 17:57
  * 类别：
  */
-public class MainShopFragment extends Fragment implements OnFooterRefreshListener, OnHeaderRefreshListener {
+public class MainShopFragment extends BaseFragment implements OnFooterRefreshListener, OnHeaderRefreshListener {
     private PullToRefreshView pullToRefreshView;
     private ListView listView;
     private ImageView titleTv;
@@ -66,12 +69,17 @@ public class MainShopFragment extends Fragment implements OnFooterRefreshListene
     private List<CarouselData> titleAdvertList = new ArrayList<CarouselData>();
     private List<MainMiddleData> midddleList = new ArrayList<MainMiddleData>();
     private List<ShopData> bottomList = new ArrayList<ShopData>();
-    private HttpHelper httpHelper;
-    private ProUtils proUtils;
     private int page = 1;
     private boolean isRefresh = false;
     private boolean isUpRefresh = false;
     private View v;
+    private int viewType=0;
+    private String typeId="";
+    private Context mContext;
+
+    public MainShopFragment(Context context) {
+        this.mContext = context;
+    }
 
     @Nullable
     @Override
@@ -83,8 +91,6 @@ public class MainShopFragment extends Fragment implements OnFooterRefreshListene
     }
 
     private void initView(View v) {
-        httpHelper = HttpHelper.getOkHttpClientUtils(getActivity());
-        proUtils = new ProUtils(getActivity());
         pullToRefreshView = (PullToRefreshView) v.findViewById(R.id.main_shop_fragment_pulltorefreshview);
         listView = (ListView) v.findViewById(R.id.main_shop_fragment_listview);
         titleTv = (ImageView) v.findViewById(R.id.title_main_image);
@@ -114,15 +120,15 @@ public class MainShopFragment extends Fragment implements OnFooterRefreshListene
 
     private void getTabData() {
         proUtils.show();
-        httpHelper.getDataAsync(getActivity(), URL.GOODS_CATEGORY, new Callback() {
+        httpHelper.getDataAsync(mContext, URL.GOODS_CATEGORY, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
-                T.checkNet(getActivity());
+            public void onFailure(Call call, IOException e) {
+                T.checkNet(mContext);
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call, Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);
@@ -147,7 +153,7 @@ public class MainShopFragment extends Fragment implements OnFooterRefreshListene
                         }
                     } else {
                         String msg = jo.optString(Constant.ERROR_MSG);
-                        T.show(getActivity(), msg);
+                        T.show(mContext, msg);
                     }
                     handler.sendEmptyMessage(UPDATA_TAB_CODE);
                 } catch (JSONException e) {
@@ -163,18 +169,18 @@ public class MainShopFragment extends Fragment implements OnFooterRefreshListene
      */
     private void getTopData() {
         proUtils.show();
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put("project_type", "1");
-        httpHelper.postKeyValuePairAsync(getActivity(), URL.HOME_CAROUSEL, map, new Callback() {
+        httpHelper.postKeyValuePairAsync(mContext, URL.HOME_CAROUSEL, map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
-                T.checkNet(getActivity());
+            public void onFailure(Call call, IOException e) {
+                T.checkNet(mContext);
                 dismissRefresh();
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call,Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);
@@ -194,7 +200,7 @@ public class MainShopFragment extends Fragment implements OnFooterRefreshListene
                         }
                     } else {
                         String msg = jo.optString(Constant.ERROR_MSG);
-                        T.show(getActivity(), msg);
+                        T.show(mContext, msg);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -207,22 +213,22 @@ public class MainShopFragment extends Fragment implements OnFooterRefreshListene
     }
 
     private void getMiddleData(String id) {
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
         if (!TextUtils.isEmpty(id)) {
             map.put("category_id", id);
         } else {
             map = null;
         }
-        httpHelper.postKeyValuePairAsync(getActivity(), URL.HOME_THEME, map, new Callback() {
+        httpHelper.postKeyValuePairAsync(mContext, URL.HOME_THEME, map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
-                T.checkNet(getActivity());
+            public void onFailure(Call call, IOException e) {
+                T.checkNet(mContext);
                 dismissRefresh();
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call,Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);
@@ -234,7 +240,7 @@ public class MainShopFragment extends Fragment implements OnFooterRefreshListene
                         midddleList = middleData.getThemes();
                     } else {
                         String msg = new JSONObject(body).optString(Constant.ERROR_MSG);
-                        T.show(getActivity(), msg);
+                        T.show(mContext, msg);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -248,7 +254,7 @@ public class MainShopFragment extends Fragment implements OnFooterRefreshListene
 
     private void getHotData(final String type) {
         proUtils.show();
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
         if (!TextUtils.isEmpty(type)) {
             map.put("category_id", type);
         } else {
@@ -256,16 +262,16 @@ public class MainShopFragment extends Fragment implements OnFooterRefreshListene
             map.put(Constant.PAGE, page + "");
             map.put("is_recommended", "1");
         }
-        httpHelper.postKeyValuePairAsync(getActivity(), URL.GOODS_LIST, map, new Callback() {
+        httpHelper.postKeyValuePairAsync(mContext, URL.GOODS_LIST, map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
-                T.checkNet(getActivity());
+            public void onFailure(Call call, IOException e) {
+                T.checkNet(mContext);
                 dismissRefresh();
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call,Response response) throws IOException {
                 String body = response.body().string();
                 analyData(body);
                 if (!TextUtils.isEmpty(type)) {
@@ -300,7 +306,7 @@ public class MainShopFragment extends Fragment implements OnFooterRefreshListene
                 }
             } else {
                 String msg = jo.optString(Constant.ERROR_MSG);
-                T.show(getActivity(), msg);
+                T.show(mContext, msg);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -312,11 +318,11 @@ public class MainShopFragment extends Fragment implements OnFooterRefreshListene
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.title_left_imageButton: {
-                    SkipUtils.directJump(getActivity(), SearchActivity.class, false);
+                    SkipUtils.directJump(mContext, SearchActivity.class, false);
                 }
                 break;
                 case R.id.title_right_imageButton: { // 打开扫描界面扫描条形码或二维码
-                    SkipUtils.directJumpForResult(getActivity(), MipcaActivityCapture.class, SCANER_CODE);
+                    SkipUtils.directJumpForResult(mContext, MipcaActivityCapture.class, SCANER_CODE);
                 }
                 break;
             }
@@ -364,7 +370,7 @@ public class MainShopFragment extends Fragment implements OnFooterRefreshListene
     private void refreshTabAdapter() {
         if (tabList.size() > 0) {
             if (adapter == null) {
-                adapter = new TabAdapter(getActivity(), tabList);
+                adapter = new TabAdapter(mContext, tabList);
                 eScrollView.setAdapter(adapter);
             } else {
                 adapter.notifyDataSetChanged();
@@ -383,17 +389,19 @@ public class MainShopFragment extends Fragment implements OnFooterRefreshListene
                     }
                     adapter.notifyDataSetChanged();
                     if (position == 0) {
+                        viewType=0;
                         isRefresh = true;
                         if (isRefresh) {
                             page = 1;
                             initData();
                         }
                     } else {
-                        String id = tabList.get(position).getId();
+                        viewType=1;
+                        typeId = tabList.get(position).getId();
                         bottomList.clear();
                         midddleList.clear();
-                        getMiddleData(id);
-                        getHotData(id);
+                        getMiddleData(typeId);
+                        getHotData(typeId);
                     }
                 }
             }
@@ -401,12 +409,12 @@ public class MainShopFragment extends Fragment implements OnFooterRefreshListene
     }
 
     private void refreshAdapter() {
-        listView.setAdapter(new MainShopAdapter(getActivity(), titleAdvertList, midddleList, bottomList));
+        listView.setAdapter(new MainShopAdapter(mContext, titleAdvertList, midddleList, bottomList));
 
     }
 
     private void refreshOtherAdapter() {
-        listView.setAdapter(new MainOtherShopAdapter(getActivity(), midddleList, bottomList));
+        listView.setAdapter(new MainOtherShopAdapter(mContext, midddleList, bottomList));
     }
 
 
@@ -422,12 +430,19 @@ public class MainShopFragment extends Fragment implements OnFooterRefreshListene
 
     @Override
     public void onHeaderRefresh(PullToRefreshView view) {
-//        isRefresh = true;
-//        if (isRefresh) {
-//            page = 1;
-//            initData();
-//        }
-        pullToRefreshView.onHeaderRefreshComplete();
+        isRefresh = true;
+        if (isRefresh) {
+            page = 1;
+            if (viewType==0){
+                initData();
+            }else {
+                bottomList.clear();
+                midddleList.clear();
+                getMiddleData(typeId);
+                getHotData(typeId);
+            }
+
+        }
     }
 
     private void dismissRefresh() {

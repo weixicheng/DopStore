@@ -26,9 +26,6 @@ import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.util.Utils;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,6 +40,9 @@ import java.util.Map;
 
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.ShareSDK;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 
 /**
@@ -55,10 +55,8 @@ public class LoginActivity extends BaseActivity {
     private Button loginBt, registBt;
     private TextView loseTxt;
     private ImageView weChatIv, qqIv, sinaIv;
-    private HttpHelper httpHelper;
     private ACache aCache;
     private OtherLoginUtils otherLoginUtils;
-    private ProUtils proUtils;
     private Platform mPlatform;
 
     @Override
@@ -69,8 +67,6 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void initView() {
-        httpHelper = HttpHelper.getOkHttpClientUtils(this);
-        proUtils = new ProUtils(this);
         aCache = ACache.get(this);
         otherLoginUtils = new OtherLoginUtils(this);
         topLayout = (RelativeLayout) findViewById(R.id.brandsquare_title_layout);
@@ -153,18 +149,18 @@ public class LoginActivity extends BaseActivity {
 
     private void loginToNext(String phone, String pwd) {
         proUtils.show();
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put(Constant.MOBILE, phone);
         map.put(Constant.PASSWORD, pwd);
         httpHelper.postKeyValuePairAsync(this, URL.LOGIN, map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 T.checkNet(LoginActivity.this);
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call, Response response) throws IOException {
                 String body = response.body().string();
                 AnalyData(body);
                 proUtils.dismiss();
@@ -207,7 +203,7 @@ public class LoginActivity extends BaseActivity {
 
     private void otherLogin(String name, String gender, String picture, String uid, int id) {
         proUtils.show();
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put("nickname", name);
         map.put("avatar", picture);
         switch (id) {
@@ -233,13 +229,13 @@ public class LoginActivity extends BaseActivity {
         map.put("gender", gender);
         httpHelper.postKeyValuePairAsync(this, URL.OTHER_SIGNUPL, map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 T.checkNet(LoginActivity.this);
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call,Response response) throws IOException {
                 String body = response.body().string();
                 AnalyData(body);
                 proUtils.dismiss();

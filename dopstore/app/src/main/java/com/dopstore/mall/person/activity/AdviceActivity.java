@@ -18,9 +18,7 @@ import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
+
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,6 +27,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
 /**
  * Created by 喜成 on 16/9/12.
  * name
@@ -36,8 +38,6 @@ import java.util.Map;
 public class AdviceActivity extends BaseActivity {
     private EditText adviceEt, postEt;
     private Button submit;
-    private HttpHelper httpHelper;
-    private ProUtils proUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,14 +48,12 @@ public class AdviceActivity extends BaseActivity {
     }
 
     private void initView() {
-        proUtils = new ProUtils(this);
         setCustomTitle("意见反馈", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         adviceEt = (EditText) findViewById(R.id.advice_input_et);
         postEt = (EditText) findViewById(R.id.advice_input_post_et);
         submit = (Button) findViewById(R.id.advice_submit_bt);
         submit.setOnClickListener(listener);
-        httpHelper = HttpHelper.getOkHttpClientUtils(this);
     }
 
 
@@ -84,18 +82,18 @@ public class AdviceActivity extends BaseActivity {
     private void adviceToUs(String adviceStr, String postStr) {
         proUtils.show();
         String id = UserUtils.getId(this);
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put(Constant.CONTENT, adviceStr);
         map.put(Constant.INFORMATION, postStr);
         httpHelper.postKeyValuePairAsync(this, URL.SHIPPINGADDRESS + id + "/add_feedback", map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 T.checkNet(AdviceActivity.this);
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call, Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);

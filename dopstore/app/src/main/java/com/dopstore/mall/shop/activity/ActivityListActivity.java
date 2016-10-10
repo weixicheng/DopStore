@@ -19,9 +19,6 @@ import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,6 +30,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
 /**
  * Created by 喜成 on 16/9/13
  * name
@@ -43,8 +44,7 @@ public class ActivityListActivity extends BaseActivity {
     private ListView listView;
     private ActivityAdapter adapter;
     private List<ActivityData> aList = new ArrayList<ActivityData>();
-    private HttpHelper httpHelper;
-    private ProUtils proUtils;
+    private String searchStr="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +55,6 @@ public class ActivityListActivity extends BaseActivity {
     }
 
     private void initView() {
-        httpHelper = HttpHelper.getOkHttpClientUtils(this);
-        proUtils = new ProUtils(this);
         setCustomTitle("列表", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         firstTv = (TextView) findViewById(R.id.shop_list_first);
@@ -75,24 +73,28 @@ public class ActivityListActivity extends BaseActivity {
     }
 
     private void initData() {
-        getOtherData("");
+        Map<String,Object> map=SkipUtils.getMap(this);
+        if (map==null)return;
+        searchStr=map.get(Constant.ID).toString();
+        getOtherData("1");
     }
 
     private void getOtherData(String id) {
         proUtils.show();
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put(Constant.PAGESIZE, "10");
         map.put(Constant.PAGE, "1");
-//        map.put("order_id", id);
+        map.put("kw", searchStr);
+        map.put("order_id", id);
         httpHelper.postKeyValuePairAsync(this, URL.RECOMMENDED_ACT, map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 T.checkNet(ActivityListActivity.this);
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call, Response response) throws IOException {
                 String body = response.body().string();
                 analysisData(body);
                 handler.sendEmptyMessage(UPDATA_OTHER_CODE);

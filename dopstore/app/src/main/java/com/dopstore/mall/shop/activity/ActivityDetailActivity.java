@@ -31,9 +31,6 @@ import com.dopstore.mall.view.EScrollView;
 import com.dopstore.mall.view.scrollview.DetailMenu;
 import com.dopstore.mall.view.scrollview.YsnowScrollViewPageOne;
 import com.dopstore.mall.view.scrollview.YsnowWebView;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,13 +42,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
 /**
  * 作者：xicheng on 16/9/13
  */
 public class ActivityDetailActivity extends BaseActivity {
     private RelativeLayout topLayout, bottomLy;
-    private HttpHelper httpHelper;
-    private ProUtils proUtils;
     private String isCollect = "0";
     private DetailMenu detailMenu;
     private YsnowWebView webView;
@@ -76,8 +75,6 @@ public class ActivityDetailActivity extends BaseActivity {
     }
 
     private void initView() {
-        httpHelper = HttpHelper.getOkHttpClientUtils(this);
-        proUtils = new ProUtils(this);
         loadImageUtils = LoadImageUtils.getInstance(this);
         Map<String, Object> map = SkipUtils.getMap(this);
         if (map == null) return;
@@ -128,20 +125,20 @@ public class ActivityDetailActivity extends BaseActivity {
 
     private void getDetail() {
         proUtils.show();
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put("activity_id", activity_id);
         if (UserUtils.haveLogin(this)) {
             map.put("user_id", UserUtils.getId(this));
         }
         httpHelper.postKeyValuePairAsync(this, URL.ACTIVITY_DETAILS, map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 T.checkNet(ActivityDetailActivity.this);
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call, Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);
@@ -220,13 +217,18 @@ public class ActivityDetailActivity extends BaseActivity {
                     }
                     loadImageUtils.displayImage(detailBean.getPicture(), imageView);
                     titleTv.setText(detailBean.getName());
-                    priceTv.setText("￥" + detailBean.getPrice());
-                    String limit = detailBean.getLimit();
-                    if (TextUtils.isEmpty(limit)) {
+                    String price=detailBean.getPrice();
+                    priceTv.setText("￥" + price);
+                    if ("0.00".equals(price)||"0.0".equals(price)||"0".equals(price)||TextUtils.isEmpty(price)) {
+                        String limit = detailBean.getLimit();
+                        if (TextUtils.isEmpty(limit)) {
+                            numTv.setVisibility(View.GONE);
+                        } else {
+                            numTv.setText("限制" + limit + "人");
+                            numTv.setVisibility(View.VISIBLE);
+                        }
+                    }else {
                         numTv.setVisibility(View.GONE);
-                    } else {
-                        numTv.setText("限制" + limit + "人");
-                        numTv.setVisibility(View.VISIBLE);
                     }
                     String startTime = detailBean.getStart_time();
                     String endTime = detailBean.getEnd_time();
@@ -286,20 +288,20 @@ public class ActivityDetailActivity extends BaseActivity {
             return;
         }
         proUtils.show();
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put("user_id", UserUtils.getId(this));
         map.put("item_id", activity_id);
         map.put("action_id", isCollect);
         map.put("is_activity", "1");
         httpHelper.postKeyValuePairAsync(this, URL.COLLECTION_EDIT, map, new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 T.checkNet(ActivityDetailActivity.this);
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call,Response response) throws IOException {
                 String body = response.body().string();
                 try {
                     JSONObject jo = new JSONObject(body);

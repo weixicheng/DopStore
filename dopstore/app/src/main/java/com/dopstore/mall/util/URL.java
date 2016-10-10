@@ -37,4 +37,12 @@ public class URL {
     public static String ORDER_ACTIVITY_LIST = BASE_URL + "order/activity_list/";//活动订单列表
     public static String COLLECTION_GOODS_STATUS = BASE_URL + "home/collection/goods";//判断商品是否收藏
     public static String ACTIVITY_PAYMENT = BASE_URL + "order/activity/payment";//活动订单支付
+    public static String CART_CREATE_ORDER = BASE_URL + "cart/create_order";//商品下单
+    public static String CART_PAYMENT = BASE_URL + "order/cart/payment";//商品订单支付
+    public static String GOODS_ORDERS = BASE_URL + "goods/orders";//我的订单查询
+    public static String ORDER_GOODS = BASE_URL + "order/goods";//我的订单详情
+    public static String ORDER_REFUND = BASE_URL + "order/refund";//商品订单退款
+    public static String ACTIVITY_REFUND = BASE_URL + "order/activity/refund";//活动订单退款
+    public static String LOGISTICS_URL = BASE_URL + "logistics";//物流信息
+    public static String USER_RECHARGE = BASE_URL + "user/recharge";//充值
 }

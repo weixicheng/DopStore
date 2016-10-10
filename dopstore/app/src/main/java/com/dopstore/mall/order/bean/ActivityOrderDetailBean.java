@@ -1,10 +1,12 @@
 package com.dopstore.mall.order.bean;
 
+import java.io.Serializable;
+
 /**
  * 作者：xicheng on 16/9/23 17:19
  * 类别：
  */
-public class ActivityOrderDetailBean {
+public class ActivityOrderDetailBean implements Serializable{
     private String order_num;
     private int status;
     private String pic;

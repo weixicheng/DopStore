@@ -3,6 +3,8 @@ package com.dopstore.mall.order.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -12,34 +14,49 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.base.BaseActivity;
+import com.dopstore.mall.person.activity.MyBalanceActivity;
 import com.dopstore.mall.util.Constant;
+import com.dopstore.mall.util.HttpHelper;
+import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
+import com.dopstore.mall.util.T;
+import com.dopstore.mall.util.URL;
+import com.dopstore.mall.util.UserUtils;
+import com.dopstore.mall.util.Utils;
 import com.pingplusplus.android.Pingpp;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
 /**
  * Created by 喜成 on 16/9/13.
- * name
+ * name 活动支付
  */
-public class CashierActivity extends BaseActivity {
+public class ReChargeActivity extends BaseActivity {
     private RelativeLayout balanceLy, alipayLy, wechatLy;
-    private View bv, av, wv;
-    private TextView priceTv;
+    private View av, wv;
+    private TextView hintTv,priceTv;
     private Button sureBt;
-    private String order_id = "";
     private String order_price = "";
-    /**
-     * 微信支付渠道
-     */
+
+    //微信支付渠道
     private static final String CHANNEL_WECHAT = "wx";
-    /**
-     * 支付支付渠道
-     */
+    //支付支付渠道
     private static final String CHANNEL_ALIPAY = "alipay";
+    //支付类型
+    private int PAY_CODE = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,14 +70,15 @@ public class CashierActivity extends BaseActivity {
         setCustomTitle("收银台", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         balanceLy = (RelativeLayout) findViewById(R.id.cashier_balance_layout);
-        bv = findViewById(R.id.cashier_balance_check);
         alipayLy = (RelativeLayout) findViewById(R.id.cashier_alipay_layout);
         av = findViewById(R.id.cashier_alipay_check);
         wechatLy = (RelativeLayout) findViewById(R.id.cashier_wechat_layout);
         wv = findViewById(R.id.cashier_wechat_check);
+        hintTv = (TextView) findViewById(R.id.cashier_balance_hint_text);
+        hintTv.setVisibility(View.GONE);
         priceTv = (TextView) findViewById(R.id.cashier_price);
         sureBt = (Button) findViewById(R.id.cashier_sure_pay_bt);
-        balanceLy.setOnClickListener(listener);
+        balanceLy.setVisibility(View.GONE);
         alipayLy.setOnClickListener(listener);
         wechatLy.setOnClickListener(listener);
         sureBt.setOnClickListener(listener);
@@ -68,11 +86,9 @@ public class CashierActivity extends BaseActivity {
 
     private void initData() {
         Map<String, Object> map = SkipUtils.getMap(this);
-        order_id = map.get(Constant.ID).toString();
         order_price = map.get(Constant.PRICE).toString();
         if (!TextUtils.isEmpty(order_price)) {
-            float price = Float.parseFloat(order_price);
-            priceTv.setText("¥" + price);
+            priceTv.setText("¥" + order_price);
         } else {
             order_price = "0";
             priceTv.setText("¥ 0");
@@ -83,20 +99,14 @@ public class CashierActivity extends BaseActivity {
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
-                case R.id.cashier_balance_layout: {
-                    bv.setBackgroundResource(R.mipmap.checkbox_checked);
-                    av.setBackgroundResource(R.mipmap.checkbox_normal);
-                    wv.setBackgroundResource(R.mipmap.checkbox_normal);
-                }
-                break;
                 case R.id.cashier_alipay_layout: {
-                    bv.setBackgroundResource(R.mipmap.checkbox_normal);
+                    PAY_CODE = 1;
                     av.setBackgroundResource(R.mipmap.checkbox_checked);
                     wv.setBackgroundResource(R.mipmap.checkbox_normal);
                 }
                 break;
                 case R.id.cashier_wechat_layout: {
-                    bv.setBackgroundResource(R.mipmap.checkbox_normal);
+                    PAY_CODE = 2;
                     av.setBackgroundResource(R.mipmap.checkbox_normal);
                     wv.setBackgroundResource(R.mipmap.checkbox_checked);
                 }
@@ -115,16 +125,90 @@ public class CashierActivity extends BaseActivity {
         if (price.equals("")) return;
         String replaceable = String.format("[%s, \\s.]", NumberFormat.getCurrencyInstance(Locale.CHINA).getCurrency().getSymbol(Locale.CHINA));
         String cleanString = price.toString().replaceAll(replaceable, "");
-        int payPrice = Integer.valueOf(new BigDecimal(cleanString).toString());
-        getServiceCharge();
-
+        getServiceCharge(cleanString);
     }
 
-    private void getServiceCharge() {
+    private void getServiceCharge(String payPrice) {
         balanceLy.setOnClickListener(null);
         alipayLy.setOnClickListener(null);
         wechatLy.setOnClickListener(null);
+        proUtils.show();
+        String ipStr=Utils.GetHostIp(this);
+        String type = getPay();
+        String user_id = UserUtils.getId(this);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("amount", payPrice);
+        map.put("channel", type);
+        map.put("client_ip", ipStr);
+        map.put("user_id", user_id);
+        httpHelper.postKeyValuePairAsync(this, URL.USER_RECHARGE, map, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                T.checkNet(ReChargeActivity.this);
+                proUtils.dismiss();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String body = response.body().string();
+                try {
+                    JSONObject jo = new JSONObject(body);
+                    String code = jo.optString(Constant.ERROR_CODE);
+                    if ("0".equals(code)) {
+                        JSONObject charge = jo.optJSONObject("charge");
+                        Message msg = new Message();
+                        msg.what = PAY_CHARGE_CODE;
+                        msg.obj = charge.toString();
+                        handler.sendMessage(msg);
+                    } else {
+                        String msg = jo.optString(Constant.ERROR_MSG);
+                        T.show(ReChargeActivity.this, msg);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                proUtils.dismiss();
+            }
+        }, null);
+}
+
+    /**
+     * 获取支付类型
+     *
+     * @return
+     */
+    private String getPay() {
+        String pay_type = CHANNEL_ALIPAY;
+
+        switch (PAY_CODE) {
+            case 1: {
+                pay_type = CHANNEL_ALIPAY;
+            }
+            break;
+            case 2: {
+                pay_type = CHANNEL_WECHAT;
+            }
+            break;
+        }
+        return pay_type;
     }
+
+    private final static int PAY_CHARGE_CODE = 0;
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case PAY_CHARGE_CODE: {
+                    String charge = msg.obj.toString();
+                    if (!TextUtils.isEmpty(charge)) {
+                        Pingpp.createPayment(ReChargeActivity.this, charge);
+                    }
+                }
+                break;
+            }
+        }
+    };
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -143,7 +227,16 @@ public class CashierActivity extends BaseActivity {
                  * "invalid" - payment plugin not installed
                  */
                 String errorMsg = data.getExtras().getString("error_msg"); // 错误信息
-                String extraMsg = data.getExtras().getString("extra_msg"); // 错误信息
+                //String extraMsg = data.getExtras().getString("extra_msg"); // 错误信息
+                if (result.equals("success")) {
+                    T.show(ReChargeActivity.this, "充值成功");
+                } else if (result.equals("fail")) {
+                    T.show(ReChargeActivity.this, "支付失败");
+                } else if (result.equals("cancel")) {
+                    T.show(ReChargeActivity.this, "取消支付");
+                } else if (result.equals("invalid")) {
+                    T.show(ReChargeActivity.this, errorMsg);
+                }
             }
         }
     }

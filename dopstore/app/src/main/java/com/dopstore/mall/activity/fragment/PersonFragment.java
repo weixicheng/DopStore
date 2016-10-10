@@ -1,5 +1,6 @@
 package com.dopstore.mall.activity.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,12 +14,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
+import com.dopstore.mall.base.BaseFragment;
 import com.dopstore.mall.login.activity.LoginActivity;
 import com.dopstore.mall.order.activity.MyActivityActivity;
 import com.dopstore.mall.order.activity.MyOrderActivity;
 import com.dopstore.mall.person.activity.MyAddressActivity;
 import com.dopstore.mall.person.activity.MyBalanceActivity;
 import com.dopstore.mall.person.activity.MyCollectActivity;
+import com.dopstore.mall.person.activity.MyDetailActivity;
 import com.dopstore.mall.person.activity.SetActivity;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.LoadImageUtils;
@@ -34,7 +37,7 @@ import java.util.Map;
  * Created by 喜成 on 16/9/5.
  * name 个人中心
  */
-public class PersonFragment extends Fragment {
+public class PersonFragment extends BaseFragment {
     private RelativeLayout userLayout, orderLayout, payLayout, sendLayout, receiveLayout, walletLayout, activityLayout, collectLayout, addressLayout;
     private TextView nameTv, introTv, priceTv;
     private ImageButton rightBt;
@@ -46,6 +49,12 @@ public class PersonFragment extends Fragment {
     private final static int SETTING_CODE = 1;
 
     private View v;
+    
+    private Context context;
+
+    public PersonFragment(Context context) {
+        this.context = context;
+    }
 
     @Nullable
     @Override
@@ -57,7 +66,7 @@ public class PersonFragment extends Fragment {
     }
 
     private void initView(View v) {
-        loadImageUtils = LoadImageUtils.getInstance(getActivity());
+        loadImageUtils = LoadImageUtils.getInstance(context);
         orderLayout = (RelativeLayout) v.findViewById(R.id.fragment_person_order_layout);
         orderLayout.setOnClickListener(listener);
         userLayout = (RelativeLayout) v.findViewById(R.id.fragment_person_user_layout);
@@ -87,21 +96,21 @@ public class PersonFragment extends Fragment {
     }
 
     public void loadData() {
-        if (UserUtils.haveLogin(getActivity())) {
+        if (UserUtils.haveLogin(context)) {
             nameTv.setVisibility(View.VISIBLE);
-            nameTv.setText(UserUtils.getNickName(getActivity()));
-            long babytime = UserUtils.getBabyBirthday(getActivity()) * 1000;
+            nameTv.setText(UserUtils.getNickName(context));
+            long babytime = UserUtils.getBabyBirthday(context) * 1000;
             Long currentTime = System.currentTimeMillis();
             long time = currentTime - babytime;
-            String babyName = UserUtils.getBabyName(getActivity());
+            String babyName = UserUtils.getBabyName(context);
             introTv.setText(babyName + "  " + Utils.formatMilli(babytime, "yyyy年MM月dd日"));
-            String avatar = UserUtils.getAvatar(getActivity());
+            String avatar = UserUtils.getAvatar(context);
             if (TextUtils.isEmpty(avatar)) {
                 headImage.setImageResource(R.mipmap.ic);
             } else {
                 loadImageUtils.displayImage(avatar, headImage);
             }
-            priceTv.setText(UserUtils.getBalance(getActivity()));
+            priceTv.setText(UserUtils.getBalance(context));
         } else {
             headImage.setImageResource(R.mipmap.ic);
             nameTv.setVisibility(View.INVISIBLE);
@@ -114,90 +123,92 @@ public class PersonFragment extends Fragment {
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.title_right_imageButton: {
-                    if (!UserUtils.haveLogin(getActivity())) {
-                        SkipUtils.directJump(getActivity(), LoginActivity.class, false);
+                    if (!UserUtils.haveLogin(context)) {
+                        SkipUtils.directJump(context, LoginActivity.class, false);
                     } else {
-                        SkipUtils.directJumpForResult(getActivity(), SetActivity.class, SETTING_CODE);
+                        SkipUtils.directJumpForResult(context, SetActivity.class, SETTING_CODE);
                     }
                 }
                 break;
                 case R.id.fragment_person_user_layout: {
-                    if (!UserUtils.haveLogin(getActivity())) {
-                        SkipUtils.directJump(getActivity(), LoginActivity.class, false);
+                    if (!UserUtils.haveLogin(context)) {
+                        SkipUtils.directJump(context, LoginActivity.class, false);
+                    }else {
+                        SkipUtils.directJump(context, MyDetailActivity.class,false);
                     }
                 }
                 break;
                 case R.id.fragment_person_order_layout: {
-                    if (!UserUtils.haveLogin(getActivity())) {
-                        SkipUtils.directJump(getActivity(), LoginActivity.class, false);
+                    if (!UserUtils.haveLogin(context)) {
+                        SkipUtils.directJump(context, LoginActivity.class, false);
                     } else {
                         Map<String, Object> map = new HashMap<String, Object>();
                         map.put("title", "0");
-                        SkipUtils.jumpForMap(getActivity(), MyOrderActivity.class, map, false);
+                        SkipUtils.jumpForMap(context, MyOrderActivity.class, map, false);
                     }
                 }
                 break;
                 case R.id.fragment_person_pay_layout: {
-                    if (!UserUtils.haveLogin(getActivity())) {
-                        SkipUtils.directJump(getActivity(), LoginActivity.class, false);
+                    if (!UserUtils.haveLogin(context)) {
+                        SkipUtils.directJump(context, LoginActivity.class, false);
                     } else {
                         Map<String, Object> map = new HashMap<String, Object>();
                         map.put("title", "1");
-                        SkipUtils.jumpForMap(getActivity(), MyOrderActivity.class, map, false);
+                        SkipUtils.jumpForMap(context, MyOrderActivity.class, map, false);
                     }
                 }
                 break;
                 case R.id.fragment_person_send_layout: {
-                    if (!UserUtils.haveLogin(getActivity())) {
-                        SkipUtils.directJump(getActivity(), LoginActivity.class, false);
+                    if (!UserUtils.haveLogin(context)) {
+                        SkipUtils.directJump(context, LoginActivity.class, false);
                     } else {
                         Map<String, Object> map = new HashMap<String, Object>();
                         map.put("title", "2");
-                        SkipUtils.jumpForMap(getActivity(), MyOrderActivity.class, map, false);
+                        SkipUtils.jumpForMap(context, MyOrderActivity.class, map, false);
                     }
                 }
                 break;
                 case R.id.fragment_person_receive_layout: {
-                    if (!UserUtils.haveLogin(getActivity())) {
-                        SkipUtils.directJump(getActivity(), LoginActivity.class, false);
+                    if (!UserUtils.haveLogin(context)) {
+                        SkipUtils.directJump(context, LoginActivity.class, false);
                     } else {
                         Map<String, Object> map = new HashMap<String, Object>();
                         map.put("title", "3");
-                        SkipUtils.jumpForMap(getActivity(), MyOrderActivity.class, map, false);
+                        SkipUtils.jumpForMap(context, MyOrderActivity.class, map, false);
                     }
                 }
                 break;
                 case R.id.fragment_person_wallet_layout: {
-                    if (!UserUtils.haveLogin(getActivity())) {
-                        SkipUtils.directJump(getActivity(), LoginActivity.class, false);
+                    if (!UserUtils.haveLogin(context)) {
+                        SkipUtils.directJump(context, LoginActivity.class, false);
                     } else {
                         Map<String, Object> map = new HashMap<String, Object>();
                         map.put(Constant.BALANCE, priceTv.getText().toString().trim());
-                        SkipUtils.jumpForMapResult(getActivity(), MyBalanceActivity.class, map, BALANCE_CODE);
+                        SkipUtils.jumpForMapResult(context, MyBalanceActivity.class, map, BALANCE_CODE);
                     }
                 }
                 break;
                 case R.id.fragment_person_activity_layout: {
-                    if (!UserUtils.haveLogin(getActivity())) {
-                        SkipUtils.directJump(getActivity(), LoginActivity.class, false);
+                    if (!UserUtils.haveLogin(context)) {
+                        SkipUtils.directJump(context, LoginActivity.class, false);
                     } else {
-                        SkipUtils.directJump(getActivity(), MyActivityActivity.class, false);
+                        SkipUtils.directJump(context, MyActivityActivity.class, false);
                     }
                 }
                 break;
                 case R.id.fragment_person_collect_layout: {
-                    if (!UserUtils.haveLogin(getActivity())) {
-                        SkipUtils.directJump(getActivity(), LoginActivity.class, false);
+                    if (!UserUtils.haveLogin(context)) {
+                        SkipUtils.directJump(context, LoginActivity.class, false);
                     } else {
-                        SkipUtils.directJump(getActivity(), MyCollectActivity.class, false);
+                        SkipUtils.directJump(context, MyCollectActivity.class, false);
                     }
                 }
                 break;
                 case R.id.fragment_person_address_layout: {
-                    if (!UserUtils.haveLogin(getActivity())) {
-                        SkipUtils.directJump(getActivity(), LoginActivity.class, false);
+                    if (!UserUtils.haveLogin(context)) {
+                        SkipUtils.directJump(context, LoginActivity.class, false);
                     } else {
-                        SkipUtils.directJump(getActivity(), MyAddressActivity.class, false);
+                        SkipUtils.directJump(context, MyAddressActivity.class, false);
                     }
                 }
                 break;

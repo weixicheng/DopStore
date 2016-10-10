@@ -1,23 +1,40 @@
 package com.dopstore.mall.person.activity;
 
 import android.os.Bundle;
+import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.base.BaseActivity;
+import com.dopstore.mall.order.activity.ActivityCashierActivity;
+import com.dopstore.mall.order.activity.ReChargeActivity;
 import com.dopstore.mall.person.adapter.MyBalanceAdapter;
 import com.dopstore.mall.person.bean.MyBalanceData;
 import com.dopstore.mall.util.Constant;
+import com.dopstore.mall.util.HttpHelper;
+import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
+import com.dopstore.mall.util.T;
+import com.dopstore.mall.util.URL;
 import com.dopstore.mall.view.MyListView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 /**
  * Created by 喜成 on 16/9/8.
@@ -38,7 +55,6 @@ public class MyBalanceActivity extends BaseActivity {
     }
 
     private void initView() {
-
         setCustomTitle("我的余额", getResources().getColor(R.color.white_color));
         rightTextBack("交易明细", getResources().getColor(R.color.white_color), listener);
         ImageButton id = (ImageButton) findViewById(R.id.title_left_imageButton);
@@ -61,7 +77,16 @@ public class MyBalanceActivity extends BaseActivity {
             items.add(data);
         }
         listView.setAdapter(new MyBalanceAdapter(this, items));
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Map<String,Object> map=new HashMap<String, Object>();
+                map.put(Constant.PRICE,items.get(position).getTitle());
+                SkipUtils.jumpForMap(MyBalanceActivity.this, ReChargeActivity.class,map,false);
+            }
+        });
     }
+
 
     View.OnClickListener listener = new View.OnClickListener() {
         @Override
