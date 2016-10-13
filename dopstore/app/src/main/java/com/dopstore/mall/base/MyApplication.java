@@ -3,7 +3,6 @@ package com.dopstore.mall.base;
 import android.app.Activity;
 import android.app.Application;
 
-import com.dopstore.mall.util.CrashHandler;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.pingplusplus.android.PingppLog;
 

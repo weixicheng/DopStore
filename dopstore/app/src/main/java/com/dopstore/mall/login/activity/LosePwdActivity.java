@@ -2,8 +2,11 @@ package com.dopstore.mall.login.activity;
 
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.text.Editable;
 import android.text.Html;
+import android.text.InputType;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -14,9 +17,8 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.base.BaseActivity;
+import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.HttpHelper;
-import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
@@ -29,9 +31,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 /**
  * 作者：xicheng on 16/7/30 15:18
@@ -43,8 +42,10 @@ public class LosePwdActivity extends BaseActivity {
     private EditText phoneEt, codeEt, pwdEt;
     private Button getBt, registBt;
     private TextView agressTxt, titleTv;
+    private View seeV;
     private MyCount mc;
     private String titleStr = "忘记密码";
+    private boolean isShow = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,11 +75,40 @@ public class LosePwdActivity extends BaseActivity {
         getBt = (Button) findViewById(R.id.register_get_code_bt);
         agressTxt = (TextView) findViewById(R.id.register_getvoice_bt);
         registBt = (Button) findViewById(R.id.register_submit_bt);
+        seeV = findViewById(R.id.register_set_pwd_Et_see);
         registBt.setText("修改密码");
         getBt.setOnClickListener(listener);
         registBt.setOnClickListener(listener);
         agressTxt.setOnClickListener(listener);
+        seeV.setOnClickListener(listener);
         agressTxt.setText(Html.fromHtml("如果没有收到验证码,请点击这里<font color='#f93448'>获取语音验证码</font>"));
+        pwdEt.addTextChangedListener(new EditChangedListener());
+    }
+
+    class EditChangedListener implements TextWatcher {
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            seeV.setVisibility(View.GONE);
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (s.length() > 0) {
+                seeV.setVisibility(View.VISIBLE);
+            } else {
+                seeV.setVisibility(View.GONE);
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (s.length() > 0) {
+                seeV.setVisibility(View.VISIBLE);
+            } else {
+                seeV.setVisibility(View.GONE);
+            }
+        }
     }
 
     View.OnClickListener listener = new View.OnClickListener() {
@@ -87,6 +117,18 @@ public class LosePwdActivity extends BaseActivity {
             switch (view.getId()) {
                 case R.id.title_left_textView: {//取消
                     SkipUtils.back(LosePwdActivity.this);
+                }
+                break;
+                case R.id.register_set_pwd_Et_see: {//密码是否可见
+                    if (isShow == false) {
+                        pwdEt.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                        pwdEt.setSelection(pwdEt.getText().toString().length());
+                        isShow = true;
+                    } else {
+                        isShow = false;
+                        pwdEt.setSelection(pwdEt.getText().toString().length());
+                        pwdEt.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    }
                 }
                 break;
                 case R.id.register_get_code_bt: {//获取验证码
@@ -117,15 +159,9 @@ public class LosePwdActivity extends BaseActivity {
     private void getVoiceCode(String phone) {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put(Constant.MOBILE, phone);
-        httpHelper.postKeyValuePairAsync(this, URL.SEND_VOICE_CODE, map, new Callback() {
+        httpHelper.post(this, URL.SEND_VOICE_CODE, map, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(LosePwdActivity.this);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
@@ -133,14 +169,17 @@ public class LosePwdActivity extends BaseActivity {
                     } else {
                         String msg = jo.optString(Constant.ERROR_MSG);
                         T.show(LosePwdActivity.this, msg);
-
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-        }, null);
 
+            @Override
+            public void failed(String msg) {
+                T.checkNet(LosePwdActivity.this);
+            }
+        });
     }
 
     /**
@@ -236,15 +275,9 @@ public class LosePwdActivity extends BaseActivity {
     private void getCode(String phone) {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put(Constant.MOBILE, phone);
-        httpHelper.postKeyValuePairAsync(this, URL.SEND_V_CODE, map, new Callback() {
+        httpHelper.post(this, URL.SEND_V_CODE, map, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(LosePwdActivity.this);
-            }
-
-            @Override
-            public void onResponse(Call call,Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
@@ -258,7 +291,12 @@ public class LosePwdActivity extends BaseActivity {
                     e.printStackTrace();
                 }
             }
-        }, null);
+
+            @Override
+            public void failed(String msg) {
+                T.checkNet(LosePwdActivity.this);
+            }
+        });
     }
 
     /**
@@ -274,16 +312,9 @@ public class LosePwdActivity extends BaseActivity {
         map.put(Constant.MOBILE, phone);
         map.put(Constant.PASSWORD, pwd);
         map.put(Constant.V_CODE, code);
-        httpHelper.postKeyValuePairAsync(this, URL.RESET_PASSWORD, map, new Callback() {
+        httpHelper.post(this, URL.RESET_PASSWORD, map, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(LosePwdActivity.this);
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Call call,Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
@@ -299,7 +330,13 @@ public class LosePwdActivity extends BaseActivity {
                 }
                 proUtils.dismiss();
             }
-        }, null);
+
+            @Override
+            public void failed(String msg) {
+                T.checkNet(LosePwdActivity.this);
+                proUtils.dismiss();
+            }
+        });
     }
 
     @Override

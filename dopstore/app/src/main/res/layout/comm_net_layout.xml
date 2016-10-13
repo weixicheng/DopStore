@@ -6,8 +6,8 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:background="@drawable/shape_black_corner_all"
         android:gravity="center">
 
@@ -18,8 +18,8 @@
             android:orientation="vertical">
 
             <ProgressBar
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 style="?android:attr/progressBarStyle" />
 
             <TextView
@@ -28,7 +28,7 @@
                 android:textColor="@android:color/white"
                 android:layout_marginTop="10dp"
                 android:text="正在努力加载..."
-                android:textSize="16sp" />
+                android:textSize="12sp" />
         </LinearLayout>
 
     </LinearLayout>

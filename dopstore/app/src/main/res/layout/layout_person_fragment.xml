@@ -325,7 +325,7 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_centerVertical="true"
-                    android:src="@mipmap/collect_logo" />
+                    android:src="@mipmap/collect_check_logo" />
 
                 <TextView
                     android:layout_width="wrap_content"

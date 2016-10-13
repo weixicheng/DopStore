@@ -1,111 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="@color/gray_color_ee"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:background="@color/gray_color_ee">
 
-    <include layout="@layout/common_title" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:background="@color/white_color"
-        android:layout_height="@dimen/margin_50">
-
-        <TextView
-            android:id="@+id/shop_list_first"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="默认排序"
-            android:textColor="@color/red_color_f93448"
-            android:textSize="@dimen/textsize_14" />
-
-        <TextView
-            android:id="@+id/shop_list_second"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="按销量"
-            android:textColor="@color/gray_color_33"
-            android:textSize="@dimen/textsize_14" />
-
-        <TextView
-            android:id="@+id/shop_list_third"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="按价格"
-            android:textColor="@color/gray_color_33"
-            android:textSize="@dimen/textsize_14" />
-
-        <TextView
-            android:id="@+id/shop_list_four"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="按年龄段"
-            android:textColor="@color/gray_color_33"
-            android:textSize="@dimen/textsize_14" />
-
-    </LinearLayout>
+    <include
+        android:id="@+id/activity_list_title_layout"
+        layout="@layout/common_title" />
 
     <LinearLayout
+        android:id="@+id/activity_list_title_second_layout"
         android:layout_width="match_parent"
-        android:background="@color/white_color"
-        android:layout_height="1dp">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/activity_list_title_layout"
+        android:orientation="vertical">
 
-        <View
-            android:id="@+id/shop_list_firstv"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/margin_15"
-            android:layout_marginRight="@dimen/margin_15"
-            android:layout_weight="1"
-            android:visibility="visible"
-            android:background="@color/red_color_f93448" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_50"
+            android:background="@color/white_color"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/shop_list_first"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="默认排序"
+                android:textColor="@color/red_color_f93448"
+                android:textSize="@dimen/textsize_14" />
+
+            <TextView
+                android:id="@+id/shop_list_second"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="按销量"
+                android:textColor="@color/gray_color_33"
+                android:textSize="@dimen/textsize_14" />
+
+            <TextView
+                android:id="@+id/shop_list_third"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="按价格"
+                android:textColor="@color/gray_color_33"
+                android:textSize="@dimen/textsize_14" />
+
+            <TextView
+                android:id="@+id/shop_list_four"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="按年龄段"
+                android:textColor="@color/gray_color_33"
+                android:textSize="@dimen/textsize_14" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/white_color"
+            android:visibility="gone">
+
+            <View
+                android:id="@+id/shop_list_firstv"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/margin_15"
+                android:layout_marginRight="@dimen/margin_15"
+                android:layout_weight="1"
+                android:background="@color/red_color_f93448"
+                android:visibility="visible" />
 
 
-        <View
-            android:id="@+id/shop_list_secondv"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/margin_15"
-            android:layout_marginRight="@dimen/margin_15"
-            android:layout_weight="1"
-            android:visibility="invisible"
-            android:background="@color/red_color_f93448" />
+            <View
+                android:id="@+id/shop_list_secondv"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/margin_15"
+                android:layout_marginRight="@dimen/margin_15"
+                android:layout_weight="1"
+                android:background="@color/red_color_f93448"
+                android:visibility="invisible" />
 
-        <View
-            android:id="@+id/shop_list_thirdv"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/margin_15"
-            android:layout_marginRight="@dimen/margin_15"
-            android:layout_weight="1"
-            android:visibility="invisible"
-            android:background="@color/red_color_f93448" />
+            <View
+                android:id="@+id/shop_list_thirdv"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/margin_15"
+                android:layout_marginRight="@dimen/margin_15"
+                android:layout_weight="1"
+                android:background="@color/red_color_f93448"
+                android:visibility="invisible" />
 
-        <View
-            android:id="@+id/shop_list_fourv"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/margin_15"
-            android:layout_marginRight="@dimen/margin_15"
-            android:layout_weight="1"
-            android:visibility="invisible"
-            android:background="@color/red_color_f93448" />
+            <View
+                android:id="@+id/shop_list_fourv"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/margin_15"
+                android:layout_marginRight="@dimen/margin_15"
+                android:layout_weight="1"
+                android:background="@color/red_color_f93448"
+                android:visibility="invisible" />
+        </LinearLayout>
     </LinearLayout>
 
     <ListView
         android:id="@+id/shop_list_listview"
-        android:layout_marginTop="@dimen/margin_10"
         android:layout_width="match_parent"
-        android:numColumns="2"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@id/activity_list_title_second_layout"
+        android:layout_marginTop="@dimen/margin_10"
+        android:numColumns="2" />
+    <LinearLayout
+        android:id="@+id/comm_error_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/activity_list_title_second_layout"
+        android:visibility="gone">
 
-</LinearLayout>
+        <include layout="@layout/comm_error_layout" />
+    </LinearLayout>
+
+</RelativeLayout>

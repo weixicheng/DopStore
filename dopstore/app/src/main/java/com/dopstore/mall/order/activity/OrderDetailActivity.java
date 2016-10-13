@@ -1,6 +1,5 @@
 package com.dopstore.mall.order.activity;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -8,27 +7,23 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.order.adapter.CommOrderAdapter;
-import com.dopstore.mall.order.bean.CommOrderData;
 import com.dopstore.mall.order.bean.DetailAddressData;
 import com.dopstore.mall.order.bean.DetailOrderData;
 import com.dopstore.mall.order.bean.DetailOrderListData;
 import com.dopstore.mall.order.bean.LogisticsData;
 import com.dopstore.mall.order.bean.OrderDetailData;
-import com.dopstore.mall.order.bean.OrderOtherData;
+import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.HttpHelper;
-import com.dopstore.mall.util.LoadImageUtils;
-import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
-import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.util.Utils;
 import com.dopstore.mall.view.MyListView;
 import com.google.gson.Gson;
@@ -37,14 +32,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 /**
  * Created by 喜成 on 16/9/12.
@@ -57,6 +48,8 @@ public class OrderDetailActivity extends BaseActivity {
     private MyListView myListView;
     private OrderDetailData orderDetailData;
     private String order_num = "";
+    private LinearLayout errorLayout;
+    private TextView loadTv;
 
 
     @Override
@@ -87,11 +80,14 @@ public class OrderDetailActivity extends BaseActivity {
         passPriceTv = (TextView) findViewById(R.id.order_detail_pass_price);
         truePriceTv = (TextView) findViewById(R.id.order_detail_true_price);
         submitBt = (Button) findViewById(R.id.order_detail_submit);
+        errorLayout = (LinearLayout) findViewById(R.id.comm_error_layout);
+        loadTv = (TextView) findViewById(R.id.error_data_load_tv);
         kFBt = (Button) findViewById(R.id.order_detail_cheap_kefu);
         myListView = (MyListView) findViewById(R.id.order_detail_listview);
         submitBt.setOnClickListener(listener);
         wLayout.setOnClickListener(listener);
         kFBt.setOnClickListener(listener);
+        loadTv.setOnClickListener(listener);
     }
 
     private void initData() {
@@ -102,16 +98,10 @@ public class OrderDetailActivity extends BaseActivity {
         proUtils.show();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("order_num", order_num);
-        httpHelper.postKeyValuePairAsync(this, URL.ORDER_GOODS, map, new Callback() {
+        httpHelper.post(this, URL.ORDER_GOODS, map, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(OrderDetailActivity.this);
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
+                errorLayout.setVisibility(View.GONE);
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
@@ -129,7 +119,13 @@ public class OrderDetailActivity extends BaseActivity {
                 }
                 proUtils.dismiss();
             }
-        }, null);
+
+            @Override
+            public void failed(String msg) {
+                errorLayout.setVisibility(View.VISIBLE);
+                proUtils.dismiss();
+            }
+        });
     }
 
     private final static int UPDATA_DEATIL_CODE = 0;
@@ -261,6 +257,13 @@ public class OrderDetailActivity extends BaseActivity {
                     checkSubmitBt();
                 }
                 break;
+                case R.id.error_data_load_tv: {
+                    if (orderDetailData!=null){
+                        orderDetailData=null;
+                    }
+                    getOrderDetail();
+                }
+                break;
                 case R.id.order_detail_cheap_kefu: {
                 }
                 break;
@@ -297,16 +300,9 @@ public class OrderDetailActivity extends BaseActivity {
         proUtils.show();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("order_num", order_num);
-        httpHelper.postKeyValuePairAsync(this, URL.ORDER_CONFIRM, map, new Callback() {
+        httpHelper.post(this, URL.ORDER_CONFIRM, map, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(OrderDetailActivity.this);
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
@@ -321,7 +317,13 @@ public class OrderDetailActivity extends BaseActivity {
                 }
                 proUtils.dismiss();
             }
-        }, null);
+
+            @Override
+            public void failed(String msg) {
+                T.checkNet(OrderDetailActivity.this);
+                proUtils.dismiss();
+            }
+        });
     }
 
     @Override

@@ -4,13 +4,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include
+        android:id="@+id/trolley_fragment_title_layout"
+        layout="@layout/common_title" />
+
+
     <LinearLayout
         android:id="@+id/top_bar"
+        android:layout_below="@id/trolley_fragment_title_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <include layout="@layout/common_title" />
 
         <LinearLayout
             android:id="@+id/trolley_check_box_layout"
@@ -51,7 +56,7 @@
     <RelativeLayout
         android:id="@+id/bottom_bar"
         android:layout_width="match_parent"
-        android:layout_height="54dp"
+        android:layout_height="40dp"
         android:layout_alignParentBottom="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -119,9 +124,33 @@
 
         <ListView
             android:id="@+id/listview"
+            android:scrollbars="none"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:divider="@color/gray_color_ee"
             android:dividerHeight="1dp" />
     </com.dopstore.mall.view.PullToRefreshView>
+
+    <LinearLayout
+        android:id="@+id/trolley_fragment_error_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/trolley_fragment_title_layout"
+        android:background="@color/gray_color_ee"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <include layout="@layout/comm_error_layout"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/trolley_fragment_empty_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/trolley_fragment_title_layout"
+        android:background="@color/gray_color_ee"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <include layout="@layout/comm_emty_layout"/>
+    </LinearLayout>
 </RelativeLayout>

@@ -14,12 +14,12 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.base.BaseActivity;
+import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.HttpHelper;
-import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
+import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.util.Utils;
 import com.pingplusplus.android.Pingpp;
 
@@ -27,16 +27,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 /**
  * Created by 喜成 on 16/9/13.
@@ -88,12 +81,26 @@ public class ShopCashierActivity extends BaseActivity {
         if (map == null) return;
         order_id = map.get(Constant.ID).toString();
         order_price = map.get(Constant.PRICE).toString();
+        float price=0;
         if (!TextUtils.isEmpty(order_price)) {
-            float price = Float.parseFloat(order_price);
+            price = Float.parseFloat(order_price);
             priceTv.setText("¥" + price);
         } else {
+            price =0;
             order_price = "0";
             priceTv.setText("¥ 0");
+        }
+        String balanceStr= UserUtils.getBalance(this);
+        float balanceF=0;
+        if (TextUtils.isEmpty(balanceStr)){
+            balanceF=0;
+        }else {
+            balanceF=Float.parseFloat(balanceStr);
+        }
+        if (balanceF<price){
+            balanceLy.setBackgroundResource(R.color.gray_color_ee);
+            balanceLy.setOnClickListener(null);
+            bv.setBackgroundResource(R.mipmap.checkbox_normal);
         }
     }
 
@@ -152,16 +159,9 @@ public class ShopCashierActivity extends BaseActivity {
         map.put("client_ip", iPstr);
         map.put("order_num", order_id);
         map.put("channel", type);
-        httpHelper.postKeyValuePairAsync(this, URL.CART_PAYMENT, map, new Callback() {
+        httpHelper.post(this, URL.CART_PAYMENT, map, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(ShopCashierActivity.this);
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
@@ -180,7 +180,13 @@ public class ShopCashierActivity extends BaseActivity {
                 }
                 proUtils.dismiss();
             }
-        }, null);
+
+            @Override
+            public void failed(String msg) {
+                T.checkNet(ShopCashierActivity.this);
+                proUtils.dismiss();
+            }
+        });
     }
 
     /**

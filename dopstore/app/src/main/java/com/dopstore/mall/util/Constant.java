@@ -33,6 +33,7 @@ public class Constant {
     /*****************************************************/
     public static final String UP_USER_DATA = "com.dopstore.mall.updata_user";
     public static final String BACK_CART_DATA = "com.dopstore.mall.updata_cart";
+    public static final String BACK_CART_REFRESH_DATA = "com.dopstore.mall.updata_cart_refresh";
     /*****************************************************/
     public static final String ERROR_CODE = "error_code";
     public static final String ERROR_MSG = "error_msg";

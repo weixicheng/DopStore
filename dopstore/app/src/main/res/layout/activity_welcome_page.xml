@@ -13,8 +13,8 @@
 
     <Button
         android:id="@+id/before_start_jump_bt"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="39dp"
+        android:layout_height="39dp"
         android:layout_alignParentRight="true"
         android:layout_margin="10dp"
         android:background="@mipmap/jump_logo" />

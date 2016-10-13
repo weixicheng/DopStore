@@ -14,9 +14,8 @@ import com.dopstore.mall.R;
 import com.dopstore.mall.activity.bean.MainTabData;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.shop.adapter.SearchAdapter;
+import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.HttpHelper;
-import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
@@ -31,9 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 /**
  * Created by 喜成 on 16/9/9.
@@ -84,16 +80,9 @@ public class SearchActivity extends BaseActivity {
 
     private void getTypeData() {
         proUtils.show();
-        httpHelper.getDataAsync(this, URL.GOODS_CATEGORY, new Callback() {
+        httpHelper.get(this, URL.GOODS_CATEGORY, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(SearchActivity.this);
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
@@ -119,7 +108,13 @@ public class SearchActivity extends BaseActivity {
                 }
                 proUtils.dismiss();
             }
-        }, null);
+
+            @Override
+            public void failed(String msg) {
+                T.checkNet(SearchActivity.this);
+                proUtils.dismiss();
+            }
+        });
     }
 
     private final static int UPDATA_TAB_CODE = 0;

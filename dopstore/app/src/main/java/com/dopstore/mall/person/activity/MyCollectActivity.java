@@ -7,6 +7,7 @@ import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -17,15 +18,13 @@ import com.dopstore.mall.person.adapter.MyCollectAdapter;
 import com.dopstore.mall.person.bean.MyCollectData;
 import com.dopstore.mall.shop.activity.ActivityDetailActivity;
 import com.dopstore.mall.shop.activity.ShopDetailActivity;
+import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.HttpHelper;
-import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.view.CommonDialog;
-
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,9 +36,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 /**
  * Created by 喜成 on 16/9/8.
@@ -50,6 +46,11 @@ public class MyCollectActivity extends BaseActivity {
     private TextView firstTv, secondTv;
     private View firstV, secondV;
     private ListView mListView;// 列表
+    private LinearLayout errorLayout;
+    private TextView loadTv;
+    private LinearLayout emptyLayout;
+    private View emptyV;
+    private TextView emptyTv;
     private List<MyCollectData> mListData = new ArrayList<MyCollectData>();// 数据
 
     private CommonDialog dialog;
@@ -75,6 +76,14 @@ public class MyCollectActivity extends BaseActivity {
         secondTv = (TextView) findViewById(R.id.my_collect_second_tv);
         firstV = findViewById(R.id.my_collect_first_v);
         secondV = findViewById(R.id.my_collect_second_v);
+        errorLayout = (LinearLayout) findViewById(R.id.comm_error_layout);
+        loadTv = (TextView) findViewById(R.id.error_data_load_tv);
+        emptyLayout = (LinearLayout) findViewById(R.id.comm_empty_layout);
+        emptyTv = (TextView) findViewById(R.id.comm_empty_text);
+        emptyV = findViewById(R.id.comm_empty_v);
+        emptyV.setBackgroundResource(R.mipmap.collect_empty_logo);
+        emptyTv.setText("您还没有收藏，快去逛逛吧");
+        loadTv.setOnClickListener(listener);
         firstLy.setOnClickListener(listener);
         secondLy.setOnClickListener(listener);
     }
@@ -89,21 +98,21 @@ public class MyCollectActivity extends BaseActivity {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("user_id", UserUtils.getId(this));
         map.put("is_activity", typeStr);
-        httpHelper.postKeyValuePairAsync(this, URL.COLLECTION_QUERY, map, new Callback() {
+        httpHelper.post(this, URL.COLLECTION_QUERY, map, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(MyCollectActivity.this);
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
+                errorLayout.setVisibility(View.GONE);
                 analyData(body);
                 handler.sendEmptyMessage(UPDATA_COLLECT_CODE);
                 proUtils.dismiss();
             }
-        }, null);
+
+            @Override
+            public void failed(String msg) {
+                errorLayout.setVisibility(View.VISIBLE);
+                proUtils.dismiss();
+            }
+        });
     }
 
     private void analyData(String body) {
@@ -155,45 +164,18 @@ public class MyCollectActivity extends BaseActivity {
                     getCollectList("1");
                 }
                 break;
+                case R.id.error_data_load_tv:{
+                    if (type==0){
+                        getCollectList("");
+                    }else {
+                        getCollectList("1");
+                    }
+                }break;
                 default:
                     break;
             }
         }
     };
-
-    private void deleteToService(int id, String typeStr) {
-        String ids = "[" + id + "]";
-        proUtils.show();
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("user_id", UserUtils.getId(this));
-        map.put("item_list", ids);
-        map.put("is_activity", typeStr);
-        httpHelper.postKeyValuePairAsync(this, URL.COLLECTION_DEL, map, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(MyCollectActivity.this);
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Call call,Response response) throws IOException {
-                String body = response.body().string();
-                try {
-                    JSONObject jo = new JSONObject(body);
-                    String code = jo.optString(Constant.ERROR_CODE);
-                    if ("0".equals(code)) {
-                        handler.sendEmptyMessage(DELETE_SUCCESS_CODE);
-                    } else {
-                        String msg = jo.optString(Constant.ERROR_MSG);
-                        T.show(MyCollectActivity.this, msg);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                proUtils.dismiss();
-            }
-        }, null);
-    }
 
     private void getCollectStatus(int id, String type) {
         proUtils.show();
@@ -202,16 +184,9 @@ public class MyCollectActivity extends BaseActivity {
         map.put("item_id", id + "");
         map.put("action_id", "2");
         map.put("is_activity", type);
-        httpHelper.postKeyValuePairAsync(this, URL.COLLECTION_EDIT, map, new Callback() {
+        httpHelper.post(this, URL.COLLECTION_EDIT, map, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(MyCollectActivity.this);
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Call call,Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
@@ -226,7 +201,13 @@ public class MyCollectActivity extends BaseActivity {
                 }
                 proUtils.dismiss();
             }
-        }, null);
+
+            @Override
+            public void failed(String msg) {
+                T.checkNet(MyCollectActivity.this);
+                proUtils.dismiss();
+            }
+        });
     }
 
 
@@ -269,6 +250,11 @@ public class MyCollectActivity extends BaseActivity {
     };
 
     private void refreshListView() {
+        if (mListData.size()>0){
+            emptyLayout.setVisibility(View.GONE);
+        }else {
+            emptyLayout.setVisibility(View.VISIBLE);
+        }
         mListView.setAdapter(new MyCollectAdapter(this, mListData));
 
         mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -286,7 +272,8 @@ public class MyCollectActivity extends BaseActivity {
                 if (type == 0) {
                     Map<String, Object> map = new HashMap<String, Object>();
                     map.put(Constant.ID, mListData.get(i).getId());
-                    map.put(Constant.IS_COLLECT, "1");
+                    map.put(Constant.NAME, mListData.get(i).getTitle());
+                    map.put(Constant.PICTURE, mListData.get(i).getImage());
                     SkipUtils.jumpForMapResult(MyCollectActivity.this, ShopDetailActivity.class, map, UPDATA_DETAIL_CODE);
                 } else {
                     Map<String, Object> intentMap = new HashMap<String, Object>();

@@ -13,8 +13,8 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.bean.GoodBean;
+import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.HttpHelper;
 import com.dopstore.mall.util.LoadImageUtils;
 import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.T;
@@ -29,9 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 /**
  * Created by 喜成 on 16/9/7.
@@ -43,7 +40,7 @@ public class TrolleyAdapter extends BaseAdapter {
     private TextView mPriceAll; // 商品总价
     private int totalPrice = 0; // 商品总价
     private CheckBox mCheckAll; // 全选 全不选
-    private HttpHelper httpHelper;
+    private CommHttp httpHelper;
     private ProUtils proUtils;
     private LoadImageUtils loadImageUtils;
 
@@ -53,7 +50,7 @@ public class TrolleyAdapter extends BaseAdapter {
         this.mPriceAll = mPriceAll;
         this.totalPrice = totalPrice;
         this.mCheckAll = mCheckAll;
-        httpHelper = HttpHelper.getOkHttpClientUtils(context);
+        httpHelper = CommHttp.getInstance(context);
         proUtils = new ProUtils(context);
         loadImageUtils = LoadImageUtils.getInstance(context);
     }
@@ -174,16 +171,9 @@ public class TrolleyAdapter extends BaseAdapter {
         map.put("item_id", (mListData.get(i).getId()) + "");
         map.put("count", (mListData.get(i).getCarNum() + 1) + "");
         map.put("edit", "1");
-        httpHelper.postKeyValuePairAsync(context, URL.CART_EDIT, map, new Callback() {
+        httpHelper.post(context, URL.CART_EDIT, map, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(context);
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
@@ -201,7 +191,13 @@ public class TrolleyAdapter extends BaseAdapter {
                 }
                 proUtils.dismiss();
             }
-        }, null);
+
+            @Override
+            public void failed(String msg) {
+                T.checkNet(context);
+                proUtils.dismiss();
+            }
+        });
     }
 
     private void redToService(List<GoodBean> mListData, final int i) {
@@ -211,16 +207,9 @@ public class TrolleyAdapter extends BaseAdapter {
         map.put("item_id", (mListData.get(i).getId()) + "");
         map.put("count", (mListData.get(i).getCarNum() - 1) + "");
         map.put("edit", "1");
-        httpHelper.postKeyValuePairAsync(context, URL.CART_EDIT, map, new Callback() {
+        httpHelper.post(context, URL.CART_EDIT, map, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(context);
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Call call,Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
@@ -238,7 +227,13 @@ public class TrolleyAdapter extends BaseAdapter {
                 }
                 proUtils.dismiss();
             }
-        }, null);
+
+            @Override
+            public void failed(String msg) {
+                T.checkNet(context);
+                proUtils.dismiss();
+            }
+        });
     }
 
 

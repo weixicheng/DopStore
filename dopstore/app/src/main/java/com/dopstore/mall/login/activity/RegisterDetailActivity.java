@@ -20,16 +20,14 @@ import com.dopstore.mall.login.Adapter.BabyAdapter;
 import com.dopstore.mall.login.bean.DetailData;
 import com.dopstore.mall.time.TimePopupWindow;
 import com.dopstore.mall.util.ACache;
+import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.HttpHelper;
-import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.view.CircleImageView;
 import com.dopstore.mall.view.MyGridView;
-
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,9 +43,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 /**
  * Created by 喜成 on 16/9/6.
@@ -160,13 +155,10 @@ public class RegisterDetailActivity extends BaseActivity {
 
     private void registData() {
         proUtils.show();
-        String num = "";
+        JSONArray ja=new JSONArray();
         for (int i = 0; i < list.size(); i++) {
-            num = list.get(i).getId() + ",";
-            num += num;
+            ja.put(list.get(i).getId());
         }
-        String str = "[" + num.substring(0, num.length() - 1) + "]";
-
         String time = timeTv.getText().toString();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put(Constant.MOBILE, mobile);
@@ -174,18 +166,11 @@ public class RegisterDetailActivity extends BaseActivity {
         map.put(Constant.PASSWORD, pwd);
         map.put(Constant.BABY_NAME, "");
         map.put(Constant.BABY_GENDER, sexType + "");
-        map.put(Constant.BABY_HOBBY, str);
+        map.put(Constant.BABY_HOBBY, ja);
         map.put(Constant.BABY_BIRTHDAY, time);
-        httpHelper.postKeyValuePairAsync(this, URL.SIGN_UP, map, new Callback() {
+        httpHelper.post(this, URL.SIGN_UP, map, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(RegisterDetailActivity.this);
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
@@ -228,7 +213,6 @@ public class RegisterDetailActivity extends BaseActivity {
                         overridePendingTransition(R.anim.return_from_click, R.anim.return_out_click);
                     } else {
                         String msg = jo.optString(Constant.ERROR_MSG);
-
                         T.show(RegisterDetailActivity.this, msg);
                     }
                 } catch (JSONException e) {
@@ -236,8 +220,13 @@ public class RegisterDetailActivity extends BaseActivity {
                 }
                 proUtils.dismiss();
             }
-        }, null);
 
+            @Override
+            public void failed(String msg) {
+                T.checkNet(RegisterDetailActivity.this);
+                proUtils.dismiss();
+            }
+        });
     }
 
 

@@ -19,15 +19,14 @@ import com.dopstore.mall.order.activity.ShopCashierActivity;
 import com.dopstore.mall.order.adapter.ConfirmOrderAdapter;
 import com.dopstore.mall.person.activity.MyAddressActivity;
 import com.dopstore.mall.person.bean.MyAddressData;
+import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.HttpHelper;
-import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.view.MyListView;
-
+import com.loopj.android.http.RequestParams;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,10 +38,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Request;
-import okhttp3.Response;
 
 /**
  * Created by 喜成 on 16/9/13.
@@ -108,15 +103,9 @@ public class ConfirmOrderActivity extends BaseActivity {
 
     private void getAddress() {
         String id = UserUtils.getId(this);
-        httpHelper.getDataAsync(this, URL.SHIPPINGADDRESS + id + "/shippingaddress", new Callback() {
+        httpHelper.get(this, URL.SHIPPINGADDRESS + id + "/shippingaddress", new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(ConfirmOrderActivity.this);
-            }
-
-            @Override
-            public void onResponse(Call call,Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
@@ -148,7 +137,12 @@ public class ConfirmOrderActivity extends BaseActivity {
                     e.printStackTrace();
                 }
             }
-        }, null);
+
+            @Override
+            public void failed(String msg) {
+                T.checkNet(ConfirmOrderActivity.this);
+            }
+        });
     }
 
     View.OnClickListener listener = new View.OnClickListener() {
@@ -174,7 +168,11 @@ public class ConfirmOrderActivity extends BaseActivity {
                 try {
                     JSONObject jo=new JSONObject();
                     jo.put("goods_id",goodBean.getId());
-                    jo.put("goods_sku_id",goodBean.getGoods_sku_id());
+                    String num=goodBean.getGoods_sku_id();
+                    if (TextUtils.isEmpty(num)){
+                        num="";
+                    }
+                    jo.put("goods_sku_id",num);
                     jo.put("num",goodBean.getCarNum());
                     ja.put(jo);
                 }catch (Exception e){
@@ -185,29 +183,21 @@ public class ConfirmOrderActivity extends BaseActivity {
             ja=null;
         }
         String noteStr=hintText.getText().toString().trim();
-
-        Map<String,Object> map=new HashMap<String,Object>();
-        map.put("user_id",UserUtils.getId(this));
-        map.put("goods_relateds",ja);
-        map.put("address_id",address_id);
+        RequestParams params=new RequestParams();
+        params.put("user_id",UserUtils.getId(this));
+        params.put("goods_relateds",ja.toString());
+        params.put("address_id",address_id);
         if (!TextUtils.isEmpty(noteStr)){
-            map.put("note",noteStr);
+            params.put("note",noteStr);
         }
-        getOrderID(map);
+        getOrderID(params);
     }
 
-    private void getOrderID(Map<String,Object> map) {
+    private void getOrderID(RequestParams params) {
         proUtils.show();
-        httpHelper.postKeyValuePairAsync(this, URL.CART_CREATE_ORDER, map, new Callback() {
+        httpHelper.postObject(this, URL.CART_CREATE_ORDER, params, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(ConfirmOrderActivity.this);
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
@@ -226,7 +216,13 @@ public class ConfirmOrderActivity extends BaseActivity {
                 }
                 proUtils.dismiss();
             }
-        }, null);
+
+            @Override
+            public void failed(String msg) {
+                T.show(ConfirmOrderActivity.this,msg);
+                proUtils.dismiss();
+            }
+        });
     }
 
     private final static int UPDATA_ADDRESS_CODE = 1;

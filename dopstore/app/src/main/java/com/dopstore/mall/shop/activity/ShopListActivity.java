@@ -8,17 +8,15 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.adapter.BottomAdapter;
 import com.dopstore.mall.activity.bean.ShopData;
 import com.dopstore.mall.base.BaseActivity;
-import com.dopstore.mall.shop.adapter.ShopListAdapter;
-import com.dopstore.mall.shop.bean.ShopListData;
+import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.HttpHelper;
-import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
@@ -27,15 +25,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 /**
  * Created by 喜成 on 16/9/12.
@@ -45,12 +39,12 @@ public class ShopListActivity extends BaseActivity {
     private TextView firstTv, secondTv, thirdTv, fourTv;
     private View firstv, secondv, thirdv, fourv;
     private GridView gridView;
-    private ShopListAdapter shopListAdapter;
-    private List<ShopListData> lists = new ArrayList<ShopListData>();
+    private LinearLayout errorLayout;
+    private TextView loadTv;
     private List<ShopData> bottomList = new ArrayList<ShopData>();
-    private String typeId="";
-    private String seartchStr="";
-    private String seartchID="";
+    private String typeId = "";
+    private String seartchStr = "";
+    private String seartchID = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +66,9 @@ public class ShopListActivity extends BaseActivity {
         thirdv = findViewById(R.id.shop_list_thirdv);
         fourv = findViewById(R.id.shop_list_fourv);
         gridView = (GridView) findViewById(R.id.shop_list_listview);
+        errorLayout = (LinearLayout) findViewById(R.id.comm_error_layout);
+        loadTv = (TextView) findViewById(R.id.error_data_load_tv);
+        loadTv.setOnClickListener(listener);
         firstTv.setOnClickListener(listener);
         secondTv.setOnClickListener(listener);
         thirdTv.setOnClickListener(listener);
@@ -100,21 +97,15 @@ public class ShopListActivity extends BaseActivity {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put(Constant.PAGESIZE, "10");
         map.put(Constant.PAGE, "1");
-        if (TextUtils.isEmpty(seartchStr)){
+        if (TextUtils.isEmpty(seartchStr)) {
             map.put("category_id", seartchID);
-        }else {
+        } else {
             map.put("query_str", seartchStr);
         }
-        httpHelper.postKeyValuePairAsync(this, URL.GOODS_LIST, map, new Callback() {
+        httpHelper.post(this, URL.GOODS_LIST, map, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(ShopListActivity.this);
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
+                errorLayout.setVisibility(View.GONE);
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
@@ -143,7 +134,13 @@ public class ShopListActivity extends BaseActivity {
                 }
                 proUtils.dismiss();
             }
-        }, null);
+
+            @Override
+            public void failed(String msg) {
+                errorLayout.setVisibility(View.GONE);
+                proUtils.dismiss();
+            }
+        });
     }
 
     View.OnClickListener listener = new View.OnClickListener() {
@@ -196,6 +193,13 @@ public class ShopListActivity extends BaseActivity {
                     fourTv.setTextColor(getResources().getColor(R.color.red_color_f93448));
                     fourv.setVisibility(View.VISIBLE);
 
+                }
+                break;
+                case R.id.error_data_load_tv: {
+                    if (bottomList != null) {
+                        bottomList.clear();
+                    }
+                    getHotData();
                 }
                 break;
             }

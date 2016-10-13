@@ -17,10 +17,9 @@ import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.order.activity.ActivityCashierActivity;
 import com.dopstore.mall.order.activity.NoPaySuccessActivity;
 import com.dopstore.mall.shop.bean.ActivityDetailBean;
+import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.HttpHelper;
 import com.dopstore.mall.util.LoadImageUtils;
-import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
@@ -34,9 +33,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 /**
  * Created by 喜成 on 16/9/13.
@@ -137,16 +133,9 @@ public class ConfirmActivityActivity extends BaseActivity {
         map.put("user_id", UserUtils.getId(this));
         map.put("phone", phone);
         map.put("note", hintStr);
-        httpHelper.postKeyValuePairAsync(this, URL.ORDER_ACTIVITY, map, new Callback() {
+        httpHelper.post(this, URL.ORDER_ACTIVITY, map, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(ConfirmActivityActivity.this);
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
@@ -165,7 +154,13 @@ public class ConfirmActivityActivity extends BaseActivity {
                 }
                 proUtils.dismiss();
             }
-        }, null);
+
+            @Override
+            public void failed(String msg) {
+                T.checkNet(ConfirmActivityActivity.this);
+                proUtils.dismiss();
+            }
+        });
     }
 
     private final static int SURE_ORDER_CODE = 0;

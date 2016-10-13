@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 
-import com.dopstore.mall.util.HttpHelper;
+import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.ProUtils;
 
 import cn.sharesdk.framework.ShareSDK;
@@ -15,7 +15,7 @@ import cn.sharesdk.framework.ShareSDK;
  */
 
 public class BaseFragmentActivity extends FragmentActivity{
-    public HttpHelper httpHelper;
+    public CommHttp httpHelper;
     public ProUtils proUtils;
 
     @Override
@@ -23,7 +23,7 @@ public class BaseFragmentActivity extends FragmentActivity{
         super.onCreate(savedInstanceState);
         MyApplication.getInstance().addActivity(this);
         ShareSDK.initSDK(this);
-        httpHelper = HttpHelper.getOkHttpClientUtils(this);
+        httpHelper = CommHttp.getInstance(this);
         proUtils = new ProUtils(this);
     }
 

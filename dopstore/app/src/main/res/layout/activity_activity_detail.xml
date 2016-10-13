@@ -316,6 +316,15 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/comm_error_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <include layout="@layout/comm_error_layout" />
+    </LinearLayout>
+
 
     <include
         android:id="@+id/activity_order_title_layout"

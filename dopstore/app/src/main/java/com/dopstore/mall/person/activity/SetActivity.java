@@ -43,7 +43,7 @@ public class SetActivity extends BaseActivity {
 
     private void initview() {
         ImageButton id = (ImageButton) findViewById(R.id.title_left_imageButton);
-        id.setImageResource(R.mipmap.back_arrow);
+        id.setBackgroundResource(R.mipmap.back_arrow);
         id.setVisibility(View.VISIBLE);
         id.setOnClickListener(listener);
         setCustomTitle("设置", getResources().getColor(R.color.white_color));

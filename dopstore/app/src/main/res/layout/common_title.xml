@@ -20,8 +20,8 @@
 
         <ImageButton
             android:id="@+id/title_left_imageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="19dp"
+            android:layout_height="17dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10.0dip"
             android:background="@null"
@@ -59,20 +59,14 @@
                 android:singleLine="true"
                 android:textSize="16sp" />
 
-            <ImageView
-                android:id="@+id/title_main_image"
-                android:layout_width="65dp"
-                android:layout_height="20dp"
-                android:scaleType="centerCrop"
-                android:visibility="gone" />
         </RelativeLayout>
 
         <!-- 右图片按钮 -->
 
         <ImageButton
             android:id="@+id/title_right_imageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="10.0dip"

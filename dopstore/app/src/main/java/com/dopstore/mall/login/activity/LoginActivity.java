@@ -2,7 +2,10 @@ package com.dopstore.mall.login.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -16,11 +19,10 @@ import com.dopstore.mall.activity.bean.CityBean;
 import com.dopstore.mall.activity.bean.UserData;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.util.ACache;
+import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.HttpHelper;
 import com.dopstore.mall.util.OtherCallBack;
 import com.dopstore.mall.util.OtherLoginUtils;
-import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
@@ -31,7 +33,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,9 +41,6 @@ import java.util.Map;
 
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.ShareSDK;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 
 /**
@@ -55,9 +53,11 @@ public class LoginActivity extends BaseActivity {
     private Button loginBt, registBt;
     private TextView loseTxt;
     private ImageView weChatIv, qqIv, sinaIv;
+    private View seeV;
     private ACache aCache;
     private OtherLoginUtils otherLoginUtils;
     private Platform mPlatform;
+    private boolean isShow = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +70,7 @@ public class LoginActivity extends BaseActivity {
         aCache = ACache.get(this);
         otherLoginUtils = new OtherLoginUtils(this);
         topLayout = (RelativeLayout) findViewById(R.id.brandsquare_title_layout);
+        seeV = findViewById(R.id.login_pwd_et_see);
         topLayout.setBackgroundColor(getResources().getColor(R.color.white_color));
         leftTextBack("取消", getResources().getColor(R.color.red_color_f93448), listener);
         phoneEt = (EditText) findViewById(R.id.login_phone_et);
@@ -86,7 +87,36 @@ public class LoginActivity extends BaseActivity {
         weChatIv.setOnClickListener(listener);
         qqIv.setOnClickListener(listener);
         sinaIv.setOnClickListener(listener);
+        seeV.setOnClickListener(listener);
+        pwdEt.addTextChangedListener(new EditChangedListener());
     }
+
+    class EditChangedListener implements TextWatcher {
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            seeV.setVisibility(View.GONE);
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (s.length() > 0) {
+                seeV.setVisibility(View.VISIBLE);
+            } else {
+                seeV.setVisibility(View.GONE);
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (s.length() > 0) {
+                seeV.setVisibility(View.VISIBLE);
+            } else {
+                seeV.setVisibility(View.GONE);
+            }
+        }
+    }
+
 
     View.OnClickListener listener = new View.OnClickListener() {
         @Override
@@ -94,6 +124,18 @@ public class LoginActivity extends BaseActivity {
             switch (view.getId()) {
                 case R.id.title_left_textView: {//取消
                     SkipUtils.back(LoginActivity.this);
+                }
+                break;
+                case R.id.login_pwd_et_see: {//密码是否可见
+                    if (isShow == false) {
+                        pwdEt.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                        pwdEt.setSelection(pwdEt.getText().toString().length());
+                        isShow = true;
+                    } else {
+                        isShow = false;
+                        pwdEt.setSelection(pwdEt.getText().toString().length());
+                        pwdEt.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    }
                 }
                 break;
                 case R.id.login_register_bt: {//注册
@@ -152,20 +194,19 @@ public class LoginActivity extends BaseActivity {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put(Constant.MOBILE, phone);
         map.put(Constant.PASSWORD, pwd);
-        httpHelper.postKeyValuePairAsync(this, URL.LOGIN, map, new Callback() {
+        httpHelper.post(this, URL.LOGIN, map, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(LoginActivity.this);
+            public void success(String body) {
+                AnalyData(body);
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String body = response.body().string();
-                AnalyData(body);
+            public void failed(String msg) {
+                T.checkNet(LoginActivity.this);
                 proUtils.dismiss();
             }
-        }, null);
+        });
     }
 
     private void toOther(final int numStr) {
@@ -227,20 +268,19 @@ public class LoginActivity extends BaseActivity {
             break;
         }
         map.put("gender", gender);
-        httpHelper.postKeyValuePairAsync(this, URL.OTHER_SIGNUPL, map, new Callback() {
+        httpHelper.post(this, URL.OTHER_SIGNUPL, map, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(LoginActivity.this);
+            public void success(String body) {
+                AnalyData(body);
                 proUtils.dismiss();
             }
 
             @Override
-            public void onResponse(Call call,Response response) throws IOException {
-                String body = response.body().string();
-                AnalyData(body);
+            public void failed(String msg) {
+                T.checkNet(LoginActivity.this);
                 proUtils.dismiss();
             }
-        }, null);
+        });
     }
 
     private void AnalyData(String body) {

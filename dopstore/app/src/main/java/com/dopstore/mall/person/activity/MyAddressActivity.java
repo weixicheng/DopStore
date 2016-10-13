@@ -8,16 +8,17 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.person.adapter.MyAddressAdapter;
 import com.dopstore.mall.person.bean.MyAddressData;
+import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.HttpHelper;
-import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
@@ -32,11 +33,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 
 /**
@@ -45,6 +42,11 @@ import okhttp3.Response;
 public class MyAddressActivity extends BaseActivity {
     private ListView my_address;
     private RelativeLayout addLayout;
+    private LinearLayout errorLayout;
+    private TextView loadTv;
+    private LinearLayout emptyLayout;
+    private View emptyV;
+    private TextView emptyTv;
     private List<MyAddressData> listData = new ArrayList<MyAddressData>();
     private MyAddressAdapter mAdapter;
 
@@ -62,6 +64,14 @@ public class MyAddressActivity extends BaseActivity {
         my_address = (ListView) findViewById(R.id.lv_my_address);
         addLayout = (RelativeLayout) findViewById(R.id.my_address_add_layout);
         addLayout.setOnClickListener(listener);
+        errorLayout = (LinearLayout) findViewById(R.id.comm_error_layout);
+        loadTv = (TextView) findViewById(R.id.error_data_load_tv);
+        emptyLayout = (LinearLayout) findViewById(R.id.comm_empty_layout);
+        emptyTv = (TextView) findViewById(R.id.comm_empty_text);
+        emptyV = findViewById(R.id.comm_empty_v);
+        emptyV.setBackgroundResource(R.mipmap.address_empty_logo);
+        emptyTv.setText("您还没有收货地址");
+        loadTv.setOnClickListener(listener);
     }
 
     private void doRequest() {
@@ -71,16 +81,10 @@ public class MyAddressActivity extends BaseActivity {
     private void getAddress() {
         proUtils.show();
         String id = UserUtils.getId(this);
-        httpHelper.getDataAsync(this, URL.SHIPPINGADDRESS + id + "/shippingaddress", new Callback() {
+        httpHelper.get(this, URL.SHIPPINGADDRESS + id + "/shippingaddress", new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(MyAddressActivity.this);
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
+                errorLayout.setVisibility(View.GONE);
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
@@ -102,6 +106,9 @@ public class MyAddressActivity extends BaseActivity {
                                 data.setIs_check("0");
                                 listData.add(data);
                             }
+                            emptyLayout.setVisibility(View.GONE);
+                        }else {
+                            emptyLayout.setVisibility(View.VISIBLE);
                         }
                         handler.sendEmptyMessage(UPDATE_ADDRESS_CODE);
                     } else {
@@ -113,7 +120,13 @@ public class MyAddressActivity extends BaseActivity {
                 }
                 proUtils.dismiss();
             }
-        }, null);
+
+            @Override
+            public void failed(String msg) {
+                errorLayout.setVisibility(View.VISIBLE);
+                proUtils.dismiss();
+            }
+        });
     }
 
     private void refreshAdapter() {
@@ -145,6 +158,13 @@ public class MyAddressActivity extends BaseActivity {
                 case R.id.item_my_address_check_layout: {
 
                     refreshAdapter();
+                }
+                break;
+                case R.id.error_data_load_tv: {
+                    if (listData!=null){
+                        listData.clear();
+                    }
+                    getAddress();
                 }
                 break;
                 case R.id.item_my_address_edit: {

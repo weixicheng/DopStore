@@ -89,19 +89,33 @@
             android:layout_height="1dp"
             android:background="@color/gray_color_ee" />
 
-        <EditText
-            android:id="@+id/register_set_pwd_Et"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/margin_50"
-            android:layout_marginRight="@dimen/margin_10"
-            android:background="@null"
-            android:gravity="center_vertical"
-            android:hint="@string/regist_pwd_str"
-            android:inputType="text"
-            android:maxLines="1"
-            android:textColor="@color/gray_color_33"
-            android:textColorHint="@color/gray_color_99"
-            android:textSize="@dimen/textsize_14" />
+            android:layout_height="@dimen/margin_50">
+            <EditText
+                android:id="@+id/register_set_pwd_Et"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/margin_50"
+                android:layout_marginLeft="@dimen/margin_10"
+                android:layout_marginRight="@dimen/margin_10"
+                android:background="@null"
+                android:maxLines="1"
+                android:layout_centerVertical="true"
+                android:hint="@string/regist_pwd_str"
+                android:inputType="textPassword"
+                android:textColor="@color/gray_color_33"
+                android:textColorHint="@color/gray_color_99"
+                android:textSize="@dimen/textsize_14" />
+            <View
+                android:id="@+id/register_set_pwd_Et_see"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_width="19dp"
+                android:visibility="gone"
+                android:layout_marginRight="@dimen/margin_10"
+                android:layout_height="14.5dp"
+                android:background="@mipmap/see_logo"/>
+        </RelativeLayout>
 
         <View
             android:layout_width="match_parent"

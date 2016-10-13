@@ -14,10 +14,8 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.base.BaseActivity;
-import com.dopstore.mall.person.activity.MyBalanceActivity;
+import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.HttpHelper;
-import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
@@ -29,15 +27,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 /**
  * Created by 喜成 on 16/9/13.
@@ -46,7 +40,7 @@ import okhttp3.Response;
 public class ReChargeActivity extends BaseActivity {
     private RelativeLayout balanceLy, alipayLy, wechatLy;
     private View av, wv;
-    private TextView hintTv,priceTv;
+    private TextView hintTv, priceTv;
     private Button sureBt;
     private String order_price = "";
 
@@ -133,7 +127,7 @@ public class ReChargeActivity extends BaseActivity {
         alipayLy.setOnClickListener(null);
         wechatLy.setOnClickListener(null);
         proUtils.show();
-        String ipStr=Utils.GetHostIp(this);
+        String ipStr = Utils.GetHostIp(this);
         String type = getPay();
         String user_id = UserUtils.getId(this);
         Map<String, Object> map = new HashMap<String, Object>();
@@ -141,16 +135,9 @@ public class ReChargeActivity extends BaseActivity {
         map.put("channel", type);
         map.put("client_ip", ipStr);
         map.put("user_id", user_id);
-        httpHelper.postKeyValuePairAsync(this, URL.USER_RECHARGE, map, new Callback() {
+        httpHelper.post(this, URL.USER_RECHARGE, map, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(ReChargeActivity.this);
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
@@ -169,8 +156,14 @@ public class ReChargeActivity extends BaseActivity {
                 }
                 proUtils.dismiss();
             }
-        }, null);
-}
+
+            @Override
+            public void failed(String msg) {
+                T.checkNet(ReChargeActivity.this);
+                proUtils.dismiss();
+            }
+        });
+    }
 
     /**
      * 获取支付类型
@@ -229,7 +222,19 @@ public class ReChargeActivity extends BaseActivity {
                 String errorMsg = data.getExtras().getString("error_msg"); // 错误信息
                 //String extraMsg = data.getExtras().getString("extra_msg"); // 错误信息
                 if (result.equals("success")) {
+                    String balanceStr = UserUtils.getBalance(ReChargeActivity.this);
+                    if (!TextUtils.isEmpty(balanceStr)) {
+                        float price = Float.parseFloat(balanceStr);
+                        float rechargePrice = Float.parseFloat(order_price);
+                        float totalPrice = price + rechargePrice;
+                        UserUtils.setBalance(ReChargeActivity.this, totalPrice + "");
+                    } else {
+                        UserUtils.setBalance(ReChargeActivity.this, order_price);
+                    }
                     T.show(ReChargeActivity.this, "充值成功");
+                    Intent it = new Intent();
+                    it.setAction(Constant.UP_USER_DATA);
+                    sendBroadcast(it);
                 } else if (result.equals("fail")) {
                     T.show(ReChargeActivity.this, "支付失败");
                 } else if (result.equals("cancel")) {

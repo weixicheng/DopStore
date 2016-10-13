@@ -5,27 +5,9 @@ package com.dopstore.mall.util.ShareData;
  * 类别：
  */
 public class ShareData {
-    private int type;
-    private String title;
     private String content;
     private String image;
     private String url;
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
 
     public String getContent() {
         return content;

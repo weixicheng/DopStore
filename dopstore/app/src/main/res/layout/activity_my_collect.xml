@@ -75,4 +75,23 @@
         android:divider="@color/gray_color_ee"
         android:layout_height="match_parent" />
 
+    <LinearLayout
+        android:id="@+id/comm_error_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/my_collect_title_layout"
+        android:visibility="gone">
+
+        <include layout="@layout/comm_error_layout" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/comm_empty_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/my_collect_title_layout"
+        android:visibility="gone">
+
+        <include layout="@layout/comm_emty_layout" />
+    </LinearLayout>
+
 </RelativeLayout>

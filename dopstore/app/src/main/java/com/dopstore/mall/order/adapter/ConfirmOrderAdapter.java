@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.bean.GoodBean;
-import com.dopstore.mall.order.bean.ConfirmOrderData;
 import com.dopstore.mall.util.LoadImageUtils;
 
 import java.util.List;

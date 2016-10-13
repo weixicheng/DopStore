@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +13,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.MipcaActivityCapture;
@@ -28,9 +29,8 @@ import com.dopstore.mall.activity.bean.MiddleData;
 import com.dopstore.mall.activity.bean.ShopData;
 import com.dopstore.mall.base.BaseFragment;
 import com.dopstore.mall.shop.activity.SearchActivity;
+import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.HttpHelper;
-import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
@@ -50,9 +50,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 /**
  * 作者：xicheng on 16/9/21 17:57
@@ -61,10 +58,12 @@ import okhttp3.Response;
 public class MainShopFragment extends BaseFragment implements OnFooterRefreshListener, OnHeaderRefreshListener {
     private PullToRefreshView pullToRefreshView;
     private ListView listView;
-    private ImageView titleTv;
+    private TextView titleTv;
     private ImageButton leftBtn, rightBtn;
     private EScrollView eScrollView;
     private TabAdapter adapter;
+    private LinearLayout errorLayout;
+    private TextView loadTv;
     private List<MainTabData> tabList = new ArrayList<MainTabData>();
     private List<CarouselData> titleAdvertList = new ArrayList<CarouselData>();
     private List<MainMiddleData> midddleList = new ArrayList<MainMiddleData>();
@@ -93,18 +92,23 @@ public class MainShopFragment extends BaseFragment implements OnFooterRefreshLis
     private void initView(View v) {
         pullToRefreshView = (PullToRefreshView) v.findViewById(R.id.main_shop_fragment_pulltorefreshview);
         listView = (ListView) v.findViewById(R.id.main_shop_fragment_listview);
-        titleTv = (ImageView) v.findViewById(R.id.title_main_image);
+        titleTv = (TextView) v.findViewById(R.id.title_main_txt);
         leftBtn = (ImageButton) v.findViewById(R.id.title_left_imageButton);
         rightBtn = (ImageButton) v.findViewById(R.id.title_right_imageButton);
+        errorLayout = (LinearLayout) v.findViewById(R.id.main_shop_fragment_error_layout);
+        loadTv = (TextView) v.findViewById(R.id.error_data_load_tv);
         eScrollView = (EScrollView) v.findViewById(R.id.main_shop_fragment_tab_escrollview);
-        titleTv.setImageResource(R.mipmap.title_logo);
+        titleTv.setText("小海囤");
+        titleTv.setTextColor(mContext.getResources().getColor(R.color.white));
+        titleTv.setTextSize(20f);
         leftBtn.setBackgroundResource(R.mipmap.search_logo);
         leftBtn.setVisibility(View.VISIBLE);
         leftBtn.setOnClickListener(listener);
         titleTv.setVisibility(View.VISIBLE);
-        rightBtn.setVisibility(View.VISIBLE);
+        rightBtn.setVisibility(View.GONE);
         rightBtn.setBackgroundResource(R.mipmap.sweep_logo);
         rightBtn.setOnClickListener(listener);
+        loadTv.setOnClickListener(listener);
         pullToRefreshView.setOnHeaderRefreshListener(this);
         pullToRefreshView.setOnFooterRefreshListener(this);
     }
@@ -119,19 +123,14 @@ public class MainShopFragment extends BaseFragment implements OnFooterRefreshLis
     }
 
     private void getTabData() {
-        proUtils.show();
-        httpHelper.getDataAsync(mContext, URL.GOODS_CATEGORY, new Callback() {
+        if (isRefresh==false){
+            proUtils.show();
+        }
+        httpHelper.get(mContext, URL.GOODS_CATEGORY, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(mContext);
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String content) {
                 try {
-                    JSONObject jo = new JSONObject(body);
+                    JSONObject jo = new JSONObject(content);
                     String code = jo.optString(Constant.ERROR_CODE);
                     if ("0".equals(code)) {
                         MainTabData data = new MainTabData();
@@ -161,27 +160,27 @@ public class MainShopFragment extends BaseFragment implements OnFooterRefreshLis
                 }
                 proUtils.dismiss();
             }
-        }, null);
+
+            @Override
+            public void failed(String msg) {
+                proUtils.dismiss();
+            }
+        });
     }
 
     /**
      * 获取数据
      */
     private void getTopData() {
-        proUtils.show();
+        if (isRefresh==false){
+            proUtils.show();
+        }
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("project_type", "1");
-        httpHelper.postKeyValuePairAsync(mContext, URL.HOME_CAROUSEL, map, new Callback() {
+        httpHelper.post(mContext, URL.HOME_CAROUSEL, map, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(mContext);
-                dismissRefresh();
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Call call,Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
+                errorLayout.setVisibility(View.GONE);
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
@@ -208,7 +207,14 @@ public class MainShopFragment extends BaseFragment implements OnFooterRefreshLis
                 dismissRefresh();
                 proUtils.dismiss();
             }
-        }, null);
+
+            @Override
+            public void failed(String msg) {
+                errorLayout.setVisibility(View.VISIBLE);
+                dismissRefresh();
+                proUtils.dismiss();
+            }
+        });
         getMiddleData("");
     }
 
@@ -219,17 +225,10 @@ public class MainShopFragment extends BaseFragment implements OnFooterRefreshLis
         } else {
             map = null;
         }
-        httpHelper.postKeyValuePairAsync(mContext, URL.HOME_THEME, map, new Callback() {
+        httpHelper.post(mContext, URL.HOME_THEME, map, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(mContext);
-                dismissRefresh();
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Call call,Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
+                errorLayout.setVisibility(View.GONE);
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
@@ -248,12 +247,21 @@ public class MainShopFragment extends BaseFragment implements OnFooterRefreshLis
                 dismissRefresh();
                 proUtils.dismiss();
             }
-        }, null);
+
+            @Override
+            public void failed(String msg) {
+                errorLayout.setVisibility(View.VISIBLE);
+                dismissRefresh();
+                proUtils.dismiss();
+            }
+        });
         getHotData(id);
     }
 
     private void getHotData(final String type) {
-        proUtils.show();
+        if (isRefresh==false){
+            proUtils.show();
+        }
         Map<String, Object> map = new HashMap<String, Object>();
         if (!TextUtils.isEmpty(type)) {
             map.put("category_id", type);
@@ -262,17 +270,10 @@ public class MainShopFragment extends BaseFragment implements OnFooterRefreshLis
             map.put(Constant.PAGE, page + "");
             map.put("is_recommended", "1");
         }
-        httpHelper.postKeyValuePairAsync(mContext, URL.GOODS_LIST, map, new Callback() {
+        httpHelper.post(mContext, URL.GOODS_LIST, map, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(mContext);
-                dismissRefresh();
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Call call,Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
+                errorLayout.setVisibility(View.GONE);
                 analyData(body);
                 if (!TextUtils.isEmpty(type)) {
                     handler.sendEmptyMessage(UPDATA_OTHER_CODE);
@@ -282,7 +283,14 @@ public class MainShopFragment extends BaseFragment implements OnFooterRefreshLis
                 dismissRefresh();
                 proUtils.dismiss();
             }
-        }, null);
+
+            @Override
+            public void failed(String msg) {
+                errorLayout.setVisibility(View.VISIBLE);
+                dismissRefresh();
+                proUtils.dismiss();
+            }
+        });
     }
 
     private void analyData(String body) {
@@ -323,6 +331,21 @@ public class MainShopFragment extends BaseFragment implements OnFooterRefreshLis
                 break;
                 case R.id.title_right_imageButton: { // 打开扫描界面扫描条形码或二维码
                     SkipUtils.directJumpForResult(mContext, MipcaActivityCapture.class, SCANER_CODE);
+                }
+                break;
+                case R.id.error_data_load_tv: {
+                    isRefresh = true;
+                    if (isRefresh) {
+                        page = 1;
+                        if (viewType==0){
+                            initData();
+                        }else {
+                            bottomList.clear();
+                            midddleList.clear();
+                            getMiddleData(typeId);
+                            getHotData(typeId);
+                        }
+                    }
                 }
                 break;
             }

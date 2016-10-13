@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -89,7 +88,7 @@ public class PersonFragment extends BaseFragment {
         introTv = (TextView) v.findViewById(R.id.fragment_person_user_intro);
         priceTv = (TextView) v.findViewById(R.id.fragment_person_wallet_price);
         rightBt = (ImageButton) v.findViewById(R.id.title_right_imageButton);
-        rightBt.setImageResource(R.mipmap.setting_logo);
+        rightBt.setBackgroundResource(R.mipmap.setting_logo);
         rightBt.setVisibility(View.VISIBLE);
         rightBt.setOnClickListener(listener);
         headImage = (CircleImageView) v.findViewById(R.id.fragment_person_user_image);
@@ -114,7 +113,7 @@ public class PersonFragment extends BaseFragment {
         } else {
             headImage.setImageResource(R.mipmap.ic);
             nameTv.setVisibility(View.INVISIBLE);
-            introTv.setText("立即登录");
+            introTv.setText("登录/注册");
         }
     }
 

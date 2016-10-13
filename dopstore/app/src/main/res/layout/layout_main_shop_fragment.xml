@@ -1,35 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:myRefresh="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:divider="@color/gray_color_ee"
-    android:orientation="vertical">
+    android:divider="@color/gray_color_ee">
 
-    <include layout="@layout/common_title" />
+    <include
+        android:id="@+id/main_shop_fragment_title_layout"
+        layout="@layout/common_title" />
 
     <com.dopstore.mall.view.EScrollView
         android:id="@+id/main_shop_fragment_tab_escrollview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/main_shop_fragment_title_layout"
         android:background="@color/white_color" />
 
-    <com.dopstore.mall.view.PullToRefreshView
-        android:id="@+id/main_shop_fragment_pulltorefreshview"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/gray_color_ee"
-        android:orientation="vertical"
-        myRefresh:pullDown="true"
-        myRefresh:pullUp="true">
+        android:layout_below="@id/main_shop_fragment_tab_escrollview"
+        android:orientation="vertical">
 
-        <ListView
-            android:id="@+id/main_shop_fragment_listview"
+
+        <com.dopstore.mall.view.PullToRefreshView
+            android:id="@+id/main_shop_fragment_pulltorefreshview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@null"
-            android:dividerHeight="0dp" />
+            android:background="@color/gray_color_ee"
+            android:orientation="vertical"
+            myRefresh:pullDown="true"
+            myRefresh:pullUp="true">
 
-    </com.dopstore.mall.view.PullToRefreshView>
+            <ListView
+                android:id="@+id/main_shop_fragment_listview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@null"
+                android:dividerHeight="0dp" />
 
-</LinearLayout>
+        </com.dopstore.mall.view.PullToRefreshView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/main_shop_fragment_error_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/main_shop_fragment_tab_escrollview"
+        android:visibility="gone">
+
+        <include layout="@layout/comm_error_layout"/>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

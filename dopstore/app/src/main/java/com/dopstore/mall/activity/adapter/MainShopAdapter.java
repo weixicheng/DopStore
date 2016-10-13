@@ -2,7 +2,6 @@ package com.dopstore.mall.activity.adapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
-import com.dopstore.mall.activity.WebActivity;
 import com.dopstore.mall.activity.bean.CarouselData;
 import com.dopstore.mall.activity.bean.MainMiddleData;
 import com.dopstore.mall.activity.bean.ShopData;
@@ -178,7 +176,7 @@ public class MainShopAdapter extends BaseAdapter {
 
         if (titleAdvertList != null) {
             //设置播放时间间隔
-            holder1.rollPagerView.setPlayDelay(1000);
+            holder1.rollPagerView.setPlayDelay(3000);
             //设置透明度
             holder1.rollPagerView.setAnimationDurtion(500);
             //设置适配器
@@ -203,6 +201,8 @@ public class MainShopAdapter extends BaseAdapter {
 //                }else {
                     Map<String, Object> map = new HashMap<String, Object>();
                     map.put(Constant.ID, titleAdvertList.get(position).getId());
+                    map.put(Constant.NAME, titleAdvertList.get(position).getTitle());
+                    map.put(Constant.PICTURE, titleAdvertList.get(position).getPicture());
                     SkipUtils.jumpForMapResult(context, ShopDetailActivity.class, map, 0);
 //                }
             }
@@ -227,6 +227,8 @@ public class MainShopAdapter extends BaseAdapter {
                 String id = data.getId();
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put(Constant.ID, id);
+                map.put(Constant.NAME, data.getName());
+                map.put(Constant.PICTURE, data.getCover());
                 SkipUtils.jumpForMapResult(context, ShopDetailActivity.class, map, 0);
             }
         });

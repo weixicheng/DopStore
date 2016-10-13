@@ -1,70 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_color_ee"
-    android:orientation="vertical">
+    android:background="@color/gray_color_ee">
 
-    <include layout="@layout/common_title" />
+    <include
+        android:id="@+id/delivery_info_title_layout"
+        layout="@layout/common_title" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white_color"
-        android:orientation="vertical"
-        android:padding="@dimen/margin_10">
+        android:layout_height="match_parent"
+        android:layout_below="@id/delivery_info_title_layout"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="订单编号:"
-                android:textColor="@color/gray_color_99"
-                android:textSize="@dimen/textsize_14" />
-
-            <TextView
-                android:id="@+id/delivery_info_id"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:textColor="@color/gray_color_33"
-                android:textSize="@dimen/textsize_14" />
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp">
+            android:background="@color/white_color"
+            android:orientation="vertical"
+            android:padding="@dimen/margin_10">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="配送方式:"
-                android:textColor="@color/gray_color_99"
-                android:textSize="@dimen/textsize_14" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/delivery_info_name"
-                android:layout_width="wrap_content"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="订单编号:"
+                    android:textColor="@color/gray_color_99"
+                    android:textSize="@dimen/textsize_14" />
+
+                <TextView
+                    android:id="@+id/delivery_info_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:textColor="@color/gray_color_33"
+                    android:textSize="@dimen/textsize_14" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:textColor="@color/gray_color_33"
-                android:textSize="@dimen/textsize_14" />
+                android:layout_marginTop="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="配送方式:"
+                    android:textColor="@color/gray_color_99"
+                    android:textSize="@dimen/textsize_14" />
+
+                <TextView
+                    android:id="@+id/delivery_info_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:textColor="@color/gray_color_33"
+                    android:textSize="@dimen/textsize_14" />
+            </LinearLayout>
+
         </LinearLayout>
 
+        <ListView
+            android:id="@+id/delivery_info_listview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/margin_20"
+            android:background="@color/white_color"
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            android:scrollbars="none" />
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/delivery_info_listview"
+    <LinearLayout
+        android:id="@+id/comm_error_layout"
         android:layout_width="match_parent"
-        android:scrollbars="none"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/margin_20"
-        android:background="@color/white_color"
-        android:divider="@null"
-        android:dividerHeight="0dp" />
+        android:layout_below="@id/delivery_info_title_layout"
+        android:visibility="gone">
 
-</LinearLayout>
+        <include layout="@layout/comm_error_layout" />
+    </LinearLayout>
+
+</RelativeLayout>

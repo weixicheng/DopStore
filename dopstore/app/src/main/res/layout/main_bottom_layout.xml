@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/main_tab_image"
             android:gravity="center_horizontal"
-            android:text="海囤湾"
+            android:text="商城"
             android:textColor="@color/red_color_f93448"
             android:textSize="@dimen/textsize_10" />
     </RelativeLayout>

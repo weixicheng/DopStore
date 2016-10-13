@@ -8,9 +8,8 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.amap.api.location.AMapLocationClient;
 import com.dopstore.mall.R;
-import com.dopstore.mall.util.HttpHelper;
+import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.view.addresspicker.wheel.widget.model.CityModel;
@@ -67,7 +66,7 @@ public class BaseActivity extends AppCompatActivity {
     protected String mCurrentZipCode = "";
 
 
-    public HttpHelper httpHelper;
+    public CommHttp httpHelper;
     public ProUtils proUtils;
 
     @Override
@@ -75,7 +74,7 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         MyApplication.getInstance().addActivity(this);
         ShareSDK.initSDK(this);
-        httpHelper = HttpHelper.getOkHttpClientUtils(this);
+        httpHelper = CommHttp.getInstance(this);
         proUtils = new ProUtils(this);
     }
 
@@ -129,7 +128,7 @@ public class BaseActivity extends AppCompatActivity {
      */
     protected void leftImageBack(int imageId) {
         ImageButton id = (ImageButton) findViewById(R.id.title_left_imageButton);
-        id.setImageResource(imageId);
+        id.setBackgroundResource(imageId);
         id.setVisibility(View.VISIBLE);
         if (id != null) {
             id.setOnClickListener(new View.OnClickListener() {
@@ -159,7 +158,7 @@ public class BaseActivity extends AppCompatActivity {
      */
     protected void rightFirstImageBack(int imageId, View.OnClickListener listener) {
         ImageButton id = (ImageButton) findViewById(R.id.title_right_imageButton);
-        id.setImageResource(imageId);
+        id.setBackgroundResource(imageId);
         id.setVisibility(View.VISIBLE);
         if (id != null) {
             id.setOnClickListener(listener);
@@ -171,7 +170,7 @@ public class BaseActivity extends AppCompatActivity {
      */
     protected void rightSecondImageBack(int imageId, View.OnClickListener listener) {
         ImageButton id = (ImageButton) findViewById(R.id.title_right_before_imageButton);
-        id.setImageResource(imageId);
+        id.setBackgroundResource(imageId);
         id.setVisibility(View.VISIBLE);
         if (id != null) {
             id.setOnClickListener(listener);

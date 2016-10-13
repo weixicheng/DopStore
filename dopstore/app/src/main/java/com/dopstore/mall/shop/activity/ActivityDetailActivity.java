@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -18,10 +19,11 @@ import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.login.activity.LoginActivity;
 import com.dopstore.mall.shop.adapter.ActivityDetailAdapter;
 import com.dopstore.mall.shop.bean.ActivityDetailBean;
+import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.HttpHelper;
 import com.dopstore.mall.util.LoadImageUtils;
-import com.dopstore.mall.util.ProUtils;
+import com.dopstore.mall.util.OtherLoginUtils;
+import com.dopstore.mall.util.ShareData.ShareData;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
@@ -42,9 +44,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 /**
  * 作者：xicheng on 16/9/13
@@ -52,6 +51,7 @@ import okhttp3.Response;
 public class ActivityDetailActivity extends BaseActivity {
     private RelativeLayout topLayout, bottomLy;
     private String isCollect = "0";
+    private ImageButton collectBt,shareBt;
     private DetailMenu detailMenu;
     private YsnowWebView webView;
     private YsnowScrollViewPageOne pageOne;
@@ -59,11 +59,14 @@ public class ActivityDetailActivity extends BaseActivity {
     private TextView titleTv, priceTv, numTv, timeTv, ageTv, addressTv, shopTv, phoneTv;
     private EScrollView eScrollView;
     private LinearLayout shopLayout;
+    private LinearLayout errorLayout;
+    private TextView loadTv;
 
     private ActivityDetailBean detailBean;
     private List<ShopData> datas;
     private LoadImageUtils loadImageUtils;
     private String activity_id;
+    private OtherLoginUtils otherLoginUtils;
 
 
     @Override
@@ -76,6 +79,7 @@ public class ActivityDetailActivity extends BaseActivity {
 
     private void initView() {
         loadImageUtils = LoadImageUtils.getInstance(this);
+        otherLoginUtils=new OtherLoginUtils(this);
         Map<String, Object> map = SkipUtils.getMap(this);
         if (map == null) return;
         activity_id = map.get(Constant.ID).toString();
@@ -95,15 +99,25 @@ public class ActivityDetailActivity extends BaseActivity {
         phoneTv = (TextView) findViewById(R.id.activity_detail_phone);
         eScrollView = (EScrollView) findViewById(R.id.activity_detail_about_scrollview);
         bottomLy = (RelativeLayout) findViewById(R.id.activity_detail_bottom_layout);
+        errorLayout = (LinearLayout) findViewById(R.id.comm_error_layout);
+        loadTv = (TextView) findViewById(R.id.error_data_load_tv);
+        loadTv.setOnClickListener(listener);
         bottomLy.setOnClickListener(listener);
         setTopBg(getResources().getColor(R.color.transparent));
         setCustomTitle("活动详情", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
-        rightFirstImageBack(R.mipmap.share_logo, listener);
+        collectBt= (ImageButton) findViewById(R.id.title_right_before_imageButton);
+        collectBt.setBackgroundResource(R.mipmap.collect_logo);
+        collectBt.setVisibility(View.VISIBLE);
+        collectBt.setOnClickListener(listener);
+        shareBt= (ImageButton) findViewById(R.id.title_right_imageButton);
+        shareBt.setImageResource(R.mipmap.share_logo);
+        shareBt.setVisibility(View.VISIBLE);
+        shareBt.setOnClickListener(listener);
         if (isCollect.equals("0")) {
-            rightSecondImageBack(R.mipmap.collect_small_logo, listener);
+            collectBt.setBackgroundResource(R.mipmap.collect_logo);
         } else {
-            rightSecondImageBack(R.mipmap.collect_check_logo, listener);
+            collectBt.setBackgroundResource(R.mipmap.collect_check_logo);
         }
         detailMenu.openMenu();
         detailMenu.setView(topLayout);
@@ -118,6 +132,8 @@ public class ActivityDetailActivity extends BaseActivity {
                 ShopData data = datas.get(i);
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put(Constant.ID, data.getId());
+                map.put(Constant.NAME, data.getName());
+                map.put(Constant.PICTURE, data.getCover());
                 SkipUtils.jumpForMap(ActivityDetailActivity.this, ShopDetailActivity.class, map, false);
             }
         });
@@ -130,16 +146,10 @@ public class ActivityDetailActivity extends BaseActivity {
         if (UserUtils.haveLogin(this)) {
             map.put("user_id", UserUtils.getId(this));
         }
-        httpHelper.postKeyValuePairAsync(this, URL.ACTIVITY_DETAILS, map, new Callback() {
+        httpHelper.post(this, URL.ACTIVITY_DETAILS, map, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(ActivityDetailActivity.this);
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
+                errorLayout.setVisibility(View.GONE);
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
@@ -185,7 +195,13 @@ public class ActivityDetailActivity extends BaseActivity {
                 }
                 proUtils.dismiss();
             }
-        }, null);
+
+            @Override
+            public void failed(String msg) {
+                errorLayout.setVisibility(View.VISIBLE);
+                proUtils.dismiss();
+            }
+        });
     }
 
     private final static int UPDATA_DETAIL_CODE = 0;
@@ -199,21 +215,21 @@ public class ActivityDetailActivity extends BaseActivity {
                 case COLLECT_SCUESS_CODE: {
                     T.show(ActivityDetailActivity.this, "添加成功");
                     isCollect = "1";
-                    rightSecondImageBack(R.mipmap.collect_check_logo, listener);
+                    collectBt.setBackgroundResource(R.mipmap.collect_check_logo);
                 }
                 break;
                 case COLLECT_CANCEL_CODE: {
                     T.show(ActivityDetailActivity.this, "取消成功");
                     isCollect = "0";
-                    rightSecondImageBack(R.mipmap.collect_small_logo, listener);
+                    collectBt.setBackgroundResource(R.mipmap.collect_logo);
                 }
                 break;
                 case UPDATA_DETAIL_CODE: {
                     isCollect = detailBean.getIs_collect();
                     if ("1".equals(isCollect)) {
-                        rightSecondImageBack(R.mipmap.collect_check_logo, listener);
+                        collectBt.setBackgroundResource(R.mipmap.collect_check_logo);
                     } else {
-                        rightSecondImageBack(R.mipmap.collect_small_logo, listener);
+                        collectBt.setBackgroundResource(R.mipmap.collect_logo);
                     }
                     loadImageUtils.displayImage(detailBean.getPicture(), imageView);
                     titleTv.setText(detailBean.getName());
@@ -245,7 +261,6 @@ public class ActivityDetailActivity extends BaseActivity {
                         shopLayout.setVisibility(View.GONE);
                     }
                     webView.loadDataWithBaseURL(null, detailBean.getContent(), "text/html", "utf-8", null);
-
                 }
                 break;
             }
@@ -257,6 +272,11 @@ public class ActivityDetailActivity extends BaseActivity {
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.title_right_imageButton: {//分享
+                    ShareData shareData=new ShareData();
+                    shareData.setContent(detailBean.getName());
+                    shareData.setImage(detailBean.getPicture());
+                    shareData.setUrl("http://orange.dev.attackt.com/h5/activity/"+activity_id);
+                    otherLoginUtils.showShare(ActivityDetailActivity.this,shareData);
                 }
                 break;
                 case R.id.title_right_before_imageButton: {//收藏
@@ -277,6 +297,12 @@ public class ActivityDetailActivity extends BaseActivity {
                     }
                 }
                 break;
+                case R.id.error_data_load_tv:{
+                    if (detailBean!=null){
+                        detailBean=null;
+                    }
+                    getDetail();
+                }break;
             }
 
         }
@@ -293,16 +319,9 @@ public class ActivityDetailActivity extends BaseActivity {
         map.put("item_id", activity_id);
         map.put("action_id", isCollect);
         map.put("is_activity", "1");
-        httpHelper.postKeyValuePairAsync(this, URL.COLLECTION_EDIT, map, new Callback() {
+        httpHelper.post(this, URL.COLLECTION_EDIT, map, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(ActivityDetailActivity.this);
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Call call,Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
@@ -321,7 +340,13 @@ public class ActivityDetailActivity extends BaseActivity {
                 }
                 proUtils.dismiss();
             }
-        }, null);
+
+            @Override
+            public void failed(String msg) {
+                T.checkNet(ActivityDetailActivity.this);
+                proUtils.dismiss();
+            }
+        });
     }
 
 

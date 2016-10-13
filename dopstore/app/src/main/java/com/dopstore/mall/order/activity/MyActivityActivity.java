@@ -1,24 +1,29 @@
 package com.dopstore.mall.order.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.order.adapter.MyActivityAdapter;
 import com.dopstore.mall.order.bean.MyActivityData;
+import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.HttpHelper;
-import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
+import com.dopstore.mall.view.PullToRefreshView;
+import com.dopstore.mall.view.PullToRefreshView.OnFooterRefreshListener;
+import com.dopstore.mall.view.PullToRefreshView.OnHeaderRefreshListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,18 +35,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
+
 
 /**
  * Created by 喜成 on 16/9/8.
  * name
  */
-public class MyActivityActivity extends BaseActivity {
+public class MyActivityActivity extends BaseActivity implements OnFooterRefreshListener,OnHeaderRefreshListener{
+    private PullToRefreshView pullToRefreshView;
     private ListView lv;
+    private LinearLayout errorLayout;
+    private TextView loadTv;
+    private LinearLayout emptyLayout;
+    private View emptyV;
+    private TextView emptyTv;
     private List<MyActivityData> items = new ArrayList<MyActivityData>();
-    private MyActivityAdapter adapter;
+    private boolean isRefresh=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +64,26 @@ public class MyActivityActivity extends BaseActivity {
         setCustomTitle("我的活动", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         lv = (ListView) findViewById(R.id.my_activity_lv);
+        errorLayout = (LinearLayout) findViewById(R.id.comm_error_layout);
+        loadTv = (TextView) findViewById(R.id.error_data_load_tv);
+        emptyLayout = (LinearLayout) findViewById(R.id.comm_empty_layout);
+        emptyTv = (TextView) findViewById(R.id.comm_empty_text);
+        emptyV = findViewById(R.id.comm_empty_v);
+        emptyV.setBackgroundResource(R.mipmap.activity_empty_logo);
+        emptyTv.setText("您还没有相关活动订单");
+        pullToRefreshView = (PullToRefreshView) findViewById(R.id.my_activity_pulltorefresh);
+        pullToRefreshView.setOnFooterRefreshListener(this);
+        pullToRefreshView.onFooterRefreshComplete();
+        pullToRefreshView.setOnHeaderRefreshListener(this);
+        loadTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (items != null) {
+                    items.clear();
+                }
+                getMyOrder();
+            }
+        });
     }
 
     private void initData() {
@@ -62,18 +91,13 @@ public class MyActivityActivity extends BaseActivity {
     }
 
     private void getMyOrder() {
-        proUtils.show();
+        if (isRefresh==false){
+            proUtils.show();}
         String id = UserUtils.getId(this);
-        httpHelper.getDataAsync(this, URL.ORDER_ACTIVITY_LIST + id, new Callback() {
+        httpHelper.get(this, URL.ORDER_ACTIVITY_LIST + id, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(MyActivityActivity.this);
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
+                errorLayout.setVisibility(View.GONE);
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
@@ -91,7 +115,6 @@ public class MyActivityActivity extends BaseActivity {
                                 items.add(data);
                             }
                         }
-
                     } else {
                         String msg = jo.optString(Constant.ERROR_MSG);
                         T.show(MyActivityActivity.this, msg);
@@ -100,9 +123,17 @@ public class MyActivityActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                dismissRefresh();
                 proUtils.dismiss();
             }
-        }, null);
+
+            @Override
+            public void failed(String msg) {
+                errorLayout.setVisibility(View.VISIBLE);
+                dismissRefresh();
+                proUtils.dismiss();
+            }
+        });
     }
 
     private final static int UPDATA_ORDER_CODE = 0;
@@ -120,6 +151,11 @@ public class MyActivityActivity extends BaseActivity {
     };
 
     private void refreshListView() {
+        if (items.size()>0){
+            emptyLayout.setVisibility(View.GONE);
+        }else {
+            emptyLayout.setVisibility(View.VISIBLE);
+        }
         lv.setAdapter(new MyActivityAdapter(this, items));
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -130,9 +166,28 @@ public class MyActivityActivity extends BaseActivity {
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put(Constant.ID, id);
                 map.put("type", stu);
-                SkipUtils.jumpForMap(MyActivityActivity.this, ActivityOrderDetailActivity.class, map, false);
+                SkipUtils.jumpForMapResult(MyActivityActivity.this, ActivityOrderDetailActivity.class, map, BACK_DETAIL_CODE);
             }
         });
+    }
+
+    private final static int BACK_DETAIL_CODE = 1;
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data==null)return;
+        if (requestCode==BACK_DETAIL_CODE){
+            Map<String,Object> map=(Map<String, Object>) data.getSerializableExtra("map");
+            if (map==null)return;
+            String flag=map.get(Constant.ID).toString();
+            if ("true".equals(flag)) {
+                isRefresh = true;
+                if (isRefresh) {
+                    items.clear();
+                    getMyOrder();
+                }
+            }
+        }
     }
 
     @Override
@@ -142,6 +197,27 @@ public class MyActivityActivity extends BaseActivity {
             return true;
         } else {
             return super.onKeyDown(keyCode, event);
+        }
+    }
+
+    @Override
+    public void onFooterRefresh(PullToRefreshView view) {
+        pullToRefreshView.onFooterRefreshComplete();
+    }
+
+    @Override
+    public void onHeaderRefresh(PullToRefreshView view) {
+        isRefresh=true;
+        if (isRefresh) {
+            items.clear();
+            getMyOrder();
+        }
+    }
+
+    private void dismissRefresh(){
+        if (isRefresh){
+            pullToRefreshView.onHeaderRefreshComplete();
+            isRefresh=false;
         }
     }
 }

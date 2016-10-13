@@ -96,6 +96,13 @@ public class UserUtils {
         return sp.getString(Constant.BALANCE, "");
     }
 
+    public static void setBalance(Context context,String price) {
+        SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(Constant.BALANCE, price);
+        editor.commit();
+    }
+
     public static String getCity(Context context) {
         SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
         return sp.getString(Constant.CITY, "");

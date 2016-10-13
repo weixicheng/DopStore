@@ -152,6 +152,8 @@ public class MainOtherShopAdapter extends BaseAdapter {
                 String id = data.getId();
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put(Constant.ID, id);
+                map.put(Constant.NAME, data.getName());
+                map.put(Constant.PICTURE, data.getCover());
                 SkipUtils.jumpForMapResult(context, ShopDetailActivity.class, map, 0);
             }
         });

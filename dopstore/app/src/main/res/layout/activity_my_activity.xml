@@ -1,18 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:myRefresh="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:background="@color/gray_color_ee"
-    android:orientation="vertical"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/gray_color_ee">
 
-    <include layout="@layout/common_title" />
+    <include
+        android:id="@+id/my_activity_title_layout"
+        layout="@layout/common_title" />
 
-    <ListView
-        android:id="@+id/my_activity_lv"
+    <com.dopstore.mall.view.PullToRefreshView
+        android:id="@+id/my_activity_pulltorefresh"
+        android:layout_width="match_parent"
+        android:layout_below="@id/my_activity_title_layout"
+        android:layout_height="match_parent"
+        android:background="@color/gray_color_ee"
+        android:orientation="vertical"
+        myRefresh:pullDown="true"
+        myRefresh:pullUp="true">
+
+        <ListView
+            android:id="@+id/my_activity_lv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@color/gray_color_ee"
+            android:dividerHeight="10dp" />
+    </com.dopstore.mall.view.PullToRefreshView>
+
+    <LinearLayout
+        android:id="@+id/comm_error_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="@color/gray_color_ee"
-        android:dividerHeight="10dp" />
+        android:layout_below="@id/my_activity_title_layout"
+        android:visibility="gone">
+
+        <include layout="@layout/comm_error_layout" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/comm_empty_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/my_activity_title_layout"
+        android:visibility="gone">
+
+        <include layout="@layout/comm_emty_layout" />
+    </LinearLayout>
 
 
-</LinearLayout>
+
+</RelativeLayout>

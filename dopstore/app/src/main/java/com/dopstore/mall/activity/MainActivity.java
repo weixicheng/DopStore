@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.KeyEvent;
@@ -22,7 +21,6 @@ import com.dopstore.mall.activity.fragment.MainShopFragment;
 import com.dopstore.mall.activity.fragment.MainSportFragment;
 import com.dopstore.mall.activity.fragment.PersonFragment;
 import com.dopstore.mall.activity.fragment.TrolleyFragment;
-import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.base.BaseFragmentActivity;
 import com.dopstore.mall.base.MyApplication;
 import com.dopstore.mall.login.activity.LoginActivity;
@@ -89,18 +87,17 @@ public class MainActivity extends BaseFragmentActivity {
         headIv = (ImageView) findViewById(R.id.head_tab_image);
         myIv = (ImageView) findViewById(R.id.my_tab_image);
 
-
         receiver = new Receiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(Constant.UP_USER_DATA);
         filter.addAction(Constant.BACK_CART_DATA);
+        filter.addAction(Constant.BACK_CART_REFRESH_DATA);
         registerReceiver(receiver, filter);
     }
 
 
     private void initData() {
-        FragmentAdapter adapter = new FragmentAdapter(
-                this.getSupportFragmentManager());
+        FragmentAdapter adapter = new FragmentAdapter(this.getSupportFragmentManager());
         viewPager.setOffscreenPageLimit(4);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(MAIN_CODE);
@@ -284,8 +281,19 @@ public class MainActivity extends BaseFragmentActivity {
                     personFragment.loadData();
                 }
             } else if (action.equals(Constant.BACK_CART_DATA)) {
+                setTab(ROB_CODE);
                 viewPager.setCurrentItem(ROB_CODE);
+            }else if (action.equals(Constant.BACK_CART_REFRESH_DATA)){
+                if (trolleyFragment!=null){
+                    trolleyFragment.loadData();
+                }
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver);
     }
 }

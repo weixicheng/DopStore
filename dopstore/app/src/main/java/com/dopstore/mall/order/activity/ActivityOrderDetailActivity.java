@@ -12,28 +12,24 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
-import com.dopstore.mall.activity.fragment.MainSportFragment;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.order.bean.ActivityOrderDetailBean;
+import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.HttpHelper;
 import com.dopstore.mall.util.LoadImageUtils;
-import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.Utils;
+import com.dopstore.mall.view.CommonDialog;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 /**
  * Created by 喜成 on 16/9/12.
@@ -47,6 +43,7 @@ public class ActivityOrderDetailActivity extends BaseActivity {
     private RelativeLayout zxingLayout, submitLayout;
     private String id;
     private ActivityOrderDetailBean detailBean;
+    private CommonDialog dialog;
 
 
     @Override
@@ -118,16 +115,9 @@ public class ActivityOrderDetailActivity extends BaseActivity {
 
     private void getOrderDetail() {
         proUtils.show();
-        httpHelper.getDataAsync(this, URL.ORDER_ACTIVITY + "/" + id, new Callback() {
+        httpHelper.get(this, URL.ORDER_ACTIVITY + "/" + id, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(ActivityOrderDetailActivity.this);
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
@@ -159,7 +149,13 @@ public class ActivityOrderDetailActivity extends BaseActivity {
                 }
                 proUtils.dismiss();
             }
-        }, null);
+
+            @Override
+            public void failed(String msg) {
+                T.checkNet(ActivityOrderDetailActivity.this);
+                proUtils.dismiss();
+            }
+        });
     }
 
     View.OnClickListener listener = new View.OnClickListener() {
@@ -174,9 +170,7 @@ public class ActivityOrderDetailActivity extends BaseActivity {
                         map.put(Constant.PRICE,detailBean.getTotal_fee());
                         SkipUtils.jumpForMap(ActivityOrderDetailActivity.this,ActivityCashierActivity.class,map,false);
                     }else if ("申请退款".equals(submitText)){
-                        Map<String,Object> map=new HashMap<String,Object>();
-                        map.put(Constant.LIST,detailBean);
-                        SkipUtils.jumpForMap(ActivityOrderDetailActivity.this,RefundActivityOrderActivity.class,map,false);
+                        refundOrder();
                     }
                 }
                 break;
@@ -189,7 +183,40 @@ public class ActivityOrderDetailActivity extends BaseActivity {
         }
     };
 
+
+    private void refundOrder() {
+        proUtils.show();
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("order_num", detailBean.getOrder_num());
+        httpHelper.post(this, URL.ACTIVITY_REFUND, map, new CommHttp.HttpCallBack() {
+            @Override
+            public void success(String body) {
+                try {
+                    JSONObject jo = new JSONObject(body);
+                    String code = jo.optString(Constant.ERROR_CODE);
+                    if ("0".equals(code)) {
+                        handler.sendEmptyMessage(SUB_SUCCESS_CODE);
+                    } else {
+                        String msg = jo.optString(Constant.ERROR_MSG);
+                        T.show(ActivityOrderDetailActivity.this, msg);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                proUtils.dismiss();
+            }
+
+            @Override
+            public void failed(String msg) {
+                T.checkNet(ActivityOrderDetailActivity.this);
+                proUtils.dismiss();
+            }
+        });
+    }
+
     private final static int UPDATA_ORDER_CODE = 0;
+    private final static int SUB_SUCCESS_CODE = 1;
+    private final static int SUB_DIALOG_CODE = 2;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -199,50 +226,26 @@ public class ActivityOrderDetailActivity extends BaseActivity {
                     setData();
                 }
                 break;
+                case SUB_SUCCESS_CODE: {
+                    dialog = new CommonDialog(ActivityOrderDetailActivity.this, handler, SUB_DIALOG_CODE, "", "退款申请已提交,商家正在处理...", Constant.SHOWCONFIRMBUTTON);
+                    dialog.show();
+                }
+                break;
+                case SUB_DIALOG_CODE: {
+                    if (dialog.isShowing()) {
+                        dialog.dismiss();
+                    }
+                    Map<String,Object> map=new HashMap<String,Object>();
+                    map.put(Constant.ID,"true");
+                    SkipUtils.backForMapResult(ActivityOrderDetailActivity.this,map);
+                }
+                break;
             }
         }
     };
 
     private void setData() {
         idTv.setText("订单号:" + detailBean.getOrder_num());
-        int type = detailBean.getStatus();
-        String typeName = "";
-        switch (type) {
-            case 0: {
-                typeName = "等待付款";
-            }
-            break;
-            case 1: {
-                typeName = "付款成功";
-            }
-            break;
-            case 2: {
-                typeName = "订单取消";
-            }
-            break;
-            case 3: {
-                typeName = "报名成功";
-            }
-            break;
-            case 4: {
-                typeName = "退款申请中";
-            }
-            break;
-            case 5: {
-                typeName = "退款中";
-            }
-            break;
-            case 6: {
-                typeName = "退款成功";
-            }
-            break;
-            case 7: {
-                typeName = "已完成";
-            }
-            break;
-        }
-        stateTv.setText(typeName);
-        loadImage.displayImage(detailBean.getPic(), shopImage);
         String zimage = detailBean.getQ_code();
         if (TextUtils.isEmpty(zimage)) {
             zxingLayout.setVisibility(View.GONE);
@@ -251,6 +254,53 @@ public class ActivityOrderDetailActivity extends BaseActivity {
             loadImage.displayImage(zimage, zxingImage);
             codeTv.setText("验证码:" + detailBean.getCode());
         }
+        int type = detailBean.getStatus();
+        String typeName = "";
+        switch (type) {
+            case 0: {
+                typeName = "等待付款";
+                zxingLayout.setVisibility(View.GONE);
+            }
+            break;
+            case 1: {
+                zxingLayout.setVisibility(View.VISIBLE);
+                typeName = "付款成功";
+            }
+            break;
+            case 2: {
+                zxingLayout.setVisibility(View.VISIBLE);
+                typeName = "订单取消";
+            }
+            break;
+            case 3: {
+                zxingLayout.setVisibility(View.VISIBLE);
+                typeName = "报名成功";
+            }
+            break;
+            case 4: {
+                zxingLayout.setVisibility(View.VISIBLE);
+                typeName = "退款申请中";
+            }
+            break;
+            case 5: {
+                zxingLayout.setVisibility(View.VISIBLE);
+                typeName = "退款中";
+            }
+            break;
+            case 6: {
+                zxingLayout.setVisibility(View.VISIBLE);
+                typeName = "退款成功";
+            }
+            break;
+            case 7: {
+                zxingLayout.setVisibility(View.VISIBLE);
+                typeName = "已完成";
+            }
+            break;
+        }
+        stateTv.setText(typeName);
+        loadImage.displayImage(detailBean.getPic(), shopImage);
+
         titleTv.setText(detailBean.getName());
         addressTv.setText("地址:" + detailBean.getAddress());
         String time = Utils.formatMilli(detailBean.getStart_time(), "yyyy-MM-dd");

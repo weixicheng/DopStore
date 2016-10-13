@@ -6,15 +6,16 @@ import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.person.adapter.HelpAdapter;
 import com.dopstore.mall.person.bean.HelpData;
+import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.HttpHelper;
-import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
@@ -29,9 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
+
 
 /**
  * Created by 喜成 on 16/9/12.
@@ -39,6 +38,8 @@ import okhttp3.Response;
  */
 public class HelpActivity extends BaseActivity {
     private ListView listView;
+    private LinearLayout errorLayout;
+    private TextView loadTv;
     private List<HelpData> lists = new ArrayList<HelpData>();
 
     @Override
@@ -53,6 +54,17 @@ public class HelpActivity extends BaseActivity {
         setCustomTitle("帮助中心", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         listView = (ListView) findViewById(R.id.help_list);
+        errorLayout = (LinearLayout) findViewById(R.id.comm_error_layout);
+        loadTv = (TextView) findViewById(R.id.error_data_load_tv);
+        loadTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (lists != null) {
+                    lists.clear();
+                }
+                getData();
+            }
+        });
     }
 
 
@@ -70,16 +82,10 @@ public class HelpActivity extends BaseActivity {
 
     private void getData() {
         proUtils.show();
-        httpHelper.getDataAsync(this, URL.USER_HELPS, new Callback() {
+        httpHelper.get(this, URL.USER_HELPS, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(HelpActivity.this);
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
+                errorLayout.setVisibility(View.GONE);
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
@@ -105,7 +111,13 @@ public class HelpActivity extends BaseActivity {
                 }
                 proUtils.dismiss();
             }
-        }, null);
+
+            @Override
+            public void failed(String msg) {
+                errorLayout.setVisibility(View.VISIBLE);
+                proUtils.dismiss();
+            }
+        });
     }
 
     private final static int UPDATA_CODE = 0;

@@ -15,16 +15,19 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.MainActivity;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.login.activity.LoginActivity;
-import com.dopstore.mall.order.activity.PaySuccessActivity;
+import com.dopstore.mall.order.activity.MyOrderActivity;
 import com.dopstore.mall.order.activity.ShopPaySuccessActivity;
+import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.HttpHelper;
-import com.dopstore.mall.util.ProUtils;
+import com.dopstore.mall.util.OtherLoginUtils;
+import com.dopstore.mall.util.ShareData.ShareData;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
@@ -38,18 +41,21 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 /**
  * 作者：xicheng on 16/9/12
  */
 public class ShopDetailActivity extends BaseActivity {
     private WebView webView;
+    private TextView titleTv;
+    private ImageButton collectBt,shareBt;
     private String isCollect = "0";
     private String shop_id;
     private JsInterface jsInterface;
+    private OtherLoginUtils otherLoginUtils;
+    private  String shop_url="";
+    private  String shop_title="";
+    private  String shop_image="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,14 +65,25 @@ public class ShopDetailActivity extends BaseActivity {
     }
 
     private void initView() {
+        otherLoginUtils=new OtherLoginUtils(this);
         Map<String, Object> map = SkipUtils.getMap(this);
         if (map == null) return;
         shop_id = map.get(Constant.ID).toString();
+        shop_title = map.get(Constant.NAME).toString();
+        shop_image = map.get(Constant.PICTURE).toString();
         webView = (WebView) findViewById(R.id.shop_detail_web);
-        setCustomTitle("商品详情", getResources().getColor(R.color.white_color));
+        titleTv= (TextView) findViewById(R.id.title_main_txt);
+        titleTv.setText("商品详情");
+        titleTv.setTextColor(getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
-        rightFirstImageBack(R.mipmap.share_logo, listener);
-
+        collectBt= (ImageButton) findViewById(R.id.title_right_before_imageButton);
+        collectBt.setBackgroundResource(R.mipmap.collect_logo);
+        collectBt.setVisibility(View.VISIBLE);
+        collectBt.setOnClickListener(listener);
+        shareBt= (ImageButton) findViewById(R.id.title_right_imageButton);
+        shareBt.setBackgroundResource(R.mipmap.share_logo);
+        shareBt.setVisibility(View.VISIBLE);
+        shareBt.setOnClickListener(listener);
         getCollectStatus();
         jsInterface = new JsInterface();
         initWebViewSetting();
@@ -109,8 +126,8 @@ public class ShopDetailActivity extends BaseActivity {
             }
 
         });
-        String url = URL.SHOP_GOOD_DETAIL_URL + shop_id;
-        webView.loadUrl(url);
+        shop_url= URL.SHOP_GOOD_DETAIL_URL + shop_id;
+        webView.loadUrl(shop_url);
         webView.addJavascriptInterface(jsInterface, "androidObj");
     }
 
@@ -182,11 +199,23 @@ public class ShopDetailActivity extends BaseActivity {
         }
 
         @android.webkit.JavascriptInterface
+        public void changeTitle(final String name) {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+
+                @Override
+                public void run() {
+                    collectBt.setVisibility(View.GONE);
+                    shareBt.setVisibility(View.GONE);
+                    titleTv.setText(name);
+                }
+            });
+        }
+
+        @android.webkit.JavascriptInterface
         public String getUserID() {
             String userID = "";
             if (UserUtils.haveLogin(ShopDetailActivity.this)) {
                 userID = UserUtils.getId(ShopDetailActivity.this);
-                T.show(ShopDetailActivity.this,userID);
                 return userID;
             } else {
                 userID="";
@@ -209,21 +238,17 @@ public class ShopDetailActivity extends BaseActivity {
         map.put("goods_id", goods_id);
         map.put("num", num);
         map.put("goods_sku_id", goods_sku_id);
-        httpHelper.postKeyValuePairAsync(this, URL.CART_GOODS_ADD, map, new Callback() {
+        httpHelper.post(this, URL.CART_GOODS_ADD, map, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(ShopDetailActivity.this);
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
                     if ("0".equals(code)) {
-                        T.show(ShopDetailActivity.this, "加入成功");
+                        Intent it=new Intent();
+                        it.setAction(Constant.BACK_CART_REFRESH_DATA);
+                        sendBroadcast(it);
+                        T.show(ShopDetailActivity.this, "添加购物车成功");
                     } else {
                         String msg = jo.optString(Constant.ERROR_MSG);
                         T.show(ShopDetailActivity.this, msg);
@@ -233,7 +258,13 @@ public class ShopDetailActivity extends BaseActivity {
                 }
                 proUtils.dismiss();
             }
-        }, null);
+
+            @Override
+            public void failed(String msg) {
+                T.checkNet(ShopDetailActivity.this);
+                proUtils.dismiss();
+            }
+        });
     }
 
     View.OnClickListener listener = new View.OnClickListener() {
@@ -241,7 +272,11 @@ public class ShopDetailActivity extends BaseActivity {
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.title_right_imageButton: {//分享
-                    SkipUtils.directJump(ShopDetailActivity.this, MainActivity.class, true);
+                    ShareData shareData=new ShareData();
+                    shareData.setContent(shop_title);
+                    shareData.setImage(shop_image);
+                    shareData.setUrl("http://orange.dev.attackt.com/h5/goods/"+shop_id);
+                    otherLoginUtils.showShare(ShopDetailActivity.this,shareData);
                 }
                 break;
                 case R.id.title_right_before_imageButton: {//收藏
@@ -260,24 +295,15 @@ public class ShopDetailActivity extends BaseActivity {
     private void getCollectStatus() {
         if (!UserUtils.haveLogin(this)) {
             isCollect = "0";
-            rightSecondImageBack(R.mipmap.collect_small_logo, listener);
+            collectBt.setBackgroundResource(R.mipmap.collect_logo);
             return;
         }
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("user_id", UserUtils.getId(this));
         map.put("goods_id", shop_id);
-        httpHelper.postKeyValuePairAsync(this, URL.COLLECTION_GOODS_STATUS, map, new Callback() {
+        httpHelper.post(this, URL.COLLECTION_GOODS_STATUS, map, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(ShopDetailActivity.this);
-                isCollect = "0";
-                handler.sendEmptyMessage(GET_COLLECT_STATUS_CODE);
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Call call,Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
@@ -295,7 +321,15 @@ public class ShopDetailActivity extends BaseActivity {
                 }
                 proUtils.dismiss();
             }
-        }, null);
+
+            @Override
+            public void failed(String msg) {
+                T.checkNet(ShopDetailActivity.this);
+                isCollect = "0";
+                handler.sendEmptyMessage(GET_COLLECT_STATUS_CODE);
+                proUtils.dismiss();
+            }
+        });
     }
 
     private void setCollectStatus(final String isCollect) {
@@ -303,22 +337,15 @@ public class ShopDetailActivity extends BaseActivity {
             SkipUtils.directJump(this, LoginActivity.class, false);
             return;
         }
-        rightSecondImageBack(R.mipmap.collect_small_logo, null);
+        collectBt.setBackgroundResource(R.mipmap.collect_logo);
         proUtils.show();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("user_id", UserUtils.getId(this));
         map.put("item_id", shop_id);
         map.put("action_id", isCollect);
-        httpHelper.postKeyValuePairAsync(this, URL.COLLECTION_EDIT, map, new Callback() {
+        httpHelper.post(this, URL.COLLECTION_EDIT, map, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(ShopDetailActivity.this);
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Call call,Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
@@ -337,7 +364,13 @@ public class ShopDetailActivity extends BaseActivity {
                 }
                 proUtils.dismiss();
             }
-        }, null);
+
+            @Override
+            public void failed(String msg) {
+                T.checkNet(ShopDetailActivity.this);
+                proUtils.dismiss();
+            }
+        });
     }
 
 
@@ -364,20 +397,20 @@ public class ShopDetailActivity extends BaseActivity {
                 case COLLECT_SCUESS_CODE: {
                     T.show(ShopDetailActivity.this, "添加成功");
                     isCollect = "1";
-                    rightSecondImageBack(R.mipmap.collect_check_logo, listener);
+                    collectBt.setBackgroundResource(R.mipmap.collect_check_logo);
                 }
                 break;
                 case COLLECT_CANCEL_CODE: {
                     T.show(ShopDetailActivity.this, "取消成功");
                     isCollect = "0";
-                    rightSecondImageBack(R.mipmap.collect_small_logo, listener);
+                    collectBt.setBackgroundResource(R.mipmap.collect_logo);
                 }
                 break;
                 case GET_COLLECT_STATUS_CODE: {
                     if ("0".equals(isCollect)) {
-                        rightSecondImageBack(R.mipmap.collect_small_logo, listener);
+                        collectBt.setBackgroundResource(R.mipmap.collect_logo);
                     } else {
-                        rightSecondImageBack(R.mipmap.collect_check_logo, listener);
+                        collectBt.setBackgroundResource(R.mipmap.collect_check_logo);
                     }
 
                 }

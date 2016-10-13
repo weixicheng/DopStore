@@ -27,7 +27,7 @@ public class URL {
     public static String GOODS_LIST = BASE_URL + "goods";//活动列表
     public static String CART_QUERY = BASE_URL + "home/cart/query";//查询购物车
     public static String CART_GOODS_ADD = BASE_URL + "home/cart/goods_add";//添加购物车
-    public static String CART_DELETE = BASE_URL + "home/cart/delete";//购物车物品删除
+    public static String CART_DELETE = BASE_URL + "home/cart/batch_del";//购物车物品删除
     public static String CART_EDIT = BASE_URL + "home/cart/edit";//购物车物品编辑
     public static String COLLECTION_EDIT = BASE_URL + "home/collection/edit";//加入或取消收藏
     public static String COLLECTION_QUERY = BASE_URL + "home/collection/query";//收藏列表

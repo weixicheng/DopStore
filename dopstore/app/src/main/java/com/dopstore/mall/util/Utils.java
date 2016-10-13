@@ -2,7 +2,6 @@ package com.dopstore.mall.util;
 
 import android.app.Activity;
 import android.content.Context;
-import android.hardware.Camera;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Base64;
@@ -113,12 +112,28 @@ public class Utils {
 
     private static String intToIp(int i) {
 
-        return (i & 0xFF ) + "." +
-                ((i >> 8 ) & 0xFF) + "." +
-                ((i >> 16 ) & 0xFF) + "." +
-                ( i >> 24 & 0xFF) ;
+        return (i & 0xFF) + "." +
+                ((i >> 8) & 0xFF) + "." +
+                ((i >> 16) & 0xFF) + "." +
+                (i >> 24 & 0xFF);
     }
 
+    public static boolean isNum(String str){
+        return str.matches("^[-+]?(([0-9]+)([.]([0-9]+))?|([.]([0-9]+))?)$");
+    }
+
+    /**
+     * @TODO 替换单引号和双引号
+     * @throw
+     * @author ren
+     * @date: 2014-7-10 下午1:43:46
+     * @return String
+     */
+    public static String replaceNamePass(String namePass) {
+        String name = namePass;
+        name = name.replace("\"", "&quot;");
+        return name;
+    }
 
 
 }

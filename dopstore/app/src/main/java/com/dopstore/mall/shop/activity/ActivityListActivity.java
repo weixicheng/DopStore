@@ -6,6 +6,7 @@ import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -13,9 +14,8 @@ import com.dopstore.mall.R;
 import com.dopstore.mall.activity.adapter.ActivityAdapter;
 import com.dopstore.mall.activity.bean.ActivityData;
 import com.dopstore.mall.base.BaseActivity;
+import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.HttpHelper;
-import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
@@ -24,15 +24,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 /**
  * Created by 喜成 on 16/9/13
@@ -42,9 +38,11 @@ public class ActivityListActivity extends BaseActivity {
     private TextView firstTv, secondTv, thirdTv, fourTv;
     private View firstv, secondv, thirdv, fourv;
     private ListView listView;
+    private LinearLayout errorLayout;
+    private TextView loadTv;
     private ActivityAdapter adapter;
     private List<ActivityData> aList = new ArrayList<ActivityData>();
-    private String searchStr="";
+    private String searchStr = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +64,9 @@ public class ActivityListActivity extends BaseActivity {
         thirdv = findViewById(R.id.shop_list_thirdv);
         fourv = findViewById(R.id.shop_list_fourv);
         listView = (ListView) findViewById(R.id.shop_list_listview);
+        errorLayout = (LinearLayout) findViewById(R.id.comm_error_layout);
+        loadTv = (TextView) findViewById(R.id.error_data_load_tv);
+        loadTv.setOnClickListener(listener);
         firstTv.setOnClickListener(listener);
         secondTv.setOnClickListener(listener);
         thirdTv.setOnClickListener(listener);
@@ -73,9 +74,9 @@ public class ActivityListActivity extends BaseActivity {
     }
 
     private void initData() {
-        Map<String,Object> map=SkipUtils.getMap(this);
-        if (map==null)return;
-        searchStr=map.get(Constant.ID).toString();
+        Map<String, Object> map = SkipUtils.getMap(this);
+        if (map == null) return;
+        searchStr = map.get(Constant.ID).toString();
         getOtherData("1");
     }
 
@@ -86,21 +87,21 @@ public class ActivityListActivity extends BaseActivity {
         map.put(Constant.PAGE, "1");
         map.put("kw", searchStr);
         map.put("order_id", id);
-        httpHelper.postKeyValuePairAsync(this, URL.RECOMMENDED_ACT, map, new Callback() {
+        httpHelper.post(this, URL.RECOMMENDED_ACT, map, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(ActivityListActivity.this);
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
+                errorLayout.setVisibility(View.GONE);
                 analysisData(body);
                 handler.sendEmptyMessage(UPDATA_OTHER_CODE);
                 proUtils.dismiss();
             }
-        }, null);
+
+            @Override
+            public void failed(String msg) {
+                errorLayout.setVisibility(View.VISIBLE);
+                proUtils.dismiss();
+            }
+        });
     }
 
 
@@ -159,7 +160,13 @@ public class ActivityListActivity extends BaseActivity {
                     fourv.setVisibility(View.VISIBLE);
                     aList.clear();
                     getOtherData("4");
-
+                }
+                break;
+                case R.id.error_data_load_tv: {
+                    if (aList != null) {
+                        aList.clear();
+                    }
+                    getOtherData("1");
                 }
                 break;
             }

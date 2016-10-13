@@ -6,13 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.order.bean.DeliveryData.DeliveryListData;
-import com.dopstore.mall.order.bean.DetailOrderListData;
-import com.dopstore.mall.util.LoadImageUtils;
 import com.dopstore.mall.util.Utils;
 
 import java.util.List;

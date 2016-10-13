@@ -18,10 +18,9 @@ import android.widget.TextView;
 import com.dopstore.mall.R;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.person.bean.MyAddressData;
+import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.HttpHelper;
 import com.dopstore.mall.util.PopupUtils;
-import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
@@ -38,9 +37,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 
 /**
@@ -170,16 +166,9 @@ public class NewAddressActivity extends BaseActivity {
 
     private void deleteMsg() {
         proUtils.show();
-        httpHelper.getDataAsync(this, URL.SHIPPINGADDRESS + "shippingaddress/" + address_id + "/delete", new Callback() {
+        httpHelper.get(this, URL.SHIPPINGADDRESS + "shippingaddress/" + address_id + "/delete", new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(NewAddressActivity.this);
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
@@ -195,7 +184,13 @@ public class NewAddressActivity extends BaseActivity {
                 }
                 proUtils.dismiss();
             }
-        }, null);
+
+            @Override
+            public void failed(String msg) {
+                T.checkNet(NewAddressActivity.this);
+                proUtils.dismiss();
+            }
+        });
     }
 
     Handler handler = new Handler() {
@@ -243,16 +238,9 @@ public class NewAddressActivity extends BaseActivity {
         map.put(Constant.ID_CARD, cardNum);
         map.put(Constant.ADDRESS, addressStr);
         map.put(Constant.IS_DEFAULT, is_default);
-        httpHelper.postKeyValuePairAsync(this, URL.SHIPPINGADDRESS + id + "/update_shippingaddress", map, new Callback() {
+        httpHelper.post(this, URL.SHIPPINGADDRESS + id + "/update_shippingaddress", map, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(NewAddressActivity.this);
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Call call,Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
@@ -268,7 +256,13 @@ public class NewAddressActivity extends BaseActivity {
                 }
                 proUtils.dismiss();
             }
-        }, null);
+
+            @Override
+            public void failed(String msg) {
+                T.checkNet(NewAddressActivity.this);
+                proUtils.dismiss();
+            }
+        });
     }
 
     private void dismissPoup() {

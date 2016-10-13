@@ -14,8 +14,6 @@ import com.dopstore.mall.util.LoadImageUtils;
 
 import java.util.List;
 
-import static android.R.attr.type;
-
 
 public class MyOrderAdapter extends BaseAdapter {
 
@@ -65,14 +63,14 @@ public class MyOrderAdapter extends BaseAdapter {
         if (items != null && items.size() > 0) {
             final OrderData data = items.get(position);
             if (data != null) {
-                holder.id.setText(data.getOrder_num());
-                holder.num.setText(data.getGoods_relateds().get(0).getGoods_num());
+                holder.id.setText("订单号:"+data.getOrder_num());
+                holder.num.setText("x "+data.getGoods_relateds().get(0).getGoods_num());
                 holder.type.setText(data.getGoods_relateds().get(0).getGoods_sku_str());
                 String status=data.getStatus();
                 String statusStr=getType(status);
                 holder.state.setText(statusStr);
                 holder.title.setText(data.getGoods_relateds().get(0).getGoods_name());
-                holder.price.setText(data.getGoods_relateds().get(0).getGoods_price());
+                holder.price.setText("￥ "+data.getGoods_relateds().get(0).getGoods_price());
                 loadImageUtils.displayImage(data.getGoods_relateds().get(0).getGoods_cover(), holder.imageView);
             }
         }

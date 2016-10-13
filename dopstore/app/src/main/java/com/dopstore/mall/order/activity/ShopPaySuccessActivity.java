@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.MainActivity;
 import com.dopstore.mall.base.BaseActivity;
-import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.SkipUtils;
 
 import java.util.HashMap;

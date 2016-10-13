@@ -26,7 +26,10 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <uses-feature android:name = "android.hardware.camera" android:required = "false" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <uses-permission android:name="android.permission.GET_TASKS" />
@@ -50,18 +53,25 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".login.activity.SplashActivity">
+        <activity
+            android:name=".login.activity.SplashActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".login.activity.WelcomePageActivity" />
-        <activity android:name=".activity.WebActivity" />
+        <activity
+            android:name=".login.activity.WelcomePageActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.WebActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.MainActivity"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
         <!--******************************** 定位*********************************-->
         <!-- 设置key -->
         <meta-data
@@ -99,15 +109,15 @@
         <!-- Rich push 核心功能 since 2.0.6-->
         <activity
             android:name="cn.jpush.android.ui.PopWinActivity"
-            android:theme="@style/MyDialogStyle"
-            android:exported="false"></activity>
+            android:exported="false"
+            android:theme="@style/MyDialogStyle"></activity>
 
         <!-- Required SDK核心功能-->
         <activity
             android:name="cn.jpush.android.ui.PushActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:theme="@android:style/Theme.NoTitleBar"
-            android:exported="false">
+            android:exported="false"
+            android:theme="@android:style/Theme.NoTitleBar">
             <intent-filter>
                 <action android:name="cn.jpush.android.ui.PushActivity" />
 
@@ -180,8 +190,8 @@
         <!-- User defined.  For test only  用户自定义的广播接收器-->
         <receiver
             android:name="com.dopstore.mall.receiver.MyReceiver"
-            android:exported="false"
-            android:enabled="true">
+            android:enabled="true"
+            android:exported="false">
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.REGISTRATION" /> <!--Required  用户注册SDK的intent-->
                 <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED" /> <!--Required  用户接收SDK消息的intent-->
@@ -206,9 +216,9 @@
         <!--******************************** shareSDk *********************************-->
         <activity
             android:name="com.mob.tools.MobUIShell"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:windowSoftInputMode="stateHidden|adjustResize">
 
             <intent-filter>
@@ -228,10 +238,10 @@
         <!-- 调用微信原生SDK，需要注册的回调activity -->
         <activity
             android:name=".wxapi.WXEntryActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <!--******************************** shareSDk *********************************-->
         <!-- 二维码扫描 -->
         <activity
@@ -242,93 +252,152 @@
         <!-- 注册 -->
         <activity
             android:name=".login.activity.RegisterActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize|stateAlwaysHidden" /> <!-- 注册 -->
         <activity
             android:name=".shop.activity.SearchActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize|stateAlwaysHidden" />
         <!-- 忘记密码 -->
         <activity
             android:name=".login.activity.LosePwdActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize|stateAlwaysHidden" />
         <!--  登录 -->
         <activity
             android:name=".login.activity.LoginActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize|stateAlwaysHidden" />
         <!--  注册详情 -->
-        <activity android:name=".login.activity.RegisterDetailActivity" />
+        <activity
+            android:name=".login.activity.RegisterDetailActivity"
+            android:screenOrientation="portrait" />
         <!--  设置 -->
-        <activity android:name=".person.activity.SetActivity" />
+        <activity
+            android:name=".person.activity.SetActivity"
+            android:screenOrientation="portrait" />
         <!--图库 -->
         <activity
             android:name="com.zfdang.multiple_images_selector.ImagesSelectorActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait" />
         <!--  我的资料 -->
-        <activity android:name=".person.activity.MyDetailActivity" />
+        <activity
+            android:name=".person.activity.MyDetailActivity"
+            android:screenOrientation="portrait" />
         <!--  选择收货地址 -->
-        <activity android:name=".person.activity.MyAddressActivity" />
+        <activity
+            android:name=".person.activity.MyAddressActivity"
+            android:screenOrientation="portrait" />
         <!--  新建地址 -->
         <activity
             android:name=".person.activity.NewAddressActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize|stateAlwaysHidden" />
         <!--  我的余额 -->
-        <activity android:name=".person.activity.MyBalanceActivity" />
+        <activity
+            android:name=".person.activity.MyBalanceActivity"
+            android:screenOrientation="portrait" />
         <!--  我的活动 -->
-        <activity android:name=".order.activity.MyActivityActivity" />
+        <activity
+            android:name=".order.activity.MyActivityActivity"
+            android:screenOrientation="portrait" />
         <!--  活动详情 -->
-        <activity android:name=".order.activity.ActivityOrderDetailActivity" />
+        <activity
+            android:name=".order.activity.ActivityOrderDetailActivity"
+            android:screenOrientation="portrait" />
         <!--  我的收藏 -->
-        <activity android:name=".person.activity.MyCollectActivity" />
+        <activity
+            android:name=".person.activity.MyCollectActivity"
+            android:screenOrientation="portrait" />
         <!--  安全中心 -->
-        <activity android:name=".person.activity.SafeActivity" />
+        <activity
+            android:name=".person.activity.SafeActivity"
+            android:screenOrientation="portrait" />
         <!--  消息通知 -->
-        <activity android:name=".person.activity.NoticActivity" />
+        <activity
+            android:name=".person.activity.NoticActivity"
+            android:screenOrientation="portrait" />
         <!--  意见反馈 -->
         <activity
             android:name=".person.activity.AdviceActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize|stateAlwaysHidden" />
         <!--  帮助中心 -->
-        <activity android:name=".person.activity.HelpActivity" />
+        <activity
+            android:name=".person.activity.HelpActivity"
+            android:screenOrientation="portrait" />
         <!--  帮助中心 -->
-        <activity android:name=".person.activity.HelpDetailActivity" />
+        <activity
+            android:name=".person.activity.HelpDetailActivity"
+            android:screenOrientation="portrait" />
         <!--  修改昵称 -->
         <activity
             android:name=".person.activity.ModifyNickActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize|stateAlwaysHidden" />
         <!--  我的订单 -->
-        <activity android:name=".order.activity.MyOrderActivity" />
+        <activity
+            android:name=".order.activity.MyOrderActivity"
+            android:screenOrientation="portrait" />
         <!--  订单详情 -->
-        <activity android:name=".order.activity.OrderDetailActivity" />
+        <activity
+            android:name=".order.activity.OrderDetailActivity"
+            android:screenOrientation="portrait" />
         <!--  配送信息 -->
-        <activity android:name=".order.activity.DeliveryInfoActivity" />
+        <activity
+            android:name=".order.activity.DeliveryInfoActivity"
+            android:screenOrientation="portrait" />
         <!--  确认订单 -->
-        <activity android:name=".shop.activity.ConfirmOrderActivity" />
+        <activity
+            android:name=".shop.activity.ConfirmOrderActivity"
+            android:screenOrientation="portrait" />
         <!--  收银台 -->
-        <activity android:name=".order.activity.ShopCashierActivity" />
-        <activity android:name=".order.activity.ReChargeActivity" />
-        <activity android:name=".order.activity.ActivityCashierActivity" />
+        <activity
+            android:name=".order.activity.ShopCashierActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".order.activity.ReChargeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".order.activity.ActivityCashierActivity"
+            android:screenOrientation="portrait" />
         <!--   付款成功  -->
-        <activity android:name=".order.activity.PaySuccessActivity" />
-        <activity android:name=".order.activity.ShopPaySuccessActivity" />
-        <activity android:name=".order.activity.NoPaySuccessActivity" />
+        <activity
+            android:name=".order.activity.PaySuccessActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".order.activity.ShopPaySuccessActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".order.activity.NoPaySuccessActivity"
+            android:screenOrientation="portrait" />
         <!--  申请退款 -->
-        <activity android:name=".order.activity.RefundActivityOrderActivity" />
-        <activity android:name=".order.activity.RefundShopOrderActivity" />
+        <activity
+            android:name=".order.activity.RefundShopOrderActivity"
+            android:screenOrientation="portrait" />
         <!--  商城列表 -->
-        <activity android:name=".shop.activity.ShopListActivity" />
+        <activity
+            android:name=".shop.activity.ShopListActivity"
+            android:screenOrientation="portrait" />
         <!--  商城详情 -->
-        <activity android:name=".shop.activity.ShopDetailActivity" />
+        <activity
+            android:name=".shop.activity.ShopDetailActivity"
+            android:screenOrientation="portrait" />
         <!--  活动列表 -->
-        <activity android:name=".shop.activity.ActivityListActivity" />
+        <activity
+            android:name=".shop.activity.ActivityListActivity"
+            android:screenOrientation="portrait" />
         <!--  活动详情 -->
-        <activity android:name=".shop.activity.ActivityDetailActivity" />
+        <activity
+            android:name=".shop.activity.ActivityDetailActivity"
+            android:screenOrientation="portrait" />
         <!--  活动报名 -->
         <activity
             android:name=".shop.activity.ConfirmActivityActivity"
-            android:windowSoftInputMode="stateVisible|adjustResize|stateAlwaysHidden" /><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
-     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize|stateAlwaysHidden" />
+
     </application>
 
 </manifest>

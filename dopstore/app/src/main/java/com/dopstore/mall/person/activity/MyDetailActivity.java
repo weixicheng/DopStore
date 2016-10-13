@@ -19,11 +19,10 @@ import com.dopstore.mall.activity.bean.UserData;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.time.TimePopupWindow;
 import com.dopstore.mall.util.ACache;
+import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.HttpHelper;
 import com.dopstore.mall.util.LoadImageUtils;
 import com.dopstore.mall.util.PopupUtils;
-import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
@@ -48,9 +47,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 
 public class MyDetailActivity extends BaseActivity {
@@ -330,15 +326,9 @@ public class MyDetailActivity extends BaseActivity {
             String imageBase = Utils.encodeBase64File(imageStr);
             Map<String, Object> map = new HashMap<String, Object>();
             map.put(Constant.AVATAR_BINARY, imageBase);
-            httpHelper.postKeyValuePairAsync(this, URL.UPLOAD_AVATAR, map, new Callback() {
+            httpHelper.post(this, URL.UPLOAD_AVATAR, map, new CommHttp.HttpCallBack() {
                 @Override
-                public void onFailure(Call call, IOException e) {
-                    T.checkNet(MyDetailActivity.this);
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    String body = response.body().string();
+                public void success(String body) {
                     try {
                         JSONObject jo = new JSONObject(body);
                         String code = jo.optString(Constant.ERROR_CODE);
@@ -354,7 +344,13 @@ public class MyDetailActivity extends BaseActivity {
                     }
                     proUtils.dismiss();
                 }
-            }, null);
+
+                @Override
+                public void failed(String msg) {
+                    T.checkNet(MyDetailActivity.this);
+                    proUtils.dismiss();
+                }
+            });
         } else {
             saveToService();
         }
@@ -394,16 +390,9 @@ public class MyDetailActivity extends BaseActivity {
             map.put(Constant.BABY_GENDER, "0");
         }
         map.put(Constant.BABY_BIRTHDAY, babyDateTv.getText().toString().trim());
-        httpHelper.postKeyValuePairAsync(this, URL.USER_UPDATE, map, new Callback() {
+        httpHelper.post(this, URL.USER_UPDATE, map, new CommHttp.HttpCallBack() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                T.checkNet(MyDetailActivity.this);
-                proUtils.dismiss();
-            }
-
-            @Override
-            public void onResponse(Call call,Response response) throws IOException {
-                String body = response.body().string();
+            public void success(String body) {
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
@@ -449,7 +438,13 @@ public class MyDetailActivity extends BaseActivity {
                 }
                 proUtils.dismiss();
             }
-        }, null);
+
+            @Override
+            public void failed(String msg) {
+                T.checkNet(MyDetailActivity.this);
+                proUtils.dismiss();
+            }
+        });
     }
 
     @Override
