@@ -1,5 +1,6 @@
 package com.dopstore.mall.activity.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -44,7 +44,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,6 +54,7 @@ import java.util.Map;
  * 作者：xicheng on 16/9/21 17:57
  * 类别：
  */
+@SuppressLint("ValidFragment")
 public class MainShopFragment extends BaseFragment implements OnFooterRefreshListener, OnHeaderRefreshListener {
     private PullToRefreshView pullToRefreshView;
     private ListView listView;
@@ -76,6 +76,7 @@ public class MainShopFragment extends BaseFragment implements OnFooterRefreshLis
     private String typeId="";
     private Context mContext;
 
+    @SuppressLint("ValidFragment")
     public MainShopFragment(Context context) {
         this.mContext = context;
     }

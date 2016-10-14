@@ -1,5 +1,6 @@
 package com.dopstore.mall.activity.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -50,6 +51,7 @@ import java.util.TimerTask;
  * Created by 喜成 on 16/9/5.
  * name 购物车
  */
+@SuppressLint("ValidFragment")
 public class TrolleyFragment extends BaseFragment implements OnHeaderRefreshListener, OnFooterRefreshListener {
     private PullToRefreshView pullToRefreshView;
     private ListView mListView;// 列表

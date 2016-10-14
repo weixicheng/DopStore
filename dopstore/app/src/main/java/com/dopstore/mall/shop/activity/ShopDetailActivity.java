@@ -204,7 +204,7 @@ public class ShopDetailActivity extends BaseActivity {
 
                 @Override
                 public void run() {
-                    if ("小海囤商城".equals(name)){
+                    if ("\n小海囤商城\n".equals(name)){
                         collectBt.setVisibility(View.VISIBLE);
                         shareBt.setVisibility(View.VISIBLE);
                         titleTv.setText("商品详情");

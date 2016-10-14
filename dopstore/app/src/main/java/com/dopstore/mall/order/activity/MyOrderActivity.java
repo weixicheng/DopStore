@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -137,7 +138,9 @@ public class MyOrderActivity extends BaseActivity implements OnHeaderRefreshList
         map.put("pageSize", "10");
         map.put("page", "1");
         map.put("user_id", id);
-        map.put("status", idStr);
+        if (!TextUtils.isEmpty(idStr)){
+            map.put("status", idStr);
+        }
         httpHelper.post(this, URL.GOODS_ORDERS, map, new CommHttp.HttpCallBack() {
             @Override
             public void success(String body) {
@@ -187,9 +190,9 @@ public class MyOrderActivity extends BaseActivity implements OnHeaderRefreshList
 
     private void refreshListView() {
         if (items.size()>0){
-            emptyLayout.setVisibility(View.VISIBLE);
-        }else {
             emptyLayout.setVisibility(View.GONE);
+        }else {
+            emptyLayout.setVisibility(View.VISIBLE);
         }
         lv.setAdapter(new MyOrderAdapter(this, items));
     }

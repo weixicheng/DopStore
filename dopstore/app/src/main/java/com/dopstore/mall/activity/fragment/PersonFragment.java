@@ -1,5 +1,6 @@
 package com.dopstore.mall.activity.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ import java.util.Map;
  * Created by 喜成 on 16/9/5.
  * name 个人中心
  */
+@SuppressLint("ValidFragment")
 public class PersonFragment extends BaseFragment {
     private RelativeLayout userLayout, orderLayout, payLayout, sendLayout, receiveLayout, walletLayout, activityLayout, collectLayout, addressLayout;
     private TextView nameTv, introTv, priceTv;
