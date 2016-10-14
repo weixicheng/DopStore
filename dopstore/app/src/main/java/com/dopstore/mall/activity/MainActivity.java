@@ -209,6 +209,10 @@ public class MainActivity extends BaseFragmentActivity {
                 bilingTxt.setTextColor(getResources().getColor(R.color.gray_color_33));
                 headTxt.setTextColor(getResources().getColor(R.color.red_color_f93448));
                 myTxt.setTextColor(getResources().getColor(R.color.gray_color_33));
+
+//                Intent it=new Intent();
+//                it.setAction(Constant.BACK_CART_REFRESH_DATA);
+//                sendBroadcast(it);
             }
             break;
             case MY_CODE: {// 我的

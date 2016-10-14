@@ -20,6 +20,7 @@ import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
+import com.dopstore.mall.util.Utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,13 +39,13 @@ public class TrolleyAdapter extends BaseAdapter {
     private Context context;
     private List<GoodBean> mListData;// 数据
     private TextView mPriceAll; // 商品总价
-    private int totalPrice = 0; // 商品总价
+    private Double totalPrice = 0.00; // 商品总价
     private CheckBox mCheckAll; // 全选 全不选
     private CommHttp httpHelper;
     private ProUtils proUtils;
     private LoadImageUtils loadImageUtils;
 
-    public TrolleyAdapter(Context context, List<GoodBean> mListData, TextView mPriceAll, int totalPrice, CheckBox mCheckAll) {
+    public TrolleyAdapter(Context context, List<GoodBean> mListData, TextView mPriceAll, Double totalPrice, CheckBox mCheckAll) {
         this.context = context;
         this.mListData = mListData;
         this.mPriceAll = mPriceAll;
@@ -70,7 +71,7 @@ public class TrolleyAdapter extends BaseAdapter {
         return position;
     }
 
-    public void upData(List<GoodBean> mListData, TextView mPriceAll, int totalPrice, CheckBox mCheckAll) {
+    public void upData(List<GoodBean> mListData, TextView mPriceAll, Double totalPrice, CheckBox mCheckAll) {
         this.mListData = mListData;
         this.mPriceAll = mPriceAll;
         this.totalPrice = totalPrice;
@@ -96,7 +97,6 @@ public class TrolleyAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) view.getTag();
         }
-
         GoodBean data = mListData.get(position);
         holder.content.setText(data.getContent());
         holder.price.setText("￥" + data.getPrice());
@@ -116,7 +116,13 @@ public class TrolleyAdapter extends BaseAdapter {
                     mListData.get(position).setChoose(true);
                     totalPrice += bean.getCarNum() * bean.getPrice();
                 }
-                mPriceAll.setText("￥" + totalPrice + "");
+                String totalStr="";
+                if (Utils.isDouble(totalPrice.toString())){
+                    totalStr=Utils.format(totalPrice);
+                }else {
+                    totalStr=totalPrice+"";
+                }
+                mPriceAll.setText("￥" + totalStr);
                 int allCount=0;
                 for (GoodBean bean1 : mListData) {
                     if (bean1.isChoose() == true) {
@@ -249,7 +255,13 @@ public class TrolleyAdapter extends BaseAdapter {
                     int position = msg.arg1;
                     mListData.get(position).setCarNum(mListData.get(position).getCarNum() - 1);
                     totalPrice -= mListData.get(position).getPrice();
-                    mPriceAll.setText("￥" + totalPrice + "");
+                    String totalStr="";
+                    if (Utils.isDouble(totalPrice.toString())){
+                        totalStr=Utils.format(totalPrice);
+                    }else {
+                        totalStr=totalPrice+"";
+                    }
+                    mPriceAll.setText("￥" + totalStr);
                     notifyDataSetChanged();
                 }
                 break;
@@ -257,7 +269,13 @@ public class TrolleyAdapter extends BaseAdapter {
                     int position = msg.arg1;
                     mListData.get(position).setCarNum(mListData.get(position).getCarNum() + 1);
                     totalPrice += mListData.get(position).getPrice();
-                    mPriceAll.setText("￥" + totalPrice + "");
+                    String totalStr="";
+                    if (Utils.isDouble(totalPrice.toString())){
+                        totalStr=Utils.format(totalPrice);
+                    }else {
+                        totalStr=totalPrice+"";
+                    }
+                    mPriceAll.setText("￥" + totalStr);
                     notifyDataSetChanged();
                 }
                 break;

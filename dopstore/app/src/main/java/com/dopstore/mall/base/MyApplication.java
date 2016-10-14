@@ -3,7 +3,6 @@ package com.dopstore.mall.base;
 import android.app.Activity;
 import android.app.Application;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
 import com.pingplusplus.android.PingppLog;
 
 import java.util.ArrayList;
@@ -22,7 +21,6 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Fresco.initialize(getApplicationContext());
         JPushInterface.setDebugMode(false);
         JPushInterface.init(this);
         PingppLog.DEBUG = false;

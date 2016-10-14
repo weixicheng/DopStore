@@ -14,7 +14,6 @@
             <option value="$PROJECT_DIR$/lib/bdwallet_pay_sdk" />
             <option value="$PROJECT_DIR$/lib/pingpp" />
             <option value="$PROJECT_DIR$/lib/pingpp_one" />
-            <option value="$PROJECT_DIR$/multiple-images-selector" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

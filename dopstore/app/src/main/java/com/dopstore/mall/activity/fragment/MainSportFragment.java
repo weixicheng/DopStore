@@ -29,6 +29,7 @@ import com.amap.api.location.AMapLocationClientOption.AMapLocationMode;
 import com.amap.api.location.AMapLocationClientOption.AMapLocationProtocol;
 import com.amap.api.location.AMapLocationListener;
 import com.dopstore.mall.R;
+import com.dopstore.mall.activity.WebActivity;
 import com.dopstore.mall.activity.adapter.ActivityAdapter;
 import com.dopstore.mall.activity.adapter.HomeAdImageAdapter;
 import com.dopstore.mall.activity.adapter.TabAdapter;
@@ -56,7 +57,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -178,7 +178,6 @@ public class MainSportFragment extends BaseFragment implements OnHeaderRefreshLi
         }
         super.setUserVisibleHint(isVisibleToUser);
     }
-
 
 
     private void initData() {
@@ -375,16 +374,16 @@ public class MainSportFragment extends BaseFragment implements OnHeaderRefreshLi
             public void onItemClick(int position) {
                 CarouselData data = titleAdvertList.get(position);
                 String urlStr = data.getUrl();
-//                if (!TextUtils.isEmpty(urlStr)) {
-//                    Map<String, Object> map = new HashMap<String, Object>();
-//                    map.put("title", titleAdvertList.get(position).getTitle());
-//                    map.put("url", titleAdvertList.get(position).getUrl());
-//                    SkipUtils.jumpForMap(context, WebActivity.class, map, false);
-//                }else {
-                Map<String, Object> map = new HashMap<String, Object>();
-                map.put(Constant.ID, titleAdvertList.get(position).getId());
-                SkipUtils.jumpForMap(context, ActivityDetailActivity.class, map, false);
-//                }
+                if (!TextUtils.isEmpty(urlStr)) {
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map.put("title", titleAdvertList.get(position).getTitle());
+                    map.put("url", titleAdvertList.get(position).getUrl());
+                    SkipUtils.jumpForMap(context, WebActivity.class, map, false);
+                } else {
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map.put(Constant.ID, titleAdvertList.get(position).getId());
+                    SkipUtils.jumpForMap(context, ActivityDetailActivity.class, map, false);
+                }
             }
         });
     }
@@ -436,7 +435,6 @@ public class MainSportFragment extends BaseFragment implements OnHeaderRefreshLi
                         searchLayout.setVisibility(View.GONE);
                         leftTv.setVisibility(View.VISIBLE);
                         rightBt.setVisibility(View.VISIBLE);
-
                     } else {
                         searchLayout.setVisibility(View.VISIBLE);
                         leftTv.setVisibility(View.GONE);

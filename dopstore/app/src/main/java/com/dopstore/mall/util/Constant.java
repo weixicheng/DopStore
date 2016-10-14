@@ -1,5 +1,7 @@
 package com.dopstore.mall.util;
 
+import android.os.Environment;
+
 /**
  * Created by weixicheng on 16/6/29.
  */
@@ -17,6 +19,10 @@ public class Constant {
      *************************/
     public static int WIDTH = 0;
     public static int HEIGHT = 0;
+    public final static String STORAGE_ROOT_PATH_STR = Environment
+            .getExternalStorageDirectory().toString(); // 系统存储卡根目录
+    public final static String STORAGE_IMAGE_PATH_STR = STORAGE_ROOT_PATH_STR
+            .concat("/dopmall/.images/"); // 图片文件存放路径
     /***********************
      * 用户信息
      *************************/

@@ -1,7 +1,11 @@
 package com.dopstore.mall.person.activity;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -31,14 +35,12 @@ import com.dopstore.mall.util.Utils;
 import com.dopstore.mall.view.CircleImageView;
 import com.dopstore.mall.view.CommonDialog;
 import com.dopstore.mall.view.citypicker.CityPicker;
-import com.zfdang.multiple_images_selector.ImagesSelectorActivity;
-import com.zfdang.multiple_images_selector.SelectorSettings;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
+import java.io.File;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -55,15 +57,16 @@ public class MyDetailActivity extends BaseActivity {
     private CircleImageView headImage;
     private LinearLayout bgLayout;
     private Button saveBt;
-    private ArrayList<String> mListResult = new ArrayList<>();
     private int type = 0;
     private int sexType = 0;
     private final static int MODIFY_NICK_CODE = 0;
     private final static int MODIFY_BABY_CODE = 1;
-    private final static int MODIFY_HEAD_CODE = 2;
+    private final static int REQUEST_CODE_PICK_IMAGE = 3;
+    private final static int REQUEST_CODE_CAPTURE_CAMEIA = 4;
     private PopupWindow popupWindow;
     private int cityPositon = 0;
     private String imageUrl = "";
+    private String imagePath="";
     private LoadImageUtils loadImage;
 
 
@@ -85,7 +88,6 @@ public class MyDetailActivity extends BaseActivity {
         cityList = (List<CityBean>) aCache.getAsObject(Constant.CITYS);
         leftImageBack(R.mipmap.back_arrow);
         setCustomTitle("修改资料", getResources().getColor(R.color.white_color));
-
         headImage = (CircleImageView) findViewById(R.id.my_detail_head_image);
         headImage.setOnClickListener(listener);
         nickLayout = (RelativeLayout) findViewById(R.id.my_detail_nick_layout);
@@ -261,19 +263,7 @@ public class MyDetailActivity extends BaseActivity {
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.my_detail_head_image:
-                    mListResult = new ArrayList<String>();
-                    Intent intent = new Intent(MyDetailActivity.this, ImagesSelectorActivity.class);
-                    // max number of images to be selected
-                    intent.putExtra(SelectorSettings.SELECTOR_MAX_IMAGE_NUMBER, 1);
-                    // min size of image which will be shown; to filter tiny images (mainly icons)
-                    intent.putExtra(SelectorSettings.SELECTOR_MIN_IMAGE_SIZE, 100000);
-                    // show camera or not
-                    intent.putExtra(SelectorSettings.SELECTOR_SHOW_CAMERA, true);
-                    // pass current selected images as the initial value
-                    intent.putStringArrayListExtra(SelectorSettings.SELECTOR_INITIAL_SELECTED_LIST,
-                            mListResult);
-                    // start the selector
-                    startActivityForResult(intent, MODIFY_HEAD_CODE);
+                    showPhotoWindow();
                     break;
                 case R.id.my_detail_nick_layout:
                     String name = nickTv.getText().toString();
@@ -315,15 +305,72 @@ public class MyDetailActivity extends BaseActivity {
                 case R.id.my_detail_save_bt:
                     savePicture();
                     break;
+                case R.id.photo_pick_image:
+                    getImageFromCamera();
+                    dismissPop();
+
+                    break;
+                case R.id.photo_pick_select:
+                    getImageFromAlbum();
+                    dismissPop();
+                    break;
+                case R.id.photo_pick_cancle:
+                    dismissPop();
+                    break;
             }
         }
     };
 
+    protected void getImageFromAlbum() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, REQUEST_CODE_PICK_IMAGE);
+    }
+
+    private  void getImageFromCamera() {
+        String state = Environment.getExternalStorageState();
+        if (state.equals(Environment.MEDIA_MOUNTED)) {
+            // SD卡存在
+            String fileName = new SimpleDateFormat("yyyyMMddHHmmss")
+                    .format(new Date()).concat(".jpg");
+            String fileDir = Constant.STORAGE_IMAGE_PATH_STR;
+            File dir = new File(fileDir);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            imagePath = Constant.STORAGE_IMAGE_PATH_STR + fileName;
+            File file = new File(imagePath);
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+            startActivityForResult(intent, REQUEST_CODE_CAPTURE_CAMEIA);
+        } else {
+            T.show(this,"请确认已经插入SD卡");
+        }
+    }
+
+    private void showPhotoWindow() {
+        bgLayout.setVisibility(View.VISIBLE);
+        int screenWidth = getWindowManager().getDefaultDisplay().getWidth();
+        View v = LayoutInflater.from(this).inflate(R.layout.pop_photo_pick, null);
+        TextView photo = (TextView) v.findViewById(R.id.photo_pick_image);
+        TextView cancleTv = (TextView) v.findViewById(R.id.photo_pick_cancle);
+        TextView select = (TextView) v.findViewById(R.id.photo_pick_select);
+        photo.setOnClickListener(listener);
+        cancleTv.setOnClickListener(listener);
+        select.setOnClickListener(listener);
+        popupWindow = PopupUtils.ShowBottomPopupWindow(this, popupWindow, v, screenWidth, 152, findViewById(R.id.my_detail_main_layout));
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                popupWindow = null;
+                bgLayout.setVisibility(View.GONE);
+            }
+        });
+    }
+
     private void savePicture() {
-        if (mListResult != null && mListResult.size() > 0) {
+        if (!TextUtils.isEmpty(imagePath)) {
             proUtils.show();
-            String imageStr = mListResult.get(0);
-            String imageBase = Utils.encodeBase64File(imageStr);
+            String imageBase = Utils.encodeBase64File(imagePath);
             Map<String, Object> map = new HashMap<String, Object>();
             map.put(Constant.AVATAR_BINARY, imageBase);
             httpHelper.post(this, URL.UPLOAD_AVATAR, map, new CommHttp.HttpCallBack() {
@@ -472,13 +519,27 @@ public class MyDetailActivity extends BaseActivity {
                 babyTv.setText(map.get("name").toString());
             }
             break;
-            case MODIFY_HEAD_CODE:
-                if (resultCode == RESULT_OK) {
-                    mListResult = data.getStringArrayListExtra(SelectorSettings.SELECTOR_RESULTS);
-                    String image = mListResult.get(0);
-                    loadImage.displayImage("file://" + image, headImage);
+            case REQUEST_CODE_PICK_IMAGE:{//图库
+                Uri uri = data.getData();
+                Cursor cursor = getContentResolver().query(uri, null, null, null,null);
+                if (cursor != null && cursor.moveToFirst()) {
+                    imagePath = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA));
+                }else{
+                    imagePath="";
                 }
-                break;
+                loadImage.displayImage("file://" + imagePath, headImage);
+            }break;
+            case REQUEST_CODE_CAPTURE_CAMEIA:{//相机
+                if (!TextUtils.isEmpty(imagePath)) {
+                    File file = new File(imagePath);
+                    if (!file.exists()) {
+                        imagePath = "";
+                    }
+                    if (!TextUtils.isEmpty(imagePath)) {
+                        loadImage.displayImage("file://" + imagePath, headImage);
+                    }
+                }
+            }break;
         }
     }
 }

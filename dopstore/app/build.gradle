@@ -72,10 +72,10 @@ repositories {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile project(':multiple-images-selector')
     compile project(':lib:pingpp')
     compile project(':lib:pingpp_one')
     compile project(':lib:bdwallet_pay_sdk')
+    compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'cz.msebera.android:httpclient:4.3.6'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile files('libs/android-async-http-1.4.8.jar')

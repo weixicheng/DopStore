@@ -204,9 +204,16 @@ public class ShopDetailActivity extends BaseActivity {
 
                 @Override
                 public void run() {
-                    collectBt.setVisibility(View.GONE);
-                    shareBt.setVisibility(View.GONE);
-                    titleTv.setText(name);
+                    if ("小海囤商城".equals(name)){
+                        collectBt.setVisibility(View.VISIBLE);
+                        shareBt.setVisibility(View.VISIBLE);
+                        titleTv.setText("商品详情");
+                    }else {
+                        collectBt.setVisibility(View.GONE);
+                        shareBt.setVisibility(View.GONE);
+                        titleTv.setText(name);
+                    }
+
                 }
             });
         }

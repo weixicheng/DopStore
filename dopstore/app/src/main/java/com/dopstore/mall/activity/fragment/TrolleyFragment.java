@@ -73,7 +73,7 @@ public class TrolleyFragment extends BaseFragment implements OnHeaderRefreshList
 
     private TextView mDelete; // 删除 结算
 
-    private int totalPrice = 0; // 商品总价
+    private Double totalPrice = 0.00; // 商品总价
 
     private boolean isRefresh = false;
 
@@ -224,6 +224,9 @@ public class TrolleyFragment extends BaseFragment implements OnHeaderRefreshList
     }
 
     private void getCartList() {
+        totalPrice=0.00;
+        mCheckAll.setChecked(false);
+        mPriceAll.setText("￥" + 0.00);
         proUtils.show();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("user_id", UserUtils.getId(context));
@@ -263,12 +266,12 @@ public class TrolleyFragment extends BaseFragment implements OnHeaderRefreshList
                         String price=job.optString(Constant.PRICE);
                         if (!TextUtils.isEmpty(price)) {
                             if (Utils.isNum(price)) {
-                                data.setPrice(Float.parseFloat(price));
+                                data.setPrice(Double.parseDouble(price));
                             } else {
-                                data.setPrice(0);
+                                data.setPrice(0.00);
                             }
                         }else {
-                            data.setPrice(0);
+                            data.setPrice(0.00);
                         }
                         data.setCover(job.optString(Constant.COVER));
                         data.setChoose(false);
@@ -317,7 +320,7 @@ public class TrolleyFragment extends BaseFragment implements OnHeaderRefreshList
 
                 case R.id.check_box:
                     if (mCheckAll.isChecked()) {
-                        totalPrice = 0;
+                        totalPrice = 0.00;
                         if (mListData != null) {
                             int size = mListData.size();
                             if (size == 0) {
@@ -328,11 +331,17 @@ public class TrolleyFragment extends BaseFragment implements OnHeaderRefreshList
                                 totalPrice += mListData.get(i).getCarNum() * mListData.get(i).getPrice();
                             }
                             refreshListView();
-                            mPriceAll.setText("￥" + totalPrice + "");
+                            String totalStr="";
+                            if (Utils.isDouble(totalPrice.toString())){
+                                totalStr=Utils.format(totalPrice);
+                            }else {
+                                totalStr=totalPrice+"";
+                            }
+                            mPriceAll.setText("￥" + totalStr);
                         }
                     } else {
                         if (mListAdapter != null) {
-                            totalPrice = 0;
+                            totalPrice = 0.00;
                             for (int i = 0; i < mListData.size(); i++) {
                                 mListData.get(i).setChoose(false);
                             }
@@ -346,7 +355,7 @@ public class TrolleyFragment extends BaseFragment implements OnHeaderRefreshList
                     if (isBatchModel) {
                         deleteToService(mListData);
                         refreshListView();
-                        totalPrice = 0;
+                        totalPrice = 0.00;
                         mPriceAll.setText("￥" + 0.00 + "");
                         mCheckAll.setChecked(false);
                     } else {

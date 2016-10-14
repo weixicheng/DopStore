@@ -423,4 +423,19 @@
         android:layout_marginBottom="50dp"
         android:layout_marginRight="@dimen/margin_10"
         android:background="@mipmap/kefu_logo" />
+    <LinearLayout
+        android:id="@+id/activity_detail_big_zxing_layout"
+        android:layout_width="match_parent"
+        android:background="@android:color/black"
+        android:visibility="gone"
+        android:gravity="center"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/activity_detail_big_zxing"
+            android:layout_width="150dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="@null"
+            android:layout_height="150dp" />
+
+    </LinearLayout>
 </RelativeLayout>

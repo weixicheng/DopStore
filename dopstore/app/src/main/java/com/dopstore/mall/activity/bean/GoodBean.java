@@ -8,7 +8,7 @@ public class GoodBean implements Serializable{
     private String content;
     private String cover;
     private String goods_sku_id;
-    private float price;
+    private Double price;
     private boolean isChoose;
 
     public int getId() {
@@ -51,11 +51,11 @@ public class GoodBean implements Serializable{
         this.cover = cover;
     }
 
-    public float getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 

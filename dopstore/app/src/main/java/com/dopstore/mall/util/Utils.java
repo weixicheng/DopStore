@@ -9,6 +9,8 @@ import android.view.inputmethod.InputMethodManager;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.math.RoundingMode;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -121,19 +123,39 @@ public class Utils {
     public static boolean isNum(String str){
         return str.matches("^[-+]?(([0-9]+)([.]([0-9]+))?|([.]([0-9]+))?)$");
     }
+    /*
+      * 判断是否为浮点数，包括double和float
+      * @param str 传入的字符串
+      * @return 是浮点数返回true,否则返回false
+    */
+    public static boolean isDouble(String str) {
+        Pattern pattern = Pattern.compile("^[-\\+]?[.\\d]*$");
+        return pattern.matcher(str).matches();
+    }
 
     /**
-     * @TODO 替换单引号和双引号
-     * @throw
-     * @author ren
-     * @date: 2014-7-10 下午1:43:46
-     * @return String
+     * 使用NumberFormat,保留小数点后两位
      */
-    public static String replaceNamePass(String namePass) {
-        String name = namePass;
-        name = name.replace("\"", "&quot;");
-        return name;
+    public static String format(double value) {
+
+        NumberFormat nf = NumberFormat.getNumberInstance();
+        nf.setMaximumFractionDigits(2);
+        /*
+         * setMinimumFractionDigits设置成2
+         *
+         * 如果不这么做，那么当value的值是100.00的时候返回100
+         *
+         * 而不是100.00
+         */
+        nf.setMinimumFractionDigits(2);
+        nf.setRoundingMode(RoundingMode.HALF_UP);
+        /*
+         * 如果想输出的格式用逗号隔开，可以设置成true
+         */
+        nf.setGroupingUsed(false);
+        return nf.format(value);
     }
+
 
 
 }

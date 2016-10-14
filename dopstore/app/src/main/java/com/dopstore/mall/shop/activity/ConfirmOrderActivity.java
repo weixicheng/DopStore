@@ -25,6 +25,7 @@ import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
+import com.dopstore.mall.util.Utils;
 import com.dopstore.mall.view.MyListView;
 import com.loopj.android.http.RequestParams;
 
@@ -53,7 +54,7 @@ public class ConfirmOrderActivity extends BaseActivity {
     private MyListView myListView;
     private List<GoodBean> newListData;
     private List<MyAddressData> addressList = new ArrayList<MyAddressData>();
-    private int totalPrice = 0; // 商品总价
+    private Double totalPrice = 0.00; // 商品总价
     private String address_id="";
 
     @Override
@@ -88,8 +89,14 @@ public class ConfirmOrderActivity extends BaseActivity {
             for (GoodBean goodBean:newListData){
                 totalPrice += goodBean.getCarNum() * goodBean.getPrice();
             }
-            totalPriceTv.setText("¥"+totalPrice);
-            priceTv.setText("¥"+totalPrice);
+            String totalStr="";
+            if (Utils.isDouble(totalPrice.toString())){
+                totalStr=Utils.format(totalPrice);
+            }else {
+                totalStr=totalPrice+"";
+            }
+            totalPriceTv.setText("¥"+totalStr);
+            priceTv.setText("¥"+totalStr);
             passTv.setText("免运费");
         }else {
             totalPriceTv.setText("¥ 0.00");

@@ -276,11 +276,6 @@
         <activity
             android:name=".person.activity.SetActivity"
             android:screenOrientation="portrait" />
-        <!--图库 -->
-        <activity
-            android:name="com.zfdang.multiple_images_selector.ImagesSelectorActivity"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait" />
         <!--  我的资料 -->
         <activity
             android:name=".person.activity.MyDetailActivity"

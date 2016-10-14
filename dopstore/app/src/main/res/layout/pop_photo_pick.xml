@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/setBabyRunWasyImg_popupWindow"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_corner_all_selector"
+    android:orientation="vertical"
+    android:paddingLeft="10.0dip"
+    android:paddingRight="10.0dip" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <!-- 现在拍一张 -->
+
+        <TextView
+            android:id="@+id/photo_pick_image"
+            android:textSize="16sp"
+            android:layout_width="match_parent"
+            android:layout_height="50.0dip"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="拍照"
+            android:textColor="@color/gray_color_33" />
+
+        <!-- 分行线 -->
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1.0dip"
+            android:background="@color/gray_color_ee" />
+
+        <!-- 手机相册 -->
+
+        <TextView
+            android:id="@+id/photo_pick_select"
+           android:textSize="16sp"
+            android:layout_width="match_parent"
+            android:layout_height="50.0dip"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="从相册中选择"
+            android:textColor="@color/gray_color_33"/>
+    </LinearLayout>
+    <!-- 分行线 -->
+
+    <View
+        android:layout_width="match_parent"
+        android:background="@color/gray_color_ee"
+        android:layout_height="1dip" />
+
+    <!-- 取消 -->
+
+    <TextView
+        android:id="@+id/photo_pick_cancle"
+        android:textSize="16sp"
+        android:layout_width="match_parent"
+        android:layout_height="50.0dip"
+        android:background="@drawable/shape_corner_all_selector"
+        android:clickable="true"
+        android:gravity="center"
+        android:text="取消"
+        android:textColor="@color/gray_color_33" />
+
+
+</LinearLayout>

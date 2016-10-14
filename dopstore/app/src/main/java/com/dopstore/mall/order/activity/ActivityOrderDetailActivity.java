@@ -8,6 +8,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -41,6 +42,8 @@ public class ActivityOrderDetailActivity extends BaseActivity {
     private LoadImageUtils loadImage;
     private ImageView shopImage, zxingImage;
     private RelativeLayout zxingLayout, submitLayout;
+    private LinearLayout bigZxingLayout;
+    private ImageView bigZxingImage;
     private String id;
     private ActivityOrderDetailBean detailBean;
     private CommonDialog dialog;
@@ -63,6 +66,8 @@ public class ActivityOrderDetailActivity extends BaseActivity {
         stateTv = (TextView) findViewById(R.id.activity_detail_state);
         shopImage = (ImageView) findViewById(R.id.activity_detail_image);
         zxingImage = (ImageView) findViewById(R.id.activity_detail_zxing);
+        bigZxingLayout = (LinearLayout) findViewById(R.id.activity_detail_big_zxing_layout);
+        bigZxingImage = (ImageView) findViewById(R.id.activity_detail_big_zxing);
         titleTv = (TextView) findViewById(R.id.activity_detail_title);
         addressTv = (TextView) findViewById(R.id.activity_detail_address);
         codeTime = (TextView) findViewById(R.id.activity_detail_zxing_time);
@@ -80,6 +85,7 @@ public class ActivityOrderDetailActivity extends BaseActivity {
         submitLayout = (RelativeLayout) findViewById(R.id.activity_detail_submit_layout);
         submitBt.setOnClickListener(listener);
         kFBt.setOnClickListener(listener);
+        bigZxingImage.setOnClickListener(listener);
         Map<String, Object> map = SkipUtils.getMap(this);
         if (map == null) return;
         id = map.get(Constant.ID).toString();
@@ -177,6 +183,14 @@ public class ActivityOrderDetailActivity extends BaseActivity {
                 case R.id.activity_detail_cheap_kefu: {
                 }
                 break;
+                case R.id.activity_detail_zxing: {
+                    bigZxingLayout.setVisibility(View.VISIBLE);
+                }
+                break;
+                case R.id.activity_detail_big_zxing: {
+                    bigZxingLayout.setVisibility(View.GONE);
+                }
+                break;
 
             }
 
@@ -252,8 +266,10 @@ public class ActivityOrderDetailActivity extends BaseActivity {
         } else {
             zxingLayout.setVisibility(View.VISIBLE);
             loadImage.displayImage(zimage, zxingImage);
+            loadImage.displayImage(zimage, bigZxingImage);
             codeTv.setText("验证码:" + detailBean.getCode());
         }
+        zxingImage.setOnClickListener(listener);
         int type = detailBean.getStatus();
         String typeName = "";
         switch (type) {
