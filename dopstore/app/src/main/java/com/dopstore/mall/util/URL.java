@@ -13,7 +13,7 @@ public class URL {
     public static String SIGN_UP = BASE_URL + "signup";//用户注册
     public static String LOGIN = BASE_URL + "login";//用户登录
     public static String RESET_PASSWORD = BASE_URL + "reset_password";//重置密码
-    public static String USER_DETAIL = BASE_URL + "user/{user_id}";//用户资料
+    public static String USER_DETAIL = BASE_URL + "user/";//用户资料
     public static String USER_UPDATE = BASE_URL + "user/update";//修改用户资料
     public static String UPLOAD_AVATAR = BASE_URL + "upload_avatar";//上传头像
     public static String OTHER_SIGNUPL = BASE_URL + "othersignup";//第三方注册

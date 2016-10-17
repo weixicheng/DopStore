@@ -1,11 +1,7 @@
 package com.dopstore.mall.person.activity;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -29,6 +25,7 @@ import com.dopstore.mall.util.LoadImageUtils;
 import com.dopstore.mall.util.PopupUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
+import com.dopstore.mall.util.UILImageLoader;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.util.Utils;
@@ -40,7 +37,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -49,6 +45,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.finalteam.galleryfinal.CoreConfig;
+import cn.finalteam.galleryfinal.FunctionConfig;
+import cn.finalteam.galleryfinal.GalleryFinal;
+import cn.finalteam.galleryfinal.ThemeConfig;
+import cn.finalteam.galleryfinal.model.PhotoInfo;
 
 
 public class MyDetailActivity extends BaseActivity {
@@ -61,12 +62,12 @@ public class MyDetailActivity extends BaseActivity {
     private int sexType = 0;
     private final static int MODIFY_NICK_CODE = 0;
     private final static int MODIFY_BABY_CODE = 1;
-    private final static int REQUEST_CODE_PICK_IMAGE = 3;
-    private final static int REQUEST_CODE_CAPTURE_CAMEIA = 4;
+    private final static int REQUEST_CODE_PICK_IMAGE = 2;
+    private final static int REQUEST_CODE_CAMERA = 3;
     private PopupWindow popupWindow;
     private int cityPositon = 0;
     private String imageUrl = "";
-    private String imagePath="";
+    private String imagePath = "";
     private LoadImageUtils loadImage;
 
 
@@ -83,6 +84,22 @@ public class MyDetailActivity extends BaseActivity {
     }
 
     private void initview() {
+        //设置主题 ThemeConfig.CYAN
+        ThemeConfig theme = new ThemeConfig.Builder()
+                .setTitleBarTextColor(getResources().getColor(R.color.white))//标题栏文本字体颜色
+                .setTitleBarBgColor(getResources().getColor(R.color.red_color_f93448))//标题栏背景颜色
+                .build();
+        //配置功能
+        FunctionConfig functionConfig = new FunctionConfig.Builder()
+                .setEnableCamera(true)
+                .setEnableCrop(true)
+                .setEnablePreview(true).build();
+        //配置imageloader
+        UILImageLoader imageloader = new UILImageLoader();
+        CoreConfig coreConfig = new CoreConfig.Builder(this, imageloader, theme)
+                .setFunctionConfig(functionConfig).build();
+        GalleryFinal.init(coreConfig);
+
         loadImage = LoadImageUtils.getInstance(this);
         aCache = ACache.get(this);
         cityList = (List<CityBean>) aCache.getAsObject(Constant.CITYS);
@@ -144,7 +161,7 @@ public class MyDetailActivity extends BaseActivity {
         }
         String avatar = UserUtils.getAvatar(this);
         if (TextUtils.isEmpty(avatar)) {
-            headImage.setImageResource(R.mipmap.ic);
+            headImage.setImageResource(R.mipmap.me_icon);
         } else {
             loadImage.displayImage(avatar, headImage);
         }
@@ -263,7 +280,7 @@ public class MyDetailActivity extends BaseActivity {
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.my_detail_head_image:
-                    showPhotoWindow();
+                    ShowPhotoSelect();
                     break;
                 case R.id.my_detail_nick_layout:
                     String name = nickTv.getText().toString();
@@ -306,13 +323,12 @@ public class MyDetailActivity extends BaseActivity {
                     savePicture();
                     break;
                 case R.id.photo_pick_image:
-                    getImageFromCamera();
                     dismissPop();
-
+                    getCamor();
                     break;
                 case R.id.photo_pick_select:
-                    getImageFromAlbum();
                     dismissPop();
+                    getImageFromAlbum();
                     break;
                 case R.id.photo_pick_cancle:
                     dismissPop();
@@ -321,42 +337,46 @@ public class MyDetailActivity extends BaseActivity {
         }
     };
 
-    protected void getImageFromAlbum() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, REQUEST_CODE_PICK_IMAGE);
-    }
-
-    private  void getImageFromCamera() {
-        String state = Environment.getExternalStorageState();
-        if (state.equals(Environment.MEDIA_MOUNTED)) {
-            // SD卡存在
-            String fileName = new SimpleDateFormat("yyyyMMddHHmmss")
-                    .format(new Date()).concat(".jpg");
-            String fileDir = Constant.STORAGE_IMAGE_PATH_STR;
-            File dir = new File(fileDir);
-            if (!dir.exists()) {
-                dir.mkdirs();
+    protected void getCamor() {
+        GalleryFinal.openCamera(REQUEST_CODE_CAMERA, new GalleryFinal.OnHanlderResultCallback() {
+            @Override
+            public void onHanlderSuccess(int reqeustCode, List<PhotoInfo> resultList) {
+                imagePath = resultList.get(0).getPhotoPath();
+                loadImage.displayImage("file://" + imagePath, headImage);
             }
-            imagePath = Constant.STORAGE_IMAGE_PATH_STR + fileName;
-            File file = new File(imagePath);
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-            startActivityForResult(intent, REQUEST_CODE_CAPTURE_CAMEIA);
-        } else {
-            T.show(this,"请确认已经插入SD卡");
-        }
+
+            @Override
+            public void onHanlderFailure(int requestCode, String errorMsg) {
+                    headImage.setImageResource(R.mipmap.me_icon);
+            }
+        });
     }
 
-    private void showPhotoWindow() {
+    protected void getImageFromAlbum() {
+        GalleryFinal.openGallerySingle(REQUEST_CODE_PICK_IMAGE, new GalleryFinal.OnHanlderResultCallback() {
+            @Override
+            public void onHanlderSuccess(int reqeustCode, List<PhotoInfo> resultList) {
+                imagePath = resultList.get(0).getPhotoPath();
+                loadImage.displayImage("file://" + imagePath, headImage);
+            }
+
+            @Override
+            public void onHanlderFailure(int requestCode, String errorMsg) {
+                headImage.setImageResource(R.mipmap.me_icon);
+            }
+        });
+    }
+
+    private void ShowPhotoSelect() {
         bgLayout.setVisibility(View.VISIBLE);
         int screenWidth = getWindowManager().getDefaultDisplay().getWidth();
         View v = LayoutInflater.from(this).inflate(R.layout.pop_photo_pick, null);
-        TextView photo = (TextView) v.findViewById(R.id.photo_pick_image);
+        TextView pickTv = (TextView) v.findViewById(R.id.photo_pick_image);
+        TextView selectTv = (TextView) v.findViewById(R.id.photo_pick_select);
         TextView cancleTv = (TextView) v.findViewById(R.id.photo_pick_cancle);
-        TextView select = (TextView) v.findViewById(R.id.photo_pick_select);
-        photo.setOnClickListener(listener);
+        pickTv.setOnClickListener(listener);
+        selectTv.setOnClickListener(listener);
         cancleTv.setOnClickListener(listener);
-        select.setOnClickListener(listener);
         popupWindow = PopupUtils.ShowBottomPopupWindow(this, popupWindow, v, screenWidth, 152, findViewById(R.id.my_detail_main_layout));
         popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
@@ -366,6 +386,7 @@ public class MyDetailActivity extends BaseActivity {
             }
         });
     }
+
 
     private void savePicture() {
         if (!TextUtils.isEmpty(imagePath)) {
@@ -519,27 +540,6 @@ public class MyDetailActivity extends BaseActivity {
                 babyTv.setText(map.get("name").toString());
             }
             break;
-            case REQUEST_CODE_PICK_IMAGE:{//图库
-                Uri uri = data.getData();
-                Cursor cursor = getContentResolver().query(uri, null, null, null,null);
-                if (cursor != null && cursor.moveToFirst()) {
-                    imagePath = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA));
-                }else{
-                    imagePath="";
-                }
-                loadImage.displayImage("file://" + imagePath, headImage);
-            }break;
-            case REQUEST_CODE_CAPTURE_CAMEIA:{//相机
-                if (!TextUtils.isEmpty(imagePath)) {
-                    File file = new File(imagePath);
-                    if (!file.exists()) {
-                        imagePath = "";
-                    }
-                    if (!TextUtils.isEmpty(imagePath)) {
-                        loadImage.displayImage("file://" + imagePath, headImage);
-                    }
-                }
-            }break;
         }
     }
 }

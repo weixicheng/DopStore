@@ -44,7 +44,7 @@ public class MyBalanceActivity extends BaseActivity {
         setCustomTitle("我的余额", getResources().getColor(R.color.white_color));
 //        rightTextBack("交易明细", getResources().getColor(R.color.white_color), listener);
         ImageButton id = (ImageButton) findViewById(R.id.title_left_imageButton);
-        id.setImageResource(R.mipmap.back_arrow);
+        id.setBackgroundResource(R.mipmap.back_arrow);
         id.setVisibility(View.VISIBLE);
         id.setOnClickListener(listener);
         numTv = (TextView) findViewById(R.id.my_balance_num);

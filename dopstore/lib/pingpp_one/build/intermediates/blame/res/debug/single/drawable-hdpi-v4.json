@@ -28,12 +28,12 @@
         "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_shift_dark_normal.png"
     },
     {
-        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/debug/drawable-hdpi-v4/cmbkb_backspace_dark_icon.png",
-        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_backspace_dark_icon.png"
-    },
-    {
         "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/debug/drawable-hdpi-v4/cmbkb_shift_actived.png",
         "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_shift_actived.png"
+    },
+    {
+        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/debug/drawable-hdpi-v4/cmbkb_backspace_dark_icon.png",
+        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_backspace_dark_icon.png"
     },
     {
         "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/debug/drawable-hdpi-v4/pingpp_back.png",

@@ -120,9 +120,10 @@ public class Utils {
                 (i >> 24 & 0xFF);
     }
 
-    public static boolean isNum(String str){
+    public static boolean isNum(String str) {
         return str.matches("^[-+]?(([0-9]+)([.]([0-9]+))?|([.]([0-9]+))?)$");
     }
+
     /*
       * 判断是否为浮点数，包括double和float
       * @param str 传入的字符串
@@ -137,25 +138,15 @@ public class Utils {
      * 使用NumberFormat,保留小数点后两位
      */
     public static String format(double value) {
-
         NumberFormat nf = NumberFormat.getNumberInstance();
         nf.setMaximumFractionDigits(2);
-        /*
-         * setMinimumFractionDigits设置成2
-         *
-         * 如果不这么做，那么当value的值是100.00的时候返回100
-         *
-         * 而不是100.00
-         */
+        //setMinimumFractionDigits设置成2
+        //如果不这么做，那么当value的值是100.00的时候返回100 而不是100.00
         nf.setMinimumFractionDigits(2);
         nf.setRoundingMode(RoundingMode.HALF_UP);
-        /*
-         * 如果想输出的格式用逗号隔开，可以设置成true
-         */
+        // 如果想输出的格式用逗号隔开，可以设置成true
         nf.setGroupingUsed(false);
         return nf.format(value);
     }
-
-
 
 }

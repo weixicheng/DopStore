@@ -107,13 +107,13 @@ public class PersonFragment extends BaseFragment {
             introTv.setText(babyName + "  " + Utils.formatMilli(babytime, "yyyy年MM月dd日"));
             String avatar = UserUtils.getAvatar(context);
             if (TextUtils.isEmpty(avatar)) {
-                headImage.setImageResource(R.mipmap.ic);
+                headImage.setImageResource(R.mipmap.me_icon);
             } else {
                 loadImageUtils.displayImage(avatar, headImage);
             }
             priceTv.setText(UserUtils.getBalance(context));
         } else {
-            headImage.setImageResource(R.mipmap.ic);
+            headImage.setImageResource(R.mipmap.me_icon);
             nameTv.setVisibility(View.INVISIBLE);
             introTv.setText("登录/注册");
         }

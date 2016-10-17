@@ -66,10 +66,67 @@
         </RelativeLayout>
     </LinearLayout>
 
+
+    <RelativeLayout
+        android:id="@+id/my_collect_bottom_layout"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:background="@color/white"
+        android:visibility="gone"
+        android:layout_height="40dp">
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/margin_20">
+
+            <CheckBox
+                android:id="@+id/my_collect_check_box"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:background="@null"
+                android:button="@drawable/check_box_bg"
+                android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+                android:checked="false"
+                android:clickable="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:visibility="visible" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/margin_10"
+                android:text="全选"
+                android:textColor="@color/gray_color_33"
+                android:textSize="@dimen/textsize_14" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/my_collect_delete_bt"
+            android:layout_width="120dp"
+            android:textSize="16sp"
+            android:text="删除"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:background="@color/red_color_f93448"
+            android:textColor="@color/white"
+            android:layout_height="match_parent" />
+
+    </RelativeLayout>
+
     <ListView
         android:id="@+id/my_collect_shop_list"
         android:layout_below="@id/my_collect_title_layout"
         android:layout_width="match_parent"
+        android:layout_above="@id/my_collect_bottom_layout"
         android:layout_marginTop="@dimen/margin_10"
         android:dividerHeight="@dimen/margin_10"
         android:divider="@color/gray_color_ee"
@@ -79,6 +136,7 @@
         android:id="@+id/comm_error_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@id/my_collect_bottom_layout"
         android:layout_below="@id/my_collect_title_layout"
         android:visibility="gone">
 
@@ -88,6 +146,7 @@
         android:id="@+id/comm_empty_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@id/my_collect_bottom_layout"
         android:layout_below="@id/my_collect_title_layout"
         android:visibility="gone">
 

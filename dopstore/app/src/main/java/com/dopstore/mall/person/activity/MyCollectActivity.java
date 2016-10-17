@@ -7,6 +7,8 @@ import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -24,6 +26,7 @@ import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
+import com.dopstore.mall.util.Utils;
 import com.dopstore.mall.view.CommonDialog;
 
 import org.json.JSONArray;
@@ -42,7 +45,7 @@ import java.util.Map;
  * name
  */
 public class MyCollectActivity extends BaseActivity {
-    private RelativeLayout firstLy, secondLy;
+    private RelativeLayout firstLy, secondLy,bottomLayout;
     private TextView firstTv, secondTv;
     private View firstV, secondV;
     private ListView mListView;// 列表
@@ -50,11 +53,12 @@ public class MyCollectActivity extends BaseActivity {
     private TextView loadTv;
     private LinearLayout emptyLayout;
     private View emptyV;
-    private TextView emptyTv;
+    private TextView emptyTv,rightTv;
+    private Button deleteBt;
+    private CheckBox mCheckAll;// 全选 全不选
     private List<MyCollectData> mListData = new ArrayList<MyCollectData>();// 数据
+    private MyCollectAdapter adapter;
 
-    private CommonDialog dialog;
-    private int mPosition = 0;
     private int type = 0;
 
     @Override
@@ -69,7 +73,15 @@ public class MyCollectActivity extends BaseActivity {
     private void initView() {
         setCustomTitle("我的收藏", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
+        rightTv= (TextView) findViewById(R.id.title_right_textButton);
+        rightTv.setText("编辑");
+        rightTv.setTextColor(getResources().getColor(R.color.white));
+        rightTv.setVisibility(View.VISIBLE);
+        rightTv.setOnClickListener(listener);
         mListView = (ListView) findViewById(R.id.my_collect_shop_list);
+        bottomLayout = (RelativeLayout) findViewById(R.id.my_collect_bottom_layout);
+        deleteBt = (Button) findViewById(R.id.my_collect_delete_bt);
+        mCheckAll = (CheckBox) findViewById(R.id.my_collect_check_box);
         firstLy = (RelativeLayout) findViewById(R.id.my_collect_first_ly);
         secondLy = (RelativeLayout) findViewById(R.id.my_collect_second_ly);
         firstTv = (TextView) findViewById(R.id.my_collect_first_tv);
@@ -83,6 +95,8 @@ public class MyCollectActivity extends BaseActivity {
         emptyV = findViewById(R.id.comm_empty_v);
         emptyV.setBackgroundResource(R.mipmap.collect_empty_logo);
         emptyTv.setText("您还没有收藏，快去逛逛吧");
+        deleteBt.setOnClickListener(listener);
+        mCheckAll.setOnClickListener(listener);
         loadTv.setOnClickListener(listener);
         firstLy.setOnClickListener(listener);
         secondLy.setOnClickListener(listener);
@@ -129,6 +143,8 @@ public class MyCollectActivity extends BaseActivity {
                         data.setImage(job.optString(Constant.COVER));
                         data.setTitle(job.optString(Constant.NAME));
                         data.setPrice(job.optString(Constant.PRICE));
+                        data.setChoose(false);
+                        data.setIsShow("0");
                         mListData.add(data);
                     }
                 }
@@ -152,6 +168,10 @@ public class MyCollectActivity extends BaseActivity {
                     secondTv.setTextColor(getResources().getColor(R.color.gray_color_33));
                     secondV.setBackgroundColor(getResources().getColor(R.color.white_color));
                     type = 0;
+                    if (mListData!=null&&mListData.size()>0){
+                        mListData.clear();
+                    }
+                    refreshListView();
                     getCollectList("");
                 }
                 break;
@@ -161,6 +181,10 @@ public class MyCollectActivity extends BaseActivity {
                     secondTv.setTextColor(getResources().getColor(R.color.red_color_f93448));
                     secondV.setBackgroundColor(getResources().getColor(R.color.red_color_f93448));
                     type = 1;
+                    if (mListData!=null&&mListData.size()>0){
+                        mListData.clear();
+                    }
+                    refreshListView();
                     getCollectList("1");
                 }
                 break;
@@ -171,20 +195,84 @@ public class MyCollectActivity extends BaseActivity {
                         getCollectList("1");
                     }
                 }break;
+                case R.id.title_right_textButton:{
+                    if (View.VISIBLE==bottomLayout.getVisibility()){
+                        if (mListData != null) {
+                            int size = mListData.size();
+                            if (size == 0) {
+                                return;
+                            }
+                            for (int i = 0; i < size; i++) {
+                                mListData.get(i).setIsShow("0");
+                            }
+                            refreshListView();
+                        }
+                        rightTv.setText("编辑");
+                        bottomLayout.setVisibility(View.GONE);
+                    }else {
+                        if (mListData != null) {
+                            int size = mListData.size();
+                            if (size == 0) {
+                                return;
+                            }
+                            for (int i = 0; i < size; i++) {
+                                mListData.get(i).setIsShow("1");
+                            }
+                            refreshListView();
+                        }
+                        rightTv.setText("完成");
+                        bottomLayout.setVisibility(View.VISIBLE);
+                    }
+                }break;
+                case R.id.my_collect_check_box:{
+                    if (mCheckAll.isChecked()) {
+                        if (mListData != null) {
+                            int size = mListData.size();
+                            if (size == 0) {
+                                return;
+                            }
+                            for (int i = 0; i < size; i++) {
+                                mListData.get(i).setChoose(true);
+                            }
+                            refreshListView();
+                        }
+                    } else {
+                        if (adapter != null) {
+                            for (int i = 0; i < mListData.size(); i++) {
+                                mListData.get(i).setChoose(false);
+                            }
+                            refreshListView();
+                        }
+                    }
+                }break;
+                case R.id.my_collect_delete_bt:{
+                    deleteCollect();
+                }break;
                 default:
                     break;
             }
         }
     };
 
-    private void getCollectStatus(int id, String type) {
+    private void deleteCollect() {
+        JSONArray jsonArray=new JSONArray();
+        if (mListData.size()>0&&mListData!=null){
+        for (MyCollectData myCollectData:mListData){
+            if (myCollectData.isChoose()==true){
+                jsonArray.put(myCollectData.getId());
+            }
+        }}else {
+            jsonArray=null;
+            return;
+        }
         proUtils.show();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("user_id", UserUtils.getId(this));
-        map.put("item_id", id + "");
-        map.put("action_id", "2");
+        if (jsonArray!=null&&jsonArray.length()>0){
+            map.put("item_list", jsonArray);
+        }
         map.put("is_activity", type);
-        httpHelper.post(this, URL.COLLECTION_EDIT, map, new CommHttp.HttpCallBack() {
+        httpHelper.post(this, URL.COLLECTION_DEL, map, new CommHttp.HttpCallBack() {
             @Override
             public void success(String body) {
                 try {
@@ -213,7 +301,6 @@ public class MyCollectActivity extends BaseActivity {
 
     private final static int UPDATA_COLLECT_CODE = 0;
     private final static int DELETE_SUCCESS_CODE = 1;
-    private final static int DELETE_DATA_CODE = 2;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -225,23 +312,14 @@ public class MyCollectActivity extends BaseActivity {
                 break;
                 case DELETE_SUCCESS_CODE: {
                     T.show(MyCollectActivity.this, "删除成功");
-                    mListData.clear();
+                    if (mListData!=null&&mListData.size()>0){
+                        mListData.clear();
+                    }
+                    refreshListView();
                     if (type == 0) {
                         getCollectList("");
                     } else {
                         getCollectList("1");
-                    }
-                }
-                break;
-                case DELETE_DATA_CODE: {
-                    if (dialog.isShowing()) {
-                        dialog.dismiss();
-                    }
-                    int id = mListData.get(mPosition).getId();
-                    if (type == 0) {
-                        getCollectStatus(id, "");
-                    } else {
-                        getCollectStatus(id, "1");
                     }
                 }
                 break;
@@ -250,22 +328,19 @@ public class MyCollectActivity extends BaseActivity {
     };
 
     private void refreshListView() {
+        rightTv.setText("编辑");
         if (mListData.size()>0){
             emptyLayout.setVisibility(View.GONE);
         }else {
             emptyLayout.setVisibility(View.VISIBLE);
         }
-        mListView.setAdapter(new MyCollectAdapter(this, mListData));
+        if (adapter==null) {
+            adapter=new MyCollectAdapter(this,mListData,mCheckAll);
+            mListView.setAdapter(adapter);
+        }else {
+            adapter.upDataList(mListData,mCheckAll);
+        }
 
-        mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                mPosition = i;
-                dialog = new CommonDialog(MyCollectActivity.this, handler, DELETE_DATA_CODE, "提示", "是否删除?", Constant.SHOWALLBUTTON);
-                dialog.show();
-                return true;
-            }
-        });
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

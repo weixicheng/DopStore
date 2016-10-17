@@ -3,11 +3,18 @@ package com.dopstore.mall.base;
 import android.app.Activity;
 import android.app.Application;
 
+import com.dopstore.mall.BuildConfig;
+import com.dopstore.mall.util.UILImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pingplusplus.android.PingppLog;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.finalteam.galleryfinal.CoreConfig;
+import cn.finalteam.galleryfinal.FunctionConfig;
+import cn.finalteam.galleryfinal.GalleryFinal;
+import cn.finalteam.galleryfinal.ThemeConfig;
 import cn.jpush.android.api.JPushInterface;
 
 
@@ -24,8 +31,9 @@ public class MyApplication extends Application {
         JPushInterface.setDebugMode(false);
         JPushInterface.init(this);
         PingppLog.DEBUG = false;
-//        CrashHandler catchHandler = CrashHandler.getInstance();
-//        catchHandler.init(getApplicationContext());
+
+//      CrashHandler catchHandler = CrashHandler.getInstance();
+//      catchHandler.init(getApplicationContext());
     }
 
 

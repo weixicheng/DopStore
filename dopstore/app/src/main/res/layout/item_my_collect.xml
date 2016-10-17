@@ -11,6 +11,22 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
+        <CheckBox
+            android:id="@+id/item_my_collect_check_box"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="@dimen/margin_10"
+            android:layout_marginRight="4dp"
+            android:button="@drawable/check_box_bg"
+            android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:visibility="gone" />
+
         <ImageView
             android:id="@+id/item_my_collect_image"
             android:layout_width="85dp"
@@ -49,7 +65,6 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:singleLine="true"
-                    android:text="￥ 308.00"
                     android:textColor="@color/red_color_f93448"
                     android:textSize="@dimen/textsize_14"
                     android:textStyle="bold" />

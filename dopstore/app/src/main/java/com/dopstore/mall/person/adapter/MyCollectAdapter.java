@@ -5,12 +5,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
+import com.dopstore.mall.activity.bean.GoodBean;
 import com.dopstore.mall.person.bean.MyCollectData;
 import com.dopstore.mall.util.LoadImageUtils;
+import com.dopstore.mall.util.Utils;
 
 import java.util.List;
 
@@ -20,10 +23,12 @@ public class MyCollectAdapter extends BaseAdapter {
     private Context context;
     private List<MyCollectData> mListData;// 数据
     private LoadImageUtils loadImageUtils;
+    private CheckBox mCheckAll;
 
-    public MyCollectAdapter(Context context, List<MyCollectData> mListData) {
+    public MyCollectAdapter(Context context, List<MyCollectData> mListData, CheckBox mCheckAll) {
         this.context = context;
         this.mListData = mListData;
+        this.mCheckAll = mCheckAll;
         loadImageUtils = LoadImageUtils.getInstance(context);
     }
 
@@ -56,6 +61,7 @@ public class MyCollectAdapter extends BaseAdapter {
             holder.num = (TextView) convertView.findViewById(R.id.item_my_collect_price);
             holder.title = (TextView) convertView.findViewById(R.id.item_my_collect_title);
             holder.imageView = (ImageView) convertView.findViewById(R.id.item_my_collect_image);
+            holder.checkBox = (CheckBox) convertView.findViewById(R.id.item_my_collect_check_box);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -65,12 +71,49 @@ public class MyCollectAdapter extends BaseAdapter {
         loadImageUtils.displayImage(data.getImage(), holder.imageView);
         holder.title.setText(data.getTitle());
         holder.num.setText("￥" + Float.parseFloat(data.getPrice()));
+        String isShow=data.getIsShow();
+        if (isShow.equals("1")){
+            holder.checkBox.setVisibility(View.VISIBLE);
+        }else {
+            holder.checkBox.setVisibility(View.GONE);
+        }
+        holder.checkBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MyCollectData bean = mListData.get(position);
+                boolean selected = bean.isChoose();
+                if (selected) {
+                    mListData.get(position).setChoose(false);
+                } else {
+                    mListData.get(position).setChoose(true);
+                }
+                int allCount=0;
+                for (MyCollectData bean1 : mListData) {
+                    if (bean1.isChoose() == true) {
+                        allCount=allCount+1;
+                    }
+                }
+                if (allCount==mListData.size()){
+                    mCheckAll.setChecked(true);
+                }else {
+                    mCheckAll.setChecked(false);
+                }
+                notifyDataSetChanged();
+            }
+        });
+
         return convertView;
     }
 
+    public void upDataList(List<MyCollectData> mListData, CheckBox mCheckAll) {
+        this.mListData=mListData;
+        this.mCheckAll=mCheckAll;
+        notifyDataSetChanged();
+    }
 }
 
 class ViewHolder {
     public TextView num, title;
     public ImageView imageView;
+    public CheckBox checkBox;
 }

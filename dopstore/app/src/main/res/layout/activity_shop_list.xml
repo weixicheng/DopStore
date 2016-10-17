@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:background="@color/gray_color_ee"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
+<LinearLayout
+    android:id="@+id/shop_list_title_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
     <include layout="@layout/common_title" />
 
     <LinearLayout
@@ -100,14 +104,24 @@
             android:visibility="invisible"
             android:background="@color/red_color_f93448" />
     </LinearLayout>
-
+</LinearLayout>
     <GridView
         android:id="@+id/shop_list_listview"
         android:layout_margin="@dimen/margin_10"
+        android:layout_below="@id/shop_list_title_layout"
         android:verticalSpacing="@dimen/margin_10"
         android:horizontalSpacing="@dimen/margin_10"
         android:layout_width="match_parent"
         android:numColumns="2"
         android:layout_height="match_parent" />
+    <LinearLayout
+        android:id="@+id/comm_error_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/shop_list_title_layout"
+        android:visibility="gone">
 
-</LinearLayout>
+        <include layout="@layout/comm_error_layout" />
+    </LinearLayout>
+
+</RelativeLayout>

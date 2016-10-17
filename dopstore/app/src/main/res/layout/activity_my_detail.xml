@@ -55,6 +55,7 @@
                     android:layout_marginRight="@dimen/margin_10"
                     android:layout_toLeftOf="@id/my_detail_head_right"
                     android:scaleType="centerCrop"
+                    android:src="@mipmap/me_icon"
                     app:border_color="@color/white_color"
                     app:border_width="2dp"  />
             </RelativeLayout>

@@ -308,18 +308,19 @@ public class TrolleyFragment extends BaseFragment implements OnHeaderRefreshList
                 }
                 break;
                 case R.id.title_right_textButton:
-                    isBatchModel = !isBatchModel;
-                    if (isBatchModel) {
-                        mEdit.setText(getResources().getString(R.string.menu_enter));
-                        mDelete.setText(getResources().getString(R.string.menu_del));
-                        mBottonLayout.setVisibility(View.GONE);
-                    } else {
-                        mEdit.setText(getResources().getString(R.string.menu_edit));
-                        mBottonLayout.setVisibility(View.VISIBLE);
-                        mDelete.setText(getResources().getString(R.string.menu_sett));
+                    if (mListData.size()>0) {
+                        isBatchModel = !isBatchModel;
+                        if (isBatchModel) {
+                            mEdit.setText(getResources().getString(R.string.menu_enter));
+                            mDelete.setText(getResources().getString(R.string.menu_del));
+                            mBottonLayout.setVisibility(View.GONE);
+                        } else {
+                            mEdit.setText(getResources().getString(R.string.menu_edit));
+                            mBottonLayout.setVisibility(View.VISIBLE);
+                            mDelete.setText(getResources().getString(R.string.menu_sett));
+                        }
                     }
                     break;
-
                 case R.id.check_box:
                     if (mCheckAll.isChecked()) {
                         totalPrice = 0.00;

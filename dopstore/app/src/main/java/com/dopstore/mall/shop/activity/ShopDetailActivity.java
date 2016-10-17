@@ -20,10 +20,13 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.MainActivity;
+import com.dopstore.mall.activity.bean.CityBean;
+import com.dopstore.mall.activity.bean.UserData;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.login.activity.LoginActivity;
 import com.dopstore.mall.order.activity.MyOrderActivity;
 import com.dopstore.mall.order.activity.ShopPaySuccessActivity;
+import com.dopstore.mall.util.ACache;
 import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.OtherLoginUtils;
@@ -34,11 +37,15 @@ import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
 import com.pingplusplus.android.Pingpp;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -56,6 +63,7 @@ public class ShopDetailActivity extends BaseActivity {
     private  String shop_url="";
     private  String shop_title="";
     private  String shop_image="";
+    private ACache aCache;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +73,7 @@ public class ShopDetailActivity extends BaseActivity {
     }
 
     private void initView() {
+        aCache = ACache.get(this);
         otherLoginUtils=new OtherLoginUtils(this);
         Map<String, Object> map = SkipUtils.getMap(this);
         if (map == null) return;
@@ -204,7 +213,7 @@ public class ShopDetailActivity extends BaseActivity {
 
                 @Override
                 public void run() {
-                    if ("\n小海囤商城\n".equals(name)){
+                    if ("\n商品详情\n".equals(name)){
                         collectBt.setVisibility(View.VISIBLE);
                         shareBt.setVisibility(View.VISIBLE);
                         titleTv.setText("商品详情");
@@ -230,6 +239,81 @@ public class ShopDetailActivity extends BaseActivity {
                 return userID;
             }
         }
+        @android.webkit.JavascriptInterface
+        public void showMsg(String msg) {
+           T.show(ShopDetailActivity.this,msg);
+        }
+        @android.webkit.JavascriptInterface
+        public void updateAppUserInfo() {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+
+                @Override
+                public void run() {
+                    upUserData();
+                }
+            });
+        }
+    }
+
+    private void upUserData() {
+        String user_id=UserUtils.getId(this);
+        httpHelper.get(this, URL.USER_DETAIL+user_id,new CommHttp.HttpCallBack() {
+            @Override
+            public void success(String body) {
+                AnalyData(body);
+            }
+
+            @Override
+            public void failed(String msg) {
+                T.checkNet(ShopDetailActivity.this);
+            }
+        });
+    }
+
+    private void AnalyData(String body) {
+        try {
+            JSONObject jo = new JSONObject(body);
+            String code = jo.optString(Constant.ERROR_CODE);
+            if ("0".equals(code)) {
+                aCache.put(Constant.TOKEN, jo.optString(Constant.TOKEN));
+                JSONObject user = jo.optJSONObject(Constant.USER);
+                JSONArray citys = jo.optJSONArray(Constant.CITYS);
+                List<CityBean> cityList = new ArrayList<CityBean>();
+                if (citys.length() > 0) {
+                    for (int i = 0; i < citys.length(); i++) {
+                        JSONObject city = citys.getJSONObject(i);
+                        CityBean cityBean = new CityBean();
+                        cityBean.setId(city.optString(Constant.ID));
+                        cityBean.setName(city.optString(Constant.NAME));
+                        cityList.add(cityBean);
+                    }
+                    aCache.put(Constant.CITYS, (Serializable) cityList);
+                }
+                UserData data = new UserData();
+                data.setId(user.optString(Constant.ID));
+                data.setUsername(user.optString(Constant.USERNAME));
+                data.setNickname(user.optString(Constant.NICKNAME));
+                data.setBalance(user.optString(Constant.BALANCE));
+                data.setAvatar(user.optString(Constant.AVATAR));
+                data.setBirthday(user.optLong(Constant.BIRTHDAY));
+                data.setBaby_birthday(user.optLong(Constant.BABY_BIRTHDAY));
+                data.setBaby_gender(user.optString(Constant.BABY_GENDER));
+                data.setUsername(user.optString(Constant.USERNAME));
+                data.setBaby_name(user.optString(Constant.BABY_NAME));
+                data.setMobile(user.optString(Constant.MOBILE));
+                data.setAddress(user.optString(Constant.CITY));
+                UserUtils.setData(ShopDetailActivity.this, data);
+                Intent it = new Intent();
+                it.setAction(Constant.UP_USER_DATA);
+                sendBroadcast(it);
+            } else {
+                String msg = jo.optString(Constant.ERROR_MSG);
+                T.show(ShopDetailActivity.this, msg);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**

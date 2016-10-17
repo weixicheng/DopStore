@@ -111,7 +111,7 @@ public class ActivityDetailActivity extends BaseActivity {
         collectBt.setVisibility(View.VISIBLE);
         collectBt.setOnClickListener(listener);
         shareBt= (ImageButton) findViewById(R.id.title_right_imageButton);
-        shareBt.setImageResource(R.mipmap.share_logo);
+        shareBt.setBackgroundResource(R.mipmap.share_logo);
         shareBt.setVisibility(View.VISIBLE);
         shareBt.setOnClickListener(listener);
         if (isCollect.equals("0")) {
