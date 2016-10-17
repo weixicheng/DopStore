@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
+import com.dopstore.mall.activity.MainActivity;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.order.adapter.MyActivityAdapter;
 import com.dopstore.mall.order.bean.MyActivityData;
@@ -48,7 +49,7 @@ public class MyActivityActivity extends BaseActivity implements OnFooterRefreshL
     private TextView loadTv;
     private LinearLayout emptyLayout;
     private View emptyV;
-    private TextView emptyTv;
+    private TextView emptyTv,emptyLoadTV;
     private List<MyActivityData> items = new ArrayList<MyActivityData>();
     private boolean isRefresh=false;
 
@@ -70,6 +71,7 @@ public class MyActivityActivity extends BaseActivity implements OnFooterRefreshL
         emptyTv = (TextView) findViewById(R.id.comm_empty_text);
         emptyV = findViewById(R.id.comm_empty_v);
         emptyV.setBackgroundResource(R.mipmap.activity_empty_logo);
+        emptyLoadTV = (TextView) findViewById(R.id.empty_data_load_tv);
         emptyTv.setText("您还没有相关活动订单");
         pullToRefreshView = (PullToRefreshView) findViewById(R.id.my_activity_pulltorefresh);
         pullToRefreshView.setOnFooterRefreshListener(this);
@@ -82,6 +84,12 @@ public class MyActivityActivity extends BaseActivity implements OnFooterRefreshL
                     items.clear();
                 }
                 getMyOrder();
+            }
+        });
+        emptyLoadTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SkipUtils.directJump(MyActivityActivity.this, MainActivity.class,true);
             }
         });
     }

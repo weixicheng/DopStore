@@ -22,5 +22,19 @@
             android:textColor="@color/gray_color_33"
             android:textSize="@dimen/textsize_14" />
 
+        <TextView
+            android:id="@+id/empty_data_load_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_10"
+            android:background="@drawable/square_hollow_red_white_bg"
+            android:paddingBottom="@dimen/margin_10"
+            android:paddingLeft="@dimen/margin_20"
+            android:paddingRight="@dimen/margin_20"
+            android:paddingTop="@dimen/margin_10"
+            android:text="去逛逛"
+            android:textColor="@color/red_color_f93448"
+            android:textSize="@dimen/textsize_16" />
+
 
 </LinearLayout>

@@ -92,6 +92,8 @@ public class MainActivity extends BaseFragmentActivity {
         filter.addAction(Constant.UP_USER_DATA);
         filter.addAction(Constant.BACK_CART_DATA);
         filter.addAction(Constant.BACK_CART_REFRESH_DATA);
+        filter.addAction(Constant.REFRESH_MAIN_CODE);
+        filter.addAction(Constant.BACK_CART_REFRESH_DATA);
         registerReceiver(receiver, filter);
     }
 
@@ -291,6 +293,9 @@ public class MainActivity extends BaseFragmentActivity {
                 if (trolleyFragment!=null){
                     trolleyFragment.loadData();
                 }
+            }else if (action.equals(Constant.REFRESH_MAIN_CODE)){
+                setTab(MAIN_CODE);
+                viewPager.setCurrentItem(MAIN_CODE);
             }
         }
     }

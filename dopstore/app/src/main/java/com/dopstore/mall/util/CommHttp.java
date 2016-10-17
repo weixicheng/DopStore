@@ -3,10 +3,12 @@ package com.dopstore.mall.util;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.dopstore.mall.login.activity.LoginActivity;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import org.apache.http.Header;
+import org.json.JSONObject;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -59,7 +61,20 @@ public class CommHttp {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] bytes) {
                 if (statusCode == 200) {
-                    callBack.success(new String(bytes));
+                    String boby=new String(bytes);
+                    try {
+                        JSONObject jo=new JSONObject(boby);
+                        String detail=jo.optString("detail");
+                        if (TextUtils.isEmpty(detail)) {
+                            callBack.success(new String(bytes));
+                        }else {
+                            T.show(context,"请重新登录");
+                            SkipUtils.directJump(context, LoginActivity.class,false);
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
                 }else {
                     T.show(context,statusCode+"");
                 }
@@ -80,7 +95,19 @@ public class CommHttp {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] bytes) {
                 if (statusCode == 200) {
-                    callBack.success(new String(bytes));
+                    String boby=new String(bytes);
+                    try {
+                        JSONObject jo=new JSONObject(boby);
+                        String detail=jo.optString("detail");
+                        if (TextUtils.isEmpty(detail)) {
+                            callBack.success(new String(bytes));
+                        }else {
+                            T.show(context,"请重新登录");
+                            SkipUtils.directJump(context, LoginActivity.class,false);
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                 }else {
                     T.show(context,statusCode+"");
                 }

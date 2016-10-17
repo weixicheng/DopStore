@@ -13,10 +13,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
+import com.dopstore.mall.activity.MainActivity;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.order.adapter.MyOrderAdapter;
 import com.dopstore.mall.order.bean.OrderData;
 import com.dopstore.mall.order.bean.OrderOtherData;
+import com.dopstore.mall.person.activity.MyCollectActivity;
 import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.SkipUtils;
@@ -48,7 +50,7 @@ public class MyOrderActivity extends BaseActivity implements OnHeaderRefreshList
     private TextView loadTv;
     private LinearLayout emptyLayout;
     private View emptyV;
-    private TextView emptyTv;
+    private TextView emptyTv,emptyLoadTV;
     private List<OrderData> items = new ArrayList<OrderData>();
     private String titleStr = "我的订单";
     private int typeId = 0;
@@ -99,6 +101,7 @@ public class MyOrderActivity extends BaseActivity implements OnHeaderRefreshList
         emptyLayout = (LinearLayout) findViewById(R.id.comm_empty_layout);
         emptyTv = (TextView) findViewById(R.id.comm_empty_text);
         emptyV = findViewById(R.id.comm_empty_v);
+        emptyLoadTV = (TextView) findViewById(R.id.empty_data_load_tv);
         emptyV.setBackgroundResource(R.mipmap.order_empty_logo);
         emptyTv.setText("您还没有相关订单");
         pullToRefreshView = (PullToRefreshView) findViewById(R.id.my_order_pulltorefresh);
@@ -112,6 +115,12 @@ public class MyOrderActivity extends BaseActivity implements OnHeaderRefreshList
                     items.clear();
                 }
                 getMyOrder();
+            }
+        });
+        emptyLoadTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SkipUtils.directJump(MyOrderActivity.this, MainActivity.class,true);
             }
         });
     }

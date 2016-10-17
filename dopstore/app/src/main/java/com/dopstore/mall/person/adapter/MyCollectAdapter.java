@@ -47,10 +47,6 @@ public class MyCollectAdapter extends BaseAdapter {
         return position;
     }
 
-    public void upData(List<MyCollectData> mListData) {
-        this.mListData = mListData;
-        notifyDataSetChanged();
-    }
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
@@ -76,6 +72,12 @@ public class MyCollectAdapter extends BaseAdapter {
             holder.checkBox.setVisibility(View.VISIBLE);
         }else {
             holder.checkBox.setVisibility(View.GONE);
+        }
+        boolean isSelect=data.isChoose();
+        if (isSelect){
+            holder.checkBox.setChecked(true);
+        }else {
+            holder.checkBox.setChecked(false);
         }
         holder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,9 +108,9 @@ public class MyCollectAdapter extends BaseAdapter {
     }
 
     public void upDataList(List<MyCollectData> mListData, CheckBox mCheckAll) {
-        this.mListData=mListData;
-        this.mCheckAll=mCheckAll;
-        notifyDataSetChanged();
+            this.mCheckAll=mCheckAll;
+            this.mListData=mListData;
+            notifyDataSetChanged();
     }
 }
 

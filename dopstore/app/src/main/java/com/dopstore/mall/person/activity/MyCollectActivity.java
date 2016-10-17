@@ -171,6 +171,8 @@ public class MyCollectActivity extends BaseActivity {
                     if (mListData!=null&&mListData.size()>0){
                         mListData.clear();
                     }
+                    rightTv.setText("编辑");
+                    bottomLayout.setVisibility(View.GONE);
                     refreshListView();
                     getCollectList("");
                 }
@@ -181,6 +183,8 @@ public class MyCollectActivity extends BaseActivity {
                     secondTv.setTextColor(getResources().getColor(R.color.red_color_f93448));
                     secondV.setBackgroundColor(getResources().getColor(R.color.red_color_f93448));
                     type = 1;
+                    rightTv.setText("编辑");
+                    bottomLayout.setVisibility(View.GONE);
                     if (mListData!=null&&mListData.size()>0){
                         mListData.clear();
                     }
@@ -257,11 +261,11 @@ public class MyCollectActivity extends BaseActivity {
     private void deleteCollect() {
         JSONArray jsonArray=new JSONArray();
         if (mListData.size()>0&&mListData!=null){
-        for (MyCollectData myCollectData:mListData){
-            if (myCollectData.isChoose()==true){
-                jsonArray.put(myCollectData.getId());
-            }
-        }}else {
+            for (MyCollectData myCollectData:mListData){
+                if (myCollectData.isChoose()==true){
+                    jsonArray.put(myCollectData.getId());
+                }
+            }}else {
             jsonArray=null;
             return;
         }

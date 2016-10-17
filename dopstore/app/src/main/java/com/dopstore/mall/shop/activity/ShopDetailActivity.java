@@ -244,7 +244,7 @@ public class ShopDetailActivity extends BaseActivity {
            T.show(ShopDetailActivity.this,msg);
         }
         @android.webkit.JavascriptInterface
-        public void updateAppUserInfo() {
+        public void dealOrderBlancePay() {
             new Handler(Looper.getMainLooper()).post(new Runnable() {
 
                 @Override
@@ -306,6 +306,7 @@ public class ShopDetailActivity extends BaseActivity {
                 Intent it = new Intent();
                 it.setAction(Constant.UP_USER_DATA);
                 sendBroadcast(it);
+                SkipUtils.directJump(ShopDetailActivity.this, ShopPaySuccessActivity.class, true);
             } else {
                 String msg = jo.optString(Constant.ERROR_MSG);
                 T.show(ShopDetailActivity.this, msg);
