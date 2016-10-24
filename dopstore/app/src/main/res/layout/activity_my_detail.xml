@@ -57,7 +57,7 @@
                     android:scaleType="centerCrop"
                     android:src="@mipmap/me_icon"
                     app:border_color="@color/white_color"
-                    app:border_width="2dp"  />
+                    app:border_width="1dp" />
             </RelativeLayout>
 
             <View

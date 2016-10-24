@@ -38,6 +38,7 @@
     <!-- 蓝牙分享所需的权限 -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <!-- 请求访问使用照相设备 -->
     <uses-permission android:name="android.permission.CAMERA" />
@@ -48,9 +49,8 @@
     <application
         android:name=".base.MyApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic"
+        android:icon="@mipmap/icon"
         android:label="@string/app_name"
-        android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
@@ -210,7 +210,7 @@
             android:value="developer-default" />
         <meta-data
             android:name="JPUSH_APPKEY"
-            android:value="0aff5667e39e62749c1a9633" />
+            android:value="084e92403a5f5436eca9d9b6" />
         <!--  </>值来自开发者平台取得的AppKey-->
 
         <!--******************************** shareSDk *********************************-->
@@ -279,6 +279,10 @@
         <!--  我的资料 -->
         <activity
             android:name=".person.activity.MyDetailActivity"
+            android:screenOrientation="portrait"></activity>
+        <!--  商品主题 -->
+        <activity
+            android:name=".shop.activity.ShopThemeActivity"
             android:screenOrientation="portrait" />
         <!--  选择收货地址 -->
         <activity
@@ -347,6 +351,10 @@
         <activity
             android:name=".shop.activity.ConfirmOrderActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".shop.activity.ConfirmShopOrderActivity"
+            android:screenOrientation="portrait" />
+        <!--  确认订单 -->
         <!--  收银台 -->
         <activity
             android:name=".order.activity.ShopCashierActivity"
@@ -374,6 +382,7 @@
         <!--  商城列表 -->
         <activity
             android:name=".shop.activity.ShopListActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize|stateAlwaysHidden"
             android:screenOrientation="portrait" />
         <!--  商城详情 -->
         <activity
@@ -386,6 +395,10 @@
         <!--  活动详情 -->
         <activity
             android:name=".shop.activity.ActivityDetailActivity"
+            android:screenOrientation="portrait" />
+        <!--  关于小海囤 -->
+        <activity
+            android:name=".person.activity.AboutActivity"
             android:screenOrientation="portrait" />
         <!--  活动报名 -->
         <activity

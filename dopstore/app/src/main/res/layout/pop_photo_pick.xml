@@ -6,12 +6,12 @@
     android:background="@drawable/shape_corner_all_selector"
     android:orientation="vertical"
     android:paddingLeft="10.0dip"
-    android:paddingRight="10.0dip" >
+    android:paddingRight="10.0dip">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <!-- 现在拍一张 -->
 
@@ -36,13 +36,13 @@
 
         <TextView
             android:id="@+id/photo_pick_select"
-           android:textSize="16sp"
+            android:textSize="16sp"
             android:layout_width="match_parent"
             android:layout_height="50.0dip"
             android:clickable="true"
             android:gravity="center"
             android:text="从相册中选择"
-            android:textColor="@color/gray_color_33"/>
+            android:textColor="@color/gray_color_33" />
     </LinearLayout>
     <!-- 分行线 -->
 

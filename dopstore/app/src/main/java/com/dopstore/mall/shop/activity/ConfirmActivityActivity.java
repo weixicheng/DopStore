@@ -29,7 +29,6 @@ import com.dopstore.mall.util.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -80,7 +79,7 @@ public class ConfirmActivityActivity extends BaseActivity {
     }
 
     private void initData() {
-        loadImageUtils.displayImage(detailBean.getPicture(), imageView);
+        loadImageUtils.displayImage(detailBean.getPicture()+"?imageView2/1/w/180/h/180", imageView);
         totalPriceTv.setText("¥" + Float.parseFloat(detailBean.getPrice()));
         titleTv.setText(detailBean.getName());
         addressTv.setText(detailBean.getAddress());
@@ -127,7 +126,6 @@ public class ConfirmActivityActivity extends BaseActivity {
 
     private void confirmOrder(String phone) {
         String hintStr = hintEt.getText().toString().trim();
-        proUtils.show();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("activity_id", detailBean.getId());
         map.put("user_id", UserUtils.getId(this));
@@ -152,13 +150,11 @@ public class ConfirmActivityActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 T.checkNet(ConfirmActivityActivity.this);
-                proUtils.dismiss();
             }
         });
     }
@@ -177,7 +173,9 @@ public class ConfirmActivityActivity extends BaseActivity {
                             String orderId = jo.optString("order_num");
                             String price = jo.optString("total_fee");
                             if ("0.0".equals(price) || "0".equals(price) || "0.00".equals(price) || TextUtils.isEmpty(price)) {
-                                SkipUtils.directJump(ConfirmActivityActivity.this, NoPaySuccessActivity.class, true);
+                                Map<String,Object> map=new HashMap<String,Object>();
+                                map.put(Constant.ID,orderId);
+                                SkipUtils.jumpForMap(ConfirmActivityActivity.this, NoPaySuccessActivity.class,map, true);
                             } else {
                                 Map<String, Object> map = new HashMap<String, Object>();
                                 map.put(Constant.ID, orderId);

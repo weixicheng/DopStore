@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Environment;
 import android.util.Base64;
 import android.view.inputmethod.InputMethodManager;
 
@@ -147,6 +148,29 @@ public class Utils {
         // 如果想输出的格式用逗号隔开，可以设置成true
         nf.setGroupingUsed(false);
         return nf.format(value);
+    }
+
+    /**
+     * 检测SDCard是否存在 true 存在 false 不存在
+     *
+     * @param context
+     * @return
+     */
+    public static boolean DetectionSDCardExists(Context context) {
+        // 检测SD卡是否存在
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            String sdCardStatus = Environment.getExternalStorageState();
+            if (!sdCardStatus.equals(Environment.MEDIA_MOUNTED)) {
+                T.show(context,"请检查存储卡是否存在");
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            T.show(context,"请检查存储卡是否存在");
+            return false;
+
+        }
     }
 
 }

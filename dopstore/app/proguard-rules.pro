@@ -12,41 +12,18 @@
 # If your project uses WebView with JS, uncomment the following
 # and specify the fully qualified class name to the JavaScript interface
 # class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
--dontwarn com.pingplusplus.**
--keep class com.pingplusplus.** {*;}
-
--dontwarn  com.alipay.**
--keep class com.alipay.** {*;}
-
--dontwarn  com.ta.utdid2.**
--keep class com.ta.utdid2.** {*;}
-
--keep class com.ut.device.** {*;}
-
--dontwarn  com.tencent.**
--keep class com.tencent.** {*;}
-
--dontwarn  com.unionpay.**
--keep class com.unionpay.** {*;}
-
--dontwarn com.baidu.**
--keep class com.baidu.** {*;}
-
--keepclassmembers class * {
-    @android.webkit.JavascriptInterface <methods>;
-}
--dontoptimize
+-optimizationpasses 5
+-dontusemixedcaseclassnames
+-dontskipnonpubliclibraryclasses
 -dontpreverify
+-ignorewarnings
+-verbose
+-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
 
--dontwarn cn.jpush.**
--keep class cn.jpush.** { *; }
--dontwarn com.google.**
--keep class com.google.gson.** {*;}
--keep class com.google.protobuf.** {*;}
+-keepclassmembers class fqcn.of.javascript.interface.for.webview {
+   public *;}
 
--keep class cn.finalteam.galleryfinal.widget.*{*;}
--keep class cn.finalteam.galleryfinal.widget.crop.*{*;}
--keep class cn.finalteam.galleryfinal.widget.zoonview.*{*;}
+
+
+
 

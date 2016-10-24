@@ -16,7 +16,7 @@ public class UserData {
     private Long baby_birthday;
     private String address;
     private String mobile;
-    private String balance;
+    private double balance;
 
     public String getId() {
         return id;
@@ -90,11 +90,11 @@ public class UserData {
         this.mobile = mobile;
     }
 
-    public String getBalance() {
+    public double getBalance() {
         return balance;
     }
 
-    public void setBalance(String balance) {
+    public void setBalance(double balance) {
         this.balance = balance;
     }
 

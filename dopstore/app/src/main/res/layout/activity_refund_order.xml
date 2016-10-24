@@ -44,6 +44,7 @@
                     android:textColor="@color/red_color_f93448"
                     android:textSize="@dimen/textsize_14" />
             </RelativeLayout>
+
             <com.dopstore.mall.view.MyListView
                 android:id="@+id/refund_order_listview"
                 android:layout_width="match_parent"

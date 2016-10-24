@@ -13,7 +13,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
+import com.dopstore.mall.activity.bean.CityBean;
+import com.dopstore.mall.activity.bean.UserData;
 import com.dopstore.mall.base.BaseActivity;
+import com.dopstore.mall.util.ACache;
 import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.SkipUtils;
@@ -23,11 +26,14 @@ import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.util.Utils;
 import com.pingplusplus.android.Pingpp;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -38,7 +44,7 @@ import java.util.Map;
 public class ShopCashierActivity extends BaseActivity {
     private RelativeLayout balanceLy, alipayLy, wechatLy;
     private View bv, av, wv;
-    private TextView priceTv;
+    private TextView priceTv, balanceHintTv;
     private Button sureBt;
     private String order_id = "";
     private String order_price = "";
@@ -50,6 +56,7 @@ public class ShopCashierActivity extends BaseActivity {
     private static final String CHANNEL_ALIPAY = "alipay";
     //支付类型
     private int PAY_CODE = 0;
+    private ACache aCache;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +67,7 @@ public class ShopCashierActivity extends BaseActivity {
     }
 
     private void initView() {
+        aCache=ACache.get(this);
         setCustomTitle("收银台", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         balanceLy = (RelativeLayout) findViewById(R.id.cashier_balance_layout);
@@ -69,6 +77,7 @@ public class ShopCashierActivity extends BaseActivity {
         wechatLy = (RelativeLayout) findViewById(R.id.cashier_wechat_layout);
         wv = findViewById(R.id.cashier_wechat_check);
         priceTv = (TextView) findViewById(R.id.cashier_price);
+        balanceHintTv = (TextView) findViewById(R.id.cashier_balance_content);
         sureBt = (Button) findViewById(R.id.cashier_sure_pay_bt);
         balanceLy.setOnClickListener(listener);
         alipayLy.setOnClickListener(listener);
@@ -81,26 +90,31 @@ public class ShopCashierActivity extends BaseActivity {
         if (map == null) return;
         order_id = map.get(Constant.ID).toString();
         order_price = map.get(Constant.PRICE).toString();
-        float price=0;
+        float price = 0;
         if (!TextUtils.isEmpty(order_price)) {
             price = Float.parseFloat(order_price);
             priceTv.setText("¥" + price);
         } else {
-            price =0;
+            price = 0;
             order_price = "0";
             priceTv.setText("¥ 0");
         }
-        String balanceStr= UserUtils.getBalance(this);
-        float balanceF=0;
-        if (TextUtils.isEmpty(balanceStr)){
-            balanceF=0;
-        }else {
-            balanceF=Float.parseFloat(balanceStr);
+        String balanceStr = UserUtils.getBalance(this);
+        float balanceF = 0;
+        if (TextUtils.isEmpty(balanceStr)) {
+            balanceF = 0;
+        } else {
+            balanceF = Float.parseFloat(balanceStr);
         }
-        if (balanceF<price){
-            balanceLy.setBackgroundResource(R.color.gray_color_ee);
+
+        if (balanceF < price) {
+            balanceHintTv.setText("余额不足");
             balanceLy.setOnClickListener(null);
             bv.setBackgroundResource(R.mipmap.checkbox_normal);
+        } else {
+            balanceHintTv.setText("余额支付");
+            balanceLy.setOnClickListener(listener);
+            bv.setBackgroundResource(R.mipmap.checkbox_checked);
         }
     }
 
@@ -152,13 +166,18 @@ public class ShopCashierActivity extends BaseActivity {
         balanceLy.setOnClickListener(null);
         alipayLy.setOnClickListener(null);
         wechatLy.setOnClickListener(null);
-        proUtils.show();
         String type = getPay();
         String iPstr = Utils.GetHostIp(this);
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("client_ip", iPstr);
         map.put("order_num", order_id);
-        map.put("channel", type);
+        if (!"balance".equals(type)) {
+            map.put("channel", type);
+        }else {
+            String userId=UserUtils.getId(this);
+            map.put("user_id",userId);
+        }
+        final String channelType=type;
         httpHelper.post(this, URL.CART_PAYMENT, map, new CommHttp.HttpCallBack() {
             @Override
             public void success(String body) {
@@ -166,11 +185,15 @@ public class ShopCashierActivity extends BaseActivity {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
                     if ("0".equals(code)) {
-                        JSONObject charge = jo.optJSONObject("charge");
-                        Message msg = new Message();
-                        msg.what = PAY_CHARGE_CODE;
-                        msg.obj = charge.toString();
-                        handler.sendMessage(msg);
+                        if (!"balance".equals(channelType)) {
+                            JSONObject charge = jo.optJSONObject("charge");
+                            Message msg = new Message();
+                            msg.what = PAY_CHARGE_CODE;
+                            msg.obj = charge.toString();
+                            handler.sendMessage(msg);
+                        }else {
+                            upUserData();
+                        }
                     } else {
                         String msg = jo.optString(Constant.ERROR_MSG);
                         T.show(ShopCashierActivity.this, msg);
@@ -178,15 +201,78 @@ public class ShopCashierActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 T.checkNet(ShopCashierActivity.this);
-                proUtils.dismiss();
             }
         });
+    }
+
+
+    private void upUserData() {
+        String user_id=UserUtils.getId(this);
+        httpHelper.get(this, URL.USER_DETAIL+user_id,new CommHttp.HttpCallBack() {
+            @Override
+            public void success(String body) {
+                AnalyData(body);
+            }
+
+            @Override
+            public void failed(String msg) {
+                T.checkNet(ShopCashierActivity.this);
+            }
+        });
+    }
+
+    private void AnalyData(String body) {
+        try {
+            JSONObject jo = new JSONObject(body);
+            String code = jo.optString(Constant.ERROR_CODE);
+            if ("0".equals(code)) {
+                aCache.put(Constant.TOKEN, jo.optString(Constant.TOKEN));
+                JSONObject user = jo.optJSONObject(Constant.USER);
+                JSONArray citys = jo.optJSONArray(Constant.CITYS);
+                List<CityBean> cityList = new ArrayList<CityBean>();
+                if (citys.length() > 0) {
+                    for (int i = 0; i < citys.length(); i++) {
+                        JSONObject city = citys.getJSONObject(i);
+                        CityBean cityBean = new CityBean();
+                        cityBean.setId(city.optString(Constant.ID));
+                        cityBean.setName(city.optString(Constant.NAME));
+                        cityList.add(cityBean);
+                    }
+                    aCache.put(Constant.CITYS, (Serializable) cityList);
+                }
+                UserData data = new UserData();
+                data.setId(user.optString(Constant.ID));
+                data.setUsername(user.optString(Constant.USERNAME));
+                data.setNickname(user.optString(Constant.NICKNAME));
+                data.setGender(user.optString(Constant.GENDER));
+                data.setAvatar(user.optString(Constant.AVATAR));
+                data.setBirthday(user.optLong(Constant.BIRTHDAY));
+                data.setBaby_birthday(user.optLong(Constant.BABY_BIRTHDAY));
+                data.setBaby_gender(user.optString(Constant.BABY_GENDER));
+                data.setBaby_name(user.optString(Constant.BABY_NAME));
+                data.setMobile(user.optString(Constant.MOBILE));
+                data.setAddress(user.optString(Constant.CITY));
+                data.setBalance(user.optDouble(Constant.BALANCE));
+                UserUtils.setData(ShopCashierActivity.this, data);
+                Intent it = new Intent();
+                it.setAction(Constant.UP_USER_DATA);
+                sendBroadcast(it);
+                Map<String,Object> map=new HashMap<String,Object>();
+                map.put(Constant.ID,order_id);
+                SkipUtils.jumpForMap(ShopCashierActivity.this, ShopPaySuccessActivity.class,map, true);
+            } else {
+                String msg = jo.optString(Constant.ERROR_MSG);
+                T.show(ShopCashierActivity.this, msg);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**
@@ -250,7 +336,9 @@ public class ShopCashierActivity extends BaseActivity {
                 String errorMsg = data.getExtras().getString("error_msg"); // 错误信息
                 //String extraMsg = data.getExtras().getString("extra_msg"); // 错误信息
                 if (result.equals("success")) {
-                    SkipUtils.directJump(ShopCashierActivity.this, ShopPaySuccessActivity.class, true);
+                    Map<String,Object> map=new HashMap<String,Object>();
+                    map.put(Constant.ID,order_id);
+                    SkipUtils.jumpForMap(ShopCashierActivity.this, ShopPaySuccessActivity.class,map, true);
                 } else if (result.equals("fail")) {
                     T.show(ShopCashierActivity.this, "支付失败");
                 } else if (result.equals("cancel")) {

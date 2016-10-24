@@ -1,5 +1,7 @@
 package com.dopstore.mall.order.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -27,11 +29,13 @@ import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.Utils;
 import com.dopstore.mall.view.MyListView;
 import com.google.gson.Gson;
+import com.meiqia.core.callback.OnInitCallback;
+import com.meiqia.meiqiasdk.util.MQConfig;
+import com.meiqia.meiqiasdk.util.MQIntentBuilder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +52,7 @@ public class OrderDetailActivity extends BaseActivity {
     private MyListView myListView;
     private OrderDetailData orderDetailData;
     private String order_num = "";
-    private LinearLayout errorLayout;
+    private LinearLayout errorLayout,hintLayout;
     private TextView loadTv;
 
 
@@ -70,6 +74,7 @@ public class OrderDetailActivity extends BaseActivity {
         stateTv = (TextView) findViewById(R.id.order_detail_state);
         wLayout = (RelativeLayout) findViewById(R.id.order_detail_wuliu_layout);
         submitLy = (RelativeLayout) findViewById(R.id.order_detail_submit_layout);
+        hintLayout = (LinearLayout) findViewById(R.id.order_detail_user_msg_layout);
         passTv = (TextView) findViewById(R.id.order_detail_wuliu);
         passTimeTv = (TextView) findViewById(R.id.order_detail_wuliu_time);
         userTv = (TextView) findViewById(R.id.order_detail_user_detail);
@@ -95,7 +100,6 @@ public class OrderDetailActivity extends BaseActivity {
     }
 
     private void getOrderDetail() {
-        proUtils.show();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("order_num", order_num);
         httpHelper.post(this, URL.ORDER_GOODS, map, new CommHttp.HttpCallBack() {
@@ -117,13 +121,11 @@ public class OrderDetailActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 errorLayout.setVisibility(View.VISIBLE);
-                proUtils.dismiss();
             }
         });
     }
@@ -176,7 +178,13 @@ public class OrderDetailActivity extends BaseActivity {
         userTv.setText(addressData.getShipping_user() + "  " + addressData.getMobile());
         userAddressTv.setText(addressData.getDetail());
         DetailOrderData detailOrderData = orderDetailData.getOrder();
-        userMsgTv.setText(detailOrderData.getNote());
+        String hintMsg=detailOrderData.getNote();
+        if (TextUtils.isEmpty(hintMsg)){
+            hintLayout.setVisibility(View.GONE);
+        }else {
+            hintLayout.setVisibility(View.VISIBLE);
+            userMsgTv.setText(hintMsg);
+        }
         float totleFee = Float.parseFloat(detailOrderData.getTotal_fee());
         float trueFee = Float.parseFloat(detailOrderData.getReal_fee());
         float cheapFee = totleFee - trueFee;
@@ -265,6 +273,7 @@ public class OrderDetailActivity extends BaseActivity {
                 }
                 break;
                 case R.id.order_detail_cheap_kefu: {
+                    callKefu();
                 }
                 break;
                 case R.id.order_detail_wuliu_layout: {
@@ -279,6 +288,23 @@ public class OrderDetailActivity extends BaseActivity {
 
         }
     };
+
+    private Context mContext;
+    private void callKefu() {
+        mContext=this;
+        MQConfig.init(this, "c614316d10c490745a53e25e7480b078", new OnInitCallback() {
+            @Override
+            public void onSuccess(String clientId) {
+                Intent intent = new MQIntentBuilder(mContext).build();
+                startActivity(intent);
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+                T.show(mContext,message);
+            }
+        });
+    }
 
     private void checkSubmitBt() {
         String submitStr = submitBt.getText().toString();
@@ -297,7 +323,6 @@ public class OrderDetailActivity extends BaseActivity {
     }
 
     private void makeSure() {
-        proUtils.show();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("order_num", order_num);
         httpHelper.post(this, URL.ORDER_CONFIRM, map, new CommHttp.HttpCallBack() {
@@ -315,13 +340,11 @@ public class OrderDetailActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 T.checkNet(OrderDetailActivity.this);
-                proUtils.dismiss();
             }
         });
     }

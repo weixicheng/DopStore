@@ -42,8 +42,8 @@
                     android:layout_below="@id/fragment_person_user_name"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="@dimen/margin_10"
-                    app:border_color="@color/white_color"
-                    app:border_width="2dp" />
+                    app:border_color="@color/red_color_f93448"
+                    app:border_width="1dp" />
 
                 <TextView
                     android:id="@+id/fragment_person_user_intro"
@@ -61,28 +61,260 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/white_color"
                 android:orientation="vertical">
 
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:id="@+id/fragment_person_order_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:padding="10dp">
+
+                        <ImageView
+                            android:id="@+id/fragment_person_order_logo"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_centerVertical="true"
+                            android:src="@mipmap/order_logo" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="@dimen/margin_10"
+                            android:layout_toRightOf="@+id/fragment_person_order_logo"
+                            android:text="我的订单"
+                            android:textColor="@color/gray_color_33"
+                            android:textSize="@dimen/textsize_14" />
+
+
+                        <ImageView
+                            android:layout_width="7dp"
+                            android:layout_height="15dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:src="@mipmap/right_arrow" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginLeft="@dimen/margin_40"
+                        android:background="@color/gray_color_ee" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/margin_10">
+
+                        <RelativeLayout
+                            android:id="@+id/fragment_person_pay_layout"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+                            <LinearLayout
+                                android:id="@+id/fragment_person_pay_logo_layout"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:id="@+id/fragment_person_pay_logo"
+                                    android:layout_width="24dp"
+                                    android:layout_height="26dp"
+                                    android:src="@mipmap/pay_logo" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:text="待付款"
+                                    android:textColor="@color/gray_color_33"
+                                    android:textSize="@dimen/textsize_12" />
+                            </LinearLayout>
+
+
+                            <View
+                                android:id="@+id/fragment_person_pay_msg_v"
+                                android:layout_width="@dimen/margin_10"
+                                android:layout_height="@dimen/margin_10"
+                                android:layout_alignTop="@id/fragment_person_pay_logo_layout"
+                                android:layout_marginLeft="-10dp"
+                                android:layout_toRightOf="@id/fragment_person_pay_logo_layout"
+                                android:background="@mipmap/message_prompt"
+                                android:visibility="gone" />
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:id="@+id/fragment_person_send_layout"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+                            <LinearLayout
+                                android:id="@+id/fragment_person_send_logo_layout"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:id="@+id/fragment_person_send_logo"
+                                    android:layout_width="24dp"
+                                    android:layout_height="26dp"
+                                    android:src="@mipmap/send_logo" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:text="待发货"
+                                    android:textColor="@color/gray_color_33"
+                                    android:textSize="@dimen/textsize_12" />
+                            </LinearLayout>
+
+
+                            <View
+                                android:id="@+id/fragment_person_send_msg_v"
+                                android:layout_width="@dimen/margin_10"
+                                android:layout_height="@dimen/margin_10"
+                                android:layout_alignTop="@id/fragment_person_send_logo_layout"
+                                android:layout_marginLeft="-10dp"
+                                android:layout_toRightOf="@id/fragment_person_send_logo_layout"
+                                android:background="@mipmap/message_prompt"
+                                android:visibility="gone" />
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:id="@+id/fragment_person_receive_layout"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+                            <LinearLayout
+                                android:id="@+id/fragment_person_receive_logo_layout"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:id="@+id/fragment_person_receive_logo"
+                                    android:layout_width="24dp"
+                                    android:layout_height="26dp"
+                                    android:src="@mipmap/receive_logo" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:text="待收货"
+                                    android:textColor="@color/gray_color_33"
+                                    android:textSize="@dimen/textsize_12" />
+                            </LinearLayout>
+
+
+                            <View
+                                android:id="@+id/fragment_person_receive_msg_v"
+                                android:layout_width="@dimen/margin_10"
+                                android:layout_height="@dimen/margin_10"
+                                android:layout_alignTop="@id/fragment_person_receive_logo_layout"
+                                android:layout_marginLeft="-10dp"
+                                android:layout_toRightOf="@id/fragment_person_receive_logo_layout"
+                                android:background="@mipmap/message_prompt"
+                                android:visibility="gone" />
+                        </RelativeLayout>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/margin_10"
+                    android:background="@color/gray_color_ee" />
+
                 <RelativeLayout
-                    android:id="@+id/fragment_person_order_layout"
+                    android:id="@+id/fragment_person_wallet_layout"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:padding="10dp">
 
                     <ImageView
-                        android:id="@+id/fragment_person_order_logo"
+                        android:id="@+id/fragment_person_wallet_logo"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_centerVertical="true"
-                        android:src="@mipmap/order_logo" />
+                        android:src="@mipmap/wallet_logo" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/margin_10"
-                        android:layout_toRightOf="@+id/fragment_person_order_logo"
-                        android:text="我的订单"
+                        android:layout_toRightOf="@+id/fragment_person_wallet_logo"
+                        android:text="我的余额"
+                        android:textColor="@color/gray_color_33"
+                        android:textSize="@dimen/textsize_14" />
+
+
+                    <ImageView
+                        android:id="@+id/fragment_person_wallet_right"
+                        android:layout_width="7dp"
+                        android:layout_height="15dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:src="@mipmap/right_arrow" />
+
+                    <TextView
+                        android:id="@+id/fragment_person_wallet_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/margin_10"
+                        android:layout_toLeftOf="@id/fragment_person_wallet_right"
+                        android:textColor="@color/gray_color_99"
+                        android:textSize="@dimen/textsize_14" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="@dimen/margin_40"
+                    android:background="@color/gray_color_ee" />
+
+                <RelativeLayout
+                    android:id="@+id/fragment_person_activity_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:id="@+id/fragment_person_activity_logo"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_centerVertical="true"
+                        android:src="@mipmap/exercise_logo" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/margin_10"
+                        android:layout_toRightOf="@+id/fragment_person_activity_logo"
+                        android:text="我的活动"
                         android:textColor="@color/gray_color_33"
                         android:textSize="@dimen/textsize_14" />
 
@@ -101,283 +333,81 @@
                     android:layout_marginLeft="@dimen/margin_40"
                     android:background="@color/gray_color_ee" />
 
-                <LinearLayout
+                <RelativeLayout
+                    android:id="@+id/fragment_person_collect_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/margin_10">
+                    android:layout_height="50dp"
+                    android:padding="10dp">
 
-                    <RelativeLayout
-                        android:id="@+id/fragment_person_pay_layout"
-                        android:layout_width="0dp"
+                    <ImageView
+                        android:id="@+id/fragment_person_collect_logo"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_centerVertical="true"
+                        android:src="@mipmap/person_collect_logo" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
-
-                        <LinearLayout
-                            android:id="@+id/fragment_person_pay_logo_layout"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:id="@+id/fragment_person_pay_logo"
-                                android:layout_width="24dp"
-                                android:layout_height="26dp"
-                                android:src="@mipmap/pay_logo" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:text="待付款"
-                                android:textColor="@color/gray_color_33"
-                                android:textSize="@dimen/textsize_12" />
-                        </LinearLayout>
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/margin_10"
+                        android:layout_toRightOf="@+id/fragment_person_collect_logo"
+                        android:text="我的收藏"
+                        android:textColor="@color/gray_color_33"
+                        android:textSize="@dimen/textsize_14" />
 
 
-                        <View
-                            android:id="@+id/fragment_person_pay_msg_v"
-                            android:layout_width="@dimen/margin_10"
-                            android:layout_height="@dimen/margin_10"
-                            android:visibility="gone"
-                            android:layout_alignTop="@id/fragment_person_pay_logo_layout"
-                            android:layout_marginLeft="-10dp"
-                            android:layout_toRightOf="@id/fragment_person_pay_logo_layout"
-                            android:background="@mipmap/message_prompt" />
+                    <ImageView
+                        android:layout_width="7dp"
+                        android:layout_height="15dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:src="@mipmap/right_arrow" />
+                </RelativeLayout>
 
-                    </RelativeLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="@dimen/margin_40"
+                    android:background="@color/gray_color_ee" />
 
-                    <RelativeLayout
-                        android:id="@+id/fragment_person_send_layout"
-                        android:layout_width="0dp"
+                <RelativeLayout
+                    android:id="@+id/fragment_person_address_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:id="@+id/fragment_person_address_logo"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_centerVertical="true"
+                        android:src="@mipmap/address_logo" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
-
-                        <LinearLayout
-                            android:id="@+id/fragment_person_send_logo_layout"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:id="@+id/fragment_person_send_logo"
-                                android:layout_width="24dp"
-                                android:layout_height="26dp"
-                                android:src="@mipmap/send_logo" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:text="待发货"
-                                android:textColor="@color/gray_color_33"
-                                android:textSize="@dimen/textsize_12" />
-                        </LinearLayout>
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/margin_10"
+                        android:layout_toRightOf="@+id/fragment_person_address_logo"
+                        android:text="收货地址"
+                        android:textColor="@color/gray_color_33"
+                        android:textSize="@dimen/textsize_14" />
 
 
-                        <View
-                            android:id="@+id/fragment_person_send_msg_v"
-                            android:layout_width="@dimen/margin_10"
-                            android:layout_height="@dimen/margin_10"
-                            android:visibility="gone"
-                            android:layout_alignTop="@id/fragment_person_send_logo_layout"
-                            android:layout_marginLeft="-10dp"
-                            android:layout_toRightOf="@id/fragment_person_send_logo_layout"
-                            android:background="@mipmap/message_prompt" />
+                    <ImageView
+                        android:layout_width="7dp"
+                        android:layout_height="15dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:src="@mipmap/right_arrow" />
+                </RelativeLayout>
 
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:id="@+id/fragment_person_receive_layout"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1">
-
-                        <LinearLayout
-                            android:id="@+id/fragment_person_receive_logo_layout"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:id="@+id/fragment_person_receive_logo"
-                                android:layout_width="24dp"
-                                android:layout_height="26dp"
-                                android:src="@mipmap/receive_logo" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:text="待收货"
-                                android:textColor="@color/gray_color_33"
-                                android:textSize="@dimen/textsize_12" />
-                        </LinearLayout>
-
-
-                        <View
-                            android:id="@+id/fragment_person_receive_msg_v"
-                            android:layout_width="@dimen/margin_10"
-                            android:layout_height="@dimen/margin_10"
-                            android:visibility="gone"
-                            android:layout_alignTop="@id/fragment_person_receive_logo_layout"
-                            android:layout_marginLeft="-10dp"
-                            android:layout_toRightOf="@id/fragment_person_receive_logo_layout"
-                            android:background="@mipmap/message_prompt" />
-
-                    </RelativeLayout>
-                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/margin_20"
+                    android:background="@color/gray_color_ee" />
             </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/margin_10"
-                android:background="@color/gray_color_ee" />
-
-            <RelativeLayout
-                android:id="@+id/fragment_person_wallet_layout"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:padding="10dp">
-
-                <ImageView
-                    android:id="@+id/fragment_person_wallet_logo"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/wallet_logo" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/margin_10"
-                    android:layout_toRightOf="@+id/fragment_person_wallet_logo"
-                    android:text="我的余额"
-                    android:textColor="@color/gray_color_33"
-                    android:textSize="@dimen/textsize_14" />
-
-
-                <ImageView
-                    android:id="@+id/fragment_person_wallet_right"
-                    android:layout_width="7dp"
-                    android:layout_height="15dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/right_arrow" />
-
-                <TextView
-                    android:id="@+id/fragment_person_wallet_price"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="@dimen/margin_10"
-                    android:layout_toLeftOf="@id/fragment_person_wallet_right"
-                    android:textColor="@color/gray_color_99"
-                    android:textSize="@dimen/textsize_14" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/fragment_person_activity_layout"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:padding="10dp">
-
-                <ImageView
-                    android:id="@+id/fragment_person_activity_logo"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/exercise_logo" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/margin_10"
-                    android:layout_toRightOf="@+id/fragment_person_activity_logo"
-                    android:text="我的活动"
-                    android:textColor="@color/gray_color_33"
-                    android:textSize="@dimen/textsize_14" />
-
-
-                <ImageView
-                    android:layout_width="7dp"
-                    android:layout_height="15dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/right_arrow" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/fragment_person_collect_layout"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:padding="10dp">
-
-                <ImageView
-                    android:id="@+id/fragment_person_collect_logo"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/collect_check_logo" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/margin_10"
-                    android:layout_toRightOf="@+id/fragment_person_collect_logo"
-                    android:text="我的收藏"
-                    android:textColor="@color/gray_color_33"
-                    android:textSize="@dimen/textsize_14" />
-
-
-                <ImageView
-                    android:layout_width="7dp"
-                    android:layout_height="15dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/right_arrow" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/fragment_person_address_layout"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:padding="10dp">
-
-                <ImageView
-                    android:id="@+id/fragment_person_address_logo"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/address_logo" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/margin_10"
-                    android:layout_toRightOf="@+id/fragment_person_address_logo"
-                    android:text="收货地址"
-                    android:textColor="@color/gray_color_33"
-                    android:textSize="@dimen/textsize_14" />
-
-
-                <ImageView
-                    android:layout_width="7dp"
-                    android:layout_height="15dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/right_arrow" />
-            </RelativeLayout>
-
 
         </LinearLayout>
     </ScrollView>

@@ -33,7 +33,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -161,7 +160,9 @@ public class ConfirmOrderActivity extends BaseActivity {
                 }
                 break;
                 case R.id.confirm_order_address_layout: {
-                    SkipUtils.directJumpForResult(ConfirmOrderActivity.this, MyAddressActivity.class, GET_ADDRESS_CODE);
+                    Map<String,Object> map=new HashMap<String,Object>();
+                    map.put(Constant.ID,"1");
+                    SkipUtils.jumpForMapResult(ConfirmOrderActivity.this, MyAddressActivity.class, map,GET_ADDRESS_CODE);
                 }
                 break;
             }
@@ -201,7 +202,6 @@ public class ConfirmOrderActivity extends BaseActivity {
     }
 
     private void getOrderID(RequestParams params) {
-        proUtils.show();
         httpHelper.postObject(this, URL.CART_CREATE_ORDER, params, new CommHttp.HttpCallBack() {
             @Override
             public void success(String body) {
@@ -221,13 +221,11 @@ public class ConfirmOrderActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 T.show(ConfirmOrderActivity.this,msg);
-                proUtils.dismiss();
             }
         });
     }

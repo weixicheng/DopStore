@@ -38,33 +38,37 @@
         android:layout_marginRight="@dimen/margin_10"
         android:layout_marginLeft="@dimen/margin_10"
         android:background="@color/gray_color_ee" />
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/margin_50">
-    <EditText
-        android:id="@+id/login_pwd_et"
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/margin_50"
-        android:layout_marginLeft="@dimen/margin_10"
-        android:layout_marginRight="@dimen/margin_10"
-        android:background="@null"
-        android:maxLines="1"
-        android:layout_centerVertical="true"
-        android:textColorHint="@color/gray_color_99"
-        android:textColor="@color/gray_color_33"
-        android:textSize="@dimen/textsize_14"
-        android:inputType="textPassword"
-        android:hint="@string/pwd_str" />
-    <View
-        android:id="@+id/login_pwd_et_see"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_width="19dp"
-        android:visibility="gone"
-        android:layout_marginRight="@dimen/margin_10"
-        android:layout_height="14.5dp"
-        android:background="@mipmap/see_logo"/>
-</RelativeLayout>
+        android:layout_height="@dimen/margin_50">
+
+        <EditText
+            android:id="@+id/login_pwd_et"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_50"
+            android:layout_marginLeft="@dimen/margin_10"
+            android:layout_marginRight="@dimen/margin_10"
+            android:background="@null"
+            android:maxLines="1"
+            android:layout_centerVertical="true"
+            android:textColorHint="@color/gray_color_99"
+            android:textColor="@color/gray_color_33"
+            android:textSize="@dimen/textsize_14"
+            android:inputType="textPassword"
+            android:hint="@string/pwd_str" />
+
+        <View
+            android:id="@+id/login_pwd_et_see"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_width="19dp"
+            android:visibility="gone"
+            android:layout_marginRight="@dimen/margin_10"
+            android:layout_height="14.5dp"
+            android:background="@mipmap/see_logo" />
+    </RelativeLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

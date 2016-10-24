@@ -100,16 +100,16 @@
         "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/bdwallet_pay_sdk/build/intermediates/bundles/debug/res/drawable/ebpay_title_btn_selector.xml"
     },
     {
-        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/bdwallet_pay_sdk/build/intermediates/res/merged/androidTest/debug/drawable/ebpay_textview_bg_selector.xml",
-        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/bdwallet_pay_sdk/build/intermediates/bundles/debug/res/drawable/ebpay_textview_bg_selector.xml"
-    },
-    {
         "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/bdwallet_pay_sdk/build/intermediates/res/merged/androidTest/debug/drawable/ebpay_list_selector.xml",
         "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/bdwallet_pay_sdk/build/intermediates/bundles/debug/res/drawable/ebpay_list_selector.xml"
     },
     {
         "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/bdwallet_pay_sdk/build/intermediates/res/merged/androidTest/debug/drawable/wallet_base_refresh_loading_small.xml",
         "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/bdwallet_pay_sdk/build/intermediates/bundles/debug/res/drawable/wallet_base_refresh_loading_small.xml"
+    },
+    {
+        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/bdwallet_pay_sdk/build/intermediates/res/merged/androidTest/debug/drawable/ebpay_textview_bg_selector.xml",
+        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/bdwallet_pay_sdk/build/intermediates/bundles/debug/res/drawable/ebpay_textview_bg_selector.xml"
     },
     {
         "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/bdwallet_pay_sdk/build/intermediates/res/merged/androidTest/debug/drawable/wallet_base_loading.xml",

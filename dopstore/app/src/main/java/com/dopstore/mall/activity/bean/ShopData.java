@@ -12,8 +12,6 @@ public class ShopData implements Serializable {
     private String price;
     private String cover;
     private String number;
-    private String detail;
-    private String stock_surplus;
     private String stock_number;
 
     public String getId() {
@@ -56,21 +54,6 @@ public class ShopData implements Serializable {
         this.number = number;
     }
 
-    public String getDetail() {
-        return detail;
-    }
-
-    public void setDetail(String detail) {
-        this.detail = detail;
-    }
-
-    public String getStock_surplus() {
-        return stock_surplus;
-    }
-
-    public void setStock_surplus(String stock_surplus) {
-        this.stock_surplus = stock_surplus;
-    }
 
     public String getStock_number() {
         return stock_number;

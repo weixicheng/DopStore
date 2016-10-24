@@ -60,10 +60,10 @@ public class CommOrderAdapter extends BaseAdapter {
         if (items != null && items.size() > 0) {
             DetailOrderListData data = items.get(position);
             if (data != null) {
-                holder.num.setText("✖️ " + data.getGoods_num());
+                holder.num.setText("x️ " + data.getGoods_num());
                 holder.price.setText("¥" + data.getGoods_price());
                 holder.title.setText(data.getGoods_name());
-                loadImageUtils.displayImage(data.getGoods_cover(), holder.imageView);
+                loadImageUtils.displayImage(data.getGoods_cover()+"?imageView2/1/w/182/h/182", holder.imageView);
             }
         }
         return convertView;

@@ -58,7 +58,7 @@ public class ActivityDetailAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
         if (list.size() > 0) {
-            loadImageUtils.displayImage(list.get(i).getCover(), viewHolder.bigImageView);
+            loadImageUtils.displayImage(list.get(i).getCover()+"?imageView2/1/w/204/h/204", viewHolder.bigImageView);
             viewHolder.titleTv.setText(list.get(i).getName());
             viewHolder.priceTv.setText("￥" + list.get(i).getPrice());
         }

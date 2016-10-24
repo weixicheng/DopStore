@@ -5,9 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
@@ -56,30 +54,24 @@ public class ConfirmOrderAdapter extends BaseAdapter {
             holder.price = (TextView) convertView.findViewById(R.id.comm_order_price);
             holder.title = (TextView) convertView.findViewById(R.id.comm_order_title);
             holder.imageView = (ImageView) convertView.findViewById(R.id.comm_order_image);
-            holder.hintLayout = (LinearLayout) convertView.findViewById(R.id.comm_order_hint_layout);
-            holder.hintEt = (EditText) convertView.findViewById(R.id.comm_order_hint_et);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.type.setVisibility(View.GONE);
-        holder.hintLayout.setVisibility(View.GONE);
         if (items != null && items.size() > 0) {
             GoodBean data = items.get(position);
             if (data != null) {
-                holder.type.setText(data.getContent());
-                holder.num.setText("✖️ " + data.getCarNum());
+                holder.type.setText(data.getGoods_sku_str());
+                holder.num.setText("x " + data.getCarNum());
                 holder.price.setText("¥" + data.getPrice());
                 holder.title.setText(data.getContent());
-                loadImageUtils.displayImage(data.getCover(), holder.imageView);
+                loadImageUtils.displayImage(data.getCover()+"?imageView2/1/w/182/h/182", holder.imageView);
             }
         }
         return convertView;
     }
 
     static class ViewHolder {
-        private LinearLayout hintLayout;
-        private EditText hintEt;
         private TextView num, price, title, type;
         private ImageView imageView;
     }

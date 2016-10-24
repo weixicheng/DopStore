@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +21,6 @@ import android.widget.TextView;
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.adapter.TrolleyAdapter;
 import com.dopstore.mall.activity.bean.GoodBean;
-import com.dopstore.mall.base.BaseFragment;
 import com.dopstore.mall.shop.activity.ConfirmOrderActivity;
 import com.dopstore.mall.shop.activity.ShopDetailActivity;
 import com.dopstore.mall.util.CommHttp;
@@ -30,9 +30,10 @@ import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.util.Utils;
-import com.dopstore.mall.view.PullToRefreshView;
-import com.dopstore.mall.view.PullToRefreshView.OnFooterRefreshListener;
-import com.dopstore.mall.view.PullToRefreshView.OnHeaderRefreshListener;
+import com.dopstore.mall.view.pulltorefresh.PullToRefreshBase;
+import com.dopstore.mall.view.pulltorefresh.PullToRefreshBase.Mode;
+import com.dopstore.mall.view.pulltorefresh.PullToRefreshBase.OnRefreshListener;
+import com.dopstore.mall.view.pulltorefresh.PullToRefreshListView;
 import com.loopj.android.http.RequestParams;
 
 import org.json.JSONArray;
@@ -52,9 +53,8 @@ import java.util.TimerTask;
  * name 购物车
  */
 @SuppressLint("ValidFragment")
-public class TrolleyFragment extends BaseFragment implements OnHeaderRefreshListener, OnFooterRefreshListener {
-    private PullToRefreshView pullToRefreshView;
-    private ListView mListView;// 列表
+public class TrolleyFragment extends Fragment implements OnRefreshListener<ListView> {
+    private PullToRefreshListView pullToRefreshView;
     private LinearLayout errorLayout,emptyLayout;
     private TextView loadTv;
 
@@ -85,9 +85,11 @@ public class TrolleyFragment extends BaseFragment implements OnHeaderRefreshList
 
     private TimerTask doing;
     private Timer timer;
+    private CommHttp httpHelper;
 
     public TrolleyFragment(Context context) {
         this.context = context;
+        httpHelper=CommHttp.getInstance(context);
     }
 
     @Nullable
@@ -102,11 +104,9 @@ public class TrolleyFragment extends BaseFragment implements OnHeaderRefreshList
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser) {
             if (null != timer) {
-                // readChatList();
                 return;
             } else {
                 timer = new Timer();
-
                 doing = new TimerTask() {
 
                     // 每个timerTask都要重写这个方法，因为是abstract的
@@ -131,9 +131,6 @@ public class TrolleyFragment extends BaseFragment implements OnHeaderRefreshList
                 ja.put(goodBean.getId());
             }
         }
-        if (isRefresh == false) {
-            proUtils.show();
-        }
         RequestParams params=new RequestParams();
         params.put("user_id", UserUtils.getId(context));
         params.put("item_list",ja.toString());
@@ -154,20 +151,18 @@ public class TrolleyFragment extends BaseFragment implements OnHeaderRefreshList
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 T.checkNet(context);
-                proUtils.dismiss();
             }
         });
     }
 
     private void initView(View v) {
         mBottonLayout = (RelativeLayout) v.findViewById(R.id.cart_rl_allprie_total);
-        pullToRefreshView = (PullToRefreshView) v.findViewById(R.id.main_trolley_fragment_pulltorefreshview);
+        pullToRefreshView = (PullToRefreshListView) v.findViewById(R.id.main_trolley_fragment_pulltorefreshview);
         checkLayout = (LinearLayout) v.findViewById(R.id.trolley_check_box_layout);
         mCheckAll = (CheckBox) v.findViewById(R.id.check_box);
         errorLayout = (LinearLayout) v.findViewById(R.id.trolley_fragment_error_layout);
@@ -182,10 +177,8 @@ public class TrolleyFragment extends BaseFragment implements OnHeaderRefreshList
         titleTv.setText("购物车");
         mPriceAll = (TextView) v.findViewById(R.id.tv_cart_total);
         mDelete = (TextView) v.findViewById(R.id.tv_cart_buy_or_del);
-        mListView = (ListView) v.findViewById(R.id.listview);
-        pullToRefreshView.setOnFooterRefreshListener(this);
-        pullToRefreshView.setOnHeaderRefreshListener(this);
-        pullToRefreshView.onFooterRefreshComplete();
+        pullToRefreshView.setMode(Mode.PULL_FROM_START);
+        pullToRefreshView.setOnRefreshListener(this);
         mEdit.setOnClickListener(listener);
         mDelete.setOnClickListener(listener);
         mCheckAll.setOnClickListener(listener);
@@ -208,18 +201,21 @@ public class TrolleyFragment extends BaseFragment implements OnHeaderRefreshList
         }
         if (mListAdapter == null) {
             mListAdapter = new TrolleyAdapter(context, mListData, mPriceAll, totalPrice, mCheckAll);
-            mListView.setAdapter(mListAdapter);
+            pullToRefreshView.setAdapter(mListAdapter);
         } else {
             mListAdapter.upData(mListData, mPriceAll, totalPrice, mCheckAll);
         }
 
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        pullToRefreshView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String shop_id=mListData.get(position-1).getId()+"";
+                String shop_name=mListData.get(position-1).getContent();
+                String shop_pic=mListData.get(position-1).getCover();
                 Map<String, Object> map = new HashMap<String, Object>();
-                map.put(Constant.ID, mListData.get(position).getId());
-                map.put(Constant.NAME, mListData.get(position).getContent());
-                map.put(Constant.PICTURE, mListData.get(position).getCover());
+                map.put(Constant.ID, shop_id);
+                map.put(Constant.NAME, shop_name);
+                map.put(Constant.PICTURE,shop_pic);
                 SkipUtils.jumpForMap(context, ShopDetailActivity.class, map, false);
             }
         });
@@ -229,7 +225,6 @@ public class TrolleyFragment extends BaseFragment implements OnHeaderRefreshList
         totalPrice=0.00;
         mCheckAll.setChecked(false);
         mPriceAll.setText("￥" + 0.00);
-        proUtils.show();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("user_id", UserUtils.getId(context));
         httpHelper.post(context, URL.CART_QUERY, map, new CommHttp.HttpCallBack() {
@@ -239,14 +234,12 @@ public class TrolleyFragment extends BaseFragment implements OnHeaderRefreshList
                 analyData(body);
                 handler.sendEmptyMessage(UPDATA_CART_MSG);
                 dismissRefresh();
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 errorLayout.setVisibility(View.VISIBLE);
                 dismissRefresh();
-                proUtils.dismiss();
             }
         });
     }
@@ -265,6 +258,7 @@ public class TrolleyFragment extends BaseFragment implements OnHeaderRefreshList
                         data.setCarNum(Integer.parseInt(job.optString(Constant.NUMBER)));
                         data.setContent(job.optString(Constant.NAME));
                         data.setGoods_sku_id(job.optString("goods_sku_id"));
+                        data.setGoods_sku_str(job.optString("goods_sku_str"));
                         String price=job.optString(Constant.PRICE);
                         if (!TextUtils.isEmpty(price)) {
                             if (Utils.isNum(price)) {
@@ -408,25 +402,23 @@ public class TrolleyFragment extends BaseFragment implements OnHeaderRefreshList
         }
     };
 
-    @Override
-    public void onFooterRefresh(PullToRefreshView view) {
-        pullToRefreshView.onFooterRefreshComplete();
-    }
-
-    @Override
-    public void onHeaderRefresh(PullToRefreshView view) {
-        isRefresh = true;
-        if (isRefresh) {
-            mListData.clear();
-            getCartList();
-        }
-    }
-
     private void dismissRefresh() {
         if (isRefresh) {
-            pullToRefreshView.onHeaderRefreshComplete();
+            pullToRefreshView.onRefreshComplete();
             isRefresh = false;
         }
     }
 
+    @Override
+    public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+            pullToRefreshView.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
+            pullToRefreshView.getLoadingLayoutProxy().setPullLabel("下拉刷新");
+            pullToRefreshView.getLoadingLayoutProxy().setReleaseLabel("释放开始刷新");
+            isRefresh = true;
+            if (isRefresh) {
+                mListData.clear();
+                getCartList();
+            }
+
+    }
 }

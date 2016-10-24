@@ -7,13 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.bean.MainTabData;
 import com.dopstore.mall.util.LoadImageUtils;
+import com.dopstore.mall.view.CircleImageView;
 
 import java.util.List;
 
@@ -54,7 +54,7 @@ public class SearchAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             viewHolder.main = (LinearLayout) view.findViewById(R.id.item_search_main);
             viewHolder.titleTv = (TextView) view.findViewById(R.id.item_search_name);
-            viewHolder.head = (ImageView) view.findViewById(R.id.item_search_image);
+            viewHolder.head = (CircleImageView) view.findViewById(R.id.item_search_image);
             view.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) view.getTag();
@@ -79,7 +79,7 @@ public class SearchAdapter extends BaseAdapter {
 
     class ViewHolder {
         private LinearLayout main;
-        private ImageView head;
+        private CircleImageView head;
         private TextView titleTv;
     }
 }

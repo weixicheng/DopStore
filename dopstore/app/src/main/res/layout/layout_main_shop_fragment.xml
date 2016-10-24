@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:myRefresh="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:divider="@color/gray_color_ee">
@@ -22,24 +21,64 @@
         android:layout_below="@id/main_shop_fragment_tab_escrollview"
         android:orientation="vertical">
 
-
-        <com.dopstore.mall.view.PullToRefreshView
+        <com.dopstore.mall.view.pulltorefresh.PullToRefreshScrollView
             android:id="@+id/main_shop_fragment_pulltorefreshview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/gray_color_ee"
             android:orientation="vertical"
-            myRefresh:pullDown="true"
-            myRefresh:pullUp="true">
+            android:overScrollMode="never"
+            android:scrollbars="none">
 
-            <ListView
-                android:id="@+id/main_shop_fragment_listview"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:divider="@null"
-                android:dividerHeight="0dp" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        </com.dopstore.mall.view.PullToRefreshView>
+                <com.dopstore.mall.view.RollHeaderView
+                    android:id="@+id/layout_main_shop_head_ad"
+                    android:layout_width="match_parent"
+                    android:visibility="gone"
+                    android:layout_height="wrap_content" />
+
+                <com.dopstore.mall.view.MyListView
+                    android:id="@+id/main_shop_fragment_middle_listview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@null"
+                    android:dividerHeight="0dp"
+                    android:minHeight="160dp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/margin_10"
+                    android:background="@color/gray_color_ee" />
+
+                <TextView
+                    android:id="@+id/main_shop_fragment_bottom_title_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white_color"
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/margin_10"
+                    android:paddingTop="@dimen/margin_10"
+                    android:text="热门推荐"
+                    android:textColor="@color/gray_color_33"
+                    android:textSize="@dimen/textsize_16"
+                    android:visibility="gone" />
+
+                <com.dopstore.mall.view.MyGridView
+                    android:id="@+id/main_shop_fragment_bottom_gridView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:numColumns="2"
+                    android:paddingLeft="@dimen/margin_10" />
+
+            </LinearLayout>
+
+        </com.dopstore.mall.view.pulltorefresh.PullToRefreshScrollView>
+
     </LinearLayout>
 
     <LinearLayout
@@ -49,7 +88,7 @@
         android:layout_below="@id/main_shop_fragment_tab_escrollview"
         android:visibility="gone">
 
-        <include layout="@layout/comm_error_layout"/>
+        <include layout="@layout/comm_error_layout" />
 
     </LinearLayout>
 

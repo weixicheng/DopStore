@@ -7,6 +7,7 @@ import com.dopstore.mall.login.activity.LoginActivity;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+
 import org.apache.http.Header;
 import org.json.JSONObject;
 
@@ -25,6 +26,7 @@ public class CommHttp {
     private static AsyncHttpClient client;
     private static CommHttp okHttpUtils = null;
     private static ACache aCache;
+
 
     public static CommHttp getInstance(Context context) {
         if (okHttpUtils == null) {
@@ -82,7 +84,24 @@ public class CommHttp {
 
             @Override
             public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
-                callBack.failed(new String(bytes));
+                String boby ="";
+                if (bytes!=null&&bytes.length>0) {
+                    boby = new String(bytes);
+                }
+                try {
+                    JSONObject jo=new JSONObject(boby);
+                    String detail=jo.optString("detail");
+                    if (TextUtils.isEmpty(detail)) {
+                        String code=jo.optString("error_code");
+                        String msg=jo.optString("error_msg");
+                        callBack.failed(code+msg);
+                    }else {
+                        T.show(context,"请重新登录");
+                        SkipUtils.directJump(context, LoginActivity.class,false);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -115,7 +134,26 @@ public class CommHttp {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] bytes, Throwable throwable) {
-                callBack.failed(String.valueOf(statusCode));
+                String boby ="";
+                if (bytes!=null&&bytes.length>0) {
+                    boby = new String(bytes);
+                }
+                if (!TextUtils.isEmpty(boby)) {
+                    try {
+                        JSONObject jo = new JSONObject(boby);
+                        String detail = jo.optString("detail");
+                        if (TextUtils.isEmpty(detail)) {
+                            String code = jo.optString("error_code");
+                            String msg = jo.optString("error_msg");
+                            callBack.failed(code + msg);
+                        } else {
+                            T.show(context, "请重新登录");
+                            SkipUtils.directJump(context, LoginActivity.class, false);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         });
 
@@ -138,7 +176,26 @@ public class CommHttp {
 
             @Override
             public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
-                callBack.failed(new String(bytes));
+                String boby ="";
+                if (bytes!=null&&bytes.length>0) {
+                    boby = new String(bytes);
+                }
+                if (!TextUtils.isEmpty(boby)) {
+                    try {
+                        JSONObject jo = new JSONObject(boby);
+                        String detail = jo.optString("detail");
+                        if (TextUtils.isEmpty(detail)) {
+                            String code = jo.optString("error_code");
+                            String msg = jo.optString("error_msg");
+                            callBack.failed(code + msg);
+                        } else {
+                            T.show(context, "请重新登录");
+                            SkipUtils.directJump(context, LoginActivity.class, false);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         });
     }
@@ -148,4 +205,6 @@ public class CommHttp {
 
         public void failed(String msg);
     }
+
+
 }

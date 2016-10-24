@@ -21,7 +21,7 @@ import com.dopstore.mall.activity.fragment.MainShopFragment;
 import com.dopstore.mall.activity.fragment.MainSportFragment;
 import com.dopstore.mall.activity.fragment.PersonFragment;
 import com.dopstore.mall.activity.fragment.TrolleyFragment;
-import com.dopstore.mall.base.BaseFragmentActivity;
+import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.base.MyApplication;
 import com.dopstore.mall.login.activity.LoginActivity;
 import com.dopstore.mall.util.Constant;
@@ -30,7 +30,7 @@ import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.view.CommonDialog;
 import com.dopstore.mall.view.MyViewPager;
 
-public class MainActivity extends BaseFragmentActivity {
+public class MainActivity extends BaseActivity {
     protected RelativeLayout mainRly;
     private RelativeLayout bilingRly;
     private RelativeLayout headRly;
@@ -153,8 +153,8 @@ public class MainActivity extends BaseFragmentActivity {
                     viewPager.setCurrentItem(BILING_CODE);
                     break;
                 case R.id.head_tab_button:// 购物车
-                    setTab(ROB_CODE);
                     if (UserUtils.haveLogin(MainActivity.this)) {
+                        setTab(ROB_CODE);
                         viewPager.setCurrentItem(ROB_CODE);
                     } else {
                         SkipUtils.directJump(MainActivity.this, LoginActivity.class, false);

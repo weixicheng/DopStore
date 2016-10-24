@@ -55,11 +55,11 @@ public class MyBalanceActivity extends BaseActivity {
         Map<String, Object> map = SkipUtils.getMap(this);
         String balance = map.get(Constant.BALANCE).toString();
         numTv.setText(balance);
-        final String[] num = {"500", "1000", "2000", "5000"};
+        final String[] num = {"300", "500", "1000"};
         for (int i = 0; i < num.length; i++) {
             MyBalanceData data = new MyBalanceData();
             data.setTitle(num[i]);
-            data.setIntro("充值1000送200,返海豚币1000元");
+            data.setIntro("");
             items.add(data);
         }
         listView.setAdapter(new MyBalanceAdapter(this, items));

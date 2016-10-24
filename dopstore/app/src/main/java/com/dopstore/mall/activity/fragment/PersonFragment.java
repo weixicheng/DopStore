@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +15,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
-import com.dopstore.mall.base.BaseFragment;
 import com.dopstore.mall.login.activity.LoginActivity;
 import com.dopstore.mall.order.activity.MyActivityActivity;
 import com.dopstore.mall.order.activity.MyOrderActivity;
@@ -38,7 +38,7 @@ import java.util.Map;
  * name 个人中心
  */
 @SuppressLint("ValidFragment")
-public class PersonFragment extends BaseFragment {
+public class PersonFragment extends Fragment {
     private RelativeLayout userLayout, orderLayout, payLayout, sendLayout, receiveLayout, walletLayout, activityLayout, collectLayout, addressLayout;
     private TextView nameTv, introTv, priceTv;
     private ImageButton rightBt;
@@ -209,7 +209,9 @@ public class PersonFragment extends BaseFragment {
                     if (!UserUtils.haveLogin(context)) {
                         SkipUtils.directJump(context, LoginActivity.class, false);
                     } else {
-                        SkipUtils.directJump(context, MyAddressActivity.class, false);
+                        Map<String,Object> map=new HashMap<String,Object>();
+                        map.put(Constant.ID,"0");
+                        SkipUtils.jumpForMap(context, MyAddressActivity.class, map,false);
                     }
                 }
                 break;

@@ -1,5 +1,7 @@
 package com.dopstore.mall.order.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -23,11 +25,13 @@ import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.Utils;
 import com.dopstore.mall.view.CommonDialog;
+import com.meiqia.core.callback.OnInitCallback;
+import com.meiqia.meiqiasdk.util.MQConfig;
+import com.meiqia.meiqiasdk.util.MQIntentBuilder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,8 +45,8 @@ public class ActivityOrderDetailActivity extends BaseActivity {
     private Button submitBt, kFBt;
     private LoadImageUtils loadImage;
     private ImageView shopImage, zxingImage;
-    private RelativeLayout zxingLayout, submitLayout;
-    private LinearLayout bigZxingLayout;
+    private RelativeLayout submitLayout;
+    private LinearLayout zxingLayout, bigZxingLayout,hintMsgLayout;
     private ImageView bigZxingImage;
     private String id;
     private ActivityOrderDetailBean detailBean;
@@ -62,11 +66,12 @@ public class ActivityOrderDetailActivity extends BaseActivity {
         setCustomTitle("订单详情", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         idTv = (TextView) findViewById(R.id.activity_detail_id);
-        zxingLayout = (RelativeLayout) findViewById(R.id.activity_detail_zxing_layout);
+        zxingLayout = (LinearLayout) findViewById(R.id.activity_detail_zxing_layout);
         stateTv = (TextView) findViewById(R.id.activity_detail_state);
         shopImage = (ImageView) findViewById(R.id.activity_detail_image);
         zxingImage = (ImageView) findViewById(R.id.activity_detail_zxing);
         bigZxingLayout = (LinearLayout) findViewById(R.id.activity_detail_big_zxing_layout);
+        hintMsgLayout = (LinearLayout) findViewById(R.id.activity_detail_user_msg_layout);
         bigZxingImage = (ImageView) findViewById(R.id.activity_detail_big_zxing);
         titleTv = (TextView) findViewById(R.id.activity_detail_title);
         addressTv = (TextView) findViewById(R.id.activity_detail_address);
@@ -107,12 +112,16 @@ public class ActivityOrderDetailActivity extends BaseActivity {
             case 4:
             case 5:
             case 6:
-            case 7: {
+            case 7:
+            case 8:
+            case 9: {
                 submitLayout.setVisibility(View.GONE);
             }
             break;
 
         }
+
+
     }
 
     private void initData() {
@@ -120,7 +129,6 @@ public class ActivityOrderDetailActivity extends BaseActivity {
     }
 
     private void getOrderDetail() {
-        proUtils.show();
         httpHelper.get(this, URL.ORDER_ACTIVITY + "/" + id, new CommHttp.HttpCallBack() {
             @Override
             public void success(String body) {
@@ -153,13 +161,11 @@ public class ActivityOrderDetailActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 T.checkNet(ActivityOrderDetailActivity.this);
-                proUtils.dismiss();
             }
         });
     }
@@ -169,18 +175,19 @@ public class ActivityOrderDetailActivity extends BaseActivity {
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.activity_detail_submit: {
-                    String submitText=submitBt.getText().toString();
-                    if ("立即付款".equals(submitText)){
-                        Map<String,Object> map=new HashMap<String,Object>();
-                        map.put(Constant.ID,detailBean.getOrder_num());
-                        map.put(Constant.PRICE,detailBean.getTotal_fee());
-                        SkipUtils.jumpForMap(ActivityOrderDetailActivity.this,ActivityCashierActivity.class,map,false);
-                    }else if ("申请退款".equals(submitText)){
+                    String submitText = submitBt.getText().toString();
+                    if ("立即付款".equals(submitText)) {
+                        Map<String, Object> map = new HashMap<String, Object>();
+                        map.put(Constant.ID, detailBean.getOrder_num());
+                        map.put(Constant.PRICE, detailBean.getTotal_fee());
+                        SkipUtils.jumpForMap(ActivityOrderDetailActivity.this, ActivityCashierActivity.class, map, false);
+                    } else if ("申请退款".equals(submitText)) {
                         refundOrder();
                     }
                 }
                 break;
                 case R.id.activity_detail_cheap_kefu: {
+                    callKefu();
                 }
                 break;
                 case R.id.activity_detail_zxing: {
@@ -196,10 +203,25 @@ public class ActivityOrderDetailActivity extends BaseActivity {
 
         }
     };
+    private Context mContext;
+    private void callKefu() {
+        mContext=this;
+        MQConfig.init(this, "c614316d10c490745a53e25e7480b078", new OnInitCallback() {
+            @Override
+            public void onSuccess(String clientId) {
+                Intent intent = new MQIntentBuilder(mContext).build();
+                startActivity(intent);
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+                        T.show(mContext,message);
+            }
+        });
+    }
 
 
     private void refundOrder() {
-        proUtils.show();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("order_num", detailBean.getOrder_num());
         httpHelper.post(this, URL.ACTIVITY_REFUND, map, new CommHttp.HttpCallBack() {
@@ -217,13 +239,11 @@ public class ActivityOrderDetailActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 T.checkNet(ActivityOrderDetailActivity.this);
-                proUtils.dismiss();
             }
         });
     }
@@ -249,9 +269,9 @@ public class ActivityOrderDetailActivity extends BaseActivity {
                     if (dialog.isShowing()) {
                         dialog.dismiss();
                     }
-                    Map<String,Object> map=new HashMap<String,Object>();
-                    map.put(Constant.ID,"true");
-                    SkipUtils.backForMapResult(ActivityOrderDetailActivity.this,map);
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map.put(Constant.ID, "true");
+                    SkipUtils.backForMapResult(ActivityOrderDetailActivity.this, map);
                 }
                 break;
             }
@@ -275,47 +295,47 @@ public class ActivityOrderDetailActivity extends BaseActivity {
         switch (type) {
             case 0: {
                 typeName = "等待付款";
-                zxingLayout.setVisibility(View.GONE);
             }
             break;
             case 1: {
-                zxingLayout.setVisibility(View.VISIBLE);
                 typeName = "付款成功";
             }
             break;
             case 2: {
-                zxingLayout.setVisibility(View.VISIBLE);
                 typeName = "订单取消";
             }
             break;
             case 3: {
-                zxingLayout.setVisibility(View.VISIBLE);
                 typeName = "报名成功";
             }
             break;
             case 4: {
-                zxingLayout.setVisibility(View.VISIBLE);
                 typeName = "退款申请中";
             }
             break;
             case 5: {
-                zxingLayout.setVisibility(View.VISIBLE);
                 typeName = "退款中";
             }
             break;
             case 6: {
-                zxingLayout.setVisibility(View.VISIBLE);
                 typeName = "退款成功";
             }
             break;
             case 7: {
-                zxingLayout.setVisibility(View.VISIBLE);
-                typeName = "已完成";
+                typeName = "已参加";
+            }
+            break;
+            case 8: {
+                typeName = "退款失败";
+            }
+            break;
+            case 9: {
+                typeName = "支付中";
             }
             break;
         }
         stateTv.setText(typeName);
-        loadImage.displayImage(detailBean.getPic(), shopImage);
+        loadImage.displayImage(detailBean.getPic()+"?imageView2/1/w/180/h/180", shopImage);
 
         titleTv.setText(detailBean.getName());
         addressTv.setText("地址:" + detailBean.getAddress());
@@ -323,7 +343,13 @@ public class ActivityOrderDetailActivity extends BaseActivity {
         timeTv.setText(time);
         typeTv.setText(detailBean.getCategory());
         priceTv.setText("¥" + detailBean.getPrice());
-        userMsgTv.setText(detailBean.getNote());
+        String hintMsg=detailBean.getNote();
+        if (TextUtils.isEmpty(hintMsg)){
+            hintMsgLayout.setVisibility(View.GONE);
+        }else {
+            hintMsgLayout.setVisibility(View.VISIBLE);
+            userMsgTv.setText(hintMsg);
+        }
         String useTime = detailBean.getUsed_time();
         if (TextUtils.isEmpty(useTime)) {
             codeTime.setVisibility(View.GONE);

@@ -5,8 +5,11 @@ package com.dopstore.mall.util;
  * name
  */
 public class URL {
-    public static String BASE_URL = "http://orange.dev.attackt.com/api/v1/";
-    public static String SHOP_GOOD_DETAIL_URL = "http://orange.dev.attackt.com/h5/goods/";
+    public static String HOST_BASE_URL = "http://orange.dev.attackt.com/";
+//    public static String HOST_BASE_URL = "http://www.dopstore.cn／";
+    public static String BASE_URL = HOST_BASE_URL+"api/v1/";
+    public static String SHOP_GOOD_DETAIL_URL = HOST_BASE_URL+"h5/goods/";//商品分享目标地址
+    public static String ACTIVITY_GOOD_DETAIL_URL = HOST_BASE_URL+"h5/activity/";//活动分享目标地址
     public static String SEND_V_CODE = BASE_URL + "send_v_code";//发送验证码
     public static String SEND_VOICE_CODE = BASE_URL + "send_voice_code";//语音验证码
     public static String CHECK_V_CODE = BASE_URL + "check_v_code";//校验验证码
@@ -46,4 +49,5 @@ public class URL {
     public static String LOGISTICS_URL = BASE_URL + "logistics";//物流信息
     public static String USER_RECHARGE = BASE_URL + "user/recharge";//充值
     public static String ORDER_CONFIRM = BASE_URL + "order/confirm";//确认收货
+    public static String GET_ORDER_GOODS = BASE_URL + "get_order_goods";//获取下单商品信息
 }

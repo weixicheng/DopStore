@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.util.CommHttp;
-import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.SkipUtils;
+import com.dopstore.mall.view.CustomProDialog;
 import com.dopstore.mall.view.addresspicker.wheel.widget.model.CityModel;
 import com.dopstore.mall.view.addresspicker.wheel.widget.model.DistrictModel;
 import com.dopstore.mall.view.addresspicker.wheel.widget.model.ProvinceModel;
@@ -67,7 +67,7 @@ public class BaseActivity extends AppCompatActivity {
 
 
     public CommHttp httpHelper;
-    public ProUtils proUtils;
+    public CustomProDialog customProDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,14 +75,13 @@ public class BaseActivity extends AppCompatActivity {
         MyApplication.getInstance().addActivity(this);
         ShareSDK.initSDK(this);
         httpHelper = CommHttp.getInstance(this);
-        proUtils = new ProUtils(this);
+        customProDialog=new CustomProDialog(this);
     }
 
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (proUtils.isShowing()){proUtils.dismiss();}
         ShareSDK.stopSDK(this);
         MyApplication.getInstance().removeActivity(this);
     }

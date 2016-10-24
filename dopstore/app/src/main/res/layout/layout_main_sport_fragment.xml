@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:myRefresh="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -91,115 +90,111 @@
         android:layout_below="@id/sport_main_fragment_title_layout"
         android:background="@color/white_color" />
 
-    <com.dopstore.mall.view.PullToRefreshView
+    <com.dopstore.mall.view.pulltorefresh.PullToRefreshScrollView
         android:id="@+id/main_sport_fragment_pulltorefreshview"
         android:layout_width="match_parent"
+        android:overScrollMode="never"
+        android:scrollbars="none"
         android:layout_height="match_parent"
         android:layout_below="@id/main_sport_fragment_tab_escrollview"
         android:background="@color/gray_color_ee"
-        android:orientation="vertical"
-        myRefresh:pullDown="true"
-        myRefresh:pullUp="true">
+        android:orientation="vertical">
 
-        <ScrollView
-            android:id="@+id/main_sport_fragment_main_scrollview"
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:overScrollMode="never"
-            android:scrollbars="none">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/main_sport_head_Layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/white"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:id="@+id/main_sport_head_Layout"
+                <com.dopstore.mall.view.RollHeaderView
+                    android:id="@+id/main_sport_head_ad_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:orientation="vertical">
+                    android:visibility="gone"
+                    android:layout_height="wrap_content" />
 
-                    <include layout="@layout/common_advertisement" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:orientation="horizontal">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:orientation="horizontal">
+                    <RelativeLayout
+                        android:id="@+id/main_sport_head_first_ly"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
 
-                        <RelativeLayout
-                            android:id="@+id/main_sport_head_first_ly"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1">
+                        <TextView
+                            android:id="@+id/main_sport_head_first_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="推荐活动"
+                            android:textColor="@color/gray_color_33"
+                            android:textSize="@dimen/textsize_16" />
 
-                            <TextView
-                                android:id="@+id/main_sport_head_first_tv"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:text="推荐活动"
-                                android:textColor="@color/gray_color_33"
-                                android:textSize="@dimen/textsize_16" />
+                        <View
+                            android:id="@+id/main_sport_head_first_v"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_alignParentBottom="true"
+                            android:background="@color/red_color_f93448" />
 
-                            <View
-                                android:id="@+id/main_sport_head_first_v"
-                                android:layout_width="match_parent"
-                                android:layout_height="1dp"
-                                android:layout_alignParentBottom="true"
-                                android:background="@color/red_color_f93448" />
+                    </RelativeLayout>
 
-                        </RelativeLayout>
+                    <RelativeLayout
+                        android:id="@+id/main_sport_head_second_ly"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
 
-                        <RelativeLayout
-                            android:id="@+id/main_sport_head_second_ly"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1">
+                        <TextView
+                            android:id="@+id/main_sport_head_second_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="附近活动"
+                            android:textColor="@color/gray_color_33"
+                            android:textSize="@dimen/textsize_16" />
 
-                            <TextView
-                                android:id="@+id/main_sport_head_second_tv"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:text="附近活动"
-                                android:textColor="@color/gray_color_33"
-                                android:textSize="@dimen/textsize_16" />
+                        <View
+                            android:id="@+id/main_sport_head_second_v"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_alignParentBottom="true"
+                            android:background="@color/white_color" />
 
-                            <View
-                                android:id="@+id/main_sport_head_second_v"
-                                android:layout_width="match_parent"
-                                android:layout_height="1dp"
-                                android:layout_alignParentBottom="true"
-                                android:background="@color/white_color" />
-
-                        </RelativeLayout>
-                    </LinearLayout>
-
+                    </RelativeLayout>
                 </LinearLayout>
 
-                <com.dopstore.mall.view.MyListView
-                    android:id="@+id/main_sport_fragment_listview"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/margin_10"
-                    android:divider="@color/gray_color_ee"
-                    android:dividerHeight="10dp" />
             </LinearLayout>
-        </ScrollView>
 
-    </com.dopstore.mall.view.PullToRefreshView>
+            <com.dopstore.mall.view.MyListView
+                android:id="@+id/main_sport_fragment_listview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/margin_10"
+                android:divider="@color/gray_color_ee"
+                android:dividerHeight="10dp" />
+        </LinearLayout>
+    </com.dopstore.mall.view.pulltorefresh.PullToRefreshScrollView>
 
     <LinearLayout
         android:id="@+id/main_sports_fragment_error_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/gray_color_ee"
         android:layout_below="@id/main_sport_fragment_tab_escrollview"
+        android:background="@color/gray_color_ee"
         android:orientation="vertical"
         android:visibility="gone">
 
-        <include layout="@layout/comm_error_layout"/>
+        <include layout="@layout/comm_error_layout" />
 
     </LinearLayout>
 

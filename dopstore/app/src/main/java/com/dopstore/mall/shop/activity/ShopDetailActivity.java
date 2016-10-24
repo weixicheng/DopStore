@@ -24,8 +24,9 @@ import com.dopstore.mall.activity.bean.CityBean;
 import com.dopstore.mall.activity.bean.UserData;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.login.activity.LoginActivity;
-import com.dopstore.mall.order.activity.MyOrderActivity;
 import com.dopstore.mall.order.activity.ShopPaySuccessActivity;
+import com.dopstore.mall.shop.bean.ConfirmOrderData;
+import com.dopstore.mall.shop.bean.ConfirmOrderData.ResultData;
 import com.dopstore.mall.util.ACache;
 import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
@@ -35,13 +36,13 @@ import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
+import com.google.gson.Gson;
 import com.pingplusplus.android.Pingpp;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -84,7 +85,10 @@ public class ShopDetailActivity extends BaseActivity {
         titleTv= (TextView) findViewById(R.id.title_main_txt);
         titleTv.setText("商品详情");
         titleTv.setTextColor(getResources().getColor(R.color.white_color));
-        leftImageBack(R.mipmap.back_arrow);
+        ImageButton backBt= (ImageButton) findViewById(R.id.title_left_imageButton);
+        backBt.setBackgroundResource(R.mipmap.back_arrow);
+        backBt.setVisibility(View.VISIBLE);
+        backBt.setOnClickListener(listener);
         collectBt= (ImageButton) findViewById(R.id.title_right_before_imageButton);
         collectBt.setBackgroundResource(R.mipmap.collect_logo);
         collectBt.setVisibility(View.VISIBLE);
@@ -222,7 +226,6 @@ public class ShopDetailActivity extends BaseActivity {
                         shareBt.setVisibility(View.GONE);
                         titleTv.setText(name);
                     }
-
                 }
             });
         }
@@ -239,6 +242,11 @@ public class ShopDetailActivity extends BaseActivity {
                 return userID;
             }
         }
+
+        @android.webkit.JavascriptInterface
+        public void confirmOrder(String goods_id, String goods_sku_id,String  num,String user_id){
+            getGoodDetail(goods_id, goods_sku_id, num, user_id);
+        }
         @android.webkit.JavascriptInterface
         public void showMsg(String msg) {
            T.show(ShopDetailActivity.this,msg);
@@ -253,6 +261,42 @@ public class ShopDetailActivity extends BaseActivity {
                 }
             });
         }
+    }
+
+    private void getGoodDetail(String goods_id, final String goods_sku_id, String num, String user_id) {
+        Map<String,Object> map=new HashMap<String,Object>();
+        map.put("goods_id",goods_id);
+        map.put("goods_sku_id",goods_sku_id);
+        map.put("num",num);
+        httpHelper.post(this, URL.GET_ORDER_GOODS,map,new CommHttp.HttpCallBack() {
+            @Override
+            public void success(String body) {
+                try {
+                    JSONObject jo = new JSONObject(body);
+                    String code = jo.optString(Constant.ERROR_CODE);
+                    if ("0".equals(code)){
+                        Gson gson = new Gson();
+                        ConfirmOrderData shopData = gson.fromJson(
+                                body, ConfirmOrderData.class);
+                        List<ResultData> resultData=shopData.getResult();
+                        Map<String,Object> map=new HashMap<String, Object>();
+                        map.put(Constant.LIST,resultData);
+                        map.put(Constant.ID,goods_sku_id);
+                        SkipUtils.jumpForMap(ShopDetailActivity.this,ConfirmShopOrderActivity.class,map,false);
+                    }else {
+                        String msg = jo.optString(Constant.ERROR_MSG);
+                        T.show(ShopDetailActivity.this, msg);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void failed(String msg) {
+                T.show(ShopDetailActivity.this,msg);
+            }
+        });
     }
 
     private void upUserData() {
@@ -293,15 +337,15 @@ public class ShopDetailActivity extends BaseActivity {
                 data.setId(user.optString(Constant.ID));
                 data.setUsername(user.optString(Constant.USERNAME));
                 data.setNickname(user.optString(Constant.NICKNAME));
-                data.setBalance(user.optString(Constant.BALANCE));
+                data.setGender(user.optString(Constant.GENDER));
                 data.setAvatar(user.optString(Constant.AVATAR));
                 data.setBirthday(user.optLong(Constant.BIRTHDAY));
                 data.setBaby_birthday(user.optLong(Constant.BABY_BIRTHDAY));
                 data.setBaby_gender(user.optString(Constant.BABY_GENDER));
-                data.setUsername(user.optString(Constant.USERNAME));
                 data.setBaby_name(user.optString(Constant.BABY_NAME));
                 data.setMobile(user.optString(Constant.MOBILE));
                 data.setAddress(user.optString(Constant.CITY));
+                data.setBalance(user.optDouble(Constant.BALANCE));
                 UserUtils.setData(ShopDetailActivity.this, data);
                 Intent it = new Intent();
                 it.setAction(Constant.UP_USER_DATA);
@@ -348,13 +392,11 @@ public class ShopDetailActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 T.checkNet(ShopDetailActivity.this);
-                proUtils.dismiss();
             }
         });
     }
@@ -367,7 +409,7 @@ public class ShopDetailActivity extends BaseActivity {
                     ShareData shareData=new ShareData();
                     shareData.setContent(shop_title);
                     shareData.setImage(shop_image);
-                    shareData.setUrl("http://orange.dev.attackt.com/h5/goods/"+shop_id);
+                    shareData.setUrl(URL.SHOP_GOOD_DETAIL_URL+shop_id);
                     otherLoginUtils.showShare(ShopDetailActivity.this,shareData);
                 }
                 break;
@@ -379,6 +421,9 @@ public class ShopDetailActivity extends BaseActivity {
                     }
                 }
                 break;
+                case R.id.title_left_imageButton:{
+                    SkipUtils.back(ShopDetailActivity.this);
+                }break;
             }
 
         }
@@ -411,7 +456,6 @@ public class ShopDetailActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.dismiss();
             }
 
             @Override
@@ -419,7 +463,6 @@ public class ShopDetailActivity extends BaseActivity {
                 T.checkNet(ShopDetailActivity.this);
                 isCollect = "0";
                 handler.sendEmptyMessage(GET_COLLECT_STATUS_CODE);
-                proUtils.dismiss();
             }
         });
     }
@@ -430,7 +473,6 @@ public class ShopDetailActivity extends BaseActivity {
             return;
         }
         collectBt.setBackgroundResource(R.mipmap.collect_logo);
-        proUtils.show();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("user_id", UserUtils.getId(this));
         map.put("item_id", shop_id);
@@ -454,13 +496,11 @@ public class ShopDetailActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 T.checkNet(ShopDetailActivity.this);
-                proUtils.dismiss();
             }
         });
     }

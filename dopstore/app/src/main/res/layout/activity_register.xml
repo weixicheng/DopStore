@@ -92,6 +92,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/margin_50">
+
             <EditText
                 android:id="@+id/register_set_pwd_Et"
                 android:layout_width="match_parent"
@@ -106,6 +107,7 @@
                 android:textColor="@color/gray_color_33"
                 android:textColorHint="@color/gray_color_99"
                 android:textSize="@dimen/textsize_14" />
+
             <View
                 android:id="@+id/register_set_pwd_Et_see"
                 android:layout_alignParentRight="true"
@@ -114,7 +116,7 @@
                 android:visibility="gone"
                 android:layout_marginRight="@dimen/margin_10"
                 android:layout_height="14.5dp"
-                android:background="@mipmap/see_logo"/>
+                android:background="@mipmap/see_logo" />
         </RelativeLayout>
 
         <View

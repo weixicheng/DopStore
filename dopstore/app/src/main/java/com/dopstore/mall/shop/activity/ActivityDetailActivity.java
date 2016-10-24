@@ -1,11 +1,19 @@
 package com.dopstore.mall.shop.activity;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -29,16 +37,16 @@ import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.util.Utils;
+import com.dopstore.mall.view.CommonDialog;
 import com.dopstore.mall.view.EScrollView;
-import com.dopstore.mall.view.scrollview.DetailMenu;
-import com.dopstore.mall.view.scrollview.YsnowScrollViewPageOne;
-import com.dopstore.mall.view.scrollview.YsnowWebView;
+import com.dopstore.mall.view.snapscrollview.McoyProductContentPage;
+import com.dopstore.mall.view.snapscrollview.McoyProductDetailInfoPage;
+import com.dopstore.mall.view.snapscrollview.McoySnapPageLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,12 +57,10 @@ import java.util.Map;
  * 作者：xicheng on 16/9/13
  */
 public class ActivityDetailActivity extends BaseActivity {
-    private RelativeLayout topLayout, bottomLy;
+    private RelativeLayout bottomLy;
     private String isCollect = "0";
-    private ImageButton collectBt,shareBt;
-    private DetailMenu detailMenu;
-    private YsnowWebView webView;
-    private YsnowScrollViewPageOne pageOne;
+    private ImageButton collectBt, shareBt;
+    private WebView webView;
     private ImageView imageView;
     private TextView titleTv, priceTv, numTv, timeTv, ageTv, addressTv, shopTv, phoneTv;
     private EScrollView eScrollView;
@@ -67,6 +73,12 @@ public class ActivityDetailActivity extends BaseActivity {
     private LoadImageUtils loadImageUtils;
     private String activity_id;
     private OtherLoginUtils otherLoginUtils;
+    private LinearLayout phoneLayout;
+    private CommonDialog dialog;
+    private McoySnapPageLayout mcoySnapPageLayout = null;
+
+    private McoyProductContentPage bottomPage = null;
+    private McoyProductDetailInfoPage topPage = null;
 
 
     @Override
@@ -79,50 +91,63 @@ public class ActivityDetailActivity extends BaseActivity {
 
     private void initView() {
         loadImageUtils = LoadImageUtils.getInstance(this);
-        otherLoginUtils=new OtherLoginUtils(this);
+        otherLoginUtils = new OtherLoginUtils(this);
         Map<String, Object> map = SkipUtils.getMap(this);
         if (map == null) return;
         activity_id = map.get(Constant.ID).toString();
-        detailMenu = (DetailMenu) findViewById(R.id.activity_detail_content_ly);
-        imageView = (ImageView) findViewById(R.id.activity_detail_title_image);
-        topLayout = (RelativeLayout) findViewById(R.id.brandsquare_title_layout);
-        pageOne = (YsnowScrollViewPageOne) findViewById(R.id.activity_detail_title_ysnowpage);
-        webView = (YsnowWebView) findViewById(R.id.activity_detail_bottom_web);
-        titleTv = (TextView) findViewById(R.id.activity_detail_title_name);
-        priceTv = (TextView) findViewById(R.id.activity_detail_price);
-        numTv = (TextView) findViewById(R.id.activity_detail_num);
-        timeTv = (TextView) findViewById(R.id.activity_detail_time);
-        ageTv = (TextView) findViewById(R.id.activity_detail_age);
-        addressTv = (TextView) findViewById(R.id.activity_detail_address);
-        shopTv = (TextView) findViewById(R.id.activity_detail_shop_name);
-        shopLayout = (LinearLayout) findViewById(R.id.activity_detail_about_shop_layout);
-        phoneTv = (TextView) findViewById(R.id.activity_detail_phone);
-        eScrollView = (EScrollView) findViewById(R.id.activity_detail_about_scrollview);
+        mcoySnapPageLayout = (McoySnapPageLayout) findViewById(R.id.activity_detail_flipLayout);
+        View topView= LayoutInflater.from(this).inflate(R.layout.activity_detail_top_layout, null);
+        View bottomView= LayoutInflater.from(this).inflate(R.layout.activity_detail_bottom_layout, null);
+        topPage = new McoyProductDetailInfoPage(this, topView);
+        bottomPage = new McoyProductContentPage(this, bottomView);
+        mcoySnapPageLayout.setSnapPages(topPage, bottomPage);
+        initTopView(topView);
+        initBottomView(bottomView);
+
         bottomLy = (RelativeLayout) findViewById(R.id.activity_detail_bottom_layout);
         errorLayout = (LinearLayout) findViewById(R.id.comm_error_layout);
         loadTv = (TextView) findViewById(R.id.error_data_load_tv);
         loadTv.setOnClickListener(listener);
         bottomLy.setOnClickListener(listener);
-        setTopBg(getResources().getColor(R.color.transparent));
-        setCustomTitle("活动详情", getResources().getColor(R.color.white_color));
+        TextView title = (TextView) findViewById(R.id.title_main_txt);
+        title.setText("活动详情");
+        title.setTextColor(getResources().getColor(R.color.white));
         leftImageBack(R.mipmap.back_arrow);
-        collectBt= (ImageButton) findViewById(R.id.title_right_before_imageButton);
+        collectBt = (ImageButton) findViewById(R.id.title_right_before_imageButton);
         collectBt.setBackgroundResource(R.mipmap.collect_logo);
         collectBt.setVisibility(View.VISIBLE);
         collectBt.setOnClickListener(listener);
-        shareBt= (ImageButton) findViewById(R.id.title_right_imageButton);
+        shareBt = (ImageButton) findViewById(R.id.title_right_imageButton);
         shareBt.setBackgroundResource(R.mipmap.share_logo);
         shareBt.setVisibility(View.VISIBLE);
         shareBt.setOnClickListener(listener);
+        phoneLayout.setOnClickListener(listener);
         if (isCollect.equals("0")) {
             collectBt.setBackgroundResource(R.mipmap.collect_logo);
         } else {
             collectBt.setBackgroundResource(R.mipmap.collect_check_logo);
         }
-        detailMenu.openMenu();
-        detailMenu.setView(topLayout);
-        pageOne.setView(topLayout);
     }
+
+    private void initTopView(View topView) {
+        imageView = (ImageView) topView.findViewById(R.id.activity_detail_title_image);
+        titleTv = (TextView) topView.findViewById(R.id.activity_detail_title_name);
+        priceTv = (TextView) topView.findViewById(R.id.activity_detail_price);
+        numTv = (TextView) topView.findViewById(R.id.activity_detail_num);
+        timeTv = (TextView) topView.findViewById(R.id.activity_detail_time);
+        ageTv = (TextView) topView.findViewById(R.id.activity_detail_age);
+        addressTv = (TextView) topView.findViewById(R.id.activity_detail_address);
+        shopTv = (TextView) topView.findViewById(R.id.activity_detail_shop_name);
+        shopLayout = (LinearLayout) topView.findViewById(R.id.activity_detail_about_shop_layout);
+        phoneLayout = (LinearLayout) topView.findViewById(R.id.activity_detail_phone_layout);
+        phoneTv = (TextView) topView.findViewById(R.id.activity_detail_phone);
+        eScrollView = (EScrollView) topView.findViewById(R.id.activity_detail_about_scrollview);
+    }
+    private void initBottomView(View bottomView) {
+        webView=(WebView) bottomView.findViewById(R.id.activity_detail_bottom_web);
+    }
+
+
 
     private void initData() {
         getDetail();
@@ -140,7 +165,6 @@ public class ActivityDetailActivity extends BaseActivity {
     }
 
     private void getDetail() {
-        proUtils.show();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("activity_id", activity_id);
         if (UserUtils.haveLogin(this)) {
@@ -193,13 +217,11 @@ public class ActivityDetailActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 errorLayout.setVisibility(View.VISIBLE);
-                proUtils.dismiss();
             }
         });
     }
@@ -207,6 +229,7 @@ public class ActivityDetailActivity extends BaseActivity {
     private final static int UPDATA_DETAIL_CODE = 0;
     private final static int COLLECT_SCUESS_CODE = 1;
     private final static int COLLECT_CANCEL_CODE = 2;
+    private final static int MAKE_CALL_CODE = 3;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -231,11 +254,11 @@ public class ActivityDetailActivity extends BaseActivity {
                     } else {
                         collectBt.setBackgroundResource(R.mipmap.collect_logo);
                     }
-                    loadImageUtils.displayImage(detailBean.getPicture(), imageView);
+                    loadImageUtils.displayImage(detailBean.getPicture() + "?imageView2/1/w/1000/h/670", imageView);
                     titleTv.setText(detailBean.getName());
-                    String price=detailBean.getPrice();
+                    String price = detailBean.getPrice();
                     priceTv.setText("￥" + price);
-                    if ("0.00".equals(price)||"0.0".equals(price)||"0".equals(price)||TextUtils.isEmpty(price)) {
+                    if ("0.00".equals(price) || "0.0".equals(price) || "0".equals(price) || TextUtils.isEmpty(price)) {
                         String limit = detailBean.getLimit();
                         if (TextUtils.isEmpty(limit)) {
                             numTv.setVisibility(View.GONE);
@@ -243,7 +266,7 @@ public class ActivityDetailActivity extends BaseActivity {
                             numTv.setText("限制" + limit + "人");
                             numTv.setVisibility(View.VISIBLE);
                         }
-                    }else {
+                    } else {
                         numTv.setVisibility(View.GONE);
                     }
                     String startTime = detailBean.getStart_time();
@@ -263,20 +286,42 @@ public class ActivityDetailActivity extends BaseActivity {
                     webView.loadDataWithBaseURL(null, detailBean.getContent(), "text/html", "utf-8", null);
                 }
                 break;
+                case MAKE_CALL_CODE: {
+                    if (dialog.isShowing()) {
+                        dialog.dismiss();
+                    }
+                    callPhone();
+
+                }
+                break;
             }
         }
     };
+
+    private void callPhone() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{"android.permission.CALL_PHONE"}, 111);
+            }
+            return;
+        }
+        String number = phoneTv.getText().toString();
+        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + number));
+        startActivity(intent);
+    }
+
 
     View.OnClickListener listener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.title_right_imageButton: {//分享
-                    ShareData shareData=new ShareData();
+                    ShareData shareData = new ShareData();
                     shareData.setContent(detailBean.getName());
                     shareData.setImage(detailBean.getPicture());
-                    shareData.setUrl("http://orange.dev.attackt.com/h5/activity/"+activity_id);
-                    otherLoginUtils.showShare(ActivityDetailActivity.this,shareData);
+                    shareData.setUrl(URL.ACTIVITY_GOOD_DETAIL_URL + activity_id);
+                    otherLoginUtils.showShare(ActivityDetailActivity.this, shareData);
                 }
                 break;
                 case R.id.title_right_before_imageButton: {//收藏
@@ -297,12 +342,19 @@ public class ActivityDetailActivity extends BaseActivity {
                     }
                 }
                 break;
-                case R.id.error_data_load_tv:{
-                    if (detailBean!=null){
-                        detailBean=null;
+                case R.id.error_data_load_tv: {
+                    if (detailBean != null) {
+                        detailBean = null;
                     }
                     getDetail();
-                }break;
+                }
+                break;
+                case R.id.activity_detail_phone_layout: {
+                    String phone = phoneTv.getText().toString();
+                    dialog = new CommonDialog(ActivityDetailActivity.this, handler, MAKE_CALL_CODE, "", "是否给商家(" + phone + ")打电话？", Constant.SHOWALLBUTTON);
+                    dialog.show();
+                }
+                break;
             }
 
         }
@@ -313,7 +365,6 @@ public class ActivityDetailActivity extends BaseActivity {
             SkipUtils.directJump(this, LoginActivity.class, false);
             return;
         }
-        proUtils.show();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("user_id", UserUtils.getId(this));
         map.put("item_id", activity_id);
@@ -338,13 +389,11 @@ public class ActivityDetailActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 T.checkNet(ActivityDetailActivity.this);
-                proUtils.dismiss();
             }
         });
     }

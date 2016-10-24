@@ -7,7 +7,6 @@ import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -28,9 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -49,6 +46,7 @@ public class MyAddressActivity extends BaseActivity {
     private TextView emptyTv;
     private List<MyAddressData> listData = new ArrayList<MyAddressData>();
     private MyAddressAdapter mAdapter;
+    private int isShow=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +66,8 @@ public class MyAddressActivity extends BaseActivity {
         loadTv = (TextView) findViewById(R.id.error_data_load_tv);
         emptyLayout = (LinearLayout) findViewById(R.id.comm_empty_layout);
         emptyTv = (TextView) findViewById(R.id.comm_empty_text);
+        TextView lodEmpty = (TextView) findViewById(R.id.empty_data_load_tv);
+        lodEmpty.setVisibility(View.GONE);
         emptyV = findViewById(R.id.comm_empty_v);
         emptyV.setBackgroundResource(R.mipmap.address_empty_logo);
         emptyTv.setText("您还没有收货地址");
@@ -75,11 +75,18 @@ public class MyAddressActivity extends BaseActivity {
     }
 
     private void doRequest() {
+        Map<String,Object> map=SkipUtils.getMap(this);
+        if (map==null)return;
+        String isSelect=map.get(Constant.ID).toString();
+        if ("1".equals(isSelect)){
+            isShow=1;
+        }else {
+            isShow=0;
+        }
         getAddress();
     }
 
     private void getAddress() {
-        proUtils.show();
         String id = UserUtils.getId(this);
         httpHelper.get(this, URL.SHIPPINGADDRESS + id + "/shippingaddress", new CommHttp.HttpCallBack() {
             @Override
@@ -118,33 +125,23 @@ public class MyAddressActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 errorLayout.setVisibility(View.VISIBLE);
-                proUtils.dismiss();
             }
         });
     }
 
     private void refreshAdapter() {
         if (mAdapter == null) {
-            mAdapter = new MyAddressAdapter(this, listData);
+            mAdapter = new MyAddressAdapter(this, listData,isShow);
             my_address.setAdapter(mAdapter);
         } else {
-            mAdapter.upData(listData);
+            mAdapter.upData(listData,isShow);
         }
 
-        my_address.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Map<String,Object> map=new HashMap<String, Object>();
-                map.put(Constant.LIST,listData.get(position));
-                SkipUtils.backForMapResult(MyAddressActivity.this,map);
-            }
-        });
     }
 
     OnClickListener listener = new OnClickListener() {

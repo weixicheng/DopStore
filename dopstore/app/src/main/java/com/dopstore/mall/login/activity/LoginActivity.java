@@ -38,7 +38,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import cn.jpush.android.api.JPushInterface;
+import cn.jpush.android.api.TagAliasCallback;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.ShareSDK;
 
@@ -190,7 +193,6 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void loginToNext(String phone, String pwd) {
-        proUtils.show();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put(Constant.MOBILE, phone);
         map.put(Constant.PASSWORD, pwd);
@@ -198,13 +200,11 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void success(String body) {
                 AnalyData(body);
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 T.checkNet(LoginActivity.this);
-                proUtils.dismiss();
             }
         });
     }
@@ -243,7 +243,6 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void otherLogin(String name, String gender, String picture, String uid, int id) {
-        proUtils.show();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("nickname", name);
         map.put("avatar", picture);
@@ -268,17 +267,18 @@ public class LoginActivity extends BaseActivity {
             break;
         }
         map.put("gender", gender);
+        customProDialog.show();
         httpHelper.post(this, URL.OTHER_SIGNUPL, map, new CommHttp.HttpCallBack() {
             @Override
             public void success(String body) {
+                customProDialog.cancel();
                 AnalyData(body);
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
+                customProDialog.cancel();
                 T.checkNet(LoginActivity.this);
-                proUtils.dismiss();
             }
         });
     }
@@ -306,16 +306,18 @@ public class LoginActivity extends BaseActivity {
                 data.setId(user.optString(Constant.ID));
                 data.setUsername(user.optString(Constant.USERNAME));
                 data.setNickname(user.optString(Constant.NICKNAME));
-                data.setBalance(user.optString(Constant.BALANCE));
+                data.setGender(user.optString(Constant.GENDER));
                 data.setAvatar(user.optString(Constant.AVATAR));
                 data.setBirthday(user.optLong(Constant.BIRTHDAY));
                 data.setBaby_birthday(user.optLong(Constant.BABY_BIRTHDAY));
                 data.setBaby_gender(user.optString(Constant.BABY_GENDER));
-                data.setUsername(user.optString(Constant.USERNAME));
                 data.setBaby_name(user.optString(Constant.BABY_NAME));
                 data.setMobile(user.optString(Constant.MOBILE));
                 data.setAddress(user.optString(Constant.CITY));
+                data.setBalance(user.optDouble(Constant.BALANCE));
                 UserUtils.setData(LoginActivity.this, data);
+                String user_id=user.optString(Constant.ID);
+                setAlias(user_id);
                 Intent it = new Intent();
                 it.setAction(Constant.UP_USER_DATA);
                 sendBroadcast(it);
@@ -339,6 +341,20 @@ public class LoginActivity extends BaseActivity {
             return super.onKeyDown(keyCode, event);
         }
     }
+
+
+    // 极光推送设置别名
+    private void setAlias(String user_id) {
+        JPushInterface.setAliasAndTags(getApplicationContext(), user_id, null,
+                new TagAliasCallback() {
+                    @Override
+                    public void gotResult(int i, String s, Set<String> set) {
+
+                    }
+                });
+    }
+
+
 
 
 }

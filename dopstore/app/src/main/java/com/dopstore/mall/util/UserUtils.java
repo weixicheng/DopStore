@@ -29,7 +29,9 @@ public class UserUtils {
         editor.putLong(Constant.BABY_BIRTHDAY, userData.getBaby_birthday());
         editor.putString(Constant.CITY, userData.getAddress());
         editor.putString(Constant.MOBILE, userData.getMobile());
-        editor.putString(Constant.BALANCE, userData.getBalance());
+        double balance=userData.getBalance();
+        float baF=Float.valueOf(balance+"");
+        editor.putFloat(Constant.BALANCE, baF);
         editor.commit();
     }
 
@@ -93,13 +95,14 @@ public class UserUtils {
 
     public static String getBalance(Context context) {
         SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
-        return sp.getString(Constant.BALANCE, "");
+        float balance=sp.getFloat(Constant.BALANCE, 0);
+        return balance+"";
     }
 
     public static void setBalance(Context context,String price) {
         SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
-        editor.putString(Constant.BALANCE, price);
+        editor.putFloat(Constant.BALANCE, Float.valueOf(price));
         editor.commit();
     }
 

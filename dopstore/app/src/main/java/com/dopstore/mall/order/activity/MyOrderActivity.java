@@ -9,7 +9,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
@@ -18,22 +17,21 @@ import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.order.adapter.MyOrderAdapter;
 import com.dopstore.mall.order.bean.OrderData;
 import com.dopstore.mall.order.bean.OrderOtherData;
-import com.dopstore.mall.person.activity.MyCollectActivity;
 import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
-import com.dopstore.mall.view.PullToRefreshView;
-import com.dopstore.mall.view.PullToRefreshView.OnFooterRefreshListener;
-import com.dopstore.mall.view.PullToRefreshView.OnHeaderRefreshListener;
+import com.dopstore.mall.view.pulltorefresh.PullToRefreshBase;
+import com.dopstore.mall.view.pulltorefresh.PullToRefreshBase.Mode;
+import com.dopstore.mall.view.pulltorefresh.PullToRefreshBase.OnRefreshListener;
+import com.dopstore.mall.view.pulltorefresh.PullToRefreshListView;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,9 +41,8 @@ import java.util.Map;
  * Created by 喜成 on 16/9/8.
  * name
  */
-public class MyOrderActivity extends BaseActivity implements OnHeaderRefreshListener, OnFooterRefreshListener {
-    private PullToRefreshView pullToRefreshView;
-    private ListView lv;
+public class MyOrderActivity extends BaseActivity implements OnRefreshListener {
+    private PullToRefreshListView pullToRefreshView;
     private LinearLayout errorLayout;
     private TextView loadTv;
     private LinearLayout emptyLayout;
@@ -56,6 +53,9 @@ public class MyOrderActivity extends BaseActivity implements OnHeaderRefreshList
     private int typeId = 0;
     private String idStr = "";
     private boolean isRefresh = false;
+    private boolean isUpRefresh = false;
+    private int page=1;
+    private MyOrderAdapter myOrderAdapter;
 
 
     @Override
@@ -95,7 +95,6 @@ public class MyOrderActivity extends BaseActivity implements OnHeaderRefreshList
         }
         setCustomTitle(titleStr, getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
-        lv = (ListView) findViewById(R.id.my_order_lv);
         errorLayout = (LinearLayout) findViewById(R.id.comm_error_layout);
         loadTv = (TextView) findViewById(R.id.error_data_load_tv);
         emptyLayout = (LinearLayout) findViewById(R.id.comm_empty_layout);
@@ -104,10 +103,9 @@ public class MyOrderActivity extends BaseActivity implements OnHeaderRefreshList
         emptyLoadTV = (TextView) findViewById(R.id.empty_data_load_tv);
         emptyV.setBackgroundResource(R.mipmap.order_empty_logo);
         emptyTv.setText("您还没有相关订单");
-        pullToRefreshView = (PullToRefreshView) findViewById(R.id.my_order_pulltorefresh);
-        pullToRefreshView.setOnFooterRefreshListener(this);
-        pullToRefreshView.onFooterRefreshComplete();
-        pullToRefreshView.setOnHeaderRefreshListener(this);
+        pullToRefreshView = (PullToRefreshListView) findViewById(R.id.my_order_pulltorefresh);
+        pullToRefreshView.setMode(Mode.BOTH);
+        pullToRefreshView.setOnRefreshListener(this);
         loadTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,24 +126,21 @@ public class MyOrderActivity extends BaseActivity implements OnHeaderRefreshList
     private void initData() {
         getMyOrder();
 
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        pullToRefreshView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Map<String, Object> map = new HashMap<String, Object>();
-                map.put(Constant.ID, items.get(i).getOrder_num());
+                map.put(Constant.ID, items.get(i-1).getOrder_num());
                 SkipUtils.jumpForMapResult(MyOrderActivity.this, OrderDetailActivity.class, map, DETAIL_BACK_CODE);
             }
         });
     }
 
     private void getMyOrder() {
-        if (isRefresh == false) {
-            proUtils.show();
-        }
         String id = UserUtils.getId(this);
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("pageSize", "10");
-        map.put("page", "1");
+        map.put("page", page+"");
         map.put("user_id", id);
         if (!TextUtils.isEmpty(idStr)){
             map.put("status", idStr);
@@ -161,7 +156,11 @@ public class MyOrderActivity extends BaseActivity implements OnHeaderRefreshList
                         Gson gson = new Gson();
                         OrderOtherData middleData = gson.fromJson(
                                 body, OrderOtherData.class);
-                        items = middleData.getOrders();
+                        List<OrderData> list = middleData.getOrders();
+                        if (isRefresh){
+                            items.clear();
+                        }
+                        items.addAll(list);
                     } else {
                         String msg = jo.optString(Constant.ERROR_MSG);
                         T.show(MyOrderActivity.this, msg);
@@ -171,13 +170,11 @@ public class MyOrderActivity extends BaseActivity implements OnHeaderRefreshList
                     e.printStackTrace();
                 }
                 dismissRefresh();
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 errorLayout.setVisibility(View.VISIBLE);
-                proUtils.dismiss();
                 dismissRefresh();
             }
         });
@@ -203,7 +200,12 @@ public class MyOrderActivity extends BaseActivity implements OnHeaderRefreshList
         }else {
             emptyLayout.setVisibility(View.VISIBLE);
         }
-        lv.setAdapter(new MyOrderAdapter(this, items));
+        if (myOrderAdapter==null){
+            myOrderAdapter=new MyOrderAdapter(this, items);
+            pullToRefreshView.setAdapter(myOrderAdapter);
+        }else {
+            myOrderAdapter.UpData(items);
+        }
     }
 
     private final static int DETAIL_BACK_CODE = 1;
@@ -233,24 +235,41 @@ public class MyOrderActivity extends BaseActivity implements OnHeaderRefreshList
         }
     }
 
-    @Override
-    public void onFooterRefresh(PullToRefreshView view) {
-        pullToRefreshView.onFooterRefreshComplete();
-    }
-
-    @Override
-    public void onHeaderRefresh(PullToRefreshView view) {
-        isRefresh = true;
-        if (isRefresh) {
-            items.clear();
-            getMyOrder();
-        }
-    }
-
     private void dismissRefresh() {
         if (isRefresh) {
-            pullToRefreshView.onHeaderRefreshComplete();
             isRefresh = false;
+        }else if (isUpRefresh){
+            isUpRefresh = false;
+        }
+        pullToRefreshView.onRefreshComplete();
+    }
+
+    @Override
+    public void onRefresh(PullToRefreshBase refreshView) {
+        if (refreshView.isShownHeader()) {
+            pullToRefreshView.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
+            pullToRefreshView.getLoadingLayoutProxy().setPullLabel("下拉刷新");
+            pullToRefreshView.getLoadingLayoutProxy().setReleaseLabel("释放开始刷新");
+            isRefresh = true;
+            isUpRefresh = false;
+            if (isRefresh) {
+                items.clear();
+                page=1;
+                getMyOrder();
+            }
+
+        }
+        // 上拉加载更多 业务代码
+        if (refreshView.isShownFooter()) {
+            pullToRefreshView.getLoadingLayoutProxy().setRefreshingLabel("正在加载");
+            pullToRefreshView.getLoadingLayoutProxy().setPullLabel("上拉加载更多");
+            pullToRefreshView.getLoadingLayoutProxy().setReleaseLabel("释放开始加载");
+            isUpRefresh=true;
+            isRefresh = false;
+            if (isUpRefresh){
+                page=page+1;
+                getMyOrder();
+            }
         }
     }
 }

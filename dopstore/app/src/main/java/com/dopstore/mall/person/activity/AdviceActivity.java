@@ -21,7 +21,6 @@ import com.dopstore.mall.util.UserUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -75,7 +74,6 @@ public class AdviceActivity extends BaseActivity {
     };
 
     private void adviceToUs(String adviceStr, String postStr) {
-        proUtils.show();
         String id = UserUtils.getId(this);
         Map<String, Object> map = new HashMap<String, Object>();
         map.put(Constant.CONTENT, adviceStr);
@@ -97,13 +95,11 @@ public class AdviceActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 T.checkNet(AdviceActivity.this);
-                proUtils.dismiss();
             }
         });
     }

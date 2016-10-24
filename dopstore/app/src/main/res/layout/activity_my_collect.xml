@@ -142,6 +142,7 @@
 
         <include layout="@layout/comm_error_layout" />
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/comm_empty_layout"
         android:layout_width="match_parent"

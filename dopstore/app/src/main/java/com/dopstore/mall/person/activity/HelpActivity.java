@@ -24,7 +24,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -81,7 +80,6 @@ public class HelpActivity extends BaseActivity {
     }
 
     private void getData() {
-        proUtils.show();
         httpHelper.get(this, URL.USER_HELPS, new CommHttp.HttpCallBack() {
             @Override
             public void success(String body) {
@@ -109,13 +107,11 @@ public class HelpActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 errorLayout.setVisibility(View.VISIBLE);
-                proUtils.dismiss();
             }
         });
     }

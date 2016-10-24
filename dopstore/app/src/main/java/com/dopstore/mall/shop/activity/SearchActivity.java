@@ -24,7 +24,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -79,7 +78,6 @@ public class SearchActivity extends BaseActivity {
     };
 
     private void getTypeData() {
-        proUtils.show();
         httpHelper.get(this, URL.GOODS_CATEGORY, new CommHttp.HttpCallBack() {
             @Override
             public void success(String body) {
@@ -106,13 +104,11 @@ public class SearchActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 T.checkNet(SearchActivity.this);
-                proUtils.dismiss();
             }
         });
     }

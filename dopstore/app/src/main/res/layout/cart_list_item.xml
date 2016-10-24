@@ -1,7 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="#FFF6F7"
     android:descendantFocusability="blocksDescendants"
     android:orientation="vertical">
 
@@ -28,8 +28,10 @@
 
         <ImageView
             android:id="@+id/iv_adapter_list_pic"
-            android:layout_width="85dp"
-            android:layout_height="85dp"
+            android:layout_width="106dp"
+            android:layout_height="106dp"
+            android:padding="@dimen/margin_10"
+            android:background="@drawable/square_hollow_gray_ee_bg"
             android:layout_marginBottom="@dimen/margin_10"
             android:layout_marginTop="@dimen/margin_10"
             android:scaleType="centerCrop" />
@@ -51,6 +53,19 @@
                 android:textColor="@color/gray_color_33"
                 android:textSize="@dimen/textsize_14" />
 
+            <TextView
+                android:id="@+id/tv_intro_sku"
+                android:layout_width="match_parent"
+                android:layout_below="@id/tv_intro"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text=" "
+                android:textColor="@color/gray_color_33"
+                android:textSize="@dimen/textsize_14" />
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -63,7 +78,6 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:singleLine="true"
-                    android:text="￥ 308.00"
                     android:textColor="@color/red_color_f93448"
                     android:textSize="@dimen/textsize_14"
                     android:textStyle="bold" />
@@ -96,7 +110,8 @@
                         android:background="@drawable/text_angle_gray"
                         android:gravity="center"
                         android:text="一"
-                        android:textColor="@color/gray_color_33"
+                        android:textStyle="bold"
+                        android:textColor="#000000"
                         android:textSize="@dimen/textsize_12" />
 
                     <TextView
@@ -107,7 +122,7 @@
                         android:gravity="center"
                         android:singleLine="true"
                         android:text="1"
-                        android:textColor="@color/gray_color_33"
+                        android:textColor="#000000"
                         android:textSize="@dimen/textsize_12" />
 
                     <TextView
@@ -117,7 +132,8 @@
                         android:background="@drawable/text_angle_right"
                         android:gravity="center"
                         android:text="+"
-                        android:textColor="@color/gray_color_33"
+                        android:textStyle="bold"
+                        android:textColor="#000000"
                         android:textSize="@dimen/textsize_12" />
                 </LinearLayout>
             </RelativeLayout>

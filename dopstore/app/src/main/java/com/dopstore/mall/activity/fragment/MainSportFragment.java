@@ -1,16 +1,14 @@
 package com.dopstore.mall.activity.fragment;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,12 +29,10 @@ import com.amap.api.location.AMapLocationListener;
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.WebActivity;
 import com.dopstore.mall.activity.adapter.ActivityAdapter;
-import com.dopstore.mall.activity.adapter.HomeAdImageAdapter;
 import com.dopstore.mall.activity.adapter.TabAdapter;
 import com.dopstore.mall.activity.bean.ActivityData;
 import com.dopstore.mall.activity.bean.CarouselData;
 import com.dopstore.mall.activity.bean.MainTabData;
-import com.dopstore.mall.base.BaseFragment;
 import com.dopstore.mall.shop.activity.ActivityDetailActivity;
 import com.dopstore.mall.shop.activity.ActivityListActivity;
 import com.dopstore.mall.util.CommHttp;
@@ -46,12 +42,11 @@ import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.view.EScrollView;
 import com.dopstore.mall.view.MyListView;
-import com.dopstore.mall.view.PullToRefreshView;
-import com.dopstore.mall.view.PullToRefreshView.OnFooterRefreshListener;
-import com.dopstore.mall.view.PullToRefreshView.OnHeaderRefreshListener;
-import com.dopstore.mall.view.rollviewpager.OnItemClickListener;
-import com.dopstore.mall.view.rollviewpager.RollPagerView;
-import com.dopstore.mall.view.rollviewpager.hintview.IconHintView;
+import com.dopstore.mall.view.RollHeaderView;
+import com.dopstore.mall.view.pulltorefresh.PullToRefreshBase;
+import com.dopstore.mall.view.pulltorefresh.PullToRefreshBase.Mode;
+import com.dopstore.mall.view.pulltorefresh.PullToRefreshBase.OnRefreshListener;
+import com.dopstore.mall.view.pulltorefresh.PullToRefreshScrollView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -70,9 +65,8 @@ import java.util.TimerTask;
  * name 活动
  */
 @SuppressLint("ValidFragment")
-public class MainSportFragment extends BaseFragment implements OnHeaderRefreshListener, OnFooterRefreshListener {
-    private PullToRefreshView pullToRefreshView;
-    private ScrollView scrollView;
+public class MainSportFragment extends Fragment implements OnRefreshListener<ScrollView> {
+    private PullToRefreshScrollView pullToRefreshView;
     private MyListView listView;
     private TextView leftTv;
     private ImageButton rightBt;
@@ -86,7 +80,6 @@ public class MainSportFragment extends BaseFragment implements OnHeaderRefreshLi
     private RelativeLayout firstLy, secondLy;
     private TextView firstTv, secondTv;
     private View firstV, secondV;
-    private RollPagerView rollPagerView;
     private LinearLayout errorLayout;
     private TextView loadTv;
     private List<CarouselData> titleAdvertList = new ArrayList<CarouselData>();
@@ -107,9 +100,12 @@ public class MainSportFragment extends BaseFragment implements OnHeaderRefreshLi
 
     private TimerTask doing;
     private Timer timer;
+    private RollHeaderView rollHeaderView;
+    private CommHttp httpHelper;
 
     public MainSportFragment(Context context) {
         this.context = context;
+        httpHelper=CommHttp.getInstance(context);
     }
 
     @Nullable
@@ -133,17 +129,16 @@ public class MainSportFragment extends BaseFragment implements OnHeaderRefreshLi
         seartchBt.setOnClickListener(listener);
         loadTv.setOnClickListener(listener);
         eScrollView = (EScrollView) v.findViewById(R.id.main_sport_fragment_tab_escrollview);
-        scrollView = (ScrollView) v.findViewById(R.id.main_sport_fragment_main_scrollview);
-        pullToRefreshView = (PullToRefreshView) v.findViewById(R.id.main_sport_fragment_pulltorefreshview);
+        rollHeaderView = (RollHeaderView) v.findViewById(R.id.main_sport_head_ad_view);
+        pullToRefreshView = (PullToRefreshScrollView) v.findViewById(R.id.main_sport_fragment_pulltorefreshview);
         listView = (MyListView) v.findViewById(R.id.main_sport_fragment_listview);
         initHeadView(v);
-        pullToRefreshView.setOnHeaderRefreshListener(this);
-        pullToRefreshView.setOnFooterRefreshListener(this);
+        pullToRefreshView.setMode(Mode.BOTH);
+        pullToRefreshView.setOnRefreshListener(this);
     }
 
     private void initHeadView(View headView) {
         headLayout = (LinearLayout) headView.findViewById(R.id.main_sport_head_Layout);
-        rollPagerView = (RollPagerView) headView.findViewById(R.id.roll_view_pager);
         firstLy = (RelativeLayout) headView.findViewById(R.id.main_sport_head_first_ly);
         secondLy = (RelativeLayout) headView.findViewById(R.id.main_sport_head_second_ly);
         firstTv = (TextView) headView.findViewById(R.id.main_sport_head_first_tv);
@@ -186,12 +181,10 @@ public class MainSportFragment extends BaseFragment implements OnHeaderRefreshLi
         tabList.clear();
         getTabData();
         getCarousel();
+        getTdata("");
     }
 
     private void getTabData() {
-        if (isRefresh == false) {
-            proUtils.show();
-        }
         httpHelper.get(context, URL.ACT_CATEGORIES, new CommHttp.HttpCallBack() {
             @Override
             public void success(String body) {
@@ -214,30 +207,25 @@ public class MainSportFragment extends BaseFragment implements OnHeaderRefreshLi
                                 tabData.setIsSelect("0");
                                 tabList.add(tabData);
                             }
+                            refreshTabAdapter();
                         }
                     } else {
                         String msg = jo.optString(Constant.ERROR_MSG);
                         T.show(context, msg);
                     }
-                    handler.sendEmptyMessage(UPDATA_TAB_CODE);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 T.checkNet(context);
-                proUtils.dismiss();
             }
         });
     }
 
     private void getCarousel() {
-        if (isRefresh == false) {
-            proUtils.show();
-        }
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("project_type", "2");
         httpHelper.post(context, URL.HOME_CAROUSEL, map, new CommHttp.HttpCallBack() {
@@ -259,25 +247,25 @@ public class MainSportFragment extends BaseFragment implements OnHeaderRefreshLi
                                 data.setPicture(job.optString(Constant.PICTURE));
                                 titleAdvertList.add(data);
                             }
+                            rollHeaderView.setVisibility(View.VISIBLE);
+                            setAdvertisementData();
+                        }else{
+                            rollHeaderView.setVisibility(View.GONE);
                         }
                     } else {
                         String msg = jo.optString(Constant.ERROR_MSG);
                         T.show(context, msg);
                     }
-                    handler.sendEmptyMessage(UPDATA_HEAD_CODE);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 errorLayout.setVisibility(View.VISIBLE);
-                proUtils.dismiss();
             }
         });
-        getTdata("");
     }
 
     private void getTdata(final String id) {
@@ -291,6 +279,9 @@ public class MainSportFragment extends BaseFragment implements OnHeaderRefreshLi
             @Override
             public void success(String body) {
                 errorLayout.setVisibility(View.GONE);
+                if (isRefresh){
+                    aList.clear();
+                }
                 analysisData(body);
                 if (!TextUtils.isEmpty(id)) {
                     handler.sendEmptyMessage(UPDATA_OTHER_CODE);
@@ -298,22 +289,17 @@ public class MainSportFragment extends BaseFragment implements OnHeaderRefreshLi
                     handler.sendEmptyMessage(UPDATA_DATA_CODE);
                 }
                 dismissRefresh();
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 errorLayout.setVisibility(View.VISIBLE);
                 dismissRefresh();
-                proUtils.dismiss();
             }
         });
     }
 
     private void getNdata() {
-        if (isRefresh == false) {
-            proUtils.show();
-        }
         Map<String, Object> map = new HashMap<String, Object>();
         map.put(Constant.PAGESIZE, "10");
         map.put(Constant.PAGE, "1");
@@ -326,14 +312,12 @@ public class MainSportFragment extends BaseFragment implements OnHeaderRefreshLi
                 analysisData(body);
                 handler.sendEmptyMessage(UPDATA_NFC_CODE);
                 dismissRefresh();
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 errorLayout.setVisibility(View.VISIBLE);
                 dismissRefresh();
-                proUtils.dismiss();
             }
         });
     }
@@ -343,35 +327,19 @@ public class MainSportFragment extends BaseFragment implements OnHeaderRefreshLi
      * 设置轮播
      */
     private void setAdvertisementData() {
-        DisplayMetrics dm = new DisplayMetrics();
-        ((Activity) context).getWindowManager().getDefaultDisplay()
-                .getMetrics(dm);
-        // 设置图片宽高
-        int screenWidth = ((Activity) context).getWindowManager()
-                .getDefaultDisplay().getWidth();
-        int picSize = screenWidth / 2;
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                screenWidth, picSize);
-        rollPagerView.setLayoutParams(layoutParams);
-
         if (titleAdvertList != null) {
-            //设置播放时间间隔
-            rollPagerView.setPlayDelay(3000);
-            //设置透明度
-            rollPagerView.setAnimationDurtion(500);
-            //设置适配器
-            rollPagerView.setAdapter(new HomeAdImageAdapter(context, titleAdvertList));
-            //设置指示器（顺序依次）
-            rollPagerView.setHintView(new IconHintView(context, R.mipmap.dop_press, R.mipmap.dop_normal));
-
-            if (titleAdvertList.size() == 1) {
-                rollPagerView.pause();
-                rollPagerView.setHintView(null);
+            rollHeaderView.setVisibility(View.VISIBLE);
+            List<String> imgUrlList = new ArrayList<String>();
+            for (CarouselData carouselData : titleAdvertList) {
+                imgUrlList.add(carouselData.getPicture());
             }
+            rollHeaderView.setImgUrlData(imgUrlList);
+        }else {
+            rollHeaderView.setVisibility(View.GONE);
         }
-        rollPagerView.setOnItemClickListener(new OnItemClickListener() {
+        rollHeaderView.setOnHeaderViewClickListener(new RollHeaderView.HeaderViewClickListener() {
             @Override
-            public void onItemClick(int position) {
+            public void HeaderViewClick(int position) {
                 CarouselData data = titleAdvertList.get(position);
                 String urlStr = data.getUrl();
                 if (!TextUtils.isEmpty(urlStr)) {
@@ -419,6 +387,7 @@ public class MainSportFragment extends BaseFragment implements OnHeaderRefreshLi
                     latitude = "";
                     longitude = "";
                     aList.clear();
+                    listView.setAdapter(new ActivityAdapter(context, aList, 0));
                     getTdata("");
                 }
                 break;
@@ -465,8 +434,7 @@ public class MainSportFragment extends BaseFragment implements OnHeaderRefreshLi
     };
 
 
-    private final static int UPDATA_TAB_CODE = 0;
-    private final static int UPDATA_HEAD_CODE = 1;
+
     private final static int UPDATA_DATA_CODE = 2;
     private final static int UPDATA_NFC_CODE = 3;
     private final static int UPDATA_OTHER_CODE = 4;
@@ -478,14 +446,6 @@ public class MainSportFragment extends BaseFragment implements OnHeaderRefreshLi
             switch (msg.what) {
                 case LAZY_LOADING_MSG: {
                     initData();
-                }
-                break;
-                case UPDATA_TAB_CODE: {
-                    refreshTabAdapter();
-                }
-                break;
-                case UPDATA_HEAD_CODE: {
-                    setAdvertisementData();
                 }
                 break;
                 case UPDATA_DATA_CODE: {
@@ -599,7 +559,6 @@ public class MainSportFragment extends BaseFragment implements OnHeaderRefreshLi
                     SkipUtils.jumpForMap(context, ActivityDetailActivity.class, map, false);
                 }
             });
-            scrollView.smoothScrollTo(0, 0);
         }
     }
 
@@ -618,7 +577,6 @@ public class MainSportFragment extends BaseFragment implements OnHeaderRefreshLi
         } else {
             listView.setAdapter(new ActivityAdapter(context, aList, 1));
         }
-        scrollView.smoothScrollTo(0, 0);
     }
 
     private void refreshOtherAdapter() {
@@ -636,39 +594,12 @@ public class MainSportFragment extends BaseFragment implements OnHeaderRefreshLi
     }
 
 
-    @Override
-    public void onFooterRefresh(PullToRefreshView view) {
-//        isUpRefresh = true;
-//        if (isUpRefresh) {
-//            page = page + 1;
-//            initData();
-//        }
-        pullToRefreshView.onFooterRefreshComplete();
-    }
-
-    @Override
-    public void onHeaderRefresh(PullToRefreshView view) {
-        isRefresh = true;
-        if (isRefresh) {
-            if (viewType == 0) {
-                aList.clear();
-                page = 1;
-                initData();
-            } else {
-                headLayout.setVisibility(View.GONE);
-                aList.clear();
-                listView.setAdapter(new ActivityAdapter(context, aList, 0));
-                getTdata(typeId);
-            }
-        }
-    }
-
     private void dismissRefresh() {
         if (isRefresh) {
-            pullToRefreshView.onHeaderRefreshComplete();
+            pullToRefreshView.onRefreshComplete();
             isRefresh = false;
         } else if (isUpRefresh) {
-            pullToRefreshView.onFooterRefreshComplete();
+            pullToRefreshView.onRefreshComplete();
             isUpRefresh = false;
         }
 
@@ -682,11 +613,13 @@ public class MainSportFragment extends BaseFragment implements OnHeaderRefreshLi
         } else {
             aList.clear();
             listView.setAdapter(new ActivityAdapter(context, aList, 1));
-            T.show(context, "请开启GPS");
+            T.show(context, "请开启GPS并获取定位权限");
         }
     }
 
     private void getLocation() {
+        aList.clear();
+        listView.setAdapter(new ActivityAdapter(context, aList, 0));
         if (mLocationClient == null) {
             mLocationClient = new AMapLocationClient(context);
         }
@@ -716,19 +649,64 @@ public class MainSportFragment extends BaseFragment implements OnHeaderRefreshLi
                     longitude = aMapLocation.getLongitude() + "";//获取经度
                     String city = aMapLocation.getCity();//城市信息
                     leftTv.setText(city);
+                    if (aList.size() > 0) {
+                        aList.clear();
+                    }
+                    listView.setAdapter(new ActivityAdapter(context, aList, 0));
                     getNdata();
                 } else {
-                    T.show(context, "location Error, ErrCode:"
-                            + aMapLocation.getErrorCode() + ", errInfo:"
-                            + aMapLocation.getErrorInfo());
+                    int code = aMapLocation.getErrorCode();
+                    String msg = "定位失败";
+                    switch (code) {
+                        case 12: {
+                            msg = "缺少定位权限";
+                        }
+                        break;
+                    }
+                    T.show(context, msg);
                 }
             }
 
         }
     };
 
+
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    public void onRefresh(PullToRefreshBase<ScrollView> refreshView) {
+        if (refreshView.isShownHeader()) {
+            pullToRefreshView.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
+            pullToRefreshView.getLoadingLayoutProxy().setPullLabel("下拉刷新");
+            pullToRefreshView.getLoadingLayoutProxy().setReleaseLabel("释放开始刷新");
+            isRefresh = true;
+            isUpRefresh = false;
+            if (isRefresh) {
+                page=1;
+                if (viewType == 0) {
+                    aList.clear();
+                    getTdata("");
+                } else {
+                    headLayout.setVisibility(View.GONE);
+                    getTdata(typeId);
+                }
+            }
+
+        }
+        // 上拉加载更多 业务代码
+        if (refreshView.isShownFooter()) {
+            pullToRefreshView.getLoadingLayoutProxy().setRefreshingLabel("正在加载");
+            pullToRefreshView.getLoadingLayoutProxy().setPullLabel("上拉加载更多");
+            pullToRefreshView.getLoadingLayoutProxy().setReleaseLabel("释放开始加载");
+            isUpRefresh = true;
+            isRefresh=false;
+            if (isUpRefresh) {
+                page = page + 1;
+                if (viewType == 0) {
+                    getTdata("");
+                } else {
+                    headLayout.setVisibility(View.GONE);
+                    getTdata(typeId);
+                }
+            }
+        }
     }
 }

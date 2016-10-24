@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.MainActivity;
 import com.dopstore.mall.base.BaseActivity;
+import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.SkipUtils;
 
 import java.util.HashMap;
@@ -22,6 +23,7 @@ public class ShopPaySuccessActivity extends BaseActivity {
     private TextView titleText,hintText;
     private Button checkBt;
     private Button continueBt;
+    private String order_id="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +45,9 @@ public class ShopPaySuccessActivity extends BaseActivity {
     }
 
     private void initData() {
+        Map<String,Object> map=SkipUtils.getMap(this);
+        if (map==null){return;}
+        order_id=map.get(Constant.ID).toString();
         titleText.setText("恭喜您!支付成功");
         hintText.setText("请保持手机畅通,以便快递哥哥第一时间联系到您");
     }
@@ -53,8 +58,8 @@ public class ShopPaySuccessActivity extends BaseActivity {
             switch (view.getId()) {
                 case R.id.pay_success_check_bt: {
                     Map<String,Object> map=new HashMap<String,Object>();
-                    map.put("title","0");
-                    SkipUtils.directJump(ShopPaySuccessActivity.this, MyOrderActivity.class,true);
+                    map.put(Constant.ID,order_id);
+                    SkipUtils.jumpForMap(ShopPaySuccessActivity.this, OrderDetailActivity.class,map,true);
                 }
                 break;
                 case R.id.pay_success_continue_bt: {

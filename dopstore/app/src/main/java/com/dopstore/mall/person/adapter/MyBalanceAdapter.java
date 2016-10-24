@@ -46,7 +46,6 @@ public class MyBalanceAdapter extends BaseAdapter {
             holder = new ViewHolder();
             convertView = mInflater.inflate(R.layout.item_my_balance, null);
             holder.num = (TextView) convertView.findViewById(R.id.item_my_balance_num);
-            holder.intro = (TextView) convertView.findViewById(R.id.item_my_balance_intro);
             holder.line = convertView.findViewById(R.id.item_my_balance_line);
             convertView.setTag(holder);
         } else {
@@ -56,7 +55,6 @@ public class MyBalanceAdapter extends BaseAdapter {
             final MyBalanceData data = items.get(position);
             if (data != null) {
                 holder.num.setText(data.getTitle());
-                holder.intro.setText(data.getIntro());
                 if (position == items.size() - 1) {
                     holder.line.setVisibility(View.GONE);
                 } else {
@@ -68,7 +66,7 @@ public class MyBalanceAdapter extends BaseAdapter {
     }
 
     static class ViewHolder {
-        private TextView num, intro;
+        private TextView num;
         private View line;
     }
 

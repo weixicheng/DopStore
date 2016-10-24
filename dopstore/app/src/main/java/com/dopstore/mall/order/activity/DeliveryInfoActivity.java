@@ -81,7 +81,6 @@ public class DeliveryInfoActivity extends BaseActivity {
     private List<DeliveryListData> deliveryListData;
 
     private void getLogistData() {
-        proUtils.show();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("logistics_no", logistics_no);
         map.put("logistics_company", logistics_company);
@@ -105,13 +104,11 @@ public class DeliveryInfoActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 errorLayout.setVisibility(View.VISIBLE);
-                proUtils.dismiss();
             }
         });
     }

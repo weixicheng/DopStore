@@ -10,10 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
-import com.dopstore.mall.activity.bean.GoodBean;
 import com.dopstore.mall.person.bean.MyCollectData;
 import com.dopstore.mall.util.LoadImageUtils;
-import com.dopstore.mall.util.Utils;
 
 import java.util.List;
 
@@ -64,7 +62,7 @@ public class MyCollectAdapter extends BaseAdapter {
         }
 
         MyCollectData data = mListData.get(position);
-        loadImageUtils.displayImage(data.getImage(), holder.imageView);
+        loadImageUtils.displayImage(data.getImage()+"?imageView2/1/w/182/h/182", holder.imageView);
         holder.title.setText(data.getTitle());
         holder.num.setText("￥" + Float.parseFloat(data.getPrice()));
         String isShow=data.getIsShow();

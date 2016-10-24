@@ -12,6 +12,7 @@ import com.dopstore.mall.R;
 import com.dopstore.mall.activity.bean.MainMiddleData;
 import com.dopstore.mall.activity.bean.ShopData;
 import com.dopstore.mall.shop.activity.ShopDetailActivity;
+import com.dopstore.mall.shop.activity.ShopThemeActivity;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.LoadImageUtils;
 import com.dopstore.mall.util.SkipUtils;
@@ -29,6 +30,7 @@ public class MiddleAdapter extends BaseAdapter {
     private Context context;
     private List<MainMiddleData> list;
     private LoadImageUtils loadImageUtils;
+    private MiddleDataAdapter middleDataAdapter;
 
     public MiddleAdapter(Context context, List<MainMiddleData> list) {
         this.context = context;
@@ -59,27 +61,27 @@ public class MiddleAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             viewHolder.bigImageView = (ImageView) view.findViewById(R.id.main_middle_bigimage);
             viewHolder.eScrollView = (EScrollView) view.findViewById(R.id.main_middle_escrollview);
+            viewHolder.line = view.findViewById(R.id.main_middle_line);
             view.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        loadImageUtils.displayImage(list.get(i).getPicture(), viewHolder.bigImageView);
-//        final int position=i;
-//        viewHolder.bigImageView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                String id=list.get(position).getId();
-//                String isCollect=list.get(position).getIs_collect();
-//                Map<String,Object> map=new HashMap<String, Object>();
-//                map.put(Constant.ID,id);
-//                map.put(Constant.IS_COLLECT,isCollect);
-//                SkipUtils.jumpForMap(context, ShopDetailActivity.class,map,false);
-//            }
-//        });
+        loadImageUtils.displayImage(list.get(i).getPicture()+"?imageView2/1/w/1000/h/500", viewHolder.bigImageView);
+        final int position=i;
+        viewHolder.bigImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MainMiddleData mainMiddleData=list.get(position);
+                Map<String,Object> map=new HashMap<String, Object>();
+                map.put(Constant.LIST,mainMiddleData);
+                SkipUtils.jumpForMap(context, ShopThemeActivity.class,map,false);
+            }
+        });
 
         List<ShopData> datas = list.get(i).getRelated_goods();
-        viewHolder.eScrollView.setAdapter(new MiddleDataAdapter(context, datas));
+        MiddleDataAdapter middleDataAdapter=new MiddleDataAdapter(context, datas);
+        viewHolder.eScrollView.setAdapter(middleDataAdapter);
         final  List<ShopData> newDatas=datas;
         viewHolder.eScrollView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -94,16 +96,23 @@ public class MiddleAdapter extends BaseAdapter {
             }
         });
 
+        if (position==list.size()-1){
+            viewHolder.line.setVisibility(View.GONE);
+        }else {
+            viewHolder.line.setVisibility(View.VISIBLE);
+        }
         return view;
     }
 
     public void upData(List<MainMiddleData> midddleList) {
-        this.list = midddleList;
+        this.list=midddleList;
         notifyDataSetChanged();
     }
 
+
     class ViewHolder {
         private ImageView bigImageView;
+        private View line;
         private EScrollView eScrollView;
     }
 }

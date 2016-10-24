@@ -112,13 +112,14 @@
         </LinearLayout>
     </LinearLayout>
 
-    <ListView
+    <com.dopstore.mall.view.pulltorefresh.PullToRefreshListView
         android:id="@+id/shop_list_listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/activity_list_title_second_layout"
         android:layout_marginTop="@dimen/margin_10"
         android:numColumns="2" />
+
     <LinearLayout
         android:id="@+id/comm_error_layout"
         android:layout_width="match_parent"

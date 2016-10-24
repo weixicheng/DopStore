@@ -19,6 +19,10 @@ import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
+import com.dopstore.mall.view.pulltorefresh.PullToRefreshBase;
+import com.dopstore.mall.view.pulltorefresh.PullToRefreshBase.Mode;
+import com.dopstore.mall.view.pulltorefresh.PullToRefreshBase.OnRefreshListener;
+import com.dopstore.mall.view.pulltorefresh.PullToRefreshListView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,15 +38,18 @@ import java.util.Map;
  * Created by 喜成 on 16/9/13
  * name
  */
-public class ActivityListActivity extends BaseActivity {
+public class ActivityListActivity extends BaseActivity implements OnRefreshListener<ListView>{
     private TextView firstTv, secondTv, thirdTv, fourTv;
     private View firstv, secondv, thirdv, fourv;
-    private ListView listView;
+    private PullToRefreshListView listView;
     private LinearLayout errorLayout;
     private TextView loadTv;
     private ActivityAdapter adapter;
     private List<ActivityData> aList = new ArrayList<ActivityData>();
     private String searchStr = "";
+    private int page = 1;
+    private boolean isRefresh = false;
+    private boolean isUpRefresh = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +70,11 @@ public class ActivityListActivity extends BaseActivity {
         secondv = findViewById(R.id.shop_list_secondv);
         thirdv = findViewById(R.id.shop_list_thirdv);
         fourv = findViewById(R.id.shop_list_fourv);
-        listView = (ListView) findViewById(R.id.shop_list_listview);
+        listView = (PullToRefreshListView) findViewById(R.id.shop_list_listview);
         errorLayout = (LinearLayout) findViewById(R.id.comm_error_layout);
         loadTv = (TextView) findViewById(R.id.error_data_load_tv);
+        listView.setMode(Mode.BOTH);
+        listView.setOnRefreshListener(this);
         loadTv.setOnClickListener(listener);
         firstTv.setOnClickListener(listener);
         secondTv.setOnClickListener(listener);
@@ -81,25 +90,24 @@ public class ActivityListActivity extends BaseActivity {
     }
 
     private void getOtherData(String id) {
-        proUtils.show();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put(Constant.PAGESIZE, "10");
-        map.put(Constant.PAGE, "1");
+        map.put(Constant.PAGE, page+"");
         map.put("kw", searchStr);
         map.put("order_id", id);
         httpHelper.post(this, URL.RECOMMENDED_ACT, map, new CommHttp.HttpCallBack() {
             @Override
             public void success(String body) {
+                dismissRefresh();
                 errorLayout.setVisibility(View.GONE);
                 analysisData(body);
                 handler.sendEmptyMessage(UPDATA_OTHER_CODE);
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
+                dismissRefresh();
                 errorLayout.setVisibility(View.VISIBLE);
-                proUtils.dismiss();
             }
         });
     }
@@ -196,6 +204,9 @@ public class ActivityListActivity extends BaseActivity {
             if ("0".equals(code)) {
                 JSONArray ja = jo.getJSONArray(Constant.ACTIVITYS);
                 if (ja.length() > 0) {
+                    if (isRefresh){
+                        aList.clear();
+                    }
                     for (int i = 0; i < ja.length(); i++) {
                         JSONObject middle = ja.getJSONObject(i);
                         ActivityData middleData = new ActivityData();
@@ -236,7 +247,7 @@ public class ActivityListActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Map<String, Object> map = new HashMap<String, Object>();
-                map.put(Constant.ID, aList.get(i).getId());
+                map.put(Constant.ID, aList.get(i-1).getId());
                 SkipUtils.jumpForMap(ActivityListActivity.this, ActivityDetailActivity.class, map, false);
             }
         });
@@ -249,6 +260,44 @@ public class ActivityListActivity extends BaseActivity {
             return true;
         } else {
             return super.onKeyDown(keyCode, event);
+        }
+    }
+
+    @Override
+    public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+        if (refreshView.isShownHeader()) {
+            listView.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
+            listView.getLoadingLayoutProxy().setPullLabel("下拉刷新");
+            listView.getLoadingLayoutProxy().setReleaseLabel("释放开始刷新");
+            isRefresh = true;
+            isUpRefresh = false;
+            if (isRefresh) {
+                page=1;
+                getOtherData("1");
+            }
+
+        }
+        // 上拉加载更多 业务代码
+        if (refreshView.isShownFooter()) {
+            listView.getLoadingLayoutProxy().setRefreshingLabel("正在加载");
+            listView.getLoadingLayoutProxy().setPullLabel("上拉加载更多");
+            listView.getLoadingLayoutProxy().setReleaseLabel("释放开始加载");
+            isUpRefresh = true;
+            isRefresh=false;
+            if (isUpRefresh) {
+                page = page + 1;
+                getOtherData("1");
+            }
+        }
+    }
+
+    private void dismissRefresh() {
+        if (isRefresh) {
+            listView.onRefreshComplete();
+            isRefresh = false;
+        } else if (isUpRefresh) {
+            listView.onRefreshComplete();
+            isUpRefresh = false;
         }
     }
 }

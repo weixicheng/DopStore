@@ -26,14 +26,11 @@ import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
-import com.dopstore.mall.util.Utils;
-import com.dopstore.mall.view.CommonDialog;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,7 +42,7 @@ import java.util.Map;
  * name
  */
 public class MyCollectActivity extends BaseActivity {
-    private RelativeLayout firstLy, secondLy,bottomLayout;
+    private RelativeLayout firstLy, secondLy, bottomLayout;
     private TextView firstTv, secondTv;
     private View firstV, secondV;
     private ListView mListView;// 列表
@@ -53,7 +50,7 @@ public class MyCollectActivity extends BaseActivity {
     private TextView loadTv;
     private LinearLayout emptyLayout;
     private View emptyV;
-    private TextView emptyTv,rightTv;
+    private TextView emptyTv, rightTv;
     private Button deleteBt;
     private CheckBox mCheckAll;// 全选 全不选
     private List<MyCollectData> mListData = new ArrayList<MyCollectData>();// 数据
@@ -73,7 +70,7 @@ public class MyCollectActivity extends BaseActivity {
     private void initView() {
         setCustomTitle("我的收藏", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
-        rightTv= (TextView) findViewById(R.id.title_right_textButton);
+        rightTv = (TextView) findViewById(R.id.title_right_textButton);
         rightTv.setText("编辑");
         rightTv.setTextColor(getResources().getColor(R.color.white));
         rightTv.setVisibility(View.VISIBLE);
@@ -108,7 +105,6 @@ public class MyCollectActivity extends BaseActivity {
 
     private void getCollectList(String typeStr) {
         mListData.clear();
-        proUtils.show();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("user_id", UserUtils.getId(this));
         map.put("is_activity", typeStr);
@@ -118,13 +114,11 @@ public class MyCollectActivity extends BaseActivity {
                 errorLayout.setVisibility(View.GONE);
                 analyData(body);
                 handler.sendEmptyMessage(UPDATA_COLLECT_CODE);
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 errorLayout.setVisibility(View.VISIBLE);
-                proUtils.dismiss();
             }
         });
     }
@@ -168,7 +162,7 @@ public class MyCollectActivity extends BaseActivity {
                     secondTv.setTextColor(getResources().getColor(R.color.gray_color_33));
                     secondV.setBackgroundColor(getResources().getColor(R.color.white_color));
                     type = 0;
-                    if (mListData!=null&&mListData.size()>0){
+                    if (mListData != null && mListData.size() > 0) {
                         mListData.clear();
                     }
                     rightTv.setText("编辑");
@@ -185,22 +179,23 @@ public class MyCollectActivity extends BaseActivity {
                     type = 1;
                     rightTv.setText("编辑");
                     bottomLayout.setVisibility(View.GONE);
-                    if (mListData!=null&&mListData.size()>0){
+                    if (mListData != null && mListData.size() > 0) {
                         mListData.clear();
                     }
                     refreshListView();
                     getCollectList("1");
                 }
                 break;
-                case R.id.error_data_load_tv:{
-                    if (type==0){
+                case R.id.error_data_load_tv: {
+                    if (type == 0) {
                         getCollectList("");
-                    }else {
+                    } else {
                         getCollectList("1");
                     }
-                }break;
-                case R.id.title_right_textButton:{
-                    if (View.VISIBLE==bottomLayout.getVisibility()){
+                }
+                break;
+                case R.id.title_right_textButton: {
+                    if (View.VISIBLE == bottomLayout.getVisibility()) {
                         if (mListData != null) {
                             int size = mListData.size();
                             if (size == 0) {
@@ -213,7 +208,7 @@ public class MyCollectActivity extends BaseActivity {
                         }
                         rightTv.setText("编辑");
                         bottomLayout.setVisibility(View.GONE);
-                    }else {
+                    } else {
                         if (mListData != null) {
                             int size = mListData.size();
                             if (size == 0) {
@@ -227,8 +222,9 @@ public class MyCollectActivity extends BaseActivity {
                         rightTv.setText("完成");
                         bottomLayout.setVisibility(View.VISIBLE);
                     }
-                }break;
-                case R.id.my_collect_check_box:{
+                }
+                break;
+                case R.id.my_collect_check_box: {
                     if (mCheckAll.isChecked()) {
                         if (mListData != null) {
                             int size = mListData.size();
@@ -248,10 +244,12 @@ public class MyCollectActivity extends BaseActivity {
                             refreshListView();
                         }
                     }
-                }break;
-                case R.id.my_collect_delete_bt:{
+                }
+                break;
+                case R.id.my_collect_delete_bt: {
                     deleteCollect();
-                }break;
+                }
+                break;
                 default:
                     break;
             }
@@ -259,23 +257,26 @@ public class MyCollectActivity extends BaseActivity {
     };
 
     private void deleteCollect() {
-        JSONArray jsonArray=new JSONArray();
-        if (mListData.size()>0&&mListData!=null){
-            for (MyCollectData myCollectData:mListData){
-                if (myCollectData.isChoose()==true){
+        JSONArray jsonArray = new JSONArray();
+        if (mListData.size() > 0 && mListData != null) {
+            for (MyCollectData myCollectData : mListData) {
+                if (myCollectData.isChoose() == true) {
                     jsonArray.put(myCollectData.getId());
                 }
-            }}else {
-            jsonArray=null;
+            }
+        } else {
+            jsonArray = null;
             return;
         }
-        proUtils.show();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("user_id", UserUtils.getId(this));
-        if (jsonArray!=null&&jsonArray.length()>0){
+        if (jsonArray != null && jsonArray.length() > 0) {
             map.put("item_list", jsonArray);
         }
-        map.put("is_activity", type);
+        if (type == 0) {
+        } else {
+            map.put("is_activity", "1");
+        }
         httpHelper.post(this, URL.COLLECTION_DEL, map, new CommHttp.HttpCallBack() {
             @Override
             public void success(String body) {
@@ -291,13 +292,11 @@ public class MyCollectActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 T.checkNet(MyCollectActivity.this);
-                proUtils.dismiss();
             }
         });
     }
@@ -316,7 +315,7 @@ public class MyCollectActivity extends BaseActivity {
                 break;
                 case DELETE_SUCCESS_CODE: {
                     T.show(MyCollectActivity.this, "删除成功");
-                    if (mListData!=null&&mListData.size()>0){
+                    if (mListData != null && mListData.size() > 0) {
                         mListData.clear();
                     }
                     refreshListView();
@@ -333,16 +332,16 @@ public class MyCollectActivity extends BaseActivity {
 
     private void refreshListView() {
         rightTv.setText("编辑");
-        if (mListData.size()>0){
+        if (mListData.size() > 0) {
             emptyLayout.setVisibility(View.GONE);
-        }else {
+        } else {
             emptyLayout.setVisibility(View.VISIBLE);
         }
-        if (adapter==null) {
-            adapter=new MyCollectAdapter(this,mListData,mCheckAll);
+        if (adapter == null) {
+            adapter = new MyCollectAdapter(this, mListData, mCheckAll);
             mListView.setAdapter(adapter);
-        }else {
-            adapter.upDataList(mListData,mCheckAll);
+        } else {
+            adapter.upDataList(mListData, mCheckAll);
         }
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

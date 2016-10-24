@@ -21,6 +21,7 @@ import java.util.Map;
 public class NoPaySuccessActivity extends BaseActivity {
     private Button checkBt;
     private Button continueBt;
+    private String order_id="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +41,9 @@ public class NoPaySuccessActivity extends BaseActivity {
     }
 
     private void initData() {
-
+        Map<String,Object> map=SkipUtils.getMap(this);
+        if (map==null){return;}
+        order_id=map.get(Constant.ID).toString();
     }
 
     View.OnClickListener listener = new View.OnClickListener() {
@@ -48,7 +51,10 @@ public class NoPaySuccessActivity extends BaseActivity {
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.pay_success_check_bt: {
-                    SkipUtils.directJump(NoPaySuccessActivity.this, MyActivityActivity.class, true);
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map.put(Constant.ID, order_id);
+                    map.put("type", "3");
+                    SkipUtils.jumpForMap(NoPaySuccessActivity.this, ActivityOrderDetailActivity.class,map, true);
                 }
                 break;
                 case R.id.pay_success_continue_bt: {

@@ -22,15 +22,15 @@ import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
-import com.dopstore.mall.view.PullToRefreshView;
-import com.dopstore.mall.view.PullToRefreshView.OnFooterRefreshListener;
-import com.dopstore.mall.view.PullToRefreshView.OnHeaderRefreshListener;
+import com.dopstore.mall.view.pulltorefresh.PullToRefreshBase;
+import com.dopstore.mall.view.pulltorefresh.PullToRefreshBase.Mode;
+import com.dopstore.mall.view.pulltorefresh.PullToRefreshBase.OnRefreshListener;
+import com.dopstore.mall.view.pulltorefresh.PullToRefreshListView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,9 +42,8 @@ import java.util.Map;
  * Created by 喜成 on 16/9/8.
  * name
  */
-public class MyActivityActivity extends BaseActivity implements OnFooterRefreshListener,OnHeaderRefreshListener{
-    private PullToRefreshView pullToRefreshView;
-    private ListView lv;
+public class MyActivityActivity extends BaseActivity implements OnRefreshListener<ListView>{
+    private PullToRefreshListView pullToRefreshView;
     private LinearLayout errorLayout;
     private TextView loadTv;
     private LinearLayout emptyLayout;
@@ -64,7 +63,6 @@ public class MyActivityActivity extends BaseActivity implements OnFooterRefreshL
     private void initView() {
         setCustomTitle("我的活动", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
-        lv = (ListView) findViewById(R.id.my_activity_lv);
         errorLayout = (LinearLayout) findViewById(R.id.comm_error_layout);
         loadTv = (TextView) findViewById(R.id.error_data_load_tv);
         emptyLayout = (LinearLayout) findViewById(R.id.comm_empty_layout);
@@ -73,10 +71,9 @@ public class MyActivityActivity extends BaseActivity implements OnFooterRefreshL
         emptyV.setBackgroundResource(R.mipmap.activity_empty_logo);
         emptyLoadTV = (TextView) findViewById(R.id.empty_data_load_tv);
         emptyTv.setText("您还没有相关活动订单");
-        pullToRefreshView = (PullToRefreshView) findViewById(R.id.my_activity_pulltorefresh);
-        pullToRefreshView.setOnFooterRefreshListener(this);
-        pullToRefreshView.onFooterRefreshComplete();
-        pullToRefreshView.setOnHeaderRefreshListener(this);
+        pullToRefreshView = (PullToRefreshListView) findViewById(R.id.my_activity_pulltorefresh);
+        pullToRefreshView.setMode(Mode.PULL_FROM_START);
+        pullToRefreshView.setOnRefreshListener(this);
         loadTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,8 +96,6 @@ public class MyActivityActivity extends BaseActivity implements OnFooterRefreshL
     }
 
     private void getMyOrder() {
-        if (isRefresh==false){
-            proUtils.show();}
         String id = UserUtils.getId(this);
         httpHelper.get(this, URL.ORDER_ACTIVITY_LIST + id, new CommHttp.HttpCallBack() {
             @Override
@@ -132,14 +127,12 @@ public class MyActivityActivity extends BaseActivity implements OnFooterRefreshL
                     e.printStackTrace();
                 }
                 dismissRefresh();
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 errorLayout.setVisibility(View.VISIBLE);
                 dismissRefresh();
-                proUtils.dismiss();
             }
         });
     }
@@ -164,13 +157,13 @@ public class MyActivityActivity extends BaseActivity implements OnFooterRefreshL
         }else {
             emptyLayout.setVisibility(View.VISIBLE);
         }
-        lv.setAdapter(new MyActivityAdapter(this, items));
+        pullToRefreshView.setAdapter(new MyActivityAdapter(this, items));
 
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        pullToRefreshView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String id = items.get(i).getId();
-                String stu = items.get(i).getState();
+                String id = items.get(i-1).getId();
+                String stu = items.get(i-1).getState();
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put(Constant.ID, id);
                 map.put("type", stu);
@@ -208,24 +201,22 @@ public class MyActivityActivity extends BaseActivity implements OnFooterRefreshL
         }
     }
 
-    @Override
-    public void onFooterRefresh(PullToRefreshView view) {
-        pullToRefreshView.onFooterRefreshComplete();
+    private void dismissRefresh(){
+        if (isRefresh){
+            pullToRefreshView.onRefreshComplete();
+            isRefresh=false;
+        }
     }
 
     @Override
-    public void onHeaderRefresh(PullToRefreshView view) {
+    public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+        pullToRefreshView.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
+        pullToRefreshView.getLoadingLayoutProxy().setPullLabel("下拉刷新");
+        pullToRefreshView.getLoadingLayoutProxy().setReleaseLabel("释放开始刷新");
         isRefresh=true;
         if (isRefresh) {
             items.clear();
             getMyOrder();
-        }
-    }
-
-    private void dismissRefresh(){
-        if (isRefresh){
-            pullToRefreshView.onHeaderRefreshComplete();
-            isRefresh=false;
         }
     }
 }

@@ -6,32 +6,32 @@
     android:gravity="center_horizontal"
     android:layout_height="match_parent">
 
-        <View
-            android:layout_width="160dp"
-            android:layout_height="160dp"
-            android:layout_marginTop="100dp"
-            android:background="@mipmap/empty_data_logo" />
+    <View
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_marginTop="100dp"
+        android:background="@mipmap/empty_data_logo" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_20"
-            android:text="当前网络不可用，请检查网络设置"
-            android:textColor="@color/gray_color_33"
-            android:textSize="@dimen/textsize_14" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_20"
+        android:text="当前网络不可用，请检查网络设置"
+        android:textColor="@color/gray_color_33"
+        android:textSize="@dimen/textsize_14" />
 
-        <TextView
-            android:id="@+id/error_data_load_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_10"
-            android:background="@drawable/square_hollow_red_white_bg"
-            android:paddingBottom="@dimen/margin_10"
-            android:paddingLeft="@dimen/margin_20"
-            android:paddingRight="@dimen/margin_20"
-            android:paddingTop="@dimen/margin_10"
-            android:text="重新加载"
-            android:textColor="@color/red_color_f93448"
-            android:textSize="@dimen/textsize_16" />
+    <TextView
+        android:id="@+id/error_data_load_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_10"
+        android:background="@drawable/square_hollow_red_white_bg"
+        android:paddingBottom="@dimen/margin_10"
+        android:paddingLeft="@dimen/margin_20"
+        android:paddingRight="@dimen/margin_20"
+        android:paddingTop="@dimen/margin_10"
+        android:text="重新加载"
+        android:textColor="@color/red_color_f93448"
+        android:textSize="@dimen/textsize_16" />
 
 </LinearLayout>

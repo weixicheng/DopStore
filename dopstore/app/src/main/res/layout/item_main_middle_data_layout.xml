@@ -11,13 +11,15 @@
         android:id="@+id/main_middle_data_image"
         android:layout_width="125dp"
         android:layout_height="125dp"
+        android:padding="@dimen/margin_10"
+        android:background="@drawable/square_hollow_gray_ee_bg"
         android:contentDescription="@null"
         android:scaleType="centerCrop" />
 
     <TextView
         android:id="@+id/main_middle_data_title"
         android:layout_width="125dp"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:layout_marginTop="5dp"
         android:paddingLeft="@dimen/margin_10"
         android:ellipsize="end"

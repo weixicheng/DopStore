@@ -8,15 +8,23 @@
     <ImageView
         android:id="@+id/main_middle_bigimage"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="130dp"
+        android:layout_margin="@dimen/margin_10"
         android:contentDescription="@null"
         android:scaleType="centerCrop" />
 
     <com.dopstore.mall.view.EScrollView
         android:id="@+id/main_middle_escrollview"
         android:layout_width="match_parent"
-        android:minHeight="100dp"
+        android:minHeight="200dp"
         android:paddingLeft="10dp"
         android:layout_height="wrap_content" />
+
+    <View
+        android:id="@+id/main_middle_line"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="10dp"
+        android:background="@color/gray_color_ee" />
 
 </LinearLayout>

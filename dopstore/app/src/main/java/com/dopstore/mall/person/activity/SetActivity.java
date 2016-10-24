@@ -112,7 +112,7 @@ public class SetActivity extends BaseActivity {
                     T.show(SetActivity.this, "亲,给个好评吧");
                     break;
                 case R.id.setting_my_about_layout:
-                    T.show(SetActivity.this, "关于小海囤");
+                    SkipUtils.directJump(SetActivity.this,AboutActivity.class,false);
                     break;
                 case R.id.setting_my_exit:
                     exit();

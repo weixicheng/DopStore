@@ -16,7 +16,6 @@ import com.dopstore.mall.activity.bean.GoodBean;
 import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.LoadImageUtils;
-import com.dopstore.mall.util.ProUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
@@ -25,7 +24,6 @@ import com.dopstore.mall.util.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +40,6 @@ public class TrolleyAdapter extends BaseAdapter {
     private Double totalPrice = 0.00; // 商品总价
     private CheckBox mCheckAll; // 全选 全不选
     private CommHttp httpHelper;
-    private ProUtils proUtils;
     private LoadImageUtils loadImageUtils;
 
     public TrolleyAdapter(Context context, List<GoodBean> mListData, TextView mPriceAll, Double totalPrice, CheckBox mCheckAll) {
@@ -52,7 +49,6 @@ public class TrolleyAdapter extends BaseAdapter {
         this.totalPrice = totalPrice;
         this.mCheckAll = mCheckAll;
         httpHelper = CommHttp.getInstance(context);
-        proUtils = new ProUtils(context);
         loadImageUtils = LoadImageUtils.getInstance(context);
     }
 
@@ -89,6 +85,7 @@ public class TrolleyAdapter extends BaseAdapter {
             holder.checkBox = (CheckBox) view.findViewById(R.id.check_box);
             holder.image = (ImageView) view.findViewById(R.id.iv_adapter_list_pic);
             holder.content = (TextView) view.findViewById(R.id.tv_intro);
+            holder.intro = (TextView) view.findViewById(R.id.tv_intro_sku);
             holder.carNum = (TextView) view.findViewById(R.id.tv_num);
             holder.price = (TextView) view.findViewById(R.id.tv_price);
             holder.add = (TextView) view.findViewById(R.id.tv_add);
@@ -99,9 +96,10 @@ public class TrolleyAdapter extends BaseAdapter {
         }
         GoodBean data = mListData.get(position);
         holder.content.setText(data.getContent());
+        holder.intro.setText(data.getGoods_sku_str());
         holder.price.setText("￥" + data.getPrice());
         holder.carNum.setText(data.getCarNum() + "");
-        loadImageUtils.displayImage(data.getCover(), holder.image);
+        loadImageUtils.displayImage(data.getCover()+"?imageView2/1/w/96/h/96", holder.image);
         boolean selected = data.isChoose();
         holder.checkBox.setChecked(selected);
         holder.checkBox.setOnClickListener(new View.OnClickListener() {
@@ -171,7 +169,6 @@ public class TrolleyAdapter extends BaseAdapter {
     }
 
     private void addToService(List<GoodBean> mListData, final int i) {
-        proUtils.show();
         final Map<String, Object> map = new HashMap<String, Object>();
         map.put("user_id", UserUtils.getId(context));
         map.put("item_id", (mListData.get(i).getId()) + "");
@@ -195,19 +192,16 @@ public class TrolleyAdapter extends BaseAdapter {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 T.checkNet(context);
-                proUtils.dismiss();
             }
         });
     }
 
     private void redToService(List<GoodBean> mListData, final int i) {
-        proUtils.show();
         final Map<String, Object> map = new HashMap<String, Object>();
         map.put("user_id", UserUtils.getId(context));
         map.put("item_id", (mListData.get(i).getId()) + "");
@@ -231,13 +225,11 @@ public class TrolleyAdapter extends BaseAdapter {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 T.checkNet(context);
-                proUtils.dismiss();
             }
         });
     }
@@ -289,6 +281,7 @@ class ViewHolder {
     CheckBox checkBox;
     ImageView image;
     TextView content;
+    TextView intro;
     TextView carNum;
     TextView price;
     TextView add;

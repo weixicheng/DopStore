@@ -72,12 +72,9 @@
                 android:id="@+id/confirm_order_listview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:divider="@color/gray_color_ee"
+                android:divider="@color/white"
                 android:dividerHeight="1dp" />
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/margin_10"
-                android:background="@color/gray_color_ee" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:orientation="horizontal"
@@ -158,6 +155,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="4dp"
                 android:background="@mipmap/line_color_bg" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:background="@color/gray_color_ee" />
 
             <RelativeLayout
                 android:layout_width="match_parent"

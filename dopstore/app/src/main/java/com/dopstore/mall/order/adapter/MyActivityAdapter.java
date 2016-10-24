@@ -94,14 +94,22 @@ public class MyActivityAdapter extends BaseAdapter {
                     }
                     break;
                     case 7: {
-                        typeName = "已完成";
+                        typeName = "已参加";
+                    }
+                    break;
+                    case 8: {
+                        typeName = "退款失败";
+                    }
+                    break;
+                    case 9: {
+                        typeName = "支付中";
                     }
                     break;
                 }
                 holder.state.setText(typeName);
                 holder.title.setText(data.getTitle());
                 holder.intro.setText(data.getIntro());
-                loadImageUtils.displayImage(data.getImage(), holder.imageView);
+                loadImageUtils.displayImage(data.getImage()+"?imageView2/1/w/182/h/182", holder.imageView);
             }
         }
         return convertView;

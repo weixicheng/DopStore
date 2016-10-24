@@ -8,6 +8,7 @@ public class GoodBean implements Serializable{
     private String content;
     private String cover;
     private String goods_sku_id;
+    private String goods_sku_str;
     private Double price;
     private boolean isChoose;
 
@@ -45,6 +46,14 @@ public class GoodBean implements Serializable{
 
     public void setGoods_sku_id(String goods_sku_id) {
         this.goods_sku_id = goods_sku_id;
+    }
+
+    public String getGoods_sku_str() {
+        return goods_sku_str;
+    }
+
+    public void setGoods_sku_str(String goods_sku_str) {
+        this.goods_sku_str = goods_sku_str;
     }
 
     public void setCover(String cover) {

@@ -33,7 +33,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,6 +41,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import cn.jpush.android.api.JPushInterface;
+import cn.jpush.android.api.TagAliasCallback;
 
 
 /**
@@ -154,7 +157,6 @@ public class RegisterDetailActivity extends BaseActivity {
 
 
     private void registData() {
-        proUtils.show();
         JSONArray ja=new JSONArray();
         for (int i = 0; i < list.size(); i++) {
             ja.put(list.get(i).getId());
@@ -193,15 +195,17 @@ public class RegisterDetailActivity extends BaseActivity {
                         data.setId(user.optString(Constant.ID));
                         data.setUsername(user.optString(Constant.USERNAME));
                         data.setNickname(user.optString(Constant.NICKNAME));
-                        data.setBalance(user.optString(Constant.BALANCE));
+                        data.setGender(user.optString(Constant.GENDER));
                         data.setAvatar(user.optString(Constant.AVATAR));
                         data.setBirthday(user.optLong(Constant.BIRTHDAY));
                         data.setBaby_birthday(user.optLong(Constant.BABY_BIRTHDAY));
                         data.setBaby_gender(user.optString(Constant.BABY_GENDER));
-                        data.setUsername(user.optString(Constant.USERNAME));
                         data.setBaby_name(user.optString(Constant.BABY_NAME));
                         data.setMobile(user.optString(Constant.MOBILE));
                         data.setAddress(user.optString(Constant.CITY));
+                        data.setBalance(user.optDouble(Constant.BALANCE));
+                        String user_id=user.optString(Constant.ID);
+                        setAlias(user_id);
                         UserUtils.setData(RegisterDetailActivity.this, data);
                         Intent intent = new Intent();
                         intent.setAction(Constant.UP_USER_DATA);
@@ -218,15 +222,24 @@ public class RegisterDetailActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 T.checkNet(RegisterDetailActivity.this);
-                proUtils.dismiss();
             }
         });
+    }
+
+    // 极光推送设置别名
+    private void setAlias(String user_id) {
+        JPushInterface.setAliasAndTags(getApplicationContext(), user_id, null,
+                new TagAliasCallback() {
+                    @Override
+                    public void gotResult(int i, String s, Set<String> set) {
+
+                    }
+                });
     }
 
 

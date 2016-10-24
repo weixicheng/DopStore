@@ -25,7 +25,6 @@ import com.dopstore.mall.view.MyListView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -116,7 +115,6 @@ public class RefundShopOrderActivity extends BaseActivity {
     };
 
     private void refundOrder() {
-        proUtils.show();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("order_num", orderDetailData.getOrder().getOrder_num());
         httpHelper.post(this, URL.ORDER_REFUND, map, new CommHttp.HttpCallBack() {
@@ -134,13 +132,11 @@ public class RefundShopOrderActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 T.checkNet(RefundShopOrderActivity.this);
-                proUtils.dismiss();
             }
         });
     }

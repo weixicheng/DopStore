@@ -71,7 +71,7 @@ public class MyOrderAdapter extends BaseAdapter {
                 holder.state.setText(statusStr);
                 holder.title.setText(data.getGoods_relateds().get(0).getGoods_name());
                 holder.price.setText("￥ "+data.getGoods_relateds().get(0).getGoods_price());
-                loadImageUtils.displayImage(data.getGoods_relateds().get(0).getGoods_cover(), holder.imageView);
+                loadImageUtils.displayImage(data.getGoods_relateds().get(0).getGoods_cover()+"?imageView2/1/w/182/h/182", holder.imageView);
             }
         }
         return convertView;
@@ -101,6 +101,11 @@ public class MyOrderAdapter extends BaseAdapter {
             nameStr="等待付款";
         }
         return  nameStr;
+    }
+
+    public void UpData(List<OrderData> items) {
+        this.items=items;
+        notifyDataSetChanged();
     }
 
     static class ViewHolder {

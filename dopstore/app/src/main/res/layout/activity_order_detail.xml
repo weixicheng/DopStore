@@ -97,7 +97,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_20"
+                android:layout_marginTop="@dimen/margin_10"
                 android:background="@color/white_color"
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/margin_10">
@@ -127,34 +127,43 @@
                     android:textColor="@color/gray_color_33"
                     android:textSize="@dimen/textsize_12" />
 
-                <View
+                <LinearLayout
+                    android:id="@+id/order_detail_user_msg_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginLeft="@dimen/margin_10"
-                    android:background="@color/gray_color_ee" />
-
-                <TextView
-                    android:layout_width="match_parent"
+                    android:visibility="gone"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/margin_10"
-                    android:text="订单备注"
-                    android:textColor="@color/gray_color_99"
-                    android:textSize="@dimen/textsize_14" />
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/order_detail_user_msg"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/margin_10"
-                    android:paddingRight="@dimen/margin_10"
-                    android:textColor="@color/gray_color_33"
-                    android:textSize="@dimen/textsize_14" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginLeft="@dimen/margin_10"
+                        android:background="@color/gray_color_ee" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/margin_10"
+                        android:text="订单备注"
+                        android:textColor="@color/gray_color_99"
+                        android:textSize="@dimen/textsize_14" />
+
+                    <TextView
+                        android:id="@+id/order_detail_user_msg"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="@dimen/margin_10"
+                        android:paddingRight="@dimen/margin_10"
+                        android:textColor="@color/gray_color_33"
+                        android:textSize="@dimen/textsize_14" />
+                </LinearLayout>
             </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_20"
+                android:layout_marginTop="@dimen/margin_10"
                 android:background="@color/white_color"
                 android:orientation="vertical">
 
@@ -162,6 +171,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/margin_10"
+                    android:background="@color/gray_color_ee"
                     android:text="支付信息"
                     android:textColor="@color/gray_color_99"
                     android:textSize="@dimen/textsize_14" />

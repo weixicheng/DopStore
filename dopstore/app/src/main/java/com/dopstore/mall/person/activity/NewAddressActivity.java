@@ -33,7 +33,6 @@ import com.dopstore.mall.view.addresspicker.wheel.widget.adapters.ArrayWheelAdap
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -165,7 +164,6 @@ public class NewAddressActivity extends BaseActivity {
     };
 
     private void deleteMsg() {
-        proUtils.show();
         httpHelper.get(this, URL.SHIPPINGADDRESS + "shippingaddress/" + address_id + "/delete", new CommHttp.HttpCallBack() {
             @Override
             public void success(String body) {
@@ -182,13 +180,11 @@ public class NewAddressActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 T.checkNet(NewAddressActivity.this);
-                proUtils.dismiss();
             }
         });
     }
@@ -226,7 +222,6 @@ public class NewAddressActivity extends BaseActivity {
             T.show(this, "请输入详细地址");
             return;
         }
-        proUtils.show();
         String id = UserUtils.getId(this);
         Map<String, Object> map = new HashMap<String, Object>();
         map.put(Constant.ID, address_id);
@@ -254,13 +249,11 @@ public class NewAddressActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 T.checkNet(NewAddressActivity.this);
-                proUtils.dismiss();
             }
         });
     }

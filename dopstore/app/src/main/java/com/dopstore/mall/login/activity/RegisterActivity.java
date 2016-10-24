@@ -39,7 +39,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -375,7 +374,6 @@ public class RegisterActivity extends BaseActivity {
     private List<DetailData> list = new ArrayList<DetailData>();
 
     private void upToService(String phone, String code) {
-        proUtils.show();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("mobile", phone);
         map.put("v_code", code);
@@ -412,13 +410,11 @@ public class RegisterActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 T.checkNet(RegisterActivity.this);
-                proUtils.dismiss();
             }
         });
     }
@@ -438,7 +434,6 @@ public class RegisterActivity extends BaseActivity {
 
 
     private void otherLogin(String name, String gender, String picture, String uid, int id) {
-        proUtils.show();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("nickname", name);
         map.put("avatar", picture);
@@ -463,9 +458,11 @@ public class RegisterActivity extends BaseActivity {
             break;
         }
         map.put("gender", gender);
+        customProDialog.show();
         httpHelper.post(this, URL.OTHER_SIGNUPL, map, new CommHttp.HttpCallBack() {
             @Override
             public void success(String body) {
+                customProDialog.cancel();
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
@@ -488,15 +485,15 @@ public class RegisterActivity extends BaseActivity {
                         data.setId(user.optString(Constant.ID));
                         data.setUsername(user.optString(Constant.USERNAME));
                         data.setNickname(user.optString(Constant.NICKNAME));
-                        data.setBalance(user.optString(Constant.BALANCE));
+                        data.setGender(user.optString(Constant.GENDER));
                         data.setAvatar(user.optString(Constant.AVATAR));
                         data.setBirthday(user.optLong(Constant.BIRTHDAY));
                         data.setBaby_birthday(user.optLong(Constant.BABY_BIRTHDAY));
                         data.setBaby_gender(user.optString(Constant.BABY_GENDER));
-                        data.setUsername(user.optString(Constant.USERNAME));
                         data.setBaby_name(user.optString(Constant.BABY_NAME));
                         data.setMobile(user.optString(Constant.MOBILE));
                         data.setAddress(user.optString(Constant.CITY));
+                        data.setBalance(user.optDouble(Constant.BALANCE));
                         UserUtils.setData(RegisterActivity.this, data);
                         Intent intent = new Intent();
                         intent.setAction(Constant.UP_USER_DATA);
@@ -513,13 +510,12 @@ public class RegisterActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
+                customProDialog.cancel();
                 T.checkNet(RegisterActivity.this);
-                proUtils.dismiss();
             }
         });
     }

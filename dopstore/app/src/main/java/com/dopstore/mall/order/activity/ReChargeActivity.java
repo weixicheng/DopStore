@@ -26,7 +26,6 @@ import com.pingplusplus.android.Pingpp;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Locale;
@@ -126,7 +125,6 @@ public class ReChargeActivity extends BaseActivity {
         balanceLy.setOnClickListener(null);
         alipayLy.setOnClickListener(null);
         wechatLy.setOnClickListener(null);
-        proUtils.show();
         String ipStr = Utils.GetHostIp(this);
         String type = getPay();
         String user_id = UserUtils.getId(this);
@@ -154,13 +152,11 @@ public class ReChargeActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 T.checkNet(ReChargeActivity.this);
-                proUtils.dismiss();
             }
         });
     }

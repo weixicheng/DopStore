@@ -27,7 +27,6 @@ import com.dopstore.mall.util.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -307,7 +306,6 @@ public class LosePwdActivity extends BaseActivity {
      * @param pwd
      */
     private void upToService(String phone, String code, String pwd) {
-        proUtils.show();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put(Constant.MOBILE, phone);
         map.put(Constant.PASSWORD, pwd);
@@ -328,13 +326,11 @@ public class LosePwdActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 T.checkNet(LosePwdActivity.this);
-                proUtils.dismiss();
             }
         });
     }

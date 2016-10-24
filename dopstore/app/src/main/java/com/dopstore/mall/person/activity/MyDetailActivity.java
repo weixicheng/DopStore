@@ -1,5 +1,6 @@
 package com.dopstore.mall.person.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -21,17 +22,21 @@ import com.dopstore.mall.time.TimePopupWindow;
 import com.dopstore.mall.util.ACache;
 import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.LoadImageUtils;
+import com.dopstore.mall.util.FrescoImageLoader;
 import com.dopstore.mall.util.PopupUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
-import com.dopstore.mall.util.UILImageLoader;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.util.Utils;
 import com.dopstore.mall.view.CircleImageView;
 import com.dopstore.mall.view.CommonDialog;
 import com.dopstore.mall.view.citypicker.CityPicker;
+import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -68,7 +73,8 @@ public class MyDetailActivity extends BaseActivity {
     private int cityPositon = 0;
     private String imageUrl = "";
     private String imagePath = "";
-    private LoadImageUtils loadImage;
+    private  String cityId="1";
+    private DisplayImageOptions options;
 
 
     private CommonDialog dialog;
@@ -84,23 +90,6 @@ public class MyDetailActivity extends BaseActivity {
     }
 
     private void initview() {
-        //设置主题 ThemeConfig.CYAN
-        ThemeConfig theme = new ThemeConfig.Builder()
-                .setTitleBarTextColor(getResources().getColor(R.color.white))//标题栏文本字体颜色
-                .setTitleBarBgColor(getResources().getColor(R.color.red_color_f93448))//标题栏背景颜色
-                .build();
-        //配置功能
-        FunctionConfig functionConfig = new FunctionConfig.Builder()
-                .setEnableCamera(true)
-                .setEnableCrop(true)
-                .setEnablePreview(true).build();
-        //配置imageloader
-        UILImageLoader imageloader = new UILImageLoader();
-        CoreConfig coreConfig = new CoreConfig.Builder(this, imageloader, theme)
-                .setFunctionConfig(functionConfig).build();
-        GalleryFinal.init(coreConfig);
-
-        loadImage = LoadImageUtils.getInstance(this);
         aCache = ACache.get(this);
         cityList = (List<CityBean>) aCache.getAsObject(Constant.CITYS);
         leftImageBack(R.mipmap.back_arrow);
@@ -133,6 +122,25 @@ public class MyDetailActivity extends BaseActivity {
         babydateLy.setOnClickListener(listener);
         saveBt.setOnClickListener(listener);
 
+        ThemeConfig themeConfig = new ThemeConfig.Builder()
+        .setTitleBarTextColor(getResources().getColor(R.color.white))
+        .setTitleBarBgColor(getResources().getColor(R.color.red_color_f93448))
+        .build();
+        cn.finalteam.galleryfinal.ImageLoader imageLoader = new FrescoImageLoader(this);
+        FunctionConfig.Builder functionConfigBuilder = new FunctionConfig.Builder();
+        FunctionConfig functionConfig = functionConfigBuilder.build();
+        CoreConfig coreConfig = new CoreConfig.Builder(MyDetailActivity.this, imageLoader, themeConfig)
+                .setFunctionConfig(functionConfig)
+                .setNoAnimcation(false)
+                .build();
+        GalleryFinal.init(coreConfig);
+
+        options = new DisplayImageOptions.Builder()
+                .showImageOnFail(R.mipmap.me_icon)
+                .showImageForEmptyUri(R.mipmap.me_icon)
+                .showImageOnLoading(R.mipmap.me_icon).build();
+
+        initImageLoader(this);
     }
 
     private void initData() {
@@ -147,7 +155,7 @@ public class MyDetailActivity extends BaseActivity {
         }
 
         dateTv.setText(Utils.formatSecond(UserUtils.getBirthday(this), "yyyy-MM-dd"));
-        String cityId = UserUtils.getCity(this);
+        cityId = UserUtils.getCity(this);
         String cityName = "北京";
         if (cityList != null) {
             for (CityBean bean : cityList) {
@@ -160,11 +168,7 @@ public class MyDetailActivity extends BaseActivity {
             }
         }
         String avatar = UserUtils.getAvatar(this);
-        if (TextUtils.isEmpty(avatar)) {
-            headImage.setImageResource(R.mipmap.me_icon);
-        } else {
-            loadImage.displayImage(avatar, headImage);
-        }
+        ImageLoader.getInstance().displayImage(avatar, headImage, options);
 
         cityTv.setText(cityName);
         babyTv.setText(UserUtils.getBabyName(this));
@@ -185,43 +189,45 @@ public class MyDetailActivity extends BaseActivity {
     }
 
     private void showCityPoup() {
-        bgLayout.setVisibility(View.VISIBLE);
-        int screenWidth = getWindowManager().getDefaultDisplay().getWidth();
-        View v = LayoutInflater.from(this).inflate(R.layout.common_poup, null);
-        LinearLayout top = (LinearLayout) v.findViewById(R.id.popup_top_layout);
-        TextView cancleTv = (TextView) v.findViewById(R.id.popup_cancel);
-        TextView confirmBt = (TextView) v.findViewById(R.id.popup_confirm);
-        final CityPicker cityPicker = new CityPicker(this);
-        cityPicker.init(cityList);
-        top.addView(cityPicker);
-        popupWindow = PopupUtils.ShowBottomPopupWindow(this, popupWindow, v, screenWidth, 192, findViewById(R.id.my_detail_main_layout));
-        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                popupWindow = null;
-                bgLayout.setVisibility(View.GONE);
-            }
-        });
-        cityPicker.setOnChangeListener(new CityPicker.OnChangeListener() {
-            @Override
-            public void onChange(int position) {
-                cityPositon = position;
-            }
-        });
-        cancleTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dismissPop();
-            }
-        });
-        confirmBt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String cityName = cityList.get(cityPositon).getName();
-                cityTv.setText(cityName);
-                dismissPop();
-            }
-        });
+        if (cityList!=null&&cityList.size()>0) {
+            bgLayout.setVisibility(View.VISIBLE);
+            int screenWidth = getWindowManager().getDefaultDisplay().getWidth();
+            View v = LayoutInflater.from(this).inflate(R.layout.common_poup, null);
+            LinearLayout top = (LinearLayout) v.findViewById(R.id.popup_top_layout);
+            TextView cancleTv = (TextView) v.findViewById(R.id.popup_cancel);
+            TextView confirmBt = (TextView) v.findViewById(R.id.popup_confirm);
+            final CityPicker cityPicker = new CityPicker(this);
+            cityPicker.init(cityList);
+            top.addView(cityPicker);
+            popupWindow = PopupUtils.ShowBottomPopupWindow(this, popupWindow, v, screenWidth, 192, findViewById(R.id.my_detail_main_layout));
+            popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                @Override
+                public void onDismiss() {
+                    popupWindow = null;
+                    bgLayout.setVisibility(View.GONE);
+                }
+            });
+            cityPicker.setOnChangeListener(new CityPicker.OnChangeListener() {
+                @Override
+                public void onChange(int position) {
+                    cityPositon = position;
+                }
+            });
+            cancleTv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dismissPop();
+                }
+            });
+            confirmBt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String cityName = cityList.get(cityPositon).getName();
+                    cityTv.setText(cityName);
+                    dismissPop();
+                }
+            });
+        }
 
     }
 
@@ -324,11 +330,11 @@ public class MyDetailActivity extends BaseActivity {
                     break;
                 case R.id.photo_pick_image:
                     dismissPop();
-                    getCamor();
+                    getPick();
                     break;
                 case R.id.photo_pick_select:
                     dismissPop();
-                    getImageFromAlbum();
+                    getSelect();
                     break;
                 case R.id.photo_pick_cancle:
                     dismissPop();
@@ -337,35 +343,41 @@ public class MyDetailActivity extends BaseActivity {
         }
     };
 
-    protected void getCamor() {
+    private void getSelect() {
+        GalleryFinal.openGallerySingle(REQUEST_CODE_PICK_IMAGE, resultCallback);
+    }
+
+    private void getPick() {
         GalleryFinal.openCamera(REQUEST_CODE_CAMERA, new GalleryFinal.OnHanlderResultCallback() {
             @Override
             public void onHanlderSuccess(int reqeustCode, List<PhotoInfo> resultList) {
+                T.show(MyDetailActivity.this,resultList.get(0).getPhotoPath());
                 imagePath = resultList.get(0).getPhotoPath();
-                loadImage.displayImage("file://" + imagePath, headImage);
+                ImageLoader.getInstance().displayImage("file:/" + imagePath, headImage, options);
             }
 
             @Override
             public void onHanlderFailure(int requestCode, String errorMsg) {
-                    headImage.setImageResource(R.mipmap.me_icon);
-            }
-        });
-    }
-
-    protected void getImageFromAlbum() {
-        GalleryFinal.openGallerySingle(REQUEST_CODE_PICK_IMAGE, new GalleryFinal.OnHanlderResultCallback() {
-            @Override
-            public void onHanlderSuccess(int reqeustCode, List<PhotoInfo> resultList) {
-                imagePath = resultList.get(0).getPhotoPath();
-                loadImage.displayImage("file://" + imagePath, headImage);
-            }
-
-            @Override
-            public void onHanlderFailure(int requestCode, String errorMsg) {
+                T.show(MyDetailActivity.this, requestCode + "=" + errorMsg);
                 headImage.setImageResource(R.mipmap.me_icon);
             }
         });
     }
+
+
+    GalleryFinal.OnHanlderResultCallback resultCallback = new GalleryFinal.OnHanlderResultCallback() {
+        @Override
+        public void onHanlderSuccess(int reqeustCode, List<PhotoInfo> resultList) {
+            imagePath = resultList.get(0).getPhotoPath();
+            ImageLoader.getInstance().displayImage("file:/" + imagePath, headImage, options);
+        }
+
+        @Override
+        public void onHanlderFailure(int requestCode, String errorMsg) {
+            T.show(MyDetailActivity.this, requestCode + "=" + errorMsg);
+            headImage.setImageResource(R.mipmap.me_icon);
+        }
+    };
 
     private void ShowPhotoSelect() {
         bgLayout.setVisibility(View.VISIBLE);
@@ -390,7 +402,6 @@ public class MyDetailActivity extends BaseActivity {
 
     private void savePicture() {
         if (!TextUtils.isEmpty(imagePath)) {
-            proUtils.show();
             String imageBase = Utils.encodeBase64File(imagePath);
             Map<String, Object> map = new HashMap<String, Object>();
             map.put(Constant.AVATAR_BINARY, imageBase);
@@ -410,13 +421,12 @@ public class MyDetailActivity extends BaseActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    proUtils.dismiss();
                 }
 
                 @Override
                 public void failed(String msg) {
+
                     T.checkNet(MyDetailActivity.this);
-                    proUtils.dismiss();
                 }
             });
         } else {
@@ -426,11 +436,9 @@ public class MyDetailActivity extends BaseActivity {
     }
 
     private void saveToService() {
-        proUtils.show();
         String sexStr = sexTv.getText().toString().trim();
         String babySexStr = babySexTv.getText().toString().trim();
         String cityStr = cityTv.getText().toString();
-        String cityId = "0";
         if (cityList != null) {
             for (CityBean city : cityList) {
                 String cityName = city.getName();
@@ -447,7 +455,7 @@ public class MyDetailActivity extends BaseActivity {
         if ("男".equals(sexStr)) {
             map.put(Constant.GENDER, "1");
         } else {
-            map.put(Constant.GENDER, "0");
+            map.put(Constant.GENDER, "2");
         }
         map.put(Constant.BIRTHDAY, dateTv.getText().toString().trim());
         map.put(Constant.CITY, cityId);
@@ -455,7 +463,7 @@ public class MyDetailActivity extends BaseActivity {
         if ("男".equals(babySexStr)) {
             map.put(Constant.BABY_GENDER, "1");
         } else {
-            map.put(Constant.BABY_GENDER, "0");
+            map.put(Constant.BABY_GENDER, "2");
         }
         map.put(Constant.BABY_BIRTHDAY, babyDateTv.getText().toString().trim());
         httpHelper.post(this, URL.USER_UPDATE, map, new CommHttp.HttpCallBack() {
@@ -483,15 +491,15 @@ public class MyDetailActivity extends BaseActivity {
                         data.setId(user.optString(Constant.ID));
                         data.setUsername(user.optString(Constant.USERNAME));
                         data.setNickname(user.optString(Constant.NICKNAME));
-                        data.setBalance(user.optString(Constant.BALANCE));
+                        data.setGender(user.optString(Constant.GENDER));
                         data.setAvatar(user.optString(Constant.AVATAR));
                         data.setBirthday(user.optLong(Constant.BIRTHDAY));
                         data.setBaby_birthday(user.optLong(Constant.BABY_BIRTHDAY));
                         data.setBaby_gender(user.optString(Constant.BABY_GENDER));
-                        data.setUsername(user.optString(Constant.USERNAME));
                         data.setBaby_name(user.optString(Constant.BABY_NAME));
                         data.setMobile(user.optString(Constant.MOBILE));
                         data.setAddress(user.optString(Constant.CITY));
+                        data.setBalance(user.optDouble(Constant.BALANCE));
                         UserUtils.setData(MyDetailActivity.this, data);
                         Intent it = new Intent();
                         it.setAction(Constant.UP_USER_DATA);
@@ -504,13 +512,11 @@ public class MyDetailActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                proUtils.dismiss();
             }
 
             @Override
             public void failed(String msg) {
                 T.checkNet(MyDetailActivity.this);
-                proUtils.dismiss();
             }
         });
     }
@@ -542,4 +548,16 @@ public class MyDetailActivity extends BaseActivity {
             break;
         }
     }
+
+    private void initImageLoader(Context context) {
+        ImageLoaderConfiguration.Builder config = new ImageLoaderConfiguration.Builder(context);
+        config.threadPriority(Thread.NORM_PRIORITY - 2);
+        config.denyCacheImageMultipleSizesInMemory();
+        config.diskCacheFileNameGenerator(new Md5FileNameGenerator());
+        config.diskCacheSize(50 * 1024 * 1024); // 50 MiB
+        config.tasksProcessingOrder(QueueProcessingType.LIFO);
+        config.writeDebugLogs();
+        ImageLoader.getInstance().init(config.build());
+    }
+
 }
