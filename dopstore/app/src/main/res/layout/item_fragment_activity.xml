@@ -44,6 +44,7 @@
             android:layout_alignParentRight="true"
             android:orientation="horizontal"
             android:layout_height="wrap_content">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -51,6 +52,7 @@
                 android:layout_gravity="bottom"
                 android:textColor="@color/red_color_f93448"
                 android:textSize="@dimen/textsize_14" />
+
             <TextView
                 android:id="@+id/item_fragment_activity_price"
                 android:layout_width="wrap_content"

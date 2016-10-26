@@ -8,11 +8,12 @@
     <RelativeLayout
         android:layout_width="50dp"
         android:layout_height="80dp">
+
         <View
             android:id="@+id/item_delivery_info_line_z"
             android:layout_width="match_parent"
             android:visibility="gone"
-            android:layout_height="@dimen/margin_10"/>
+            android:layout_height="@dimen/margin_10" />
 
         <View
             android:id="@+id/item_delivery_info_line"
@@ -21,6 +22,7 @@
             android:layout_below="@id/item_delivery_info_line_z"
             android:layout_height="15dp"
             android:background="@drawable/dot_normal" />
+
         <View
             android:layout_width="1dp"
             android:layout_below="@id/item_delivery_info_line"
