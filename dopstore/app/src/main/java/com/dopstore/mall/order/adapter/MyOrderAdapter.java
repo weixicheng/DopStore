@@ -10,7 +10,8 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.order.bean.OrderData;
-import com.dopstore.mall.util.LoadImageUtils;
+import com.dopstore.mall.order.bean.OrderDataData;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -19,13 +20,13 @@ public class MyOrderAdapter extends BaseAdapter {
 
     private List<OrderData> items;
     private LayoutInflater mInflater;
-    private LoadImageUtils loadImageUtils;
+    private ImageLoader imageLoader;
 
     public MyOrderAdapter(Context context, List<OrderData> items) {
         super();
         this.items = items;
         mInflater = LayoutInflater.from(context);
-        loadImageUtils = LoadImageUtils.getInstance(context);
+        imageLoader=ImageLoader.getInstance();
     }
 
     @Override
@@ -64,14 +65,24 @@ public class MyOrderAdapter extends BaseAdapter {
             final OrderData data = items.get(position);
             if (data != null) {
                 holder.id.setText("订单号:"+data.getOrder_num());
-                holder.num.setText("x "+data.getGoods_relateds().get(0).getGoods_num());
-                holder.type.setText(data.getGoods_relateds().get(0).getGoods_sku_str());
+                List<OrderDataData> goods=data.getGoods_relateds();
+                if (goods!=null&&goods.size()>0) {
+                    holder.num.setText("x " + goods.get(0).getGoods_num());
+                    holder.type.setText(goods.get(0).getGoods_sku_str());
+                    holder.title.setText(goods.get(0).getGoods_name());
+                    holder.price.setText("￥ "+goods.get(0).getGoods_price());
+                    imageLoader.displayImage(goods.get(0).getGoods_cover()+"?imageView2/1/w/182/h/182", holder.imageView);
+                }else {
+                    holder.num.setText("x 0");
+                    holder.type.setText("");
+                    holder.title.setText("");
+                    holder.price.setText("￥ 0.0");
+                    imageLoader.displayImage("", holder.imageView);
+                }
                 String status=data.getStatus();
                 String statusStr=getType(status);
                 holder.state.setText(statusStr);
-                holder.title.setText(data.getGoods_relateds().get(0).getGoods_name());
-                holder.price.setText("￥ "+data.getGoods_relateds().get(0).getGoods_price());
-                loadImageUtils.displayImage(data.getGoods_relateds().get(0).getGoods_cover()+"?imageView2/1/w/182/h/182", holder.imageView);
+
             }
         }
         return convertView;

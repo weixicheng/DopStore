@@ -12,9 +12,9 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.login.bean.DetailData;
-import com.dopstore.mall.util.LoadImageUtils;
 import com.dopstore.mall.util.Utils;
 import com.dopstore.mall.view.CircleImageView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -25,12 +25,12 @@ import java.util.List;
 public class BabyAdapter extends BaseAdapter {
     private Context context;
     private List<DetailData> list;
-    private LoadImageUtils loadImageUtils;
+    private ImageLoader imageLoader;
 
     public BabyAdapter(Context context, List<DetailData> list) {
         this.context = context;
         this.list = list;
-        loadImageUtils = LoadImageUtils.getInstance(context);
+        imageLoader=ImageLoader.getInstance();
     }
 
     @Override
@@ -67,18 +67,15 @@ public class BabyAdapter extends BaseAdapter {
         }
 
         DisplayMetrics dm = new DisplayMetrics();
-        ((Activity) context).getWindowManager().getDefaultDisplay()
-                .getMetrics(dm);
+        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(dm);
         // 设置图片宽高
-        int screenWidth = ((Activity) context).getWindowManager()
-                .getDefaultDisplay().getWidth();
+        int screenWidth = ((Activity) context).getWindowManager().getDefaultDisplay().getWidth();
         int marginPx = Utils.dip2px(15, dm.density);
         int picSize = (screenWidth - marginPx * 4) / 3;
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                picSize, picSize);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(picSize, picSize);
         viewHolder.bigImageView.setLayoutParams(layoutParams);
 
-        loadImageUtils.displayImage(list.get(i).getImage(), viewHolder.bigImageView);
+        imageLoader.displayImage(list.get(i).getImage(), viewHolder.bigImageView);
         viewHolder.titleTv.setText(list.get(i).getName());
         String isSelect = list.get(i).getIsSelect();
         if ("1".equals(isSelect)) {

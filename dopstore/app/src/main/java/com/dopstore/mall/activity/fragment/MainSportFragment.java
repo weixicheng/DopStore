@@ -103,6 +103,9 @@ public class MainSportFragment extends Fragment implements OnRefreshListener<Scr
     private RollHeaderView rollHeaderView;
     private CommHttp httpHelper;
 
+    public MainSportFragment() {
+    }
+
     public MainSportFragment(Context context) {
         this.context = context;
         httpHelper=CommHttp.getInstance(context);
@@ -473,6 +476,7 @@ public class MainSportFragment extends Fragment implements OnRefreshListener<Scr
                 tabAdapter.notifyDataSetChanged();
             }
         }
+        pullToRefreshView.scrollTo(0,0);
         eScrollView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -559,6 +563,7 @@ public class MainSportFragment extends Fragment implements OnRefreshListener<Scr
                     SkipUtils.jumpForMap(context, ActivityDetailActivity.class, map, false);
                 }
             });
+            pullToRefreshView.scrollTo(0,0);
         }
     }
 
@@ -577,12 +582,13 @@ public class MainSportFragment extends Fragment implements OnRefreshListener<Scr
         } else {
             listView.setAdapter(new ActivityAdapter(context, aList, 1));
         }
+        pullToRefreshView.scrollTo(0,0);
     }
 
     private void refreshOtherAdapter() {
 
         listView.setAdapter(new ActivityAdapter(context, aList, 0));
-
+        pullToRefreshView.scrollTo(0,0);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.order.bean.MyActivityData;
-import com.dopstore.mall.util.LoadImageUtils;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -19,13 +19,13 @@ public class MyActivityAdapter extends BaseAdapter {
 
     private List<MyActivityData> items;
     private LayoutInflater mInflater;
-    private LoadImageUtils loadImageUtils;
+    private ImageLoader imageLoader;
 
     public MyActivityAdapter(Context context, List<MyActivityData> items) {
         super();
         this.items = items;
         mInflater = LayoutInflater.from(context);
-        loadImageUtils = LoadImageUtils.getInstance(context);
+        imageLoader=ImageLoader.getInstance();
     }
 
     @Override
@@ -109,7 +109,7 @@ public class MyActivityAdapter extends BaseAdapter {
                 holder.state.setText(typeName);
                 holder.title.setText(data.getTitle());
                 holder.intro.setText(data.getIntro());
-                loadImageUtils.displayImage(data.getImage()+"?imageView2/1/w/182/h/182", holder.imageView);
+                imageLoader.displayImage(data.getImage()+"?imageView2/1/w/182/h/182", holder.imageView);
             }
         }
         return convertView;

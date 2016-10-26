@@ -159,19 +159,16 @@ public class OrderDetailActivity extends BaseActivity {
         stateTv.setText(statusStr);
         LogisticsData logistData = orderDetailData.getLogistics();
         String zone=logistData.getLogistics_zone();
-        if ("null".equals(zone)||TextUtils.isEmpty(zone)) {
+        String remark=logistData.getLogistics_remark();
+        String company=logistData.getLogistics_company();
+        if (TextUtils.isEmpty(zone)&&TextUtils.isEmpty(remark)&&TextUtils.isEmpty(company)) {
             wLayout.setVisibility(View.GONE);
         } else {
             wLayout.setVisibility(View.VISIBLE);
-            String logistStr = logistData.getLogistics_zone() + "," + logistData.getLogistics_remark() + "  " + logistData.getLogistics_company();
+            String logistStr = "【"+logistData.getLogistics_zone() + "转运中心】已出发," + logistData.getLogistics_remark() + "  " + logistData.getLogistics_company();
             passTv.setText(logistStr);
-            String time=logistData.getLogistics_time();
-            String logistTime ="";
-            if (TextUtils.isEmpty(time)){
-                logistTime ="";
-            }else {
-                logistTime = Utils.formatMilli(Long.parseLong(time), "yyyy-MM-dd HH:mm:ss");
-            }
+            long time=logistData.getLogistics_time();
+            String   logistTime = Utils.formatSecond(time, "yyyy-MM-dd HH:mm:ss");
             passTimeTv.setText(logistTime);
         }
         DetailAddressData addressData = orderDetailData.getOrder().getAddress();

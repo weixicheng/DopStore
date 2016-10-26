@@ -144,23 +144,12 @@ public class ShopCashierActivity extends BaseActivity {
                 }
                 break;
                 case R.id.cashier_sure_pay_bt: {
-                    payPrice();
+                    getServiceCharge();
                 }
                 break;
             }
         }
     };
-
-    private void payPrice() {
-//        String priceNum = priceTv.getText().toString();
-//        String price = priceNum.substring(1, priceNum.length());
-//        if (price.equals("")) return;
-//        String replaceable = String.format("[%s, \\s.]", NumberFormat.getCurrencyInstance(Locale.CHINA).getCurrency().getSymbol(Locale.CHINA));
-//        String cleanString = price.toString().replaceAll(replaceable, "");
-//        int payPrice = Integer.valueOf(new BigDecimal(cleanString).toString());
-        getServiceCharge();
-
-    }
 
     private void getServiceCharge() {
         balanceLy.setOnClickListener(null);
@@ -327,14 +316,7 @@ public class ShopCashierActivity extends BaseActivity {
         if (requestCode == Pingpp.REQUEST_CODE_PAYMENT) {
             if (resultCode == Activity.RESULT_OK) {
                 String result = data.getExtras().getString("pay_result");
-                /* 处理返回值
-                 * "success" - payment succeed
-                 * "fail"    - payment failed
-                 * "cancel"  - user canceld
-                 * "invalid" - payment plugin not installed
-                 */
                 String errorMsg = data.getExtras().getString("error_msg"); // 错误信息
-                //String extraMsg = data.getExtras().getString("extra_msg"); // 错误信息
                 if (result.equals("success")) {
                     Map<String,Object> map=new HashMap<String,Object>();
                     map.put(Constant.ID,order_id);

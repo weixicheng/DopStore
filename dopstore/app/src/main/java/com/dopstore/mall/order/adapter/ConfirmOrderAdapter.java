@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.bean.GoodBean;
-import com.dopstore.mall.util.LoadImageUtils;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -19,13 +19,13 @@ public class ConfirmOrderAdapter extends BaseAdapter {
 
     private List<GoodBean> items;
     private LayoutInflater mInflater;
-    private LoadImageUtils loadImageUtils;
+    private ImageLoader imageLoader;
 
     public ConfirmOrderAdapter(Context context, List<GoodBean> items) {
         super();
         this.items = items;
         mInflater = LayoutInflater.from(context);
-        loadImageUtils = LoadImageUtils.getInstance(context);
+        imageLoader=ImageLoader.getInstance();
     }
 
     @Override
@@ -65,7 +65,7 @@ public class ConfirmOrderAdapter extends BaseAdapter {
                 holder.num.setText("x " + data.getCarNum());
                 holder.price.setText("¥" + data.getPrice());
                 holder.title.setText(data.getContent());
-                loadImageUtils.displayImage(data.getCover()+"?imageView2/1/w/182/h/182", holder.imageView);
+                imageLoader.displayImage(data.getCover()+"?imageView2/1/w/182/h/182", holder.imageView);
             }
         }
         return convertView;

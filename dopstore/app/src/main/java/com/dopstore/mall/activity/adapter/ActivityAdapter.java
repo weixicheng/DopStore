@@ -13,8 +13,8 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.bean.ActivityData;
-import com.dopstore.mall.util.LoadImageUtils;
 import com.dopstore.mall.util.Utils;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -25,14 +25,14 @@ import java.util.List;
 public class ActivityAdapter extends BaseAdapter {
     private Context context;
     private List<ActivityData> list;
-    private LoadImageUtils loadImageUtils;
     private int isShow;
+    private ImageLoader imageLoader;
 
     public ActivityAdapter(Context context, List<ActivityData> list, int isShow) {
         this.context = context;
         this.list = list;
         this.isShow = isShow;
-        loadImageUtils = LoadImageUtils.getInstance(context);
+        imageLoader=ImageLoader.getInstance();
     }
 
     @Override
@@ -77,9 +77,9 @@ public class ActivityAdapter extends BaseAdapter {
                 RelativeLayout.LayoutParams.MATCH_PARENT, picSize);
         viewHolder.bigImageView.setLayoutParams(layoutParams);
 
-        loadImageUtils.displayImage(list.get(i).getPicture()+"?imageView2/1/w/1000/h/500", viewHolder.bigImageView);
+        imageLoader.displayImage(list.get(i).getPicture()+"?imageView2/1/w/1000/h/500", viewHolder.bigImageView);
         viewHolder.titleTv.setText(list.get(i).getName());
-        viewHolder.priceTv.setText("￥" + list.get(i).getPrice());
+        viewHolder.priceTv.setText(list.get(i).getPrice());
         if (isShow == 0) {
             viewHolder.distanceTv.setVisibility(View.GONE);
         } else {

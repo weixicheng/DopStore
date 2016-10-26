@@ -24,11 +24,11 @@ import com.dopstore.mall.person.activity.MyCollectActivity;
 import com.dopstore.mall.person.activity.MyDetailActivity;
 import com.dopstore.mall.person.activity.SetActivity;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.LoadImageUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.util.Utils;
 import com.dopstore.mall.view.CircleImageView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,8 +43,8 @@ public class PersonFragment extends Fragment {
     private TextView nameTv, introTv, priceTv;
     private ImageButton rightBt;
     private CircleImageView headImage;
+    private ImageLoader imageLoader;
 
-    private LoadImageUtils loadImageUtils;
 
     private final static int BALANCE_CODE = 0;
     private final static int SETTING_CODE = 1;
@@ -52,6 +52,9 @@ public class PersonFragment extends Fragment {
     private View v;
     
     private Context context;
+
+    public PersonFragment() {
+    }
 
     public PersonFragment(Context context) {
         this.context = context;
@@ -67,7 +70,7 @@ public class PersonFragment extends Fragment {
     }
 
     private void initView(View v) {
-        loadImageUtils = LoadImageUtils.getInstance(context);
+        imageLoader=ImageLoader.getInstance();
         orderLayout = (RelativeLayout) v.findViewById(R.id.fragment_person_order_layout);
         orderLayout.setOnClickListener(listener);
         userLayout = (RelativeLayout) v.findViewById(R.id.fragment_person_user_layout);
@@ -109,7 +112,7 @@ public class PersonFragment extends Fragment {
             if (TextUtils.isEmpty(avatar)) {
                 headImage.setImageResource(R.mipmap.me_icon);
             } else {
-                loadImageUtils.displayImage(avatar, headImage);
+                imageLoader.displayImage(avatar, headImage);
             }
             priceTv.setText(UserUtils.getBalance(context));
         } else {

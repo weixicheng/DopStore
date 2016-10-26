@@ -10,9 +10,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
@@ -29,8 +31,7 @@ import com.dopstore.mall.shop.adapter.ActivityDetailAdapter;
 import com.dopstore.mall.shop.bean.ActivityDetailBean;
 import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.LoadImageUtils;
-import com.dopstore.mall.util.OtherLoginUtils;
+import com.dopstore.mall.util.ShareData.OtherLoginUtils;
 import com.dopstore.mall.util.ShareData.ShareData;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
@@ -39,9 +40,11 @@ import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.util.Utils;
 import com.dopstore.mall.view.CommonDialog;
 import com.dopstore.mall.view.EScrollView;
+import com.dopstore.mall.view.RollHeaderView;
 import com.dopstore.mall.view.snapscrollview.McoyProductContentPage;
 import com.dopstore.mall.view.snapscrollview.McoyProductDetailInfoPage;
 import com.dopstore.mall.view.snapscrollview.McoySnapPageLayout;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,12 +59,13 @@ import java.util.Map;
 /**
  * 作者：xicheng on 16/9/13
  */
-public class ActivityDetailActivity extends BaseActivity {
+public class   ActivityDetailActivity extends BaseActivity {
     private RelativeLayout bottomLy;
     private String isCollect = "0";
     private ImageButton collectBt, shareBt;
     private WebView webView;
-    private ImageView imageView;
+    private RollHeaderView rollHeaderView;
+    private ImageView headImagView;
     private TextView titleTv, priceTv, numTv, timeTv, ageTv, addressTv, shopTv, phoneTv;
     private EScrollView eScrollView;
     private LinearLayout shopLayout;
@@ -70,7 +74,6 @@ public class ActivityDetailActivity extends BaseActivity {
 
     private ActivityDetailBean detailBean;
     private List<ShopData> datas;
-    private LoadImageUtils loadImageUtils;
     private String activity_id;
     private OtherLoginUtils otherLoginUtils;
     private LinearLayout phoneLayout;
@@ -79,6 +82,7 @@ public class ActivityDetailActivity extends BaseActivity {
 
     private McoyProductContentPage bottomPage = null;
     private McoyProductDetailInfoPage topPage = null;
+    private ImageLoader imageLoader;
 
 
     @Override
@@ -90,8 +94,8 @@ public class ActivityDetailActivity extends BaseActivity {
     }
 
     private void initView() {
-        loadImageUtils = LoadImageUtils.getInstance(this);
         otherLoginUtils = new OtherLoginUtils(this);
+        imageLoader=ImageLoader.getInstance();
         Map<String, Object> map = SkipUtils.getMap(this);
         if (map == null) return;
         activity_id = map.get(Constant.ID).toString();
@@ -130,7 +134,16 @@ public class ActivityDetailActivity extends BaseActivity {
     }
 
     private void initTopView(View topView) {
-        imageView = (ImageView) topView.findViewById(R.id.activity_detail_title_image);
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        // 设置图片宽高
+        int screenWidth =getWindowManager().getDefaultDisplay().getWidth();
+        int picSize = screenWidth / 2;
+        RelativeLayout.LayoutParams imagePa = new RelativeLayout.LayoutParams(
+                screenWidth, picSize);
+        rollHeaderView = (RollHeaderView) topView.findViewById(R.id.activity_detail_title_image);
+        headImagView = (ImageView) topView.findViewById(R.id.activity_detail_title_single_image);
+        headImagView.setLayoutParams(imagePa);
         titleTv = (TextView) topView.findViewById(R.id.activity_detail_title_name);
         priceTv = (TextView) topView.findViewById(R.id.activity_detail_price);
         numTv = (TextView) topView.findViewById(R.id.activity_detail_num);
@@ -182,8 +195,16 @@ public class ActivityDetailActivity extends BaseActivity {
                         detailBean = new ActivityDetailBean();
                         detailBean.setId(middle.optString("id"));
                         detailBean.setName(middle.optString("name"));
-                        detailBean.setPicture(middle.optString("picture"));
+                        JSONArray pictureJa=middle.optJSONArray("picture");
+                        List<String> picList=new ArrayList<String>();
+                        if (pictureJa!=null&&pictureJa.length()>0){
+                            for (int i=0;i<pictureJa.length();i++){
+                                picList.add(pictureJa.getString(i));
+                            }
+                        }
+                        detailBean.setPicture(picList);
                         detailBean.setAge(middle.optString("age"));
+                        detailBean.setCover(middle.optString("cover"));
                         detailBean.setMerchant(middle.optString("merchant"));
                         detailBean.setPhone(middle.optString("phone"));
                         detailBean.setStart_time(middle.optLong("start_time") + "");
@@ -254,7 +275,7 @@ public class ActivityDetailActivity extends BaseActivity {
                     } else {
                         collectBt.setBackgroundResource(R.mipmap.collect_logo);
                     }
-                    loadImageUtils.displayImage(detailBean.getPicture() + "?imageView2/1/w/1000/h/670", imageView);
+                    setImageList(detailBean.getPicture());
                     titleTv.setText(detailBean.getName());
                     String price = detailBean.getPrice();
                     priceTv.setText("￥" + price);
@@ -283,6 +304,16 @@ public class ActivityDetailActivity extends BaseActivity {
                     } else {
                         shopLayout.setVisibility(View.GONE);
                     }
+                    WebSettings webSettings = webView.getSettings();
+                    webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
+                    webSettings.setUseWideViewPort(true);//关键点
+                    webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+                    webSettings.setDisplayZoomControls(false);
+                    webSettings.setJavaScriptEnabled(true); // 设置支持javascript脚本
+                    webSettings.setAllowFileAccess(true); // 允许访问文件
+                    webSettings.setBuiltInZoomControls(true); // 设置显示缩放按钮
+                    webSettings.setSupportZoom(true); // 支持缩放
+                    webSettings.setLoadWithOverviewMode(true);
                     webView.loadDataWithBaseURL(null, detailBean.getContent(), "text/html", "utf-8", null);
                 }
                 break;
@@ -291,12 +322,33 @@ public class ActivityDetailActivity extends BaseActivity {
                         dialog.dismiss();
                     }
                     callPhone();
-
                 }
                 break;
             }
         }
     };
+
+    private void setImageList(List<String> picture) {
+        if (picture != null&&picture.size()>0) {
+            if (picture.size()==1){
+                rollHeaderView.setVisibility(View.GONE);
+                headImagView.setVisibility(View.VISIBLE);
+                imageLoader.displayImage(picture.get(0)+"?imageView2/1/w/1000/h/480", headImagView);
+            }else {
+                rollHeaderView.setVisibility(View.VISIBLE);
+                headImagView.setVisibility(View.GONE);
+                List<String> imgUrlList = new ArrayList<String>();
+                for (int i=0;i<picture.size();i++) {
+                    imgUrlList.add(picture.get(i));
+                }
+                rollHeaderView.setImgUrlData(imgUrlList);
+                rollHeaderView.stopRoll();
+            }
+        }else {
+            rollHeaderView.setVisibility(View.GONE);
+            headImagView.setVisibility(View.VISIBLE);
+        }
+    }
 
     private void callPhone() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
@@ -319,7 +371,7 @@ public class ActivityDetailActivity extends BaseActivity {
                 case R.id.title_right_imageButton: {//分享
                     ShareData shareData = new ShareData();
                     shareData.setContent(detailBean.getName());
-                    shareData.setImage(detailBean.getPicture());
+                    shareData.setImage(detailBean.getPicture().get(0).toString());
                     shareData.setUrl(URL.ACTIVITY_GOOD_DETAIL_URL + activity_id);
                     otherLoginUtils.showShare(ActivityDetailActivity.this, shareData);
                 }

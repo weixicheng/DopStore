@@ -30,7 +30,7 @@ import com.dopstore.mall.shop.bean.ConfirmOrderData.ResultData;
 import com.dopstore.mall.util.ACache;
 import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.OtherLoginUtils;
+import com.dopstore.mall.util.ShareData.OtherLoginUtils;
 import com.dopstore.mall.util.ShareData.ShareData;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;

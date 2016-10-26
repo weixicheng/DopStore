@@ -12,9 +12,9 @@ import com.dopstore.mall.activity.bean.MainMiddleData;
 import com.dopstore.mall.activity.bean.ShopData;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.LoadImageUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.view.MyGridView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +29,7 @@ public class ShopThemeActivity extends BaseActivity {
     private ScrollView scrollView;
     private ImageView topImage;
     private MyGridView myGridView;
-    private LoadImageUtils loadImage;
+    private ImageLoader imageLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +40,7 @@ public class ShopThemeActivity extends BaseActivity {
     }
 
     private void initView() {
-        loadImage=LoadImageUtils.getInstance(this);
+        imageLoader=ImageLoader.getInstance();
         leftImageBack(R.mipmap.back_arrow);
         topImage=(ImageView) findViewById(R.id.shop_theme_image);
         scrollView=(ScrollView) findViewById(R.id.shop_theme_scrollview);
@@ -51,7 +51,7 @@ public class ShopThemeActivity extends BaseActivity {
         if (map==null)return;
         MainMiddleData mainMiddleData=(MainMiddleData)map.get(Constant.LIST);
         setCustomTitle(mainMiddleData.getTitle(),getResources().getColor(R.color.white));
-        loadImage.displayImage(mainMiddleData.getPicture(),topImage);
+        imageLoader.displayImage(mainMiddleData.getPicture(),topImage);
         myGridView.setAdapter(new MiddleDataAdapter(this, mainMiddleData.getRelated_goods()));
         scrollView.smoothScrollBy(0,0);
         final List<ShopData> newDatas=mainMiddleData.getRelated_goods();

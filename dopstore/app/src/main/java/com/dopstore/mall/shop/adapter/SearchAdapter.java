@@ -12,8 +12,8 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.bean.MainTabData;
-import com.dopstore.mall.util.LoadImageUtils;
 import com.dopstore.mall.view.CircleImageView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -23,12 +23,12 @@ import java.util.List;
 public class SearchAdapter extends BaseAdapter {
     private Context context;
     private List<MainTabData> list;
-    private LoadImageUtils loadImageUtils;
+    private ImageLoader imageLoader;
 
     public SearchAdapter(Context context, List<MainTabData> list) {
         this.context = context;
         this.list = list;
-        loadImageUtils = LoadImageUtils.getInstance(context);
+        imageLoader=ImageLoader.getInstance();
     }
 
     @Override
@@ -72,7 +72,7 @@ public class SearchAdapter extends BaseAdapter {
         String image = list.get(i).getPicture();
 
         viewHolder.titleTv.setText(title);
-        loadImageUtils.displayImage(image, viewHolder.head);
+        imageLoader.displayImage(image, viewHolder.head);
 
         return view;
     }

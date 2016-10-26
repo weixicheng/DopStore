@@ -1,5 +1,7 @@
 package com.dopstore.mall.shop.bean;
 
+import android.text.TextUtils;
+
 import com.dopstore.mall.activity.bean.ShopData;
 
 import java.io.Serializable;
@@ -12,7 +14,7 @@ import java.util.List;
 public class ActivityDetailBean implements Serializable {
     private String id;
     private String name;
-    private String picture;
+    private List<String> picture;
     private String age;
     private String merchant;
     private String phone;
@@ -24,6 +26,7 @@ public class ActivityDetailBean implements Serializable {
     private String content;
     private String is_collect;
     private String category;
+    private String cover;
     private List<ShopData> items;
 
     public String getId() {
@@ -31,6 +34,9 @@ public class ActivityDetailBean implements Serializable {
     }
 
     public void setId(String id) {
+        if (TextUtils.isEmpty(id)){
+            id="";
+        }
         this.id = id;
     }
 
@@ -39,14 +45,17 @@ public class ActivityDetailBean implements Serializable {
     }
 
     public void setName(String name) {
+        if (TextUtils.isEmpty(name)){
+            name="";
+        }
         this.name = name;
     }
 
-    public String getPicture() {
+    public List<String> getPicture() {
         return picture;
     }
 
-    public void setPicture(String picture) {
+    public void setPicture(List<String> picture) {
         this.picture = picture;
     }
 
@@ -55,6 +64,9 @@ public class ActivityDetailBean implements Serializable {
     }
 
     public void setAge(String age) {
+        if (TextUtils.isEmpty(age)){
+            age="";
+        }
         this.age = age;
     }
 
@@ -63,6 +75,9 @@ public class ActivityDetailBean implements Serializable {
     }
 
     public void setMerchant(String merchant) {
+        if (TextUtils.isEmpty(merchant)){
+            merchant="";
+        }
         this.merchant = merchant;
     }
 
@@ -71,6 +86,9 @@ public class ActivityDetailBean implements Serializable {
     }
 
     public void setPhone(String phone) {
+        if (TextUtils.isEmpty(phone)){
+            phone="";
+        }
         this.phone = phone;
     }
 
@@ -79,6 +97,9 @@ public class ActivityDetailBean implements Serializable {
     }
 
     public void setStart_time(String start_time) {
+        if (TextUtils.isEmpty(start_time)){
+            start_time="";
+        }
         this.start_time = start_time;
     }
 
@@ -87,6 +108,9 @@ public class ActivityDetailBean implements Serializable {
     }
 
     public void setEnd_time(String end_time) {
+        if (TextUtils.isEmpty(end_time)){
+            end_time="";
+        }
         this.end_time = end_time;
     }
 
@@ -95,6 +119,9 @@ public class ActivityDetailBean implements Serializable {
     }
 
     public void setLimit(String limit) {
+        if (TextUtils.isEmpty(limit)){
+            limit="";
+        }
         this.limit = limit;
     }
 
@@ -103,6 +130,9 @@ public class ActivityDetailBean implements Serializable {
     }
 
     public void setPrice(String price) {
+        if (TextUtils.isEmpty(price)){
+            price="";
+        }
         this.price = price;
     }
 
@@ -111,6 +141,9 @@ public class ActivityDetailBean implements Serializable {
     }
 
     public void setAddress(String address) {
+        if (TextUtils.isEmpty(address)){
+            address="";
+        }
         this.address = address;
     }
 
@@ -119,6 +152,9 @@ public class ActivityDetailBean implements Serializable {
     }
 
     public void setContent(String content) {
+        if (TextUtils.isEmpty(content)){
+            content="";
+        }
         this.content = content;
     }
 
@@ -127,6 +163,9 @@ public class ActivityDetailBean implements Serializable {
     }
 
     public void setCategory(String category) {
+        if (TextUtils.isEmpty(category)){
+            category="";
+        }
         this.category = category;
     }
 
@@ -143,6 +182,20 @@ public class ActivityDetailBean implements Serializable {
     }
 
     public void setIs_collect(String is_collect) {
+        if (TextUtils.isEmpty(is_collect)){
+            is_collect="";
+        }
         this.is_collect = is_collect;
+    }
+
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        if (TextUtils.isEmpty(cover)){
+            cover="";
+        }
+        this.cover = cover;
     }
 }

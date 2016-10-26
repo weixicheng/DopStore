@@ -87,10 +87,14 @@ public class TrolleyFragment extends Fragment implements OnRefreshListener<ListV
     private Timer timer;
     private CommHttp httpHelper;
 
+    public TrolleyFragment() {
+    }
+
     public TrolleyFragment(Context context) {
         this.context = context;
         httpHelper=CommHttp.getInstance(context);
     }
+
 
     @Nullable
     @Override
@@ -112,7 +116,6 @@ public class TrolleyFragment extends Fragment implements OnRefreshListener<ListV
                     // 每个timerTask都要重写这个方法，因为是abstract的
                     public void run() {
                         handler.sendEmptyMessage(LAZY_LOADING_MSG);
-                        // 通过sendMessage函数将消息压入线程的消息队列。
                     }
                 };
                 timer.schedule(doing, 300);
@@ -172,8 +175,8 @@ public class TrolleyFragment extends Fragment implements OnRefreshListener<ListV
         mEdit.setText("编辑");
         mEdit.setVisibility(View.VISIBLE);
         titleTv = (TextView) v.findViewById(R.id.title_main_txt);
-        titleTv.setTextColor(context.getResources().getColor(R.color.white_color));
-        mEdit.setTextColor(context.getResources().getColor(R.color.white_color));
+        titleTv.setTextColor(getActivity().getResources().getColor(R.color.white_color));
+        mEdit.setTextColor(getActivity().getResources().getColor(R.color.white_color));
         titleTv.setText("购物车");
         mPriceAll = (TextView) v.findViewById(R.id.tv_cart_total);
         mDelete = (TextView) v.findViewById(R.id.tv_cart_buy_or_del);

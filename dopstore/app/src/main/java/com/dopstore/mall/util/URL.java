@@ -5,8 +5,8 @@ package com.dopstore.mall.util;
  * name
  */
 public class URL {
-    public static String HOST_BASE_URL = "http://orange.dev.attackt.com/";
-//    public static String HOST_BASE_URL = "http://www.dopstore.cn／";
+   public static String HOST_BASE_URL = "http://orange.dev.attackt.com/";
+//    public static String HOST_BASE_URL = "http://www.dopstore.cn/";
     public static String BASE_URL = HOST_BASE_URL+"api/v1/";
     public static String SHOP_GOOD_DETAIL_URL = HOST_BASE_URL+"h5/goods/";//商品分享目标地址
     public static String ACTIVITY_GOOD_DETAIL_URL = HOST_BASE_URL+"h5/activity/";//活动分享目标地址

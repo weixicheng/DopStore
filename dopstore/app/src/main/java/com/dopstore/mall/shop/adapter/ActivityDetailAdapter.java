@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.bean.ShopData;
-import com.dopstore.mall.util.LoadImageUtils;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -21,12 +21,12 @@ import java.util.List;
 public class ActivityDetailAdapter extends BaseAdapter {
     private Context context;
     private List<ShopData> list;
-    private LoadImageUtils loadImageUtils;
+    private ImageLoader imageLoader;
 
     public ActivityDetailAdapter(Context context, List<ShopData> list) {
         this.context = context;
         this.list = list;
-        loadImageUtils = LoadImageUtils.getInstance(context);
+        imageLoader=ImageLoader.getInstance();
     }
 
     @Override
@@ -58,7 +58,7 @@ public class ActivityDetailAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
         if (list.size() > 0) {
-            loadImageUtils.displayImage(list.get(i).getCover()+"?imageView2/1/w/204/h/204", viewHolder.bigImageView);
+            imageLoader.displayImage(list.get(i).getCover()+"?imageView2/1/w/204/h/204", viewHolder.bigImageView);
             viewHolder.titleTv.setText(list.get(i).getName());
             viewHolder.priceTv.setText("￥" + list.get(i).getPrice());
         }

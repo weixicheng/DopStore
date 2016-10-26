@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.order.bean.DetailOrderListData;
-import com.dopstore.mall.util.LoadImageUtils;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -19,13 +19,13 @@ public class CommOrderAdapter extends BaseAdapter {
 
     private List<DetailOrderListData> items;
     private LayoutInflater mInflater;
-    private LoadImageUtils loadImageUtils;
+    private ImageLoader imageLoader;
 
     public CommOrderAdapter(Context context, List<DetailOrderListData> items) {
         super();
         this.items = items;
         mInflater = LayoutInflater.from(context);
-        loadImageUtils = LoadImageUtils.getInstance(context);
+        imageLoader=ImageLoader.getInstance();
     }
 
     @Override
@@ -63,7 +63,7 @@ public class CommOrderAdapter extends BaseAdapter {
                 holder.num.setText("x️ " + data.getGoods_num());
                 holder.price.setText("¥" + data.getGoods_price());
                 holder.title.setText(data.getGoods_name());
-                loadImageUtils.displayImage(data.getGoods_cover()+"?imageView2/1/w/182/h/182", holder.imageView);
+                imageLoader.displayImage(data.getGoods_cover()+"?imageView2/1/w/182/h/182", holder.imageView);
             }
         }
         return convertView;

@@ -19,12 +19,12 @@ import com.dopstore.mall.order.activity.NoPaySuccessActivity;
 import com.dopstore.mall.shop.bean.ActivityDetailBean;
 import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.LoadImageUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.util.Utils;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,9 +44,9 @@ public class ConfirmActivityActivity extends BaseActivity {
     private TextView titleTv, addressTv, timeTv, typeTv, priceTv, numTv;
     private LinearLayout totalLayout;
     private EditText phoneEt, hintEt;
-    private LoadImageUtils loadImageUtils;
     private ActivityDetailBean detailBean;
     private String price;
+    private ImageLoader imageLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +57,10 @@ public class ConfirmActivityActivity extends BaseActivity {
     }
 
     private void initView() {
+        imageLoader=ImageLoader.getInstance();
         Map<String, Object> map = SkipUtils.getMap(this);
         if (map == null) return;
         detailBean = (ActivityDetailBean) map.get(Constant.LIST);
-        loadImageUtils = LoadImageUtils.getInstance(this);
         setCustomTitle("活动详情", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         payBt = (Button) findViewById(R.id.confirm_activity_pay_bt);
@@ -79,13 +79,18 @@ public class ConfirmActivityActivity extends BaseActivity {
     }
 
     private void initData() {
-        loadImageUtils.displayImage(detailBean.getPicture()+"?imageView2/1/w/180/h/180", imageView);
+        imageLoader.displayImage(detailBean.getCover()+"?imageView2/1/w/180/h/180", imageView);
         totalPriceTv.setText("¥" + Float.parseFloat(detailBean.getPrice()));
         titleTv.setText(detailBean.getName());
         addressTv.setText(detailBean.getAddress());
         String startTime = detailBean.getStart_time();
         String start = Utils.formatTDSecond(startTime);
         timeTv.setText(start);
+        String cate=detailBean.getCategory();
+        if (TextUtils.isEmpty(cate)){
+            cate="";
+        }
+        typeTv.setText(cate);
         price = detailBean.getPrice();
         if (TextUtils.isEmpty(price)) {
             totalLayout.setVisibility(View.GONE);

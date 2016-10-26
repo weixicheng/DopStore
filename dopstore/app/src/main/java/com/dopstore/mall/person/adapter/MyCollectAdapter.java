@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.person.bean.MyCollectData;
-import com.dopstore.mall.util.LoadImageUtils;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -20,14 +20,14 @@ public class MyCollectAdapter extends BaseAdapter {
 
     private Context context;
     private List<MyCollectData> mListData;// 数据
-    private LoadImageUtils loadImageUtils;
     private CheckBox mCheckAll;
+    private ImageLoader imageLoader;
 
     public MyCollectAdapter(Context context, List<MyCollectData> mListData, CheckBox mCheckAll) {
         this.context = context;
         this.mListData = mListData;
         this.mCheckAll = mCheckAll;
-        loadImageUtils = LoadImageUtils.getInstance(context);
+        imageLoader= ImageLoader.getInstance();
     }
 
     @Override
@@ -62,7 +62,7 @@ public class MyCollectAdapter extends BaseAdapter {
         }
 
         MyCollectData data = mListData.get(position);
-        loadImageUtils.displayImage(data.getImage()+"?imageView2/1/w/182/h/182", holder.imageView);
+        imageLoader.displayImage(data.getImage()+"?imageView2/1/w/182/h/182", holder.imageView);
         holder.title.setText(data.getTitle());
         holder.num.setText("￥" + Float.parseFloat(data.getPrice()));
         String isShow=data.getIsShow();

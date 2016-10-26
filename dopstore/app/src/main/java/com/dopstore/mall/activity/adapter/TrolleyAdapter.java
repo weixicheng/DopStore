@@ -15,11 +15,11 @@ import com.dopstore.mall.R;
 import com.dopstore.mall.activity.bean.GoodBean;
 import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.LoadImageUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.util.Utils;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,7 +40,7 @@ public class TrolleyAdapter extends BaseAdapter {
     private Double totalPrice = 0.00; // 商品总价
     private CheckBox mCheckAll; // 全选 全不选
     private CommHttp httpHelper;
-    private LoadImageUtils loadImageUtils;
+    private ImageLoader imageLoader;
 
     public TrolleyAdapter(Context context, List<GoodBean> mListData, TextView mPriceAll, Double totalPrice, CheckBox mCheckAll) {
         this.context = context;
@@ -49,7 +49,7 @@ public class TrolleyAdapter extends BaseAdapter {
         this.totalPrice = totalPrice;
         this.mCheckAll = mCheckAll;
         httpHelper = CommHttp.getInstance(context);
-        loadImageUtils = LoadImageUtils.getInstance(context);
+        imageLoader=ImageLoader.getInstance();
     }
 
     @Override
@@ -99,7 +99,7 @@ public class TrolleyAdapter extends BaseAdapter {
         holder.intro.setText(data.getGoods_sku_str());
         holder.price.setText("￥" + data.getPrice());
         holder.carNum.setText(data.getCarNum() + "");
-        loadImageUtils.displayImage(data.getCover()+"?imageView2/1/w/96/h/96", holder.image);
+        imageLoader.displayImage(data.getCover()+"?imageView2/1/w/96/h/96", holder.image);
         boolean selected = data.isChoose();
         holder.checkBox.setChecked(selected);
         holder.checkBox.setOnClickListener(new View.OnClickListener() {

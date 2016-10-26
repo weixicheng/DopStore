@@ -50,6 +50,7 @@ public class DeliveryInfoAdapter extends BaseAdapter {
             holder.name = (TextView) convertView.findViewById(R.id.item_delivery_info_name);
             holder.time = (TextView) convertView.findViewById(R.id.item_delivery_info_time);
             holder.line = convertView.findViewById(R.id.item_delivery_info_line);
+            holder.empty = convertView.findViewById(R.id.item_delivery_info_line_z);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -57,19 +58,16 @@ public class DeliveryInfoAdapter extends BaseAdapter {
         if (items != null && items.size() > 0) {
             DeliveryListData data = items.get(position);
             if (data != null) {
-                holder.name.setText("["+data.getLogistics_zone()+"]"+data.getLogistics_remark());
-                String time=data.getLogistics_time();
-                String logistTime ="";
-                if (TextUtils.isEmpty(time)){
-                    logistTime ="";
-                }else {
-                    logistTime = Utils.formatMilli(Long.parseLong(time), "yyyy-MM-dd HH:mm:ss");
-                }
+                holder.name.setText("【"+data.getLogistics_zone()+"】"+data.getLogistics_remark());
+                long time=data.getLogistics_time();
+                String logistTime = Utils.formatSecond(time, "yyyy-MM-dd HH:mm:ss");
                 holder.time.setText(logistTime);
                 if (position==0){
-                    holder.line.setBackgroundResource(R.mipmap.line_press);
+                    holder.empty.setVisibility(View.VISIBLE);
+                    holder.line.setBackgroundResource(R.drawable.dot_focus);
                 }else {
-                    holder.line.setBackgroundResource(R.mipmap.line_normal);
+                    holder.empty.setVisibility(View.GONE);
+                    holder.line.setBackgroundResource(R.drawable.dot_normal);
                 }
             }
         }
@@ -78,7 +76,7 @@ public class DeliveryInfoAdapter extends BaseAdapter {
 
     static class ViewHolder {
         private TextView name, time;
-        private View line;
+        private View line,empty;
     }
 
 }

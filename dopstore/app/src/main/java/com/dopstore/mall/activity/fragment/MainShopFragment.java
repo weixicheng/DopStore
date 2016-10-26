@@ -86,7 +86,9 @@ public class MainShopFragment extends Fragment implements OnRefreshListener<Scro
     private MiddleAdapter middleAdapter;
     private CommHttp httpHelper;
 
-    @SuppressLint("ValidFragment")
+    public MainShopFragment() {
+    }
+
     public MainShopFragment(Context context) {
         this.mContext = context;
         httpHelper=CommHttp.getInstance(context);
@@ -114,7 +116,7 @@ public class MainShopFragment extends Fragment implements OnRefreshListener<Scro
         loadTv = (TextView) v.findViewById(R.id.error_data_load_tv);
         eScrollView = (EScrollView) v.findViewById(R.id.main_shop_fragment_tab_escrollview);
         titleTv.setText("小海囤");
-        titleTv.setTextColor(mContext.getResources().getColor(R.color.white));
+        titleTv.setTextColor(getActivity().getResources().getColor(R.color.white));
         titleTv.setTextSize(20f);
         leftBtn.setBackgroundResource(R.mipmap.search_logo);
         leftBtn.setVisibility(View.VISIBLE);
@@ -427,6 +429,7 @@ public class MainShopFragment extends Fragment implements OnRefreshListener<Scro
         }else {
             rollHeaderView.setVisibility(View.GONE);
         }
+        rollHeaderView.requestFocus();
 
         rollHeaderView.setOnHeaderViewClickListener(new RollHeaderView.HeaderViewClickListener() {
             @Override
@@ -456,6 +459,7 @@ public class MainShopFragment extends Fragment implements OnRefreshListener<Scro
         } else {
             middleAdapter.upData(midddleList);
         }
+        rollHeaderView.requestFocus();
     }
 
     private BottomAdapter bottomAdapter;
@@ -477,6 +481,8 @@ public class MainShopFragment extends Fragment implements OnRefreshListener<Scro
         } else {
             bottomAdapter.upData(list);
         }
+
+        rollHeaderView.requestFocus();
         myGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -507,7 +513,6 @@ public class MainShopFragment extends Fragment implements OnRefreshListener<Scro
                     getHotData(typeId);
                 }
             }
-
         }
         // 上拉加载更多 业务代码
         if (refreshView.isShownFooter()) {
@@ -525,6 +530,5 @@ public class MainShopFragment extends Fragment implements OnRefreshListener<Scro
                 }
             }
         }
-
     }
 }

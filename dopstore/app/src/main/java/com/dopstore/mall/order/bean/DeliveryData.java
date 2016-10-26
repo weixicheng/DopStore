@@ -50,7 +50,7 @@ public class DeliveryData implements Serializable{
         private String logistics_id;
         private String logistics_zone;
         private String logistics_remark;
-        private String logistics_time;
+        private long logistics_time;
 
         public String getLogistics_id() {
             return logistics_id;
@@ -76,12 +76,12 @@ public class DeliveryData implements Serializable{
             this.logistics_remark = logistics_remark;
         }
 
-        public String getLogistics_time() {
-            return logistics_time;
-        }
+       public long getLogistics_time() {
+           return logistics_time;
+       }
 
-        public void setLogistics_time(String logistics_time) {
-            this.logistics_time = logistics_time;
-        }
-    }
+       public void setLogistics_time(long logistics_time) {
+           this.logistics_time = logistics_time;
+       }
+   }
 }

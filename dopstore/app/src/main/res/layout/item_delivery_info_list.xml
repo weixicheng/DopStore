@@ -5,19 +5,30 @@
     android:background="@color/white"
     android:orientation="horizontal">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="50dp"
-        android:layout_height="80dp"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:layout_height="80dp">
+        <View
+            android:id="@+id/item_delivery_info_line_z"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:layout_height="@dimen/margin_10"/>
 
         <View
             android:id="@+id/item_delivery_info_line"
             android:layout_width="15dp"
-            android:layout_height="wrap_content"
-            android:background="@mipmap/line_normal" />
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/item_delivery_info_line_z"
+            android:layout_height="15dp"
+            android:background="@drawable/dot_normal" />
+        <View
+            android:layout_width="1dp"
+            android:layout_below="@id/item_delivery_info_line"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:background="#D8D8D8" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"

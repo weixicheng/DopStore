@@ -40,12 +40,12 @@
         "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/bdwallet_pay_sdk/build/intermediates/bundles/debug/res/drawable/wallet_base_pwdpay_submit_selector.xml"
     },
     {
-        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/bdwallet_pay_sdk/build/intermediates/res/merged/androidTest/debug/drawable/wallet_base_progressbar.xml",
-        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/bdwallet_pay_sdk/build/intermediates/bundles/debug/res/drawable/wallet_base_progressbar.xml"
-    },
-    {
         "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/bdwallet_pay_sdk/build/intermediates/res/merged/androidTest/debug/drawable/wallet_base_select_bank_item_selector.xml",
         "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/bdwallet_pay_sdk/build/intermediates/bundles/debug/res/drawable/wallet_base_select_bank_item_selector.xml"
+    },
+    {
+        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/bdwallet_pay_sdk/build/intermediates/res/merged/androidTest/debug/drawable/wallet_base_progressbar.xml",
+        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/bdwallet_pay_sdk/build/intermediates/bundles/debug/res/drawable/wallet_base_progressbar.xml"
     },
     {
         "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/bdwallet_pay_sdk/build/intermediates/res/merged/androidTest/debug/drawable/wallet_base_dashed_shape_normal.xml",

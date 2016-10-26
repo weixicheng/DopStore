@@ -19,7 +19,6 @@ import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.order.bean.ActivityOrderDetailBean;
 import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.LoadImageUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.URL;
@@ -28,6 +27,7 @@ import com.dopstore.mall.view.CommonDialog;
 import com.meiqia.core.callback.OnInitCallback;
 import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQIntentBuilder;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,7 +43,6 @@ import java.util.Map;
 public class ActivityOrderDetailActivity extends BaseActivity {
     private TextView idTv, stateTv, titleTv, addressTv, codeTv, codeTime, timeTv, typeTv, priceTv, userMsgTv, totalPriceTv, cheapTv, passPriceTv, truePriceTv;
     private Button submitBt, kFBt;
-    private LoadImageUtils loadImage;
     private ImageView shopImage, zxingImage;
     private RelativeLayout submitLayout;
     private LinearLayout zxingLayout, bigZxingLayout,hintMsgLayout;
@@ -51,6 +50,7 @@ public class ActivityOrderDetailActivity extends BaseActivity {
     private String id;
     private ActivityOrderDetailBean detailBean;
     private CommonDialog dialog;
+    private ImageLoader imageLoader;
 
 
     @Override
@@ -62,7 +62,7 @@ public class ActivityOrderDetailActivity extends BaseActivity {
     }
 
     private void initView() {
-        loadImage = LoadImageUtils.getInstance(this);
+        imageLoader=ImageLoader.getInstance();
         setCustomTitle("订单详情", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         idTv = (TextView) findViewById(R.id.activity_detail_id);
@@ -285,8 +285,8 @@ public class ActivityOrderDetailActivity extends BaseActivity {
             zxingLayout.setVisibility(View.GONE);
         } else {
             zxingLayout.setVisibility(View.VISIBLE);
-            loadImage.displayImage(zimage, zxingImage);
-            loadImage.displayImage(zimage, bigZxingImage);
+            imageLoader.displayImage(zimage, zxingImage);
+            imageLoader.displayImage(zimage, bigZxingImage);
             codeTv.setText("验证码:" + detailBean.getCode());
         }
         zxingImage.setOnClickListener(listener);
@@ -335,7 +335,7 @@ public class ActivityOrderDetailActivity extends BaseActivity {
             break;
         }
         stateTv.setText(typeName);
-        loadImage.displayImage(detailBean.getPic()+"?imageView2/1/w/180/h/180", shopImage);
+        imageLoader.displayImage(detailBean.getPic()+"?imageView2/1/w/180/h/180", shopImage);
 
         titleTv.setText(detailBean.getName());
         addressTv.setText("地址:" + detailBean.getAddress());

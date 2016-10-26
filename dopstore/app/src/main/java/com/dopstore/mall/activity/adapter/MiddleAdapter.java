@@ -14,9 +14,9 @@ import com.dopstore.mall.activity.bean.ShopData;
 import com.dopstore.mall.shop.activity.ShopDetailActivity;
 import com.dopstore.mall.shop.activity.ShopThemeActivity;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.LoadImageUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.view.EScrollView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,13 +29,12 @@ import java.util.Map;
 public class MiddleAdapter extends BaseAdapter {
     private Context context;
     private List<MainMiddleData> list;
-    private LoadImageUtils loadImageUtils;
-    private MiddleDataAdapter middleDataAdapter;
+    private ImageLoader imageLoader;
 
     public MiddleAdapter(Context context, List<MainMiddleData> list) {
         this.context = context;
         this.list = list;
-        loadImageUtils = LoadImageUtils.getInstance(context);
+        imageLoader=ImageLoader.getInstance();
     }
 
     @Override
@@ -67,7 +66,7 @@ public class MiddleAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        loadImageUtils.displayImage(list.get(i).getPicture()+"?imageView2/1/w/1000/h/500", viewHolder.bigImageView);
+        imageLoader.displayImage(list.get(i).getPicture()+"?imageView2/1/w/1000/h/500", viewHolder.bigImageView);
         final int position=i;
         viewHolder.bigImageView.setOnClickListener(new View.OnClickListener() {
             @Override

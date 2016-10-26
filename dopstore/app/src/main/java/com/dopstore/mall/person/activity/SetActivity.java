@@ -17,11 +17,11 @@ import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.util.ACache;
 import com.dopstore.mall.util.Constant;
 import com.dopstore.mall.util.DataCleanManager;
-import com.dopstore.mall.util.LoadImageUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
 import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.view.CommonDialog;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 
 /**
@@ -33,6 +33,7 @@ public class SetActivity extends BaseActivity {
     private TextView textView_set_clear;
     private Button exitBt;
     private CommonDialog dialog;
+    private ImageLoader imageLoader;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,6 +43,7 @@ public class SetActivity extends BaseActivity {
     }
 
     private void initview() {
+        imageLoader=ImageLoader.getInstance();
         ImageButton id = (ImageButton) findViewById(R.id.title_left_imageButton);
         id.setBackgroundResource(R.mipmap.back_arrow);
         id.setVisibility(View.VISIBLE);
@@ -124,7 +126,8 @@ public class SetActivity extends BaseActivity {
     private void exit() {
         UserUtils.clear(this);
         ACache.get(this).clear();
-        LoadImageUtils.getInstance(this).clear();
+        imageLoader.clearDiskCache();
+        imageLoader.clearMemoryCache();
         Intent it = new Intent();
         it.setAction(Constant.UP_USER_DATA);
         sendBroadcast(it);

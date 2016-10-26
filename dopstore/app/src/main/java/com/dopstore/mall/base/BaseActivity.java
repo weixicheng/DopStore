@@ -208,7 +208,7 @@ public class BaseActivity extends AppCompatActivity {
             input.close();
             // 获取解析出来的数据
             provinceList = handler.getDataList();
-            //*/ 初始化默认选中的省、市、区
+            //初始化默认选中的省、市、区
             if (provinceList != null && !provinceList.isEmpty()) {
                 mCurrentProviceName = provinceList.get(0).getName();
                 List<CityModel> cityList = provinceList.get(0).getCityList();
@@ -252,6 +252,5 @@ public class BaseActivity extends AppCompatActivity {
 
         }
     }
-
 
 }

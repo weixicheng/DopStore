@@ -22,10 +22,10 @@ import com.dopstore.mall.time.TimePopupWindow;
 import com.dopstore.mall.util.ACache;
 import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
-import com.dopstore.mall.util.FrescoImageLoader;
 import com.dopstore.mall.util.PopupUtils;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.T;
+import com.dopstore.mall.util.UILImageLoader;
 import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.util.Utils;
@@ -75,6 +75,7 @@ public class MyDetailActivity extends BaseActivity {
     private String imagePath = "";
     private  String cityId="1";
     private DisplayImageOptions options;
+    private ImageLoader imageLoader;
 
 
     private CommonDialog dialog;
@@ -91,6 +92,7 @@ public class MyDetailActivity extends BaseActivity {
 
     private void initview() {
         aCache = ACache.get(this);
+        imageLoader=ImageLoader.getInstance();
         cityList = (List<CityBean>) aCache.getAsObject(Constant.CITYS);
         leftImageBack(R.mipmap.back_arrow);
         setCustomTitle("修改资料", getResources().getColor(R.color.white_color));
@@ -126,7 +128,7 @@ public class MyDetailActivity extends BaseActivity {
         .setTitleBarTextColor(getResources().getColor(R.color.white))
         .setTitleBarBgColor(getResources().getColor(R.color.red_color_f93448))
         .build();
-        cn.finalteam.galleryfinal.ImageLoader imageLoader = new FrescoImageLoader(this);
+        cn.finalteam.galleryfinal.ImageLoader imageLoader = new UILImageLoader();
         FunctionConfig.Builder functionConfigBuilder = new FunctionConfig.Builder();
         FunctionConfig functionConfig = functionConfigBuilder.build();
         CoreConfig coreConfig = new CoreConfig.Builder(MyDetailActivity.this, imageLoader, themeConfig)
@@ -166,9 +168,12 @@ public class MyDetailActivity extends BaseActivity {
             if ("0".equals(cityId)) {
                 cityName = "";
             }
+        }else {
+            cityId="1";
+            cityName = "北京";
         }
         String avatar = UserUtils.getAvatar(this);
-        ImageLoader.getInstance().displayImage(avatar, headImage, options);
+        imageLoader.displayImage(avatar, headImage, options);
 
         cityTv.setText(cityName);
         babyTv.setText(UserUtils.getBabyName(this));
@@ -351,9 +356,8 @@ public class MyDetailActivity extends BaseActivity {
         GalleryFinal.openCamera(REQUEST_CODE_CAMERA, new GalleryFinal.OnHanlderResultCallback() {
             @Override
             public void onHanlderSuccess(int reqeustCode, List<PhotoInfo> resultList) {
-                T.show(MyDetailActivity.this,resultList.get(0).getPhotoPath());
                 imagePath = resultList.get(0).getPhotoPath();
-                ImageLoader.getInstance().displayImage("file:/" + imagePath, headImage, options);
+                imageLoader.displayImage("file:/" + imagePath, headImage, options);
             }
 
             @Override
@@ -369,7 +373,7 @@ public class MyDetailActivity extends BaseActivity {
         @Override
         public void onHanlderSuccess(int reqeustCode, List<PhotoInfo> resultList) {
             imagePath = resultList.get(0).getPhotoPath();
-            ImageLoader.getInstance().displayImage("file:/" + imagePath, headImage, options);
+            imageLoader.displayImage("file:/" + imagePath, headImage, options);
         }
 
         @Override
@@ -557,7 +561,7 @@ public class MyDetailActivity extends BaseActivity {
         config.diskCacheSize(50 * 1024 * 1024); // 50 MiB
         config.tasksProcessingOrder(QueueProcessingType.LIFO);
         config.writeDebugLogs();
-        ImageLoader.getInstance().init(config.build());
+        imageLoader.init(config.build());
     }
 
 }

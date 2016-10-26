@@ -1,11 +1,10 @@
-package com.dopstore.mall.util;
+package com.dopstore.mall.util.ShareData;
 
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 
 import com.dopstore.mall.onekeyshare.OnekeyShare;
-import com.dopstore.mall.util.ShareData.ShareData;
 
 import java.util.HashMap;
 

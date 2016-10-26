@@ -3,6 +3,8 @@ package com.dopstore.mall.base;
 import android.app.Activity;
 import android.app.Application;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.pingplusplus.android.PingppLog;
 
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
         JPushInterface.setDebugMode(false);
         JPushInterface.init(this);
         PingppLog.DEBUG = false;

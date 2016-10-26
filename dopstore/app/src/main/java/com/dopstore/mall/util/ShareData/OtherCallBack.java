@@ -1,4 +1,4 @@
-package com.dopstore.mall.util;
+package com.dopstore.mall.util.ShareData;
 
 
 /**
