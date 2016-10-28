@@ -20,8 +20,8 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.bean.CityBean;
-import com.dopstore.mall.login.bean.UserData;
 import com.dopstore.mall.base.BaseActivity;
+import com.dopstore.mall.login.bean.UserData;
 import com.dopstore.mall.time.TimePopupWindow;
 import com.dopstore.mall.util.ACache;
 import com.dopstore.mall.util.CommHttp;
@@ -77,7 +77,7 @@ public class MyDetailActivity extends BaseActivity {
     private int cityPositon = 0;
     private String imageUrl = "";
     private String imagePath = "";
-    private  String cityId="1";
+    private String cityId = "1";
     private DisplayImageOptions options;
     private ImageLoader imageLoader;
 
@@ -96,9 +96,9 @@ public class MyDetailActivity extends BaseActivity {
     }
 
     private void initview() {
-        httpHelper=CommHttp.getInstance();
+        httpHelper = CommHttp.getInstance();
         aCache = ACache.get(this);
-        imageLoader=ImageLoader.getInstance();
+        imageLoader = ImageLoader.getInstance();
         cityList = (List<CityBean>) aCache.getAsObject(Constant.CITYS);
         leftImageBack(R.mipmap.back_arrow);
         setCustomTitle("修改资料", getResources().getColor(R.color.white_color));
@@ -131,9 +131,9 @@ public class MyDetailActivity extends BaseActivity {
         saveBt.setOnClickListener(listener);
 
         ThemeConfig themeConfig = new ThemeConfig.Builder()
-        .setTitleBarTextColor(getResources().getColor(R.color.white))
-        .setTitleBarBgColor(getResources().getColor(R.color.red_color_f93448))
-        .build();
+                .setTitleBarTextColor(getResources().getColor(R.color.white))
+                .setTitleBarBgColor(getResources().getColor(R.color.red_color_f93448))
+                .build();
         cn.finalteam.galleryfinal.ImageLoader imageLoader = new UILImageLoader();
         FunctionConfig.Builder functionConfigBuilder = new FunctionConfig.Builder();
         FunctionConfig functionConfig = functionConfigBuilder.build();
@@ -174,8 +174,8 @@ public class MyDetailActivity extends BaseActivity {
             if ("0".equals(cityId)) {
                 cityName = "";
             }
-        }else {
-            cityId="1";
+        } else {
+            cityId = "1";
             cityName = "北京";
         }
         String avatar = UserUtils.getAvatar(this);
@@ -200,7 +200,7 @@ public class MyDetailActivity extends BaseActivity {
     }
 
     private void showCityPoup() {
-        if (cityList!=null&&cityList.size()>0) {
+        if (cityList != null && cityList.size() > 0) {
             bgLayout.setVisibility(View.VISIBLE);
             int screenWidth = getWindowManager().getDefaultDisplay().getWidth();
             View v = LayoutInflater.from(this).inflate(R.layout.common_poup, null);
@@ -489,7 +489,7 @@ public class MyDetailActivity extends BaseActivity {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
                     if ("0".equals(code)) {
-                        String tokenStr=jo.optString(Constant.TOKEN);
+                        String tokenStr = jo.optString(Constant.TOKEN);
                         UserUtils.setToken(MyDetailActivity.this, tokenStr);
                         JSONObject user = jo.optJSONObject(Constant.USER);
                         JSONArray citys = jo.optJSONArray(Constant.CITYS);

@@ -51,21 +51,21 @@ import java.util.List;
 public class WheelView extends View {
     /**
      * Scrolling duration
-     *
+     * <p>
      * </br> 滚动持续时间(毫秒)
      */
     private static final int SCROLLING_DURATION = 400;
 
     /**
      * Minimum delta for scrolling
-     *
+     * <p>
      * </br> 滚动的最小差值
      */
     private static final int MIN_DELTA_FOR_SCROLLING = 1;
 
     /**
      * Current value & label text color
-     *
+     * <p>
      * </br> 当前选中项 的 文字 的 颜色
      */
     private static final int VALUE_TEXT_COLOR = 0xF0333333;
@@ -73,14 +73,14 @@ public class WheelView extends View {
 
     /**
      * Items text color
-     *
+     * <p>
      * </br> 选项 的 文字 的 颜色
      */
     private static final int ITEMS_TEXT_COLOR = 0xFFC2C2C2;
 
     /**
      * Top and bottom shadows colors
-     *
+     * <p>
      * </br> 顶部和底部阴影 的 颜色 </br> 选择器 顶部和底部颜色是渐变的，这里指定一个渐变色的数组
      */
     private static final int[] SHADOWS_COLORS = new int[]{0x00000000,
@@ -88,7 +88,7 @@ public class WheelView extends View {
 
     /**
      * Additional items height (is added to standard text item height)
-     *
+     * <p>
      * </br> 附加项的高度项的高度 (单位应该是dp) </br> 从后面getDesiredHeight()
      * 函数看出，这个值应该是平分给每一个选项的。 </br> 类似于设置行距吧，不过这是一个总和，也就是有5个可见项，那么每个可见项的附加高就是
      * ADDITIONAL_ITEM_HEIGHT/5
@@ -97,14 +97,14 @@ public class WheelView extends View {
 
     /**
      * Text size
-     *
+     * <p>
      * </br> 字号
      */
     private static int TEXT_SIZE = 18;
 
     /**
      * Top and bottom items offset (to hide that)
-     *
+     * <p>
      * </br> 这个是选项在顶部和底部被抵消的值。 </br> 怎么解释呢~ 其实试一下就知道了， </br> &nbsp;
      * 比如说在picker中显示的五项(中间那个是选中的)，剩余4是没选中的。 </br> &nbsp;
      * 在没选中的这4项中，位于顶部和底部的项，会用阴影遮挡(遮挡一部分，这样用户就明白是需要滑动操作了) </br> &nbsp;
@@ -114,7 +114,7 @@ public class WheelView extends View {
 
     /**
      * Additional width for items layout
-     *
+     * <p>
      * </br> 附加项空间？ 不理解~~还是试试吧 </br> 应该是项的宽，这个属性应该是受制于外边区域的， 设置的太宽里面的文字显示会出问题
      * </br> 具体影响 有待进一步实验证明
      */
@@ -122,14 +122,14 @@ public class WheelView extends View {
 
     /**
      * Label offset
-     *
+     * <p>
      * </br> 标签抵消 （作用未知） 用1,8，和800 三个值实验（8是默认值） 效果是一样的。
      */
     private static final int LABEL_OFFSET = 8;
 
     /**
      * Left and right padding value
-     *
+     * <p>
      * </br> 填充 </br> 这个选项的内部填充，如果选项是个TextView的话，那这里设置的即是TextView的填充 </br>
      * =。=！后面代码还米有看，item是啥我也不知道
      */
@@ -137,7 +137,7 @@ public class WheelView extends View {
 
     /**
      * Default count of visible items
-     *
+     * <p>
      * </br> 默认可见项的数目。就是picker中显示几项
      */
     private static final int DEF_VISIBLE_ITEMS = 5;
@@ -145,13 +145,13 @@ public class WheelView extends View {
     // Wheel Values
     /**
      * Wheel Values
-     *
+     * <p>
      * </br> 适配器，items就通过适配器来提供的吧
      */
     private WheelAdapter adapter = null;
     /**
      * Wheel Values
-     *
+     * <p>
      * </br> 当前项
      */
     private int currentItem = 0;
@@ -159,13 +159,13 @@ public class WheelView extends View {
     // Widths
     /**
      * Widths
-     *
+     * <p>
      * </br> 做了实验 把值设为100 没有任何变化
      */
     private int itemsWidth = 0;
     /**
      * Widths
-     *
+     * <p>
      * </br> 也做了实验 把值设为100 没有任何变化
      */
     private int labelWidth = 0;
@@ -173,7 +173,7 @@ public class WheelView extends View {
     // Count of visible items
     /**
      * Count of visible items
-     *
+     * <p>
      * </br> 可见项目的条数
      */
     private int visibleItems = DEF_VISIBLE_ITEMS;
@@ -181,7 +181,7 @@ public class WheelView extends View {
     // Item height
     /**
      * Item height
-     *
+     * <p>
      * </br> 是item的高
      */
     private int itemHeight = 0;
@@ -189,13 +189,13 @@ public class WheelView extends View {
     // Text paints
     /**
      * Text paints
-     *
+     * <p>
      * </br> 选中文本的颜色
      */
     private TextPaint itemsPaint;
     /**
      * Text paints
-     *
+     * <p>
      * </br> 未选中文本的颜色
      */
     private TextPaint valuePaint;
@@ -203,19 +203,19 @@ public class WheelView extends View {
     // Layouts
     /**
      * Layouts
-     *
+     * <p>
      * </br> 选项 的 布局
      */
     private StaticLayout itemsLayout;
     /**
      * Layouts
-     *
+     * <p>
      * </br> 标签 的 布局
      */
     private StaticLayout labelLayout;
     /**
      * Layouts
-     *
+     * <p>
      * </br> 选中项 的 布局
      */
     private StaticLayout valueLayout;
@@ -223,7 +223,7 @@ public class WheelView extends View {
     // Label & background
     /**
      * Label & background
-     *
+     * <p>
      * </br> 标签
      */
     private String label;
@@ -235,7 +235,7 @@ public class WheelView extends View {
     // Shadows drawables
     /**
      * Shadows drawables
-     *
+     * <p>
      * </br> 上边 和 底部 的阴影部分的背景资源
      */
     private GradientDrawable topShadow;
@@ -244,13 +244,13 @@ public class WheelView extends View {
     // Scrolling
     /**
      * Scrolling
-     *
+     * <p>
      * </br> 执行滚动？
      */
     private boolean isScrollingPerformed;
     /**
      * Scrolling
-     *
+     * <p>
      * </br> 滚动抵消？
      */
     private int scrollingOffset;
@@ -258,19 +258,19 @@ public class WheelView extends View {
     // Scrolling animation
     /**
      * Scrolling animation
-     *
+     * <p>
      * </br> 手势检测器
      */
     private GestureDetector gestureDetector;
     /**
      * Scrolling animation
-     *
+     * <p>
      * </br> 卷轴
      */
     private Scroller scroller;
     /**
      * Scrolling animation
-     *
+     * <p>
      * </br> 最后的 卷轴Y
      */
     private int lastScrollY;
@@ -278,7 +278,7 @@ public class WheelView extends View {
     // Cyclic
     /**
      * Cyclic
-     *
+     * <p>
      * </br> 是否循环
      */
     boolean isCyclic = false;
@@ -286,20 +286,20 @@ public class WheelView extends View {
     // Listeners
     /**
      * Listeners
-     *
+     * <p>
      * </br> 控件改变监听器的 集合
      */
     private List<OnWheelChangedListener> changingListeners = new LinkedList<OnWheelChangedListener>();
     /**
      * Listeners
-     *
+     * <p>
      * </br> 控件滚动监听器的 集合
      */
     private List<OnWheelScrollListener> scrollingListeners = new LinkedList<OnWheelScrollListener>();
 
     /**
      * Constructor
-     *
+     * <p>
      * </br> 构造器 并实例了手势检测器 和 卷轴
      */
     public WheelView(Context context, AttributeSet attrs, int defStyle) {
@@ -309,7 +309,7 @@ public class WheelView extends View {
 
     /**
      * Constructor
-     *
+     * <p>
      * </br> 构造器 并实例了手势检测器 和 卷轴
      */
     public WheelView(Context context, AttributeSet attrs) {
@@ -319,7 +319,7 @@ public class WheelView extends View {
 
     /**
      * Constructor
-     *
+     * <p>
      * </br> 构造器 并实例了手势检测器 和 卷轴
      */
     public WheelView(Context context) {
@@ -330,10 +330,9 @@ public class WheelView extends View {
     /**
      * Initializes class data
      *
-     * @param context
-     *            the context
-     *
-     *            </br> 数据初始化 </br> 就是把手势检测器 和 卷轴类 实例了 </br> 这个方法在所有的构造器中都被调用了
+     * @param context the context
+     *                <p>
+     *                </br> 数据初始化 </br> 就是把手势检测器 和 卷轴类 实例了 </br> 这个方法在所有的构造器中都被调用了
      */
     private void initData(Context context) {
         gestureDetector = new GestureDetector(context, gestureListener);
@@ -346,8 +345,8 @@ public class WheelView extends View {
      * Gets wheel adapter
      *
      * @return the adapter
-     *
-     *         </br> 获得适配器
+     * <p>
+     * </br> 获得适配器
      */
     public WheelAdapter getAdapter() {
         return adapter;
@@ -356,10 +355,9 @@ public class WheelView extends View {
     /**
      * Sets wheel adapter
      *
-     * @param adapter
-     *            the new wheel adapter
-     *
-     *            </br> 设置适配器 </br> 还会界面进行了重绘
+     * @param adapter the new wheel adapter
+     *                <p>
+     *                </br> 设置适配器 </br> 还会界面进行了重绘
      */
     public void setAdapter(WheelAdapter adapter) {
         this.adapter = adapter;
@@ -370,10 +368,9 @@ public class WheelView extends View {
     /**
      * Set the the specified scrolling interpolator
      *
-     * @param interpolator
-     *            the interpolator
-     *
-     *            </br> 作用也是设置 卷轴的吧，是通过动画插补器来实例 卷轴对象
+     * @param interpolator the interpolator
+     *                     <p>
+     *                     </br> 作用也是设置 卷轴的吧，是通过动画插补器来实例 卷轴对象
      */
     public void setInterpolator(Interpolator interpolator) {
         scroller.forceFinished(true);
@@ -384,8 +381,8 @@ public class WheelView extends View {
      * Gets count of visible items
      *
      * @return the count of visible items
-     *
-     *         </br> 获得可见项的条数
+     * <p>
+     * </br> 获得可见项的条数
      */
     public int getVisibleItems() {
         return visibleItems;
@@ -394,10 +391,9 @@ public class WheelView extends View {
     /**
      * Sets count of visible items
      *
-     * @param count
-     *            the new count
-     *
-     *            </br> 设置可见项的条数 并重绘view
+     * @param count the new count
+     *              <p>
+     *              </br> 设置可见项的条数 并重绘view
      */
     public void setVisibleItems(int count) {
         visibleItems = count;
@@ -408,8 +404,8 @@ public class WheelView extends View {
      * Gets label
      *
      * @return the label
-     *
-     *         </br> 获得标签
+     * <p>
+     * </br> 获得标签
      */
     public String getLabel() {
         return label;
@@ -418,10 +414,9 @@ public class WheelView extends View {
     /**
      * Sets label
      *
-     * @param newLabel
-     *            the label to set
-     *
-     *            </br> 设置标签
+     * @param newLabel the label to set
+     *                 <p>
+     *                 </br> 设置标签
      */
     public void setLabel(String newLabel) {
         if (label == null || !label.equals(newLabel)) {
@@ -434,10 +429,9 @@ public class WheelView extends View {
     /**
      * Adds wheel changing listener
      *
-     * @param listener
-     *            the listener
-     *
-     *            </br> 添加控件改变监听器
+     * @param listener the listener
+     *                 <p>
+     *                 </br> 添加控件改变监听器
      */
     public void addChangingListener(OnWheelChangedListener listener) {
         changingListeners.add(listener);
@@ -446,10 +440,9 @@ public class WheelView extends View {
     /**
      * Removes wheel changing listener
      *
-     * @param listener
-     *            the listener
-     *
-     *            </br> 移除控件改变监听器
+     * @param listener the listener
+     *                 <p>
+     *                 </br> 移除控件改变监听器
      */
     public void removeChangingListener(OnWheelChangedListener listener) {
         changingListeners.remove(listener);
@@ -458,12 +451,10 @@ public class WheelView extends View {
     /**
      * Notifies changing listeners
      *
-     * @param oldValue
-     *            the old wheel value
-     * @param newValue
-     *            the new wheel value
-     *
-     *            </br> 通知 改变监听器， </br> 循环 控件改变监听器集合， 并依次调用它们的onChenge方法
+     * @param oldValue the old wheel value
+     * @param newValue the new wheel value
+     *                 <p>
+     *                 </br> 通知 改变监听器， </br> 循环 控件改变监听器集合， 并依次调用它们的onChenge方法
      */
     protected void notifyChangingListeners(int oldValue, int newValue) {
         for (OnWheelChangedListener listener : changingListeners) {
@@ -474,10 +465,9 @@ public class WheelView extends View {
     /**
      * Adds wheel scrolling listener
      *
-     * @param listener
-     *            the listener
-     *
-     *            </br> 添加控件滚动监听器
+     * @param listener the listener
+     *                 <p>
+     *                 </br> 添加控件滚动监听器
      */
     public void addScrollingListener(OnWheelScrollListener listener) {
         scrollingListeners.add(listener);
@@ -486,10 +476,9 @@ public class WheelView extends View {
     /**
      * Removes wheel scrolling listener
      *
-     * @param listener
-     *            the listener
-     *
-     *            </br> 移除控件滚动监听器
+     * @param listener the listener
+     *                 <p>
+     *                 </br> 移除控件滚动监听器
      */
     public void removeScrollingListener(OnWheelScrollListener listener) {
         scrollingListeners.remove(listener);
@@ -497,7 +486,7 @@ public class WheelView extends View {
 
     /**
      * Notifies listeners about starting scrolling
-     *
+     * <p>
      * </br> 通知控件滚动监听器调用开始滚动的方法
      */
     protected void notifyScrollingListenersAboutStart() {
@@ -508,7 +497,7 @@ public class WheelView extends View {
 
     /**
      * Notifies listeners about ending scrolling
-     *
+     * <p>
      * </br> 通知控件滚动监听器调用结束滚动的方法
      */
     protected void notifyScrollingListenersAboutEnd() {
@@ -521,8 +510,8 @@ public class WheelView extends View {
      * Gets current value
      *
      * @return the current value
-     *
-     *         </br> 返回当前项的索引
+     * <p>
+     * </br> 返回当前项的索引
      */
     public int getCurrentItem() {
         return currentItem;
@@ -531,12 +520,10 @@ public class WheelView extends View {
     /**
      * Sets the current item. Does nothing when index is wrong.
      *
-     * @param index
-     *            the item index
-     * @param animated
-     *            the animation flag
-     *
-     *            </br> 设置当前项 如果输入错误的索引，则控件什么都不会做哟 </br> 第二个参数是设置是否使用滚动动画的
+     * @param index    the item index
+     * @param animated the animation flag
+     *                 <p>
+     *                 </br> 设置当前项 如果输入错误的索引，则控件什么都不会做哟 </br> 第二个参数是设置是否使用滚动动画的
      */
     public void setCurrentItem(int index, boolean animated) {
         if (adapter == null || adapter.getItemsCount() == 0) {
@@ -571,10 +558,9 @@ public class WheelView extends View {
     /**
      * Sets the current item w/o animation. Does nothing when index is wrong.
      *
-     * @param index
-     *            the item index
-     *
-     *            </br> 设置当前选中项，默认是不启动动画的
+     * @param index the item index
+     *              <p>
+     *              </br> 设置当前选中项，默认是不启动动画的
      */
     public void setCurrentItem(int index) {
         setCurrentItem(index, false);
@@ -585,8 +571,8 @@ public class WheelView extends View {
      * the last one
      *
      * @return true if wheel is cyclic
-     *
-     *         </br> 是否循环显示
+     * <p>
+     * </br> 是否循环显示
      */
     public boolean isCyclic() {
         return isCyclic;
@@ -595,10 +581,9 @@ public class WheelView extends View {
     /**
      * Set wheel cyclic flag
      *
-     * @param isCyclic
-     *            the flag to set
-     *
-     *            </br> 设置是否循环显示
+     * @param isCyclic the flag to set
+     *                 <p>
+     *                 </br> 设置是否循环显示
      */
     public void setCyclic(boolean isCyclic) {
         this.isCyclic = isCyclic;
@@ -609,7 +594,7 @@ public class WheelView extends View {
 
     /**
      * Invalidates layouts
-     *
+     * <p>
      * </br> 重绘布局 </br> 方法将 选项布局itemsLayout 和 选中项布局 valueLayout 赋值为null </br>
      * 同事将 滚动抵消?scrollingOffset 设置为0 </br> （这个scrollingOffset 还没搞明白做什么用）
      */
@@ -621,7 +606,7 @@ public class WheelView extends View {
 
     /**
      * Initializes resources
-     *
+     * <p>
      * </br> 初始化源 </br> 这个方法是这样的，
      * 判断前面定义的画笔、背景资源等私有属性的值，如果是null就重新从静态常量中取值，并付给响应的属性。 </br>
      * 如果这些必要属性为空的话，这个函数应该起到了初始化的作用
@@ -666,11 +651,10 @@ public class WheelView extends View {
     /**
      * Calculates desired height for layout
      *
-     * @param layout
-     *            the source layout
+     * @param layout the source layout
      * @return the desired layout height
-     *
-     *         </br> 获得理想的控件高度，并保证其不低于建议的最小高度
+     * <p>
+     * </br> 获得理想的控件高度，并保证其不低于建议的最小高度
      */
     private int getDesiredHeight(Layout layout) {
         if (layout == null) {
@@ -689,13 +673,12 @@ public class WheelView extends View {
     /**
      * Returns text item by index
      *
-     * @param index
-     *            the item index
+     * @param index the item index
      * @return the item or null
-     *
-     *         </br> 指定索引，获得选项的文本值(Sring) </br>
-     *         如果索引超出范围，控件又不是循环的（isCyclic），则返回null </br> 如果是循环的情况，方法内部进行了处理，
-     *         </br> 为负数则+count, 然会取余
+     * <p>
+     * </br> 指定索引，获得选项的文本值(Sring) </br>
+     * 如果索引超出范围，控件又不是循环的（isCyclic），则返回null </br> 如果是循环的情况，方法内部进行了处理，
+     * </br> 为负数则+count, 然会取余
      */
     private String getTextItem(int index) {
         if (adapter == null || adapter.getItemsCount() == 0) {
@@ -719,16 +702,16 @@ public class WheelView extends View {
      *
      * @param useCurrentValue
      * @return the text
-     *
-     *         </br> 依赖当前项 构建文本 </br> 获得一个字符串，如果当前项目的索引为5, 可见项目数为3 </br> 则字符串的值为
-     *         getTextItem
-     *         (3).append("\n").getTextItem(4).append("\n").getTextItem
-     *         (5).append("\n").getTextItem(6).append("\n").getTextItem(7) </br>
-     *         如果 参数useCurrentValue为false </br> 则返回的字符串为
-     *         getTextItem(3).append("\n"
-     *         ).getTextItem(4).append("\n").getTextItem
-     *         (6).append("\n").getTextItem(7) </br> 如果getTextItem(i)返回null,
-     *         则不会向返回值中追加
+     * <p>
+     * </br> 依赖当前项 构建文本 </br> 获得一个字符串，如果当前项目的索引为5, 可见项目数为3 </br> 则字符串的值为
+     * getTextItem
+     * (3).append("\n").getTextItem(4).append("\n").getTextItem
+     * (5).append("\n").getTextItem(6).append("\n").getTextItem(7) </br>
+     * 如果 参数useCurrentValue为false </br> 则返回的字符串为
+     * getTextItem(3).append("\n"
+     * ).getTextItem(4).append("\n").getTextItem
+     * (6).append("\n").getTextItem(7) </br> 如果getTextItem(i)返回null,
+     * 则不会向返回值中追加
      */
     private String buildText(boolean useCurrentValue) {
         StringBuilder itemsText = new StringBuilder();
@@ -753,8 +736,8 @@ public class WheelView extends View {
      * Returns the max item length that can be present
      *
      * @return the max length
-     *
-     *         </br> 获得最大的文本长度</br> 后面计算控件宽度用的
+     * <p>
+     * </br> 获得最大的文本长度</br> 后面计算控件宽度用的
      */
     private int getMaxTextLength() {
         WheelAdapter adapter = getAdapter();
@@ -785,8 +768,8 @@ public class WheelView extends View {
      * Returns height of wheel item
      *
      * @return the item height
-     *
-     *         </br> 获得选项高
+     * <p>
+     * </br> 获得选项高
      */
     private int getItemHeight() {
         if (itemHeight != 0) {
@@ -802,13 +785,11 @@ public class WheelView extends View {
     /**
      * Calculates control width and creates text layouts
      *
-     * @param widthSize
-     *            the input layout width
-     * @param mode
-     *            the layout mode
+     * @param widthSize the input layout width
+     * @param mode      the layout mode
      * @return the calculated control width
-     *
-     *         </br> 计算布局宽
+     * <p>
+     * </br> 计算布局宽
      */
     private int calculateLayoutWidth(int widthSize, int mode) {
         initResourcesIfNecessary();
@@ -876,12 +857,10 @@ public class WheelView extends View {
     /**
      * Creates layouts
      *
-     * @param widthItems
-     *            width of items layout
-     * @param widthLabel
-     *            width of label layout
-     *
-     *            </br> 创建布局</br>
+     * @param widthItems width of items layout
+     * @param widthLabel width of label layout
+     *                   <p>
+     *                   </br> 创建布局</br>
      */
     private void createLayouts(int widthItems, int widthLabel) {
         if (itemsLayout == null || itemsLayout.getWidth() > widthItems) {
@@ -977,10 +956,9 @@ public class WheelView extends View {
     /**
      * Draws shadows on top and bottom of control
      *
-     * @param canvas
-     *            the canvas for drawing
-     *
-     *            </br> 绘制控件顶端 和底部的 阴影区域 </br> 需要传入画布对象
+     * @param canvas the canvas for drawing
+     *               <p>
+     *               </br> 绘制控件顶端 和底部的 阴影区域 </br> 需要传入画布对象
      */
     private void drawShadows(Canvas canvas) {
         topShadow.setBounds(0, 0, getWidth(), getHeight() / visibleItems);
@@ -994,10 +972,9 @@ public class WheelView extends View {
     /**
      * Draws value and label layout
      *
-     * @param canvas
-     *            the canvas for drawing
-     *
-     *            </br> 绘制选中项 和 标签
+     * @param canvas the canvas for drawing
+     *               <p>
+     *               </br> 绘制选中项 和 标签
      */
     private void drawValue(Canvas canvas) {
         valuePaint.setColor(VALUE_TEXT_COLOR);
@@ -1026,10 +1003,9 @@ public class WheelView extends View {
     /**
      * Draws items
      *
-     * @param canvas
-     *            the canvas for drawing
-     *
-     *            </br> 绘制选项
+     * @param canvas the canvas for drawing
+     *               <p>
+     *               </br> 绘制选项
      */
     private void drawItems(Canvas canvas) {
         canvas.save();
@@ -1047,10 +1023,9 @@ public class WheelView extends View {
     /**
      * Draws rect for current value
      *
-     * @param canvas
-     *            the canvas for drawing
-     *
-     *            </br> 绘制中间的矩形区域
+     * @param canvas the canvas for drawing
+     *               <p>
+     *               </br> 绘制中间的矩形区域
      */
     private void drawCenterRect(Canvas canvas) {
         int center = getHeight() / 2;
@@ -1082,11 +1057,10 @@ public class WheelView extends View {
     /**
      * Scrolls the wheel
      *
-     * @param delta
-     *            the scrolling value
-     *
-     *            </br> 滚动</br> 好像只是重新定义了 scrollingOffset的值，</br>
-     *            执行滚动的操作是这里吗？</br> 先往后看吧。
+     * @param delta the scrolling value
+     *              <p>
+     *              </br> 滚动</br> 好像只是重新定义了 scrollingOffset的值，</br>
+     *              执行滚动的操作是这里吗？</br> 先往后看吧。
      */
     private void doScroll(int delta) {
         scrollingOffset += delta;
@@ -1131,7 +1105,7 @@ public class WheelView extends View {
     // gesture listener
     /**
      * gesture listener
-     *
+     * <p>
      * </br> 手势监听器</br> 这里是响应用户fling 以及 scroll操作的代码
      */
     private SimpleOnGestureListener gestureListener = new SimpleOnGestureListener() {
@@ -1178,13 +1152,13 @@ public class WheelView extends View {
     // Messages
     /**
      * Messages
-     *
+     * <p>
      * </br> 向动画处理器发送的消息 -滚动
      */
     private final int MESSAGE_SCROLL = 0;
     /**
      * Messages
-     *
+     * <p>
      * </br> 向动画处理器发送的消息 -证明
      */
     private final int MESSAGE_JUSTIFY = 1;
@@ -1192,10 +1166,9 @@ public class WheelView extends View {
     /**
      * Set next message to queue. Clears queue before.
      *
-     * @param message
-     *            the message to set
-     *
-     *            </br> 清楚动画处理器animationHandler中的原有消息，并发送新消息
+     * @param message the message to set
+     *                <p>
+     *                </br> 清楚动画处理器animationHandler中的原有消息，并发送新消息
      */
     private void setNextMessage(int message) {
         clearMessages();
@@ -1204,7 +1177,7 @@ public class WheelView extends View {
 
     /**
      * Clears messages from queue
-     *
+     * <p>
      * </br> 清楚动画处理器中原有的消息
      */
     private void clearMessages() {
@@ -1215,7 +1188,7 @@ public class WheelView extends View {
     // animation handler
     /**
      * animation handler
-     *
+     * <p>
      * </br> 动画处理器
      */
     private Handler animationHandler = new Handler() {
@@ -1246,7 +1219,7 @@ public class WheelView extends View {
 
     /**
      * Justifies wheel
-     *
+     * <p>
      * </br> 验证轮子
      */
     private void justify() {
@@ -1281,7 +1254,7 @@ public class WheelView extends View {
 
     /**
      * Starts scrolling
-     *
+     * <p>
      * </br> 开始滚动</br> 并通知开始滚动监听器
      */
     private void startScrolling() {
@@ -1294,7 +1267,7 @@ public class WheelView extends View {
 
     /**
      * Finishes scrolling
-     *
+     * <p>
      * </br> 结束滚动</br> 并通知结束滚动监听器
      */
     void finishScrolling() {
@@ -1308,12 +1281,12 @@ public class WheelView extends View {
 
     /**
      * Scroll the wheel
+     * <p>
+     * items to scroll
      *
-     *            items to scroll
-     * @param time
-     *            scrolling duration
-     *
-     *            滚动
+     * @param time scrolling duration
+     *             <p>
+     *             滚动
      */
     public void scroll(int itemsToScroll, int time) {
         scroller.forceFinished(true);

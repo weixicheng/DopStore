@@ -8,7 +8,7 @@ import java.util.List;
  * 类别：
  */
 
-public class ConfirmOrderData implements Serializable{
+public class ConfirmOrderData implements Serializable {
     private String error_code;
     private List<ResultData> result;
 
@@ -28,7 +28,7 @@ public class ConfirmOrderData implements Serializable{
         this.result = result;
     }
 
-    public class ResultData implements Serializable{
+    public class ResultData implements Serializable {
         private String id;
         private String name;
         private String cover;

@@ -54,7 +54,7 @@ import java.util.TimerTask;
 @SuppressLint("ValidFragment")
 public class TrolleyFragment extends Fragment implements OnRefreshListener<ListView> {
     private PullToRefreshListView pullToRefreshView;
-    private LinearLayout errorLayout,emptyLayout;
+    private LinearLayout errorLayout, emptyLayout;
     private TextView loadTv;
 
     private TrolleyAdapter mListAdapter;// adapter
@@ -91,7 +91,7 @@ public class TrolleyFragment extends Fragment implements OnRefreshListener<ListV
 
     public TrolleyFragment(Context context) {
         this.context = context;
-        httpHelper=CommHttp.getInstance();
+        httpHelper = CommHttp.getInstance();
     }
 
 
@@ -127,15 +127,15 @@ public class TrolleyFragment extends Fragment implements OnRefreshListener<ListV
 
 
     private void deleteToService(final List<GoodBean> mListData) {
-        JSONArray ja=new JSONArray();
+        JSONArray ja = new JSONArray();
         for (GoodBean goodBean : mListData) {
             if (goodBean.isChoose() == true) {
                 ja.put(goodBean.getId());
             }
         }
-        Map<String,Object> params=new HashMap<String,Object>();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("user_id", UserUtils.getId(context));
-        params.put("item_list",ja.toString());
+        params.put("item_list", ja.toString());
         httpHelper.post(context, URL.CART_DELETE, params, new CommHttp.HttpCallBack() {
             @Override
             public void success(String body) {
@@ -144,7 +144,7 @@ public class TrolleyFragment extends Fragment implements OnRefreshListener<ListV
                     String code = jo.optString(Constant.ERROR_CODE);
                     if ("0".equals(code)) {
                         T.show(context, "删除成功");
-                        isRefresh=false;
+                        isRefresh = false;
                         handler.sendEmptyMessage(LAZY_LOADING_MSG);
                     } else {
                         String msg = jo.optString(Constant.ERROR_MSG);
@@ -211,20 +211,20 @@ public class TrolleyFragment extends Fragment implements OnRefreshListener<ListV
         pullToRefreshView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String shop_id=mListData.get(position-1).getId()+"";
-                String shop_name=mListData.get(position-1).getContent();
-                String shop_pic=mListData.get(position-1).getCover();
+                String shop_id = mListData.get(position - 1).getId() + "";
+                String shop_name = mListData.get(position - 1).getContent();
+                String shop_pic = mListData.get(position - 1).getCover();
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put(Constant.ID, shop_id);
                 map.put(Constant.NAME, shop_name);
-                map.put(Constant.PICTURE,shop_pic);
+                map.put(Constant.PICTURE, shop_pic);
                 SkipUtils.jumpForMap(context, ShopDetailActivity.class, map, false);
             }
         });
     }
 
     private void getCartList() {
-        totalPrice=0.00;
+        totalPrice = 0.00;
         mCheckAll.setChecked(false);
         mPriceAll.setText("￥" + 0.00);
         Map<String, Object> map = new HashMap<String, Object>();
@@ -261,14 +261,14 @@ public class TrolleyFragment extends Fragment implements OnRefreshListener<ListV
                         data.setContent(job.optString(Constant.NAME));
                         data.setGoods_sku_id(job.optString("goods_sku_id"));
                         data.setGoods_sku_str(job.optString("goods_sku_str"));
-                        String price=job.optString(Constant.PRICE);
+                        String price = job.optString(Constant.PRICE);
                         if (!TextUtils.isEmpty(price)) {
                             if (Utils.isNum(price)) {
                                 data.setPrice(Double.parseDouble(price));
                             } else {
                                 data.setPrice(0.00);
                             }
-                        }else {
+                        } else {
                             data.setPrice(0.00);
                         }
                         data.setCover(job.optString(Constant.COVER));
@@ -276,7 +276,7 @@ public class TrolleyFragment extends Fragment implements OnRefreshListener<ListV
                         mListData.add(data);
                     }
                     emptyLayout.setVisibility(View.GONE);
-                }else {
+                } else {
                     emptyLayout.setVisibility(View.VISIBLE);
                 }
             } else {
@@ -295,7 +295,7 @@ public class TrolleyFragment extends Fragment implements OnRefreshListener<ListV
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
-                case R.id.error_data_load_tv:{
+                case R.id.error_data_load_tv: {
                     isRefresh = true;
                     if (isRefresh) {
                         mListData.clear();
@@ -304,7 +304,7 @@ public class TrolleyFragment extends Fragment implements OnRefreshListener<ListV
                 }
                 break;
                 case R.id.title_right_textButton:
-                    if (mListData.size()>0) {
+                    if (mListData.size() > 0) {
                         isBatchModel = !isBatchModel;
                         if (isBatchModel) {
                             mEdit.setText(getResources().getString(R.string.menu_enter));
@@ -330,11 +330,11 @@ public class TrolleyFragment extends Fragment implements OnRefreshListener<ListV
                                 totalPrice += mListData.get(i).getCarNum() * mListData.get(i).getPrice();
                             }
                             refreshListView();
-                            String totalStr="";
-                            if (Utils.isDouble(totalPrice.toString())){
-                                totalStr=Utils.format(totalPrice);
-                            }else {
-                                totalStr=totalPrice+"";
+                            String totalStr = "";
+                            if (Utils.isDouble(totalPrice.toString())) {
+                                totalStr = Utils.format(totalPrice);
+                            } else {
+                                totalStr = totalPrice + "";
                             }
                             mPriceAll.setText("￥" + totalStr);
                         }
@@ -413,14 +413,14 @@ public class TrolleyFragment extends Fragment implements OnRefreshListener<ListV
 
     @Override
     public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-            pullToRefreshView.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
-            pullToRefreshView.getLoadingLayoutProxy().setPullLabel("下拉刷新");
-            pullToRefreshView.getLoadingLayoutProxy().setReleaseLabel("释放开始刷新");
-            isRefresh = true;
-            if (isRefresh) {
-                mListData.clear();
-                getCartList();
-            }
+        pullToRefreshView.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
+        pullToRefreshView.getLoadingLayoutProxy().setPullLabel("下拉刷新");
+        pullToRefreshView.getLoadingLayoutProxy().setReleaseLabel("释放开始刷新");
+        isRefresh = true;
+        if (isRefresh) {
+            mListData.clear();
+            getCartList();
+        }
 
     }
 }

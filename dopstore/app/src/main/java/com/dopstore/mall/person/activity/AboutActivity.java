@@ -23,7 +23,7 @@ public class AboutActivity extends BaseActivity {
     }
 
     private void initView() {
-        setCustomTitle("关于小海囤",getResources().getColor(R.color.white));
+        setCustomTitle("关于小海囤", getResources().getColor(R.color.white));
         leftImageBack(R.mipmap.back_arrow);
     }
 

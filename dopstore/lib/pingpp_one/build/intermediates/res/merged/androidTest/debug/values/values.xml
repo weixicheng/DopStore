@@ -56,11 +56,26 @@
     <color name="mmdpay_wap_color">#FF10D4BC</color>
     <color name="qgbc_wap_color">#FF4385f5</color>
     <color name="white">#ffffffff</color>
-    <declare-styleable name="CmbEditText"><attr name="KeyBoardType">
-            <enum name="Normal" value="0"/>
-            <enum name="Number" value="1"/>
-        </attr><attr format="integer" name="Length"/><attr format="boolean" name="isPassword"/></declare-styleable>
-    <declare-styleable name="ProgressWheel"><attr format="boolean" name="matProg_progressIndeterminate"/><attr format="color" name="matProg_barColor"/><attr format="color" name="matProg_rimColor"/><attr format="dimension" name="matProg_rimWidth"/><attr format="float" name="matProg_spinSpeed"/><attr format="integer" name="matProg_barSpinCycleTime"/><attr format="dimension" name="matProg_circleRadius"/><attr format="boolean" name="matProg_fillRadius"/><attr format="dimension" name="matProg_barWidth"/><attr format="boolean" name="matProg_linearProgress"/></declare-styleable>
+    <declare-styleable name="CmbEditText">
+        <attr name="KeyBoardType">
+            <enum name="Normal" value="0" />
+            <enum name="Number" value="1" />
+        </attr>
+        <attr format="integer" name="Length" />
+        <attr format="boolean" name="isPassword" />
+    </declare-styleable>
+    <declare-styleable name="ProgressWheel">
+        <attr format="boolean" name="matProg_progressIndeterminate" />
+        <attr format="color" name="matProg_barColor" />
+        <attr format="color" name="matProg_rimColor" />
+        <attr format="dimension" name="matProg_rimWidth" />
+        <attr format="float" name="matProg_spinSpeed" />
+        <attr format="integer" name="matProg_barSpinCycleTime" />
+        <attr format="dimension" name="matProg_circleRadius" />
+        <attr format="boolean" name="matProg_fillRadius" />
+        <attr format="dimension" name="matProg_barWidth" />
+        <attr format="boolean" name="matProg_linearProgress" />
+    </declare-styleable>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="cmbkb_key_height">50.0dip</dimen>

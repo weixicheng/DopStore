@@ -7,7 +7,7 @@ import java.io.Serializable;
  * 类别：
  */
 
-public class OrderDataData implements Serializable{
+public class OrderDataData implements Serializable {
     private String goods_id;
     private String goods_name;
     private String goods_cover;

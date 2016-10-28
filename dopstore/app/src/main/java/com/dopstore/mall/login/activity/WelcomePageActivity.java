@@ -97,13 +97,14 @@ public class WelcomePageActivity extends BaseActivity {
         });
     }
 
-    private void setFlag(boolean flag){
+    private void setFlag(boolean flag) {
         SharedPreferences sp = getSharedPreferences("welcome_page", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
-        editor.putBoolean("flag",flag);
+        editor.putBoolean("flag", flag);
         editor.commit();
     }
-    private boolean getFlag(){
+
+    private boolean getFlag() {
         SharedPreferences sp = getSharedPreferences("welcome_page", Context.MODE_PRIVATE);
         return sp.getBoolean("flag", false);
     }

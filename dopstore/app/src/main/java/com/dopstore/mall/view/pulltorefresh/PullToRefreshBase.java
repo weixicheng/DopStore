@@ -391,7 +391,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 
     /**
      * @deprecated You should now call this method on the result of
-     *             {@link #getLoadingLayoutProxy()}.
+     * {@link #getLoadingLayoutProxy()}.
      */
     public void setLastUpdatedLabel(CharSequence label) {
         getLoadingLayoutProxy().setLastUpdatedLabel(label);
@@ -399,7 +399,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 
     /**
      * @deprecated You should now call this method on the result of
-     *             {@link #getLoadingLayoutProxy()}.
+     * {@link #getLoadingLayoutProxy()}.
      */
     public void setLoadingDrawable(Drawable drawable) {
         getLoadingLayoutProxy().setLoadingDrawable(drawable);
@@ -407,7 +407,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 
     /**
      * @deprecated You should now call this method on the result of
-     *             {@link #getLoadingLayoutProxy(boolean, boolean)}.
+     * {@link #getLoadingLayoutProxy(boolean, boolean)}.
      */
     public void setLoadingDrawable(Drawable drawable, Mode mode) {
         getLoadingLayoutProxy(mode.showHeaderLoadingLayout(), mode.showFooterLoadingLayout()).setLoadingDrawable(
@@ -448,7 +448,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 
     /**
      * @deprecated You should now call this method on the result of
-     *             {@link #getLoadingLayoutProxy()}.
+     * {@link #getLoadingLayoutProxy()}.
      */
     public void setPullLabel(CharSequence pullLabel) {
         getLoadingLayoutProxy().setPullLabel(pullLabel);
@@ -456,7 +456,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 
     /**
      * @deprecated You should now call this method on the result of
-     *             {@link #getLoadingLayoutProxy(boolean, boolean)}.
+     * {@link #getLoadingLayoutProxy(boolean, boolean)}.
      */
     public void setPullLabel(CharSequence pullLabel, Mode mode) {
         getLoadingLayoutProxy(mode.showHeaderLoadingLayout(), mode.showFooterLoadingLayout()).setPullLabel(pullLabel);
@@ -465,7 +465,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
     /**
      * @param enable Whether Pull-To-Refresh should be used
      * @deprecated This simple calls setMode with an appropriate mode based on
-     *             the passed value.
+     * the passed value.
      */
     public final void setPullToRefreshEnabled(boolean enable) {
         setMode(enable ? Mode.getDefault() : Mode.DISABLED);
@@ -490,7 +490,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 
     /**
      * @deprecated You should now call this method on the result of
-     *             {@link #getLoadingLayoutProxy()}.
+     * {@link #getLoadingLayoutProxy()}.
      */
     public void setRefreshingLabel(CharSequence refreshingLabel) {
         getLoadingLayoutProxy().setRefreshingLabel(refreshingLabel);
@@ -498,7 +498,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 
     /**
      * @deprecated You should now call this method on the result of
-     *             {@link #getLoadingLayoutProxy(boolean, boolean)}.
+     * {@link #getLoadingLayoutProxy(boolean, boolean)}.
      */
     public void setRefreshingLabel(CharSequence refreshingLabel, Mode mode) {
         getLoadingLayoutProxy(mode.showHeaderLoadingLayout(), mode.showFooterLoadingLayout()).setRefreshingLabel(
@@ -507,7 +507,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 
     /**
      * @deprecated You should now call this method on the result of
-     *             {@link #getLoadingLayoutProxy()}.
+     * {@link #getLoadingLayoutProxy()}.
      */
     public void setReleaseLabel(CharSequence releaseLabel) {
         setReleaseLabel(releaseLabel, Mode.BOTH);
@@ -515,7 +515,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 
     /**
      * @deprecated You should now call this method on the result of
-     *             {@link #getLoadingLayoutProxy(boolean, boolean)}.
+     * {@link #getLoadingLayoutProxy(boolean, boolean)}.
      */
     public void setReleaseLabel(CharSequence releaseLabel, Mode mode) {
         getLoadingLayoutProxy(mode.showHeaderLoadingLayout(), mode.showFooterLoadingLayout()).setReleaseLabel(
@@ -533,7 +533,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 
     /**
      * @return Either {@link Orientation#VERTICAL} or
-     *         {@link Orientation#HORIZONTAL} depending on the scroll direction.
+     * {@link Orientation#HORIZONTAL} depending on the scroll direction.
      */
     public abstract Orientation getPullToRefreshScrollDirection();
 
@@ -617,9 +617,9 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
      * using a ListActivity or ListFragment.
      *
      * @param context Context to create view with
-     * @param attrs AttributeSet from wrapped class. Means that anything you
-     *            include in the XML layout declaration will be routed to the
-     *            created View
+     * @param attrs   AttributeSet from wrapped class. Means that anything you
+     *                include in the XML layout declaration will be routed to the
+     *                created View
      * @return New instance of the Refreshable View
      */
     protected abstract T createRefreshableView(Context context, AttributeSet attrs);
@@ -670,7 +670,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
      * where the user can Pull to Refresh by scrolling from the end.
      *
      * @return true if the View is currently in the correct state (for example,
-     *         bottom of a ListView)
+     * bottom of a ListView)
      */
     protected abstract boolean isReadyForPullEnd();
 
@@ -679,7 +679,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
      * where the user can Pull to Refresh by scrolling from the start.
      *
      * @return true if the View is currently the correct state (for example, top
-     *         of a ListView)
+     * of a ListView)
      */
     protected abstract boolean isReadyForPullStart();
 
@@ -1001,7 +1001,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
      * {@value #SMOOTH_SCROLL_DURATION_MS} ms.
      *
      * @param scrollValue - Position to scroll to
-     * @param listener - Listener for scroll
+     * @param listener    - Listener for scroll
      */
     protected final void smoothScrollTo(int scrollValue, OnSmoothScrollFinishedListener listener) {
         smoothScrollTo(scrollValue, getPullToRefreshScrollDuration(), 0, listener);
@@ -1160,7 +1160,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
      * Actions a Pull Event
      *
      * @return true if the Event has been handled, false if there has been no
-     *         change
+     * change
      */
     private void pullEvent() {
         final int newScrollValue;
@@ -1239,7 +1239,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
      * Smooth Scroll to position using the specific duration
      *
      * @param scrollValue - Position to scroll to
-     * @param duration - Duration of animation in milliseconds
+     * @param duration    - Duration of animation in milliseconds
      */
     private final void smoothScrollTo(int scrollValue, long duration) {
         smoothScrollTo(scrollValue, duration, 0, null);
@@ -1467,12 +1467,12 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
          * pulling.
          *
          * @param refreshView - View which has had it's state change.
-         * @param state - The new state of View.
-         * @param direction - One of {@link Mode#PULL_FROM_START} or
-         *            {@link Mode#PULL_FROM_END} depending on which direction
-         *            the user is pulling. Only useful when <var>state</var> is
-         *            {@link State#PULL_TO_REFRESH} or
-         *            {@link State#RELEASE_TO_REFRESH}.
+         * @param state       - The new state of View.
+         * @param direction   - One of {@link Mode#PULL_FROM_START} or
+         *                    {@link Mode#PULL_FROM_END} depending on which direction
+         *                    the user is pulling. Only useful when <var>state</var> is
+         *                    {@link State#PULL_TO_REFRESH} or
+         *                    {@link State#RELEASE_TO_REFRESH}.
          */
         public void onPullEvent(final PullToRefreshBase<V> refreshView, State state, Mode direction);
 

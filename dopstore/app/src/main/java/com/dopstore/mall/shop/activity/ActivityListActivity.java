@@ -38,7 +38,7 @@ import java.util.Map;
  * Created by 喜成 on 16/9/13
  * name
  */
-public class ActivityListActivity extends BaseActivity implements OnRefreshListener<ListView>{
+public class ActivityListActivity extends BaseActivity implements OnRefreshListener<ListView> {
     private TextView firstTv, secondTv, thirdTv, fourTv;
     private View firstv, secondv, thirdv, fourv;
     private PullToRefreshListView listView;
@@ -61,7 +61,7 @@ public class ActivityListActivity extends BaseActivity implements OnRefreshListe
     }
 
     private void initView() {
-        httpHelper=CommHttp.getInstance();
+        httpHelper = CommHttp.getInstance();
         setCustomTitle("列表", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         firstTv = (TextView) findViewById(R.id.shop_list_first);
@@ -94,7 +94,7 @@ public class ActivityListActivity extends BaseActivity implements OnRefreshListe
     private void getOtherData(String id) {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put(Constant.PAGESIZE, "10");
-        map.put(Constant.PAGE, page+"");
+        map.put(Constant.PAGE, page + "");
         map.put("kw", searchStr);
         map.put("order_id", id);
         httpHelper.post(this, URL.RECOMMENDED_ACT, map, new CommHttp.HttpCallBack() {
@@ -206,7 +206,7 @@ public class ActivityListActivity extends BaseActivity implements OnRefreshListe
             if ("0".equals(code)) {
                 JSONArray ja = jo.getJSONArray(Constant.ACTIVITYS);
                 if (ja.length() > 0) {
-                    if (isRefresh){
+                    if (isRefresh) {
                         aList.clear();
                     }
                     for (int i = 0; i < ja.length(); i++) {
@@ -249,7 +249,7 @@ public class ActivityListActivity extends BaseActivity implements OnRefreshListe
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Map<String, Object> map = new HashMap<String, Object>();
-                map.put(Constant.ID, aList.get(i-1).getId());
+                map.put(Constant.ID, aList.get(i - 1).getId());
                 SkipUtils.jumpForMap(ActivityListActivity.this, ActivityDetailActivity.class, map, false);
             }
         });
@@ -274,7 +274,7 @@ public class ActivityListActivity extends BaseActivity implements OnRefreshListe
             isRefresh = true;
             isUpRefresh = false;
             if (isRefresh) {
-                page=1;
+                page = 1;
                 getOtherData("1");
             }
 
@@ -285,7 +285,7 @@ public class ActivityListActivity extends BaseActivity implements OnRefreshListe
             listView.getLoadingLayoutProxy().setPullLabel("上拉加载更多");
             listView.getLoadingLayoutProxy().setReleaseLabel("释放开始加载");
             isUpRefresh = true;
-            isRefresh=false;
+            isRefresh = false;
             if (isUpRefresh) {
                 page = page + 1;
                 getOtherData("1");

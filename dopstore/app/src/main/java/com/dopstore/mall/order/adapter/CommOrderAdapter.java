@@ -25,7 +25,7 @@ public class CommOrderAdapter extends BaseAdapter {
         super();
         this.items = items;
         mInflater = LayoutInflater.from(context);
-        imageLoader=ImageLoader.getInstance();
+        imageLoader = ImageLoader.getInstance();
     }
 
     @Override
@@ -63,7 +63,7 @@ public class CommOrderAdapter extends BaseAdapter {
                 holder.num.setText("x️ " + data.getGoods_num());
                 holder.price.setText("¥" + data.getGoods_price());
                 holder.title.setText(data.getGoods_name());
-                imageLoader.displayImage(data.getGoods_cover()+"?imageView2/1/w/182/h/182", holder.imageView);
+                imageLoader.displayImage(data.getGoods_cover() + "?imageView2/1/w/182/h/182", holder.imageView);
             }
         }
         return convertView;

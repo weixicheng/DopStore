@@ -34,7 +34,7 @@ public class MiddleAdapter extends BaseAdapter {
     public MiddleAdapter(Context context, List<MainMiddleData> list) {
         this.context = context;
         this.list = list;
-        imageLoader=ImageLoader.getInstance();
+        imageLoader = ImageLoader.getInstance();
     }
 
     @Override
@@ -66,22 +66,22 @@ public class MiddleAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        imageLoader.displayImage(list.get(i).getPicture()+"?imageView2/1/w/1000/h/500", viewHolder.bigImageView);
-        final int position=i;
+        imageLoader.displayImage(list.get(i).getPicture() + "?imageView2/1/w/1000/h/500", viewHolder.bigImageView);
+        final int position = i;
         viewHolder.bigImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MainMiddleData mainMiddleData=list.get(position);
-                Map<String,Object> map=new HashMap<String, Object>();
-                map.put(Constant.LIST,mainMiddleData);
-                SkipUtils.jumpForMap(context, ShopThemeActivity.class,map,false);
+                MainMiddleData mainMiddleData = list.get(position);
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put(Constant.LIST, mainMiddleData);
+                SkipUtils.jumpForMap(context, ShopThemeActivity.class, map, false);
             }
         });
 
         List<ShopData> datas = list.get(i).getRelated_goods();
-        MiddleDataAdapter middleDataAdapter=new MiddleDataAdapter(context, datas);
+        MiddleDataAdapter middleDataAdapter = new MiddleDataAdapter(context, datas);
         viewHolder.eScrollView.setAdapter(middleDataAdapter);
-        final  List<ShopData> newDatas=datas;
+        final List<ShopData> newDatas = datas;
         viewHolder.eScrollView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -95,16 +95,16 @@ public class MiddleAdapter extends BaseAdapter {
             }
         });
 
-        if (position==list.size()-1){
+        if (position == list.size() - 1) {
             viewHolder.line.setVisibility(View.GONE);
-        }else {
+        } else {
             viewHolder.line.setVisibility(View.VISIBLE);
         }
         return view;
     }
 
     public void upData(List<MainMiddleData> midddleList) {
-        this.list=midddleList;
+        this.list = midddleList;
         notifyDataSetChanged();
     }
 

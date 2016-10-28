@@ -163,13 +163,13 @@ public class Utils {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             String sdCardStatus = Environment.getExternalStorageState();
             if (!sdCardStatus.equals(Environment.MEDIA_MOUNTED)) {
-                T.show(context,"请检查存储卡是否存在");
+                T.show(context, "请检查存储卡是否存在");
                 return false;
             } else {
                 return true;
             }
         } else {
-            T.show(context,"请检查存储卡是否存在");
+            T.show(context, "请检查存储卡是否存在");
             return false;
 
         }

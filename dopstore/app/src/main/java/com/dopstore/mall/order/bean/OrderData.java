@@ -7,7 +7,7 @@ import java.util.List;
  * Created by 喜成 on 16/9/8.
  * name
  */
-public class OrderData implements Serializable{
+public class OrderData implements Serializable {
     private String id;
     private String order_num;
     private String status;

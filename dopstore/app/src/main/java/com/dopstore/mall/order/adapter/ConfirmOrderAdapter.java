@@ -25,7 +25,7 @@ public class ConfirmOrderAdapter extends BaseAdapter {
         super();
         this.items = items;
         mInflater = LayoutInflater.from(context);
-        imageLoader=ImageLoader.getInstance();
+        imageLoader = ImageLoader.getInstance();
     }
 
     @Override
@@ -65,7 +65,7 @@ public class ConfirmOrderAdapter extends BaseAdapter {
                 holder.num.setText("x " + data.getCarNum());
                 holder.price.setText("¥" + data.getPrice());
                 holder.title.setText(data.getContent());
-                imageLoader.displayImage(data.getCover()+"?imageView2/1/w/182/h/182", holder.imageView);
+                imageLoader.displayImage(data.getCover() + "?imageView2/1/w/182/h/182", holder.imageView);
             }
         }
         return convertView;

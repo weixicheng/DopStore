@@ -32,7 +32,7 @@ public class ActivityAdapter extends BaseAdapter {
         this.context = context;
         this.list = list;
         this.isShow = isShow;
-        imageLoader=ImageLoader.getInstance();
+        imageLoader = ImageLoader.getInstance();
     }
 
     @Override
@@ -77,7 +77,7 @@ public class ActivityAdapter extends BaseAdapter {
                 RelativeLayout.LayoutParams.MATCH_PARENT, picSize);
         viewHolder.bigImageView.setLayoutParams(layoutParams);
 
-        imageLoader.displayImage(list.get(i).getPicture()+"?imageView2/1/w/1000/h/500", viewHolder.bigImageView);
+        imageLoader.displayImage(list.get(i).getPicture() + "?imageView2/1/w/1000/h/500", viewHolder.bigImageView);
         viewHolder.titleTv.setText(list.get(i).getName());
         viewHolder.priceTv.setText(list.get(i).getPrice());
         if (isShow == 0) {

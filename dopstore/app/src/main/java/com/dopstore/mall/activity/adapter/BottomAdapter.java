@@ -31,7 +31,7 @@ public class BottomAdapter extends BaseAdapter {
     public BottomAdapter(Context context, List<ShopData> list) {
         this.context = context;
         this.list = list;
-        imageLoader=ImageLoader.getInstance();
+        imageLoader = ImageLoader.getInstance();
     }
 
     @Override
@@ -79,14 +79,14 @@ public class BottomAdapter extends BaseAdapter {
         viewHolder.bigImageView.setLayoutParams(imagePa);
         viewHolder.line.setLayoutParams(linePa);
 
-        imageLoader.displayImage(list.get(i).getCover()+"?imageView2/1/w/500/h/500", viewHolder.bigImageView);
+        imageLoader.displayImage(list.get(i).getCover() + "?imageView2/1/w/500/h/500", viewHolder.bigImageView);
         viewHolder.titleTv.setText(list.get(i).getName());
         viewHolder.priceTv.setText("￥" + list.get(i).getPrice());
         return view;
     }
 
     public void upData(List<ShopData> bottomList) {
-        this.list=bottomList;
+        this.list = bottomList;
         notifyDataSetChanged();
     }
 

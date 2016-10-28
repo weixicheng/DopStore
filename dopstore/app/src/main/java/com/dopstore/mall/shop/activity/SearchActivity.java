@@ -50,7 +50,7 @@ public class SearchActivity extends BaseActivity {
     }
 
     private void initView() {
-        httpHelper=CommHttp.getInstance();
+        httpHelper = CommHttp.getInstance();
         setCustomTitle("分类", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         gridView = (GridView) findViewById(R.id.search_gridview);
@@ -68,7 +68,7 @@ public class SearchActivity extends BaseActivity {
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.search_title_tv: {
-                    String seartchStr=editText.getText().toString();
+                    String seartchStr = editText.getText().toString();
                     Map<String, Object> map = new HashMap<String, Object>();
                     map.put(Constant.NAME, seartchStr);
                     map.put(Constant.CATEGORY, "1");

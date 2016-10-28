@@ -43,7 +43,7 @@ public class SetActivity extends BaseActivity {
     }
 
     private void initview() {
-        imageLoader=ImageLoader.getInstance();
+        imageLoader = ImageLoader.getInstance();
         ImageButton id = (ImageButton) findViewById(R.id.title_left_imageButton);
         id.setBackgroundResource(R.mipmap.back_arrow);
         id.setVisibility(View.VISIBLE);
@@ -114,7 +114,7 @@ public class SetActivity extends BaseActivity {
                     T.show(SetActivity.this, "亲,给个好评吧");
                     break;
                 case R.id.setting_my_about_layout:
-                    SkipUtils.directJump(SetActivity.this,AboutActivity.class,false);
+                    SkipUtils.directJump(SetActivity.this, AboutActivity.class, false);
                     break;
                 case R.id.setting_my_exit:
                     exit();

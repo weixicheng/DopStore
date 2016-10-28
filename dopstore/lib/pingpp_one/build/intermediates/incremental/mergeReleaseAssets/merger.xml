@@ -1,2 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/src/main/assets"/><source path="/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/generated/assets/shaders/release"/></dataSet><dataSet config="release"><source path="/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/src/release/assets"/></dataSet></merger>
+<merger version="3">
+    <dataSet config="main">
+        <source
+            path="/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/src/main/assets" />
+        <source
+            path="/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/generated/assets/shaders/release" />
+    </dataSet>
+    <dataSet config="release">
+        <source
+            path="/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/src/release/assets" />
+    </dataSet>
+</merger>

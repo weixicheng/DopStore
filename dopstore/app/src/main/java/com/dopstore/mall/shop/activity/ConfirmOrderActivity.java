@@ -53,7 +53,7 @@ public class ConfirmOrderActivity extends BaseActivity {
     private List<GoodBean> newListData;
     private List<MyAddressData> addressList = new ArrayList<MyAddressData>();
     private Double totalPrice = 0.00; // 商品总价
-    private String address_id="";
+    private String address_id = "";
     private CommHttp httpHelper;
 
     @Override
@@ -65,7 +65,7 @@ public class ConfirmOrderActivity extends BaseActivity {
     }
 
     private void initView() {
-        httpHelper=CommHttp.getInstance();
+        httpHelper = CommHttp.getInstance();
         setCustomTitle("确认订单", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         payBt = (Button) findViewById(R.id.confirm_order_pay_bt);
@@ -79,26 +79,26 @@ public class ConfirmOrderActivity extends BaseActivity {
         addressLayout = (RelativeLayout) findViewById(R.id.confirm_order_address_layout);
         addressLayout.setOnClickListener(listener);
         myListView = (MyListView) findViewById(R.id.confirm_order_listview);
-        Map<String,Object> map=SkipUtils.getMap(this);
-        if (map==null)return;
-        newListData=(List<GoodBean>) map.get(Constant.LIST);
+        Map<String, Object> map = SkipUtils.getMap(this);
+        if (map == null) return;
+        newListData = (List<GoodBean>) map.get(Constant.LIST);
     }
 
     private void initData() {
-        if (newListData.size()>0){
-            for (GoodBean goodBean:newListData){
+        if (newListData.size() > 0) {
+            for (GoodBean goodBean : newListData) {
                 totalPrice += goodBean.getCarNum() * goodBean.getPrice();
             }
-            String totalStr="";
-            if (Utils.isDouble(totalPrice.toString())){
-                totalStr=Utils.format(totalPrice);
-            }else {
-                totalStr=totalPrice+"";
+            String totalStr = "";
+            if (Utils.isDouble(totalPrice.toString())) {
+                totalStr = Utils.format(totalPrice);
+            } else {
+                totalStr = totalPrice + "";
             }
-            totalPriceTv.setText("¥"+totalStr);
-            priceTv.setText("¥"+totalStr);
+            totalPriceTv.setText("¥" + totalStr);
+            priceTv.setText("¥" + totalStr);
             passTv.setText("免运费");
-        }else {
+        } else {
             totalPriceTv.setText("¥ 0.00");
             priceTv.setText("¥ 0.00");
             passTv.setText("免运费");
@@ -161,9 +161,9 @@ public class ConfirmOrderActivity extends BaseActivity {
                 }
                 break;
                 case R.id.confirm_order_address_layout: {
-                    Map<String,Object> map=new HashMap<String,Object>();
-                    map.put(Constant.ID,"1");
-                    SkipUtils.jumpForMapResult(ConfirmOrderActivity.this, MyAddressActivity.class, map,GET_ADDRESS_CODE);
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map.put(Constant.ID, "1");
+                    SkipUtils.jumpForMapResult(ConfirmOrderActivity.this, MyAddressActivity.class, map, GET_ADDRESS_CODE);
                 }
                 break;
             }
@@ -171,38 +171,38 @@ public class ConfirmOrderActivity extends BaseActivity {
     };
 
     private void checkData() {
-        JSONArray ja=new JSONArray();
-        if (newListData.size()>0){
-            for (GoodBean goodBean:newListData){
+        JSONArray ja = new JSONArray();
+        if (newListData.size() > 0) {
+            for (GoodBean goodBean : newListData) {
                 try {
-                    JSONObject jo=new JSONObject();
-                    jo.put("goods_id",goodBean.getId());
-                    String num=goodBean.getGoods_sku_id();
-                    if (TextUtils.isEmpty(num)){
-                        num="";
+                    JSONObject jo = new JSONObject();
+                    jo.put("goods_id", goodBean.getId());
+                    String num = goodBean.getGoods_sku_id();
+                    if (TextUtils.isEmpty(num)) {
+                        num = "";
                     }
-                    jo.put("goods_sku_id",num);
-                    jo.put("num",goodBean.getCarNum());
+                    jo.put("goods_sku_id", num);
+                    jo.put("num", goodBean.getCarNum());
                     ja.put(jo);
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-        }else {
-            ja=null;
+        } else {
+            ja = null;
         }
-        String noteStr=hintText.getText().toString().trim();
-        Map<String,Object> params=new HashMap<String,Object>();
-        params.put("user_id",UserUtils.getId(this));
-        params.put("goods_relateds",ja.toString());
-        params.put("address_id",address_id);
-        if (!TextUtils.isEmpty(noteStr)){
-            params.put("note",noteStr);
+        String noteStr = hintText.getText().toString().trim();
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("user_id", UserUtils.getId(this));
+        params.put("goods_relateds", ja.toString());
+        params.put("address_id", address_id);
+        if (!TextUtils.isEmpty(noteStr)) {
+            params.put("note", noteStr);
         }
         getOrderID(params);
     }
 
-    private void getOrderID(Map<String,Object>  params) {
+    private void getOrderID(Map<String, Object> params) {
         httpHelper.post(this, URL.CART_CREATE_ORDER, params, new CommHttp.HttpCallBack() {
             @Override
             public void success(String body) {
@@ -211,9 +211,9 @@ public class ConfirmOrderActivity extends BaseActivity {
                     String code = jo.optString(Constant.ERROR_CODE);
                     if ("0".equals(code)) {
                         String order_num = jo.optString("order_num");
-                        Message msg=new Message();
-                        msg.what=INTENT_TO_PAY_CODE;
-                        msg.obj=order_num;
+                        Message msg = new Message();
+                        msg.what = INTENT_TO_PAY_CODE;
+                        msg.obj = order_num;
                         handler.sendMessage(msg);
                     } else {
                         String msg = jo.optString(Constant.ERROR_MSG);
@@ -226,7 +226,7 @@ public class ConfirmOrderActivity extends BaseActivity {
 
             @Override
             public void failed(String msg) {
-                T.show(ConfirmOrderActivity.this,msg);
+                T.show(ConfirmOrderActivity.this, msg);
             }
         });
     }
@@ -240,48 +240,50 @@ public class ConfirmOrderActivity extends BaseActivity {
             super.handleMessage(msg);
             switch (msg.what) {
                 case UPDATA_ADDRESS_CODE: {
-                    if (addressList.size()>0){
-                        for (int i=0;i<addressList.size();i++){
-                            String isDefault=addressList.get(i).getIs_default();
-                            if ("1".equals(isDefault)){
-                                MyAddressData myAddressData=addressList.get(i);
-                                address_id=myAddressData.getId();
-                                userTv.setText(myAddressData.getShipping_user()+"   "+myAddressData.getMobile());
+                    if (addressList.size() > 0) {
+                        for (int i = 0; i < addressList.size(); i++) {
+                            String isDefault = addressList.get(i).getIs_default();
+                            if ("1".equals(isDefault)) {
+                                MyAddressData myAddressData = addressList.get(i);
+                                address_id = myAddressData.getId();
+                                userTv.setText(myAddressData.getShipping_user() + "   " + myAddressData.getMobile());
                                 userAddressTv.setText(myAddressData.getProvince() + myAddressData.getCity() + myAddressData.getArea() + myAddressData.getAddress());
-                            }else {
-                                MyAddressData myAddressData=addressList.get(0);
-                                address_id=myAddressData.getId();
-                                userTv.setText(myAddressData.getShipping_user()+"   "+myAddressData.getMobile());
+                            } else {
+                                MyAddressData myAddressData = addressList.get(0);
+                                address_id = myAddressData.getId();
+                                userTv.setText(myAddressData.getShipping_user() + "   " + myAddressData.getMobile());
                                 userAddressTv.setText(myAddressData.getProvince() + myAddressData.getCity() + myAddressData.getArea() + myAddressData.getAddress());
                             }
                         }
-                    }else {
-                        address_id="";
+                    } else {
+                        address_id = "";
                         userTv.setText("");
                         userAddressTv.setText("");
                     }
                 }
                 break;
-                case INTENT_TO_PAY_CODE:{
-                    Map<String,Object> map=new HashMap<String,Object>();
-                    map.put(Constant.ID,msg.obj);
-                    map.put(Constant.PRICE,totalPrice);
-                    SkipUtils.jumpForMap(ConfirmOrderActivity.this, ShopCashierActivity.class,map, false);
-                }break;
+                case INTENT_TO_PAY_CODE: {
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map.put(Constant.ID, msg.obj);
+                    map.put(Constant.PRICE, totalPrice);
+                    SkipUtils.jumpForMap(ConfirmOrderActivity.this, ShopCashierActivity.class, map, false);
+                }
+                break;
             }
         }
     };
 
-    private final static int GET_ADDRESS_CODE=0;
+    private final static int GET_ADDRESS_CODE = 0;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (data==null)return;
-        Map<String,Object> map=(Map<String, Object>) data.getSerializableExtra("map");
-        if (map==null)return;
-        MyAddressData myAddressData=(MyAddressData) map.get(Constant.LIST);
-        address_id=myAddressData.getId();
-        userTv.setText(myAddressData.getShipping_user()+"   "+myAddressData.getMobile());
+        if (data == null) return;
+        Map<String, Object> map = (Map<String, Object>) data.getSerializableExtra("map");
+        if (map == null) return;
+        MyAddressData myAddressData = (MyAddressData) map.get(Constant.LIST);
+        address_id = myAddressData.getId();
+        userTv.setText(myAddressData.getShipping_user() + "   " + myAddressData.getMobile());
         userAddressTv.setText(myAddressData.getProvince() + myAddressData.getCity() + myAddressData.getArea() + myAddressData.getAddress());
     }
 

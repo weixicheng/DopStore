@@ -91,7 +91,7 @@ public class MainShopFragment extends Fragment implements OnRefreshListener<Scro
 
     public MainShopFragment(Context context) {
         this.mContext = context;
-        httpHelper=CommHttp.getInstance();
+        httpHelper = CommHttp.getInstance();
     }
 
     @Nullable
@@ -210,7 +210,7 @@ public class MainShopFragment extends Fragment implements OnRefreshListener<Scro
                             }
                             rollHeaderView.setVisibility(View.VISIBLE);
                             setHeadData();
-                        }else {
+                        } else {
                             rollHeaderView.setVisibility(View.GONE);
                         }
                     } else {
@@ -419,14 +419,14 @@ public class MainShopFragment extends Fragment implements OnRefreshListener<Scro
     }
 
     private void setHeadData() {
-        if (titleAdvertList != null&&titleAdvertList.size()>0) {
+        if (titleAdvertList != null && titleAdvertList.size() > 0) {
             rollHeaderView.setVisibility(View.VISIBLE);
             List<String> imgUrlList = new ArrayList<String>();
             for (CarouselData carouselData : titleAdvertList) {
                 imgUrlList.add(carouselData.getPicture());
             }
             rollHeaderView.setImgUrlData(imgUrlList);
-        }else {
+        } else {
             rollHeaderView.setVisibility(View.GONE);
         }
         rollHeaderView.requestFocus();
@@ -468,9 +468,9 @@ public class MainShopFragment extends Fragment implements OnRefreshListener<Scro
         if (viewType == 1) {
             hotText.setVisibility(View.GONE);
         } else {
-            if (list.size()>0){
+            if (list.size() > 0) {
                 hotText.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 hotText.setVisibility(View.GONE);
             }
         }

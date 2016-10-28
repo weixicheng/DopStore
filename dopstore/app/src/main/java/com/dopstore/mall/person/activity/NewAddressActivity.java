@@ -37,7 +37,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-
 /**
  * 新建地址
  */
@@ -67,7 +66,7 @@ public class NewAddressActivity extends BaseActivity {
     }
 
     private void initView() {
-        httpHelper=CommHttp.getInstance();
+        httpHelper = CommHttp.getInstance();
         setCustomTitle("新增收货地址", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
 

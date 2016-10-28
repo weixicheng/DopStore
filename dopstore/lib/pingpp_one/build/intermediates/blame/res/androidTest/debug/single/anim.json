@@ -1,18 +1,18 @@
 [
-    {
-        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/androidTest/debug/anim/dialog_exit.xml",
-        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/bundles/debug/res/anim/dialog_exit.xml"
-    },
-    {
-        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/androidTest/debug/anim/dialog_enter.xml",
-        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/bundles/debug/res/anim/dialog_enter.xml"
-    },
-    {
-        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/androidTest/debug/anim/cmbkb_push_bottom_out.xml",
-        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/anim/cmbkb_push_bottom_out.xml"
-    },
-    {
-        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/androidTest/debug/anim/cmbkb_push_bottom_in.xml",
-        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/anim/cmbkb_push_bottom_in.xml"
-    }
+  {
+    "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/androidTest/debug/anim/dialog_exit.xml",
+    "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/bundles/debug/res/anim/dialog_exit.xml"
+  },
+  {
+    "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/androidTest/debug/anim/dialog_enter.xml",
+    "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/bundles/debug/res/anim/dialog_enter.xml"
+  },
+  {
+    "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/androidTest/debug/anim/cmbkb_push_bottom_out.xml",
+    "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/anim/cmbkb_push_bottom_out.xml"
+  },
+  {
+    "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/androidTest/debug/anim/cmbkb_push_bottom_in.xml",
+    "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/anim/cmbkb_push_bottom_in.xml"
+  }
 ]

@@ -52,7 +52,7 @@ public class OrderDetailActivity extends BaseActivity {
     private MyListView myListView;
     private OrderDetailData orderDetailData;
     private String order_num = "";
-    private LinearLayout errorLayout,hintLayout;
+    private LinearLayout errorLayout, hintLayout;
     private TextView loadTv;
     private CommHttp httpHelper;
 
@@ -66,7 +66,7 @@ public class OrderDetailActivity extends BaseActivity {
     }
 
     private void initView() {
-        httpHelper=CommHttp.getInstance();
+        httpHelper = CommHttp.getInstance();
         Map<String, Object> map = SkipUtils.getMap(this);
         if (map == null) return;
         order_num = map.get(Constant.ID).toString();
@@ -143,10 +143,10 @@ public class OrderDetailActivity extends BaseActivity {
                     setDetailData();
                 }
                 break;
-                case MAKE_SURE_CODE:{
-                    Map<String,Object> map=new HashMap<String,Object>();
-                    map.put(Constant.NAME,"true");
-                    SkipUtils.backForMapResult(OrderDetailActivity.this,map);
+                case MAKE_SURE_CODE: {
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map.put(Constant.NAME, "true");
+                    SkipUtils.backForMapResult(OrderDetailActivity.this, map);
                 }
                 break;
             }
@@ -160,35 +160,35 @@ public class OrderDetailActivity extends BaseActivity {
         submitBt.setText(getSubmitText(type));
         stateTv.setText(statusStr);
         LogisticsData logistData = orderDetailData.getLogistics();
-        String zone=logistData.getLogistics_zone();
-        String remark=logistData.getLogistics_remark();
-        String company=logistData.getLogistics_company();
-        if (TextUtils.isEmpty(zone)&&TextUtils.isEmpty(remark)&&TextUtils.isEmpty(company)) {
+        String zone = logistData.getLogistics_zone();
+        String remark = logistData.getLogistics_remark();
+        String company = logistData.getLogistics_company();
+        if (TextUtils.isEmpty(zone) && TextUtils.isEmpty(remark) && TextUtils.isEmpty(company)) {
             wLayout.setVisibility(View.GONE);
         } else {
             wLayout.setVisibility(View.VISIBLE);
-            String logistStr = "【"+logistData.getLogistics_zone() + "转运中心】已出发," + logistData.getLogistics_remark() + "  " + logistData.getLogistics_company();
+            String logistStr = "【" + logistData.getLogistics_zone() + "转运中心】已出发," + logistData.getLogistics_remark() + "  " + logistData.getLogistics_company();
             passTv.setText(logistStr);
-            long time=logistData.getLogistics_time();
-            String   logistTime = Utils.formatSecond(time, "yyyy-MM-dd HH:mm:ss");
+            long time = logistData.getLogistics_time();
+            String logistTime = Utils.formatSecond(time, "yyyy-MM-dd HH:mm:ss");
             passTimeTv.setText(logistTime);
         }
         DetailAddressData addressData = orderDetailData.getOrder().getAddress();
         userTv.setText(addressData.getShipping_user() + "  " + addressData.getMobile());
         userAddressTv.setText(addressData.getDetail());
         DetailOrderData detailOrderData = orderDetailData.getOrder();
-        String hintMsg=detailOrderData.getNote();
-        if (TextUtils.isEmpty(hintMsg)){
+        String hintMsg = detailOrderData.getNote();
+        if (TextUtils.isEmpty(hintMsg)) {
             hintLayout.setVisibility(View.GONE);
-        }else {
+        } else {
             hintLayout.setVisibility(View.VISIBLE);
             userMsgTv.setText(hintMsg);
         }
         float totleFee = Float.parseFloat(detailOrderData.getTotal_fee());
         float trueFee = Float.parseFloat(detailOrderData.getReal_fee());
         float cheapFee = totleFee - trueFee;
-        if (cheapFee<0){
-            cheapFee=0;
+        if (cheapFee < 0) {
+            cheapFee = 0;
         }
         totalPriceTv.setText("¥ " + totleFee);
         cheapTv.setText("¥ " + cheapFee);
@@ -230,30 +230,30 @@ public class OrderDetailActivity extends BaseActivity {
         return nameStr;
     }
 
-    private String getType(String status){
-        String nameStr="";
-        if ("0".equals(status)){
-            nameStr="待下单";
-        }else if ("1".equals(status)){
-            nameStr="付款成功";
-        }else if ("2".equals(status)){
-            nameStr="订单取消";
-        }else if ("3".equals(status)){
-            nameStr="待发货";
-        }else if ("4".equals(status)){
-            nameStr="配送中";
-        }else if ("5".equals(status)){
-            nameStr="已完成";
-        }else if ("6".equals(status)){
-            nameStr="退款申请中";
-        }else if ("7".equals(status)){
-            nameStr="退款中";
-        }else if ("8".equals(status)){
-            nameStr="退款成功";
-        }else if ("9".equals(status)){
-            nameStr="等待付款";
+    private String getType(String status) {
+        String nameStr = "";
+        if ("0".equals(status)) {
+            nameStr = "待下单";
+        } else if ("1".equals(status)) {
+            nameStr = "付款成功";
+        } else if ("2".equals(status)) {
+            nameStr = "订单取消";
+        } else if ("3".equals(status)) {
+            nameStr = "待发货";
+        } else if ("4".equals(status)) {
+            nameStr = "配送中";
+        } else if ("5".equals(status)) {
+            nameStr = "已完成";
+        } else if ("6".equals(status)) {
+            nameStr = "退款申请中";
+        } else if ("7".equals(status)) {
+            nameStr = "退款中";
+        } else if ("8".equals(status)) {
+            nameStr = "退款成功";
+        } else if ("9".equals(status)) {
+            nameStr = "等待付款";
         }
-        return  nameStr;
+        return nameStr;
     }
 
     View.OnClickListener listener = new View.OnClickListener() {
@@ -265,8 +265,8 @@ public class OrderDetailActivity extends BaseActivity {
                 }
                 break;
                 case R.id.error_data_load_tv: {
-                    if (orderDetailData!=null){
-                        orderDetailData=null;
+                    if (orderDetailData != null) {
+                        orderDetailData = null;
                     }
                     getOrderDetail();
                 }
@@ -276,10 +276,10 @@ public class OrderDetailActivity extends BaseActivity {
                 }
                 break;
                 case R.id.order_detail_wuliu_layout: {
-                    Map<String,Object> map=new HashMap<String,Object>();
-                    map.put(Constant.ID,orderDetailData.getLogistics().getLogistics_no());
-                    map.put(Constant.NAME,orderDetailData.getLogistics().getLogistics_company());
-                    SkipUtils.jumpForMap(OrderDetailActivity.this, DeliveryInfoActivity.class, map,false);
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map.put(Constant.ID, orderDetailData.getLogistics().getLogistics_no());
+                    map.put(Constant.NAME, orderDetailData.getLogistics().getLogistics_company());
+                    SkipUtils.jumpForMap(OrderDetailActivity.this, DeliveryInfoActivity.class, map, false);
                 }
                 break;
 
@@ -289,8 +289,9 @@ public class OrderDetailActivity extends BaseActivity {
     };
 
     private Context mContext;
+
     private void callKefu() {
-        mContext=this;
+        mContext = this;
         MQConfig.init(this, "c614316d10c490745a53e25e7480b078", new OnInitCallback() {
             @Override
             public void onSuccess(String clientId) {
@@ -300,7 +301,7 @@ public class OrderDetailActivity extends BaseActivity {
 
             @Override
             public void onFailure(int code, String message) {
-                T.show(mContext,message);
+                T.show(mContext, message);
             }
         });
     }
@@ -313,7 +314,7 @@ public class OrderDetailActivity extends BaseActivity {
             map.put(Constant.PRICE, orderDetailData.getOrder().getReal_fee());
             SkipUtils.jumpForMap(OrderDetailActivity.this, ShopCashierActivity.class, map, false);
         } else if ("确认收货".equals(submitStr)) {
-                makeSure();
+            makeSure();
         } else if ("申请退款".equals(submitStr)) {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put(Constant.LIST, orderDetailData);

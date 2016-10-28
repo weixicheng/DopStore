@@ -61,7 +61,7 @@ public class ReChargeActivity extends BaseActivity {
     }
 
     private void initView() {
-        httpHelper=CommHttp.getInstance();
+        httpHelper = CommHttp.getInstance();
         setCustomTitle("收银台", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         balanceLy = (RelativeLayout) findViewById(R.id.cashier_balance_layout);

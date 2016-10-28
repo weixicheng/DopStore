@@ -8,7 +8,7 @@ import java.util.List;
  * 类别：
  */
 
-public class ShopListData implements Serializable{
+public class ShopListData implements Serializable {
     private String error_code;
     private List<ShopData> items;
 

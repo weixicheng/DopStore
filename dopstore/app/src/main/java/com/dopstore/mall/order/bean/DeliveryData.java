@@ -8,7 +8,7 @@ import java.util.List;
  * 类别：
  */
 
-public class DeliveryData implements Serializable{
+public class DeliveryData implements Serializable {
     private String error_code;
     private String logistics_no;
     private String logistics_company_name;
@@ -46,7 +46,7 @@ public class DeliveryData implements Serializable{
         this.logistics_list = logistics_list;
     }
 
-   public class DeliveryListData implements Serializable{
+    public class DeliveryListData implements Serializable {
         private String logistics_id;
         private String logistics_zone;
         private String logistics_remark;
@@ -76,12 +76,12 @@ public class DeliveryData implements Serializable{
             this.logistics_remark = logistics_remark;
         }
 
-       public long getLogistics_time() {
-           return logistics_time;
-       }
+        public long getLogistics_time() {
+            return logistics_time;
+        }
 
-       public void setLogistics_time(long logistics_time) {
-           this.logistics_time = logistics_time;
-       }
-   }
+        public void setLogistics_time(long logistics_time) {
+            this.logistics_time = logistics_time;
+        }
+    }
 }

@@ -108,7 +108,7 @@ public class MainSportFragment extends Fragment implements OnRefreshListener<Scr
 
     public MainSportFragment(Context context) {
         this.context = context;
-        httpHelper=CommHttp.getInstance();
+        httpHelper = CommHttp.getInstance();
     }
 
     @Nullable
@@ -252,7 +252,7 @@ public class MainSportFragment extends Fragment implements OnRefreshListener<Scr
                             }
                             rollHeaderView.setVisibility(View.VISIBLE);
                             setAdvertisementData();
-                        }else{
+                        } else {
                             rollHeaderView.setVisibility(View.GONE);
                         }
                     } else {
@@ -282,7 +282,7 @@ public class MainSportFragment extends Fragment implements OnRefreshListener<Scr
             @Override
             public void success(String body) {
                 errorLayout.setVisibility(View.GONE);
-                if (isRefresh){
+                if (isRefresh) {
                     aList.clear();
                 }
                 analysisData(body);
@@ -337,7 +337,7 @@ public class MainSportFragment extends Fragment implements OnRefreshListener<Scr
                 imgUrlList.add(carouselData.getPicture());
             }
             rollHeaderView.setImgUrlData(imgUrlList);
-        }else {
+        } else {
             rollHeaderView.setVisibility(View.GONE);
         }
         rollHeaderView.setOnHeaderViewClickListener(new RollHeaderView.HeaderViewClickListener() {
@@ -437,7 +437,6 @@ public class MainSportFragment extends Fragment implements OnRefreshListener<Scr
     };
 
 
-
     private final static int UPDATA_DATA_CODE = 2;
     private final static int UPDATA_NFC_CODE = 3;
     private final static int UPDATA_OTHER_CODE = 4;
@@ -476,7 +475,7 @@ public class MainSportFragment extends Fragment implements OnRefreshListener<Scr
                 tabAdapter.notifyDataSetChanged();
             }
         }
-        pullToRefreshView.scrollTo(0,0);
+        pullToRefreshView.scrollTo(0, 0);
         eScrollView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -563,7 +562,7 @@ public class MainSportFragment extends Fragment implements OnRefreshListener<Scr
                     SkipUtils.jumpForMap(context, ActivityDetailActivity.class, map, false);
                 }
             });
-            pullToRefreshView.scrollTo(0,0);
+            pullToRefreshView.scrollTo(0, 0);
         }
     }
 
@@ -582,13 +581,13 @@ public class MainSportFragment extends Fragment implements OnRefreshListener<Scr
         } else {
             listView.setAdapter(new ActivityAdapter(context, aList, 1));
         }
-        pullToRefreshView.scrollTo(0,0);
+        pullToRefreshView.scrollTo(0, 0);
     }
 
     private void refreshOtherAdapter() {
 
         listView.setAdapter(new ActivityAdapter(context, aList, 0));
-        pullToRefreshView.scrollTo(0,0);
+        pullToRefreshView.scrollTo(0, 0);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -686,7 +685,7 @@ public class MainSportFragment extends Fragment implements OnRefreshListener<Scr
             isRefresh = true;
             isUpRefresh = false;
             if (isRefresh) {
-                page=1;
+                page = 1;
                 if (viewType == 0) {
                     aList.clear();
                     getTdata("");
@@ -703,7 +702,7 @@ public class MainSportFragment extends Fragment implements OnRefreshListener<Scr
             pullToRefreshView.getLoadingLayoutProxy().setPullLabel("上拉加载更多");
             pullToRefreshView.getLoadingLayoutProxy().setReleaseLabel("释放开始加载");
             isUpRefresh = true;
-            isRefresh=false;
+            isRefresh = false;
             if (isUpRefresh) {
                 page = page + 1;
                 if (viewType == 0) {

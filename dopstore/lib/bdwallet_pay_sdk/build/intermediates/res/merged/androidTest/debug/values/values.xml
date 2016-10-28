@@ -153,7 +153,9 @@
     <string name="bd_wallet_pay_security_prompt_set">立即设置</string>
     <string name="bd_wallet_pay_security_protection">支付安全防护</string>
     <string name="bd_wallet_pay_security_protection_install">立即下载安装</string>
-    <string name="bd_wallet_pay_security_protection_message_install">百度手机卫士将为您提供24小时支付安全防护，保障手机支付无忧</string>
+    <string name="bd_wallet_pay_security_protection_message_install">
+        百度手机卫士将为您提供24小时支付安全防护，保障手机支付无忧
+    </string>
     <string name="bd_wallet_pay_security_protection_message_update">为了全面保护手机安全，请马上升级百度手机卫士</string>
     <string name="bd_wallet_pay_security_protection_update">立即下载升级</string>
     <string name="bd_wallet_pay_security_services_tip">百度钱包24小时为您服务：</string>
@@ -253,7 +255,9 @@
     <string name="ebpay_last_nums">尾号</string>
     <string name="ebpay_loading">正在加载…</string>
     <string name="ebpay_login">登录</string>
-    <string name="ebpay_mobile_tip">银行预留手机号是您在银行办理该卡时所填写的手机号。\n\n如果您没有填写过或已忘记填写的号码，请联系银行客服增加或更新您的资料。</string>
+    <string name="ebpay_mobile_tip">
+        银行预留手机号是您在银行办理该卡时所填写的手机号。\n\n如果您没有填写过或已忘记填写的号码，请联系银行客服增加或更新您的资料。
+    </string>
     <string name="ebpay_modified_pwd">修改手机支付密码</string>
     <string name="ebpay_modify_success">修改成功</string>
     <string name="ebpay_musteasypay_activity">优惠券需和银行卡搭配支付，请先绑定一张银行卡</string>
@@ -282,8 +286,10 @@
     <string name="ebpay_not_exit">取消</string>
     <string name="ebpay_only_complete_top_left_tip">请绑定本人银行卡，百度钱包保障您的用卡安全，请放心填写</string>
     <string name="ebpay_operation_tip">请按下面的步骤依次确认解决问题：\n1.请确认该预留手机号是否为当前使用手机号
-        \n2.请查看短信是否被安全软件拦截\n3.由于运营商网络原因，可能存在短信延迟，请耐心等待或稍后重试\n4.若银行预留手机号已停用，请联系银行客服处理</string>
-    <string name="ebpay_operation_tip_baidu_service_phonenum">5.获取更多帮助，可联系百度客服\n400–898–8855</string>
+        \n2.请查看短信是否被安全软件拦截\n3.由于运营商网络原因，可能存在短信延迟，请耐心等待或稍后重试\n4.若银行预留手机号已停用，请联系银行客服处理
+    </string>
+    <string name="ebpay_operation_tip_baidu_service_phonenum">5.获取更多帮助，可联系百度客服\n400–898–8855
+    </string>
     <string name="ebpay_order_confirm">百度钱包优惠</string>
     <string name="ebpay_order_no">订单编号：</string>
     <string name="ebpay_overdue_tip">有效期至 %1$s</string>
@@ -456,7 +462,8 @@
     <style name="bd_wallet_custom_dialog_theme" parent="@android:style/Theme.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
-    <style name="bd_wallet_plugin_update_progressbar" parent="@android:style/Widget.ProgressBar.Horizontal">
+    <style name="bd_wallet_plugin_update_progressbar"
+        parent="@android:style/Widget.ProgressBar.Horizontal">
         <item name="android:maxHeight">50dip</item>
         <item name="android:minHeight">8dip</item>
         <item name="android:indeterminateOnly">false</item>

@@ -9,7 +9,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dopstore.mall.R;
-import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.view.CustomProDialog;
 import com.dopstore.mall.view.addresspicker.wheel.widget.model.CityModel;
@@ -73,7 +72,7 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         MyApplication.getInstance().addActivity(this);
         ShareSDK.initSDK(this);
-        customProDialog=new CustomProDialog(this);
+        customProDialog = new CustomProDialog(this);
     }
 
 

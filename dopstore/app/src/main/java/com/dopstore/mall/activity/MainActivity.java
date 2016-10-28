@@ -289,11 +289,11 @@ public class MainActivity extends BaseActivity {
             } else if (action.equals(Constant.BACK_CART_DATA)) {
                 setTab(ROB_CODE);
                 viewPager.setCurrentItem(ROB_CODE);
-            }else if (action.equals(Constant.BACK_CART_REFRESH_DATA)){
-                if (trolleyFragment!=null){
+            } else if (action.equals(Constant.BACK_CART_REFRESH_DATA)) {
+                if (trolleyFragment != null) {
                     trolleyFragment.loadData();
                 }
-            }else if (action.equals(Constant.REFRESH_MAIN_CODE)){
+            } else if (action.equals(Constant.REFRESH_MAIN_CODE)) {
                 setTab(MAIN_CODE);
                 viewPager.setCurrentItem(MAIN_CODE);
             }

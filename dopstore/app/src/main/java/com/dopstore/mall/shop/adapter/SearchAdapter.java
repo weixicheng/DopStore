@@ -28,7 +28,7 @@ public class SearchAdapter extends BaseAdapter {
     public SearchAdapter(Context context, List<MainTabData> list) {
         this.context = context;
         this.list = list;
-        imageLoader=ImageLoader.getInstance();
+        imageLoader = ImageLoader.getInstance();
     }
 
     @Override

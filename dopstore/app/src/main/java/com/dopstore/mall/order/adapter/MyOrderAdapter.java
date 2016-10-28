@@ -26,7 +26,7 @@ public class MyOrderAdapter extends BaseAdapter {
         super();
         this.items = items;
         mInflater = LayoutInflater.from(context);
-        imageLoader=ImageLoader.getInstance();
+        imageLoader = ImageLoader.getInstance();
     }
 
     @Override
@@ -64,23 +64,23 @@ public class MyOrderAdapter extends BaseAdapter {
         if (items != null && items.size() > 0) {
             final OrderData data = items.get(position);
             if (data != null) {
-                holder.id.setText("订单号:"+data.getOrder_num());
-                List<OrderDataData> goods=data.getGoods_relateds();
-                if (goods!=null&&goods.size()>0) {
+                holder.id.setText("订单号:" + data.getOrder_num());
+                List<OrderDataData> goods = data.getGoods_relateds();
+                if (goods != null && goods.size() > 0) {
                     holder.num.setText("x " + goods.get(0).getGoods_num());
                     holder.type.setText(goods.get(0).getGoods_sku_str());
                     holder.title.setText(goods.get(0).getGoods_name());
-                    holder.price.setText("￥ "+goods.get(0).getGoods_price());
-                    imageLoader.displayImage(goods.get(0).getGoods_cover()+"?imageView2/1/w/182/h/182", holder.imageView);
-                }else {
+                    holder.price.setText("￥ " + goods.get(0).getGoods_price());
+                    imageLoader.displayImage(goods.get(0).getGoods_cover() + "?imageView2/1/w/182/h/182", holder.imageView);
+                } else {
                     holder.num.setText("x 0");
                     holder.type.setText("");
                     holder.title.setText("");
                     holder.price.setText("￥ 0.0");
                     imageLoader.displayImage("", holder.imageView);
                 }
-                String status=data.getStatus();
-                String statusStr=getType(status);
+                String status = data.getStatus();
+                String statusStr = getType(status);
                 holder.state.setText(statusStr);
 
             }
@@ -88,34 +88,34 @@ public class MyOrderAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private String getType(String status){
-        String nameStr="";
-        if ("0".equals(status)){
-            nameStr="待下单";
-        }else if ("1".equals(status)){
-            nameStr="付款成功";
-        }else if ("2".equals(status)){
-            nameStr="订单取消";
-        }else if ("3".equals(status)){
-            nameStr="待发货";
-        }else if ("4".equals(status)){
-            nameStr="配送中";
-        }else if ("5".equals(status)){
-            nameStr="已完成";
-        }else if ("6".equals(status)){
-            nameStr="退款申请中";
-        }else if ("7".equals(status)){
-            nameStr="退款中";
-        }else if ("8".equals(status)){
-            nameStr="退款成功";
-        }else if ("9".equals(status)){
-            nameStr="等待付款";
+    private String getType(String status) {
+        String nameStr = "";
+        if ("0".equals(status)) {
+            nameStr = "待下单";
+        } else if ("1".equals(status)) {
+            nameStr = "付款成功";
+        } else if ("2".equals(status)) {
+            nameStr = "订单取消";
+        } else if ("3".equals(status)) {
+            nameStr = "待发货";
+        } else if ("4".equals(status)) {
+            nameStr = "配送中";
+        } else if ("5".equals(status)) {
+            nameStr = "已完成";
+        } else if ("6".equals(status)) {
+            nameStr = "退款申请中";
+        } else if ("7".equals(status)) {
+            nameStr = "退款中";
+        } else if ("8".equals(status)) {
+            nameStr = "退款成功";
+        } else if ("9".equals(status)) {
+            nameStr = "等待付款";
         }
-        return  nameStr;
+        return nameStr;
     }
 
     public void UpData(List<OrderData> items) {
-        this.items=items;
+        this.items = items;
         notifyDataSetChanged();
     }
 

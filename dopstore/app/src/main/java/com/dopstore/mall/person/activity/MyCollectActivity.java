@@ -69,7 +69,7 @@ public class MyCollectActivity extends BaseActivity {
 
 
     private void initView() {
-        httpHelper=CommHttp.getInstance();
+        httpHelper = CommHttp.getInstance();
         setCustomTitle("我的收藏", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         rightTv = (TextView) findViewById(R.id.title_right_textButton);

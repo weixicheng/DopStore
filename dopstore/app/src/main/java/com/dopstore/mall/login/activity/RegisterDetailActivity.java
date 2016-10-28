@@ -14,10 +14,10 @@ import android.widget.TextView;
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.MainActivity;
 import com.dopstore.mall.activity.bean.CityBean;
-import com.dopstore.mall.login.bean.UserData;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.login.Adapter.BabyAdapter;
 import com.dopstore.mall.login.bean.DetailData;
+import com.dopstore.mall.login.bean.UserData;
 import com.dopstore.mall.time.TimePopupWindow;
 import com.dopstore.mall.util.ACache;
 import com.dopstore.mall.util.CommHttp;
@@ -77,7 +77,7 @@ public class RegisterDetailActivity extends BaseActivity {
 
     private void initView() {
         aCache = ACache.get(this);
-        httpHelper=CommHttp.getInstance();
+        httpHelper = CommHttp.getInstance();
         Map<String, Object> intentMap = SkipUtils.getMap(this);
         list = (List<DetailData>) intentMap.get(Constant.LIST);
         v_code = intentMap.get(Constant.V_CODE).toString();
@@ -159,7 +159,7 @@ public class RegisterDetailActivity extends BaseActivity {
 
 
     private void registData() {
-        JSONArray ja=new JSONArray();
+        JSONArray ja = new JSONArray();
         for (int i = 0; i < list.size(); i++) {
             ja.put(list.get(i).getId());
         }
@@ -179,7 +179,7 @@ public class RegisterDetailActivity extends BaseActivity {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
                     if ("0".equals(code)) {
-                        String tokenStr=jo.optString(Constant.TOKEN);
+                        String tokenStr = jo.optString(Constant.TOKEN);
                         UserUtils.setToken(RegisterDetailActivity.this, tokenStr);
                         JSONObject user = jo.optJSONObject(Constant.USER);
                         JSONArray citys = jo.optJSONArray(Constant.CITYS);
@@ -207,7 +207,7 @@ public class RegisterDetailActivity extends BaseActivity {
                         data.setMobile(user.optString(Constant.MOBILE));
                         data.setAddress(user.optString(Constant.CITY));
                         data.setBalance(user.optDouble(Constant.BALANCE));
-                        String user_id=user.optString(Constant.ID);
+                        String user_id = user.optString(Constant.ID);
                         setAlias(user_id);
                         UserUtils.setData(RegisterDetailActivity.this, data);
                         Intent intent = new Intent();

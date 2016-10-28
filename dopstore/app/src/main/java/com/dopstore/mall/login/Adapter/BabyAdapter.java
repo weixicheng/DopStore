@@ -30,7 +30,7 @@ public class BabyAdapter extends BaseAdapter {
     public BabyAdapter(Context context, List<DetailData> list) {
         this.context = context;
         this.list = list;
-        imageLoader=ImageLoader.getInstance();
+        imageLoader = ImageLoader.getInstance();
     }
 
     @Override

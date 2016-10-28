@@ -30,22 +30,22 @@ public class UserUtils {
         editor.putLong(Constant.BABY_BIRTHDAY, userData.getBaby_birthday());
         editor.putString(Constant.CITY, userData.getAddress());
         editor.putString(Constant.MOBILE, userData.getMobile());
-        double balance=userData.getBalance();
-        float baF=Float.valueOf(balance+"");
+        double balance = userData.getBalance();
+        float baF = Float.valueOf(balance + "");
         editor.putFloat(Constant.BALANCE, baF);
         editor.commit();
     }
 
-    public static void setToken(Context context,String token){
+    public static void setToken(Context context, String token) {
         SharedPreferences sp = context.getSharedPreferences(TOKEN_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
-        editor.putString("token",token);
+        editor.putString("token", token);
         editor.commit();
     }
 
-    public static String getToken(Context context){
+    public static String getToken(Context context) {
         SharedPreferences sp = context.getSharedPreferences(TOKEN_NAME, Context.MODE_PRIVATE);
-        return sp.getString("token","");
+        return sp.getString("token", "");
     }
 
     public static boolean haveLogin(Context context) {
@@ -108,11 +108,11 @@ public class UserUtils {
 
     public static String getBalance(Context context) {
         SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
-        float balance=sp.getFloat(Constant.BALANCE, 0);
-        return balance+"";
+        float balance = sp.getFloat(Constant.BALANCE, 0);
+        return balance + "";
     }
 
-    public static void setBalance(Context context,String price) {
+    public static void setBalance(Context context, String price) {
         SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putFloat(Constant.BALANCE, Float.valueOf(price));

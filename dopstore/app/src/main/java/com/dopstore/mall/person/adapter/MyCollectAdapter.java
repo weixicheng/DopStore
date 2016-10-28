@@ -27,7 +27,7 @@ public class MyCollectAdapter extends BaseAdapter {
         this.context = context;
         this.mListData = mListData;
         this.mCheckAll = mCheckAll;
-        imageLoader= ImageLoader.getInstance();
+        imageLoader = ImageLoader.getInstance();
     }
 
     @Override
@@ -62,19 +62,19 @@ public class MyCollectAdapter extends BaseAdapter {
         }
 
         MyCollectData data = mListData.get(position);
-        imageLoader.displayImage(data.getImage()+"?imageView2/1/w/182/h/182", holder.imageView);
+        imageLoader.displayImage(data.getImage() + "?imageView2/1/w/182/h/182", holder.imageView);
         holder.title.setText(data.getTitle());
         holder.num.setText("￥" + Float.parseFloat(data.getPrice()));
-        String isShow=data.getIsShow();
-        if (isShow.equals("1")){
+        String isShow = data.getIsShow();
+        if (isShow.equals("1")) {
             holder.checkBox.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             holder.checkBox.setVisibility(View.GONE);
         }
-        boolean isSelect=data.isChoose();
-        if (isSelect){
+        boolean isSelect = data.isChoose();
+        if (isSelect) {
             holder.checkBox.setChecked(true);
-        }else {
+        } else {
             holder.checkBox.setChecked(false);
         }
         holder.checkBox.setOnClickListener(new View.OnClickListener() {
@@ -87,15 +87,15 @@ public class MyCollectAdapter extends BaseAdapter {
                 } else {
                     mListData.get(position).setChoose(true);
                 }
-                int allCount=0;
+                int allCount = 0;
                 for (MyCollectData bean1 : mListData) {
                     if (bean1.isChoose() == true) {
-                        allCount=allCount+1;
+                        allCount = allCount + 1;
                     }
                 }
-                if (allCount==mListData.size()){
+                if (allCount == mListData.size()) {
                     mCheckAll.setChecked(true);
-                }else {
+                } else {
                     mCheckAll.setChecked(false);
                 }
                 notifyDataSetChanged();
@@ -106,9 +106,9 @@ public class MyCollectAdapter extends BaseAdapter {
     }
 
     public void upDataList(List<MyCollectData> mListData, CheckBox mCheckAll) {
-            this.mCheckAll=mCheckAll;
-            this.mListData=mListData;
-            notifyDataSetChanged();
+        this.mCheckAll = mCheckAll;
+        this.mListData = mListData;
+        notifyDataSetChanged();
     }
 }
 

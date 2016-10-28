@@ -47,14 +47,14 @@ public class MyOrderActivity extends BaseActivity implements OnRefreshListener {
     private TextView loadTv;
     private LinearLayout emptyLayout;
     private View emptyV;
-    private TextView emptyTv,emptyLoadTV;
+    private TextView emptyTv, emptyLoadTV;
     private List<OrderData> items = new ArrayList<OrderData>();
     private String titleStr = "我的订单";
     private int typeId = 0;
     private String idStr = "";
     private boolean isRefresh = false;
     private boolean isUpRefresh = false;
-    private int page=1;
+    private int page = 1;
     private MyOrderAdapter myOrderAdapter;
     private CommHttp httpHelper;
 
@@ -68,7 +68,7 @@ public class MyOrderActivity extends BaseActivity implements OnRefreshListener {
     }
 
     private void initView() {
-        httpHelper=CommHttp.getInstance();
+        httpHelper = CommHttp.getInstance();
         Map<String, Object> map = SkipUtils.getMap(this);
         if (map == null) return;
         String type = map.get("title").toString();
@@ -120,7 +120,7 @@ public class MyOrderActivity extends BaseActivity implements OnRefreshListener {
         emptyLoadTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SkipUtils.directJump(MyOrderActivity.this, MainActivity.class,true);
+                SkipUtils.directJump(MyOrderActivity.this, MainActivity.class, true);
             }
         });
     }
@@ -132,7 +132,7 @@ public class MyOrderActivity extends BaseActivity implements OnRefreshListener {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Map<String, Object> map = new HashMap<String, Object>();
-                map.put(Constant.ID, items.get(i-1).getOrder_num());
+                map.put(Constant.ID, items.get(i - 1).getOrder_num());
                 SkipUtils.jumpForMapResult(MyOrderActivity.this, OrderDetailActivity.class, map, DETAIL_BACK_CODE);
             }
         });
@@ -142,9 +142,9 @@ public class MyOrderActivity extends BaseActivity implements OnRefreshListener {
         String id = UserUtils.getId(this);
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("pageSize", "10");
-        map.put("page", page+"");
+        map.put("page", page + "");
         map.put("user_id", id);
-        if (!TextUtils.isEmpty(idStr)){
+        if (!TextUtils.isEmpty(idStr)) {
             map.put("status", idStr);
         }
         httpHelper.post(this, URL.GOODS_ORDERS, map, new CommHttp.HttpCallBack() {
@@ -159,7 +159,7 @@ public class MyOrderActivity extends BaseActivity implements OnRefreshListener {
                         OrderOtherData middleData = gson.fromJson(
                                 body, OrderOtherData.class);
                         List<OrderData> list = middleData.getOrders();
-                        if (isRefresh){
+                        if (isRefresh) {
                             items.clear();
                         }
                         items.addAll(list);
@@ -197,15 +197,15 @@ public class MyOrderActivity extends BaseActivity implements OnRefreshListener {
     };
 
     private void refreshListView() {
-        if (items.size()>0){
+        if (items.size() > 0) {
             emptyLayout.setVisibility(View.GONE);
-        }else {
+        } else {
             emptyLayout.setVisibility(View.VISIBLE);
         }
-        if (myOrderAdapter==null){
-            myOrderAdapter=new MyOrderAdapter(this, items);
+        if (myOrderAdapter == null) {
+            myOrderAdapter = new MyOrderAdapter(this, items);
             pullToRefreshView.setAdapter(myOrderAdapter);
-        }else {
+        } else {
             myOrderAdapter.UpData(items);
         }
     }
@@ -240,7 +240,7 @@ public class MyOrderActivity extends BaseActivity implements OnRefreshListener {
     private void dismissRefresh() {
         if (isRefresh) {
             isRefresh = false;
-        }else if (isUpRefresh){
+        } else if (isUpRefresh) {
             isUpRefresh = false;
         }
         pullToRefreshView.onRefreshComplete();
@@ -256,7 +256,7 @@ public class MyOrderActivity extends BaseActivity implements OnRefreshListener {
             isUpRefresh = false;
             if (isRefresh) {
                 items.clear();
-                page=1;
+                page = 1;
                 getMyOrder();
             }
 
@@ -266,10 +266,10 @@ public class MyOrderActivity extends BaseActivity implements OnRefreshListener {
             pullToRefreshView.getLoadingLayoutProxy().setRefreshingLabel("正在加载");
             pullToRefreshView.getLoadingLayoutProxy().setPullLabel("上拉加载更多");
             pullToRefreshView.getLoadingLayoutProxy().setReleaseLabel("释放开始加载");
-            isUpRefresh=true;
+            isUpRefresh = true;
             isRefresh = false;
-            if (isUpRefresh){
-                page=page+1;
+            if (isUpRefresh) {
+                page = page + 1;
                 getMyOrder();
             }
         }

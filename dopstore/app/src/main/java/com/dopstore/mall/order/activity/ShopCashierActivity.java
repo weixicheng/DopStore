@@ -14,8 +14,8 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.bean.CityBean;
-import com.dopstore.mall.login.bean.UserData;
 import com.dopstore.mall.base.BaseActivity;
+import com.dopstore.mall.login.bean.UserData;
 import com.dopstore.mall.util.ACache;
 import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
@@ -68,8 +68,8 @@ public class ShopCashierActivity extends BaseActivity {
     }
 
     private void initView() {
-        httpHelper=CommHttp.getInstance();
-        aCache=ACache.get(this);
+        httpHelper = CommHttp.getInstance();
+        aCache = ACache.get(this);
         setCustomTitle("收银台", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         balanceLy = (RelativeLayout) findViewById(R.id.cashier_balance_layout);
@@ -164,11 +164,11 @@ public class ShopCashierActivity extends BaseActivity {
         map.put("order_num", order_id);
         if (!"balance".equals(type)) {
             map.put("channel", type);
-        }else {
-            String userId=UserUtils.getId(this);
-            map.put("user_id",userId);
+        } else {
+            String userId = UserUtils.getId(this);
+            map.put("user_id", userId);
         }
-        final String channelType=type;
+        final String channelType = type;
         httpHelper.post(this, URL.CART_PAYMENT, map, new CommHttp.HttpCallBack() {
             @Override
             public void success(String body) {
@@ -182,7 +182,7 @@ public class ShopCashierActivity extends BaseActivity {
                             msg.what = PAY_CHARGE_CODE;
                             msg.obj = charge.toString();
                             handler.sendMessage(msg);
-                        }else {
+                        } else {
                             upUserData();
                         }
                     } else {
@@ -203,8 +203,8 @@ public class ShopCashierActivity extends BaseActivity {
 
 
     private void upUserData() {
-        String user_id=UserUtils.getId(this);
-        httpHelper.get(this, URL.USER_DETAIL+user_id,new CommHttp.HttpCallBack() {
+        String user_id = UserUtils.getId(this);
+        httpHelper.get(this, URL.USER_DETAIL + user_id, new CommHttp.HttpCallBack() {
             @Override
             public void success(String body) {
                 AnalyData(body);
@@ -222,7 +222,7 @@ public class ShopCashierActivity extends BaseActivity {
             JSONObject jo = new JSONObject(body);
             String code = jo.optString(Constant.ERROR_CODE);
             if ("0".equals(code)) {
-                String tokenStr=jo.optString(Constant.TOKEN);
+                String tokenStr = jo.optString(Constant.TOKEN);
                 UserUtils.setToken(ShopCashierActivity.this, tokenStr);
                 JSONObject user = jo.optJSONObject(Constant.USER);
                 JSONArray citys = jo.optJSONArray(Constant.CITYS);
@@ -254,9 +254,9 @@ public class ShopCashierActivity extends BaseActivity {
                 Intent it = new Intent();
                 it.setAction(Constant.UP_USER_DATA);
                 sendBroadcast(it);
-                Map<String,Object> map=new HashMap<String,Object>();
-                map.put(Constant.ID,order_id);
-                SkipUtils.jumpForMap(ShopCashierActivity.this, ShopPaySuccessActivity.class,map, true);
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put(Constant.ID, order_id);
+                SkipUtils.jumpForMap(ShopCashierActivity.this, ShopPaySuccessActivity.class, map, true);
             } else {
                 String msg = jo.optString(Constant.ERROR_MSG);
                 T.show(ShopCashierActivity.this, msg);
@@ -321,9 +321,9 @@ public class ShopCashierActivity extends BaseActivity {
                 String result = data.getExtras().getString("pay_result");
                 String errorMsg = data.getExtras().getString("error_msg"); // 错误信息
                 if (result.equals("success")) {
-                    Map<String,Object> map=new HashMap<String,Object>();
-                    map.put(Constant.ID,order_id);
-                    SkipUtils.jumpForMap(ShopCashierActivity.this, ShopPaySuccessActivity.class,map, true);
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map.put(Constant.ID, order_id);
+                    SkipUtils.jumpForMap(ShopCashierActivity.this, ShopPaySuccessActivity.class, map, true);
                 } else if (result.equals("fail")) {
                     T.show(ShopCashierActivity.this, "支付失败");
                 } else if (result.equals("cancel")) {

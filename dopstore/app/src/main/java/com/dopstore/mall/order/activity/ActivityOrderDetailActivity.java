@@ -45,7 +45,7 @@ public class ActivityOrderDetailActivity extends BaseActivity {
     private Button submitBt, kFBt;
     private ImageView shopImage, zxingImage;
     private RelativeLayout submitLayout;
-    private LinearLayout zxingLayout, bigZxingLayout,hintMsgLayout;
+    private LinearLayout zxingLayout, bigZxingLayout, hintMsgLayout;
     private ImageView bigZxingImage;
     private String id;
     private ActivityOrderDetailBean detailBean;
@@ -63,8 +63,8 @@ public class ActivityOrderDetailActivity extends BaseActivity {
     }
 
     private void initView() {
-        imageLoader=ImageLoader.getInstance();
-        httpHelper=CommHttp.getInstance();
+        imageLoader = ImageLoader.getInstance();
+        httpHelper = CommHttp.getInstance();
         setCustomTitle("订单详情", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         idTv = (TextView) findViewById(R.id.activity_detail_id);
@@ -206,8 +206,9 @@ public class ActivityOrderDetailActivity extends BaseActivity {
         }
     };
     private Context mContext;
+
     private void callKefu() {
-        mContext=this;
+        mContext = this;
         MQConfig.init(this, "c614316d10c490745a53e25e7480b078", new OnInitCallback() {
             @Override
             public void onSuccess(String clientId) {
@@ -217,7 +218,7 @@ public class ActivityOrderDetailActivity extends BaseActivity {
 
             @Override
             public void onFailure(int code, String message) {
-                        T.show(mContext,message);
+                T.show(mContext, message);
             }
         });
     }
@@ -337,7 +338,7 @@ public class ActivityOrderDetailActivity extends BaseActivity {
             break;
         }
         stateTv.setText(typeName);
-        imageLoader.displayImage(detailBean.getPic()+"?imageView2/1/w/180/h/180", shopImage);
+        imageLoader.displayImage(detailBean.getPic() + "?imageView2/1/w/180/h/180", shopImage);
 
         titleTv.setText(detailBean.getName());
         addressTv.setText("地址:" + detailBean.getAddress());
@@ -345,10 +346,10 @@ public class ActivityOrderDetailActivity extends BaseActivity {
         timeTv.setText(time);
         typeTv.setText(detailBean.getCategory());
         priceTv.setText("¥" + detailBean.getPrice());
-        String hintMsg=detailBean.getNote();
-        if (TextUtils.isEmpty(hintMsg)){
+        String hintMsg = detailBean.getNote();
+        if (TextUtils.isEmpty(hintMsg)) {
             hintMsgLayout.setVisibility(View.GONE);
-        }else {
+        } else {
             hintMsgLayout.setVisibility(View.VISIBLE);
             userMsgTv.setText(hintMsg);
         }

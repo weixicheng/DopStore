@@ -49,7 +49,7 @@ public class TrolleyAdapter extends BaseAdapter {
         this.totalPrice = totalPrice;
         this.mCheckAll = mCheckAll;
         httpHelper = CommHttp.getInstance();
-        imageLoader=ImageLoader.getInstance();
+        imageLoader = ImageLoader.getInstance();
     }
 
     @Override
@@ -99,7 +99,7 @@ public class TrolleyAdapter extends BaseAdapter {
         holder.intro.setText(data.getGoods_sku_str());
         holder.price.setText("￥" + data.getPrice());
         holder.carNum.setText(data.getCarNum() + "");
-        imageLoader.displayImage(data.getCover()+"?imageView2/1/w/96/h/96", holder.image);
+        imageLoader.displayImage(data.getCover() + "?imageView2/1/w/96/h/96", holder.image);
         boolean selected = data.isChoose();
         holder.checkBox.setChecked(selected);
         holder.checkBox.setOnClickListener(new View.OnClickListener() {
@@ -114,22 +114,22 @@ public class TrolleyAdapter extends BaseAdapter {
                     mListData.get(position).setChoose(true);
                     totalPrice += bean.getCarNum() * bean.getPrice();
                 }
-                String totalStr="";
-                if (Utils.isDouble(totalPrice.toString())){
-                    totalStr=Utils.format(totalPrice);
-                }else {
-                    totalStr=totalPrice+"";
+                String totalStr = "";
+                if (Utils.isDouble(totalPrice.toString())) {
+                    totalStr = Utils.format(totalPrice);
+                } else {
+                    totalStr = totalPrice + "";
                 }
                 mPriceAll.setText("￥" + totalStr);
-                int allCount=0;
+                int allCount = 0;
                 for (GoodBean bean1 : mListData) {
                     if (bean1.isChoose() == true) {
-                        allCount=allCount+1;
+                        allCount = allCount + 1;
                     }
                 }
-                if (allCount==mListData.size()){
+                if (allCount == mListData.size()) {
                     mCheckAll.setChecked(true);
-                }else {
+                } else {
                     mCheckAll.setChecked(false);
                 }
                 notifyDataSetChanged();
@@ -142,10 +142,10 @@ public class TrolleyAdapter extends BaseAdapter {
             public void onClick(View v) {
                 GoodBean bean = mListData.get(position);
                 boolean selected = bean.isChoose();
-                if (selected==true) {
+                if (selected == true) {
                     addToService(mListData, position);
-                }else {
-                    T.show(context,"请选中");
+                } else {
+                    T.show(context, "请选中");
                 }
             }
         });
@@ -156,12 +156,12 @@ public class TrolleyAdapter extends BaseAdapter {
             public void onClick(View v) {
                 GoodBean bean = mListData.get(position);
                 boolean selected = bean.isChoose();
-                if (selected==true) {
+                if (selected == true) {
                     if (mListData.get(position).getCarNum() == 1)
                         return;
                     redToService(mListData, position);
-                }else {
-                    T.show(context,"请选中");
+                } else {
+                    T.show(context, "请选中");
                 }
             }
         });
@@ -247,11 +247,11 @@ public class TrolleyAdapter extends BaseAdapter {
                     int position = msg.arg1;
                     mListData.get(position).setCarNum(mListData.get(position).getCarNum() - 1);
                     totalPrice -= mListData.get(position).getPrice();
-                    String totalStr="";
-                    if (Utils.isDouble(totalPrice.toString())){
-                        totalStr=Utils.format(totalPrice);
-                    }else {
-                        totalStr=totalPrice+"";
+                    String totalStr = "";
+                    if (Utils.isDouble(totalPrice.toString())) {
+                        totalStr = Utils.format(totalPrice);
+                    } else {
+                        totalStr = totalPrice + "";
                     }
                     mPriceAll.setText("￥" + totalStr);
                     notifyDataSetChanged();
@@ -261,11 +261,11 @@ public class TrolleyAdapter extends BaseAdapter {
                     int position = msg.arg1;
                     mListData.get(position).setCarNum(mListData.get(position).getCarNum() + 1);
                     totalPrice += mListData.get(position).getPrice();
-                    String totalStr="";
-                    if (Utils.isDouble(totalPrice.toString())){
-                        totalStr=Utils.format(totalPrice);
-                    }else {
-                        totalStr=totalPrice+"";
+                    String totalStr = "";
+                    if (Utils.isDouble(totalPrice.toString())) {
+                        totalStr = Utils.format(totalPrice);
+                    } else {
+                        totalStr = totalPrice + "";
                     }
                     mPriceAll.setText("￥" + totalStr);
                     notifyDataSetChanged();

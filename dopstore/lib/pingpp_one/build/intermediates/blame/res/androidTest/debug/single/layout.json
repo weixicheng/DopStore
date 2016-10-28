@@ -1,26 +1,26 @@
 [
-    {
-        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/androidTest/debug/layout/pingpp_pay_channel_item.xml",
-        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/bundles/debug/res/layout/pingpp_pay_channel_item.xml"
-    },
-    {
-        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/androidTest/debug/layout/cmbkeyboard.xml",
-        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/layout/cmbkeyboard.xml"
-    },
-    {
-        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/androidTest/debug/layout/fragment_pay_way_dialog.xml",
-        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/bundles/debug/res/layout/fragment_pay_way_dialog.xml"
-    },
-    {
-        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/androidTest/debug/layout/pingpp_activity_pay.xml",
-        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/bundles/debug/res/layout/pingpp_activity_pay.xml"
-    },
-    {
-        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/androidTest/debug/layout/activity_pingpp_payment.xml",
-        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/layout/activity_pingpp_payment.xml"
-    },
-    {
-        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/androidTest/debug/layout/pingpp_activity_pay_successed.xml",
-        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/bundles/debug/res/layout/pingpp_activity_pay_successed.xml"
-    }
+  {
+    "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/androidTest/debug/layout/pingpp_pay_channel_item.xml",
+    "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/bundles/debug/res/layout/pingpp_pay_channel_item.xml"
+  },
+  {
+    "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/androidTest/debug/layout/cmbkeyboard.xml",
+    "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/layout/cmbkeyboard.xml"
+  },
+  {
+    "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/androidTest/debug/layout/fragment_pay_way_dialog.xml",
+    "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/bundles/debug/res/layout/fragment_pay_way_dialog.xml"
+  },
+  {
+    "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/androidTest/debug/layout/pingpp_activity_pay.xml",
+    "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/bundles/debug/res/layout/pingpp_activity_pay.xml"
+  },
+  {
+    "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/androidTest/debug/layout/activity_pingpp_payment.xml",
+    "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/layout/activity_pingpp_payment.xml"
+  },
+  {
+    "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/androidTest/debug/layout/pingpp_activity_pay_successed.xml",
+    "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/bundles/debug/res/layout/pingpp_activity_pay_successed.xml"
+  }
 ]

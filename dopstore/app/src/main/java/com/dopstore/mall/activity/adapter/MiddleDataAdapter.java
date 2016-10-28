@@ -26,7 +26,7 @@ public class MiddleDataAdapter extends BaseAdapter {
     public MiddleDataAdapter(Context context, List<ShopData> list) {
         this.context = context;
         this.list = list;
-        imageLoader=ImageLoader.getInstance();
+        imageLoader = ImageLoader.getInstance();
     }
 
     @Override
@@ -58,15 +58,15 @@ public class MiddleDataAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
         if (list.size() > 0) {
-            imageLoader.displayImage(list.get(i).getCover()+"?imageView2/1/w/340/h/340", viewHolder.bigImageView);
+            imageLoader.displayImage(list.get(i).getCover() + "?imageView2/1/w/340/h/340", viewHolder.bigImageView);
             viewHolder.titleTv.setText(list.get(i).getName());
-            viewHolder.priceTv.setText("￥ "+list.get(i).getPrice());
+            viewHolder.priceTv.setText("￥ " + list.get(i).getPrice());
         }
         return view;
     }
 
     public void upData(List<ShopData> datas) {
-        this.list=datas;
+        this.list = datas;
         notifyDataSetChanged();
     }
 

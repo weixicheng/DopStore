@@ -40,7 +40,7 @@ import java.util.Map;
  * Created by 喜成 on 16/9/12.
  * name
  */
-public class ShopListActivity extends BaseActivity implements OnRefreshListener<GridView>{
+public class ShopListActivity extends BaseActivity implements OnRefreshListener<GridView> {
     private TextView firstTv, secondTv, thirdTv, fourTv;
     private View firstv, secondv, thirdv, fourv;
     private PullToRefreshGridView pullToRefreshView;
@@ -54,8 +54,8 @@ public class ShopListActivity extends BaseActivity implements OnRefreshListener<
     private TextView seartchBt;
     private boolean isRefresh = false;
     private boolean isUpRefresh = false;
-    private int page=1;
-    private int viewTYpe=0;
+    private int page = 1;
+    private int viewTYpe = 0;
     private CommHttp httpHelper;
 
     @Override
@@ -67,7 +67,7 @@ public class ShopListActivity extends BaseActivity implements OnRefreshListener<
     }
 
     private void initView() {
-        httpHelper=CommHttp.getInstance();
+        httpHelper = CommHttp.getInstance();
         setCustomTitle("列表", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         firstTv = (TextView) findViewById(R.id.shop_list_first);
@@ -111,10 +111,10 @@ public class ShopListActivity extends BaseActivity implements OnRefreshListener<
      * 排序不考虑
      */
     private void getHotData() {
-        viewTYpe=0;
+        viewTYpe = 0;
         Map<String, Object> map = new HashMap<String, Object>();
         map.put(Constant.PAGESIZE, "10");
-        map.put(Constant.PAGE, page+"");
+        map.put(Constant.PAGE, page + "");
         if (TextUtils.isEmpty(seartchStr)) {
             map.put("category_id", seartchID);
         } else {
@@ -130,7 +130,7 @@ public class ShopListActivity extends BaseActivity implements OnRefreshListener<
                     if ("0".equals(code)) {
                         JSONArray ja = jo.getJSONArray(Constant.ITEMS);
                         if (ja.length() > 0) {
-                            if (isRefresh){
+                            if (isRefresh) {
                                 bottomList.clear();
                             }
                             for (int i = 0; i < ja.length(); i++) {
@@ -223,19 +223,20 @@ public class ShopListActivity extends BaseActivity implements OnRefreshListener<
                     getHotData();
                 }
                 break;
-                case R.id.shop_list_seartch:{
+                case R.id.shop_list_seartch: {
                     seartchData();
-                }break;
+                }
+                break;
             }
         }
     };
 
     private void seartchData() {
-        String seartchStrKey=seartchEt.getText().toString();
-        if (TextUtils.isEmpty(seartchStrKey)){
-            T.show(this,"请输入搜索内容");
+        String seartchStrKey = seartchEt.getText().toString();
+        if (TextUtils.isEmpty(seartchStrKey)) {
+            T.show(this, "请输入搜索内容");
             return;
-        }else {
+        } else {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put(Constant.PAGESIZE, "10");
             map.put(Constant.PAGE, "1");
@@ -245,7 +246,7 @@ public class ShopListActivity extends BaseActivity implements OnRefreshListener<
             } else {
                 map.put("query_str", seartchStrKey);
             }
-            viewTYpe=1;
+            viewTYpe = 1;
             httpHelper.post(this, URL.GOODS_LIST, map, new CommHttp.HttpCallBack() {
                 @Override
                 public void success(String body) {
@@ -256,7 +257,7 @@ public class ShopListActivity extends BaseActivity implements OnRefreshListener<
                         if ("0".equals(code)) {
                             JSONArray ja = jo.getJSONArray(Constant.ITEMS);
                             if (ja.length() > 0) {
-                                if (isRefresh){
+                                if (isRefresh) {
                                     bottomList.clear();
                                 }
                                 for (int i = 0; i < ja.length(); i++) {
@@ -311,7 +312,7 @@ public class ShopListActivity extends BaseActivity implements OnRefreshListener<
         pullToRefreshView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                ShopData data=bottomList.get(i);
+                ShopData data = bottomList.get(i);
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put(Constant.ID, data.getId());
                 map.put(Constant.NAME, data.getName());
@@ -350,9 +351,9 @@ public class ShopListActivity extends BaseActivity implements OnRefreshListener<
             isUpRefresh = false;
             if (isRefresh) {
                 page = 1;
-                if (viewTYpe==0){
+                if (viewTYpe == 0) {
                     getHotData();
-                }else {
+                } else {
                     seartchData();
                 }
             }
@@ -367,9 +368,9 @@ public class ShopListActivity extends BaseActivity implements OnRefreshListener<
             isRefresh = false;
             if (isUpRefresh) {
                 page = page + 1;
-                if (viewTYpe==0){
+                if (viewTYpe == 0) {
                     getHotData();
-                }else {
+                } else {
                     seartchData();
                 }
             }

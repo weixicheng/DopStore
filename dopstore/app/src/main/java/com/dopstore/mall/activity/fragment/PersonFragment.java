@@ -50,7 +50,7 @@ public class PersonFragment extends Fragment {
     private final static int SETTING_CODE = 1;
 
     private View v;
-    
+
     private Context context;
 
     public PersonFragment() {
@@ -70,7 +70,7 @@ public class PersonFragment extends Fragment {
     }
 
     private void initView(View v) {
-        imageLoader=ImageLoader.getInstance();
+        imageLoader = ImageLoader.getInstance();
         orderLayout = (RelativeLayout) v.findViewById(R.id.fragment_person_order_layout);
         orderLayout.setOnClickListener(listener);
         userLayout = (RelativeLayout) v.findViewById(R.id.fragment_person_user_layout);
@@ -137,8 +137,8 @@ public class PersonFragment extends Fragment {
                 case R.id.fragment_person_user_layout: {
                     if (!UserUtils.haveLogin(context)) {
                         SkipUtils.directJump(context, LoginActivity.class, false);
-                    }else {
-                        SkipUtils.directJump(context, MyDetailActivity.class,false);
+                    } else {
+                        SkipUtils.directJump(context, MyDetailActivity.class, false);
                     }
                 }
                 break;
@@ -212,9 +212,9 @@ public class PersonFragment extends Fragment {
                     if (!UserUtils.haveLogin(context)) {
                         SkipUtils.directJump(context, LoginActivity.class, false);
                     } else {
-                        Map<String,Object> map=new HashMap<String,Object>();
-                        map.put(Constant.ID,"0");
-                        SkipUtils.jumpForMap(context, MyAddressActivity.class, map,false);
+                        Map<String, Object> map = new HashMap<String, Object>();
+                        map.put(Constant.ID, "0");
+                        SkipUtils.jumpForMap(context, MyAddressActivity.class, map, false);
                     }
                 }
                 break;

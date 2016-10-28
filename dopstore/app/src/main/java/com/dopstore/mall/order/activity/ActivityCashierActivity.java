@@ -14,8 +14,8 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.bean.CityBean;
-import com.dopstore.mall.login.bean.UserData;
 import com.dopstore.mall.base.BaseActivity;
+import com.dopstore.mall.login.bean.UserData;
 import com.dopstore.mall.util.ACache;
 import com.dopstore.mall.util.CommHttp;
 import com.dopstore.mall.util.Constant;
@@ -46,7 +46,7 @@ import java.util.Map;
 public class ActivityCashierActivity extends BaseActivity {
     private RelativeLayout balanceLy, alipayLy, wechatLy;
     private View bv, av, wv;
-    private TextView priceTv,balanceHintTv;
+    private TextView priceTv, balanceHintTv;
     private Button sureBt;
     private String order_id = "";
     private String order_price = "";
@@ -74,7 +74,7 @@ public class ActivityCashierActivity extends BaseActivity {
 
     private void initView() {
         aCache = ACache.get(this);
-        httpHelper=CommHttp.getInstance();
+        httpHelper = CommHttp.getInstance();
         setCustomTitle("收银台", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         balanceLy = (RelativeLayout) findViewById(R.id.cashier_balance_layout);
@@ -96,27 +96,27 @@ public class ActivityCashierActivity extends BaseActivity {
         Map<String, Object> map = SkipUtils.getMap(this);
         order_id = map.get(Constant.ID).toString();
         order_price = map.get(Constant.PRICE).toString();
-        float price=0;
+        float price = 0;
         if (!TextUtils.isEmpty(order_price)) {
             price = Float.parseFloat(order_price);
             priceTv.setText("¥" + price);
         } else {
-            price=0;
+            price = 0;
             order_price = "0";
             priceTv.setText("¥ 0");
         }
-        String balanceStr=UserUtils.getBalance(this);
-        float balanceF=0;
-        if (TextUtils.isEmpty(balanceStr)){
-            balanceF=0;
-        }else {
-            balanceF=Float.parseFloat(balanceStr);
+        String balanceStr = UserUtils.getBalance(this);
+        float balanceF = 0;
+        if (TextUtils.isEmpty(balanceStr)) {
+            balanceF = 0;
+        } else {
+            balanceF = Float.parseFloat(balanceStr);
         }
-        if (balanceF<price){
+        if (balanceF < price) {
             balanceHintTv.setText("余额不足");
             balanceLy.setOnClickListener(null);
             bv.setBackgroundResource(R.mipmap.checkbox_normal);
-        }else{
+        } else {
             balanceHintTv.setText("余额支付");
             balanceLy.setOnClickListener(listener);
             bv.setBackgroundResource(R.mipmap.checkbox_checked);
@@ -174,7 +174,7 @@ public class ActivityCashierActivity extends BaseActivity {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("order_num", order_id);
         map.put("channel", type);
-        final String channelStr=type;
+        final String channelStr = type;
         httpHelper.post(this, URL.ACTIVITY_PAYMENT, map, new CommHttp.HttpCallBack() {
             @Override
             public void success(String body) {
@@ -182,13 +182,13 @@ public class ActivityCashierActivity extends BaseActivity {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
                     if ("0".equals(code)) {
-                        if (!"balance".equals(channelStr)){
+                        if (!"balance".equals(channelStr)) {
                             JSONObject charge = jo.optJSONObject("charge");
                             Message msg = new Message();
                             msg.what = PAY_CHARGE_CODE;
                             msg.obj = charge.toString();
                             handler.sendMessage(msg);
-                        }else {
+                        } else {
                             upUserData();
                         }
                     } else {
@@ -208,8 +208,8 @@ public class ActivityCashierActivity extends BaseActivity {
     }
 
     private void upUserData() {
-        String user_id=UserUtils.getId(this);
-        httpHelper.get(this, URL.USER_DETAIL+user_id,new CommHttp.HttpCallBack() {
+        String user_id = UserUtils.getId(this);
+        httpHelper.get(this, URL.USER_DETAIL + user_id, new CommHttp.HttpCallBack() {
             @Override
             public void success(String body) {
                 AnalyData(body);
@@ -227,7 +227,7 @@ public class ActivityCashierActivity extends BaseActivity {
             JSONObject jo = new JSONObject(body);
             String code = jo.optString(Constant.ERROR_CODE);
             if ("0".equals(code)) {
-                String tokenStr=jo.optString(Constant.TOKEN);
+                String tokenStr = jo.optString(Constant.TOKEN);
                 UserUtils.setToken(ActivityCashierActivity.this, tokenStr);
                 JSONObject user = jo.optJSONObject(Constant.USER);
                 JSONArray citys = jo.optJSONArray(Constant.CITYS);
@@ -259,9 +259,9 @@ public class ActivityCashierActivity extends BaseActivity {
                 Intent it = new Intent();
                 it.setAction(Constant.UP_USER_DATA);
                 sendBroadcast(it);
-                Map<String,Object> map=new HashMap<>();
-                map.put(Constant.ID,order_id);
-                SkipUtils.jumpForMap(ActivityCashierActivity.this, PaySuccessActivity.class,map, true);
+                Map<String, Object> map = new HashMap<>();
+                map.put(Constant.ID, order_id);
+                SkipUtils.jumpForMap(ActivityCashierActivity.this, PaySuccessActivity.class, map, true);
             } else {
                 String msg = jo.optString(Constant.ERROR_MSG);
                 T.show(ActivityCashierActivity.this, msg);
@@ -333,9 +333,9 @@ public class ActivityCashierActivity extends BaseActivity {
                 String errorMsg = data.getExtras().getString("error_msg"); // 错误信息
                 //String extraMsg = data.getExtras().getString("extra_msg"); // 错误信息
                 if (result.equals("success")) {
-                    Map<String,Object> map=new HashMap<>();
-                    map.put(Constant.ID,order_id);
-                    SkipUtils.jumpForMap(ActivityCashierActivity.this, PaySuccessActivity.class, map,true);
+                    Map<String, Object> map = new HashMap<>();
+                    map.put(Constant.ID, order_id);
+                    SkipUtils.jumpForMap(ActivityCashierActivity.this, PaySuccessActivity.class, map, true);
                 } else if (result.equals("fail")) {
                     T.show(ActivityCashierActivity.this, "支付失败");
                 } else if (result.equals("cancel")) {

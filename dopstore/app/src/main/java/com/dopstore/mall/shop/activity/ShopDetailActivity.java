@@ -21,9 +21,9 @@ import android.widget.TextView;
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.MainActivity;
 import com.dopstore.mall.activity.bean.CityBean;
-import com.dopstore.mall.login.bean.UserData;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.login.activity.LoginActivity;
+import com.dopstore.mall.login.bean.UserData;
 import com.dopstore.mall.order.activity.ShopPaySuccessActivity;
 import com.dopstore.mall.shop.bean.ConfirmOrderData;
 import com.dopstore.mall.shop.bean.ConfirmOrderData.ResultData;
@@ -56,14 +56,14 @@ import java.util.Map;
 public class ShopDetailActivity extends BaseActivity {
     private WebView webView;
     private TextView titleTv;
-    private ImageButton collectBt,shareBt;
+    private ImageButton collectBt, shareBt;
     private String isCollect = "0";
     private String shop_id;
     private JsInterface jsInterface;
     private OtherLoginUtils otherLoginUtils;
-    private  String shop_url="";
-    private  String shop_title="";
-    private  String shop_image="";
+    private String shop_url = "";
+    private String shop_title = "";
+    private String shop_image = "";
     private ACache aCache;
     private CommHttp httpHelper;
 
@@ -76,26 +76,26 @@ public class ShopDetailActivity extends BaseActivity {
 
     private void initView() {
         aCache = ACache.get(this);
-        httpHelper=CommHttp.getInstance();
-        otherLoginUtils=new OtherLoginUtils(this);
+        httpHelper = CommHttp.getInstance();
+        otherLoginUtils = new OtherLoginUtils(this);
         Map<String, Object> map = SkipUtils.getMap(this);
         if (map == null) return;
         shop_id = map.get(Constant.ID).toString();
         shop_title = map.get(Constant.NAME).toString();
         shop_image = map.get(Constant.PICTURE).toString();
         webView = (WebView) findViewById(R.id.shop_detail_web);
-        titleTv= (TextView) findViewById(R.id.title_main_txt);
+        titleTv = (TextView) findViewById(R.id.title_main_txt);
         titleTv.setText("商品详情");
         titleTv.setTextColor(getResources().getColor(R.color.white_color));
-        ImageButton backBt= (ImageButton) findViewById(R.id.title_left_imageButton);
+        ImageButton backBt = (ImageButton) findViewById(R.id.title_left_imageButton);
         backBt.setBackgroundResource(R.mipmap.back_arrow);
         backBt.setVisibility(View.VISIBLE);
         backBt.setOnClickListener(listener);
-        collectBt= (ImageButton) findViewById(R.id.title_right_before_imageButton);
+        collectBt = (ImageButton) findViewById(R.id.title_right_before_imageButton);
         collectBt.setBackgroundResource(R.mipmap.collect_logo);
         collectBt.setVisibility(View.VISIBLE);
         collectBt.setOnClickListener(listener);
-        shareBt= (ImageButton) findViewById(R.id.title_right_imageButton);
+        shareBt = (ImageButton) findViewById(R.id.title_right_imageButton);
         shareBt.setBackgroundResource(R.mipmap.share_logo);
         shareBt.setVisibility(View.VISIBLE);
         shareBt.setOnClickListener(listener);
@@ -141,7 +141,7 @@ public class ShopDetailActivity extends BaseActivity {
             }
 
         });
-        shop_url= URL.SHOP_GOOD_DETAIL_URL + shop_id;
+        shop_url = URL.SHOP_GOOD_DETAIL_URL + shop_id;
         webView.loadUrl(shop_url);
         webView.addJavascriptInterface(jsInterface, "androidObj");
     }
@@ -219,11 +219,11 @@ public class ShopDetailActivity extends BaseActivity {
 
                 @Override
                 public void run() {
-                    if ("\n商品详情\n".equals(name)){
+                    if ("\n商品详情\n".equals(name)) {
                         collectBt.setVisibility(View.VISIBLE);
                         shareBt.setVisibility(View.VISIBLE);
                         titleTv.setText("商品详情");
-                    }else {
+                    } else {
                         collectBt.setVisibility(View.GONE);
                         shareBt.setVisibility(View.GONE);
                         titleTv.setText(name);
@@ -239,20 +239,22 @@ public class ShopDetailActivity extends BaseActivity {
                 userID = UserUtils.getId(ShopDetailActivity.this);
                 return userID;
             } else {
-                userID="";
+                userID = "";
                 SkipUtils.directJump(ShopDetailActivity.this, LoginActivity.class, false);
                 return userID;
             }
         }
 
         @android.webkit.JavascriptInterface
-        public void confirmOrder(String goods_id, String goods_sku_id,String  num,String user_id){
+        public void confirmOrder(String goods_id, String goods_sku_id, String num, String user_id) {
             getGoodDetail(goods_id, goods_sku_id, num, user_id);
         }
+
         @android.webkit.JavascriptInterface
         public void showMsg(String msg) {
-           T.show(ShopDetailActivity.this,msg);
+            T.show(ShopDetailActivity.this, msg);
         }
+
         @android.webkit.JavascriptInterface
         public void dealOrderBlancePay() {
             new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -266,44 +268,44 @@ public class ShopDetailActivity extends BaseActivity {
     }
 
     private void getGoodDetail(String goods_id, final String goods_sku_id, String num, String user_id) {
-        Map<String,Object> map=new HashMap<String,Object>();
-        map.put("goods_id",goods_id);
-        map.put("goods_sku_id",goods_sku_id);
-        map.put("num",num);
-        httpHelper.post(this, URL.GET_ORDER_GOODS,map,new CommHttp.HttpCallBack() {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("goods_id", goods_id);
+        map.put("goods_sku_id", goods_sku_id);
+        map.put("num", num);
+        httpHelper.post(this, URL.GET_ORDER_GOODS, map, new CommHttp.HttpCallBack() {
             @Override
             public void success(String body) {
                 try {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
-                    if ("0".equals(code)){
+                    if ("0".equals(code)) {
                         Gson gson = new Gson();
                         ConfirmOrderData shopData = gson.fromJson(
                                 body, ConfirmOrderData.class);
-                        List<ResultData> resultData=shopData.getResult();
-                        Map<String,Object> map=new HashMap<String, Object>();
-                        map.put(Constant.LIST,resultData);
-                        map.put(Constant.ID,goods_sku_id);
-                        SkipUtils.jumpForMap(ShopDetailActivity.this,ConfirmShopOrderActivity.class,map,false);
-                    }else {
+                        List<ResultData> resultData = shopData.getResult();
+                        Map<String, Object> map = new HashMap<String, Object>();
+                        map.put(Constant.LIST, resultData);
+                        map.put(Constant.ID, goods_sku_id);
+                        SkipUtils.jumpForMap(ShopDetailActivity.this, ConfirmShopOrderActivity.class, map, false);
+                    } else {
                         String msg = jo.optString(Constant.ERROR_MSG);
                         T.show(ShopDetailActivity.this, msg);
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
 
             @Override
             public void failed(String msg) {
-                T.show(ShopDetailActivity.this,msg);
+                T.show(ShopDetailActivity.this, msg);
             }
         });
     }
 
     private void upUserData() {
-        String user_id=UserUtils.getId(this);
-        httpHelper.get(this, URL.USER_DETAIL+user_id,new CommHttp.HttpCallBack() {
+        String user_id = UserUtils.getId(this);
+        httpHelper.get(this, URL.USER_DETAIL + user_id, new CommHttp.HttpCallBack() {
             @Override
             public void success(String body) {
                 AnalyData(body);
@@ -321,7 +323,7 @@ public class ShopDetailActivity extends BaseActivity {
             JSONObject jo = new JSONObject(body);
             String code = jo.optString(Constant.ERROR_CODE);
             if ("0".equals(code)) {
-                String tokenStr=jo.optString(Constant.TOKEN);
+                String tokenStr = jo.optString(Constant.TOKEN);
                 UserUtils.setToken(ShopDetailActivity.this, tokenStr);
                 JSONObject user = jo.optJSONObject(Constant.USER);
                 JSONArray citys = jo.optJSONArray(Constant.CITYS);
@@ -384,7 +386,7 @@ public class ShopDetailActivity extends BaseActivity {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
                     if ("0".equals(code)) {
-                        Intent it=new Intent();
+                        Intent it = new Intent();
                         it.setAction(Constant.BACK_CART_REFRESH_DATA);
                         sendBroadcast(it);
                         T.show(ShopDetailActivity.this, "添加购物车成功");
@@ -409,11 +411,11 @@ public class ShopDetailActivity extends BaseActivity {
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.title_right_imageButton: {//分享
-                    ShareData shareData=new ShareData();
+                    ShareData shareData = new ShareData();
                     shareData.setContent(shop_title);
                     shareData.setImage(shop_image);
-                    shareData.setUrl(URL.SHOP_GOOD_DETAIL_URL+shop_id);
-                    otherLoginUtils.showShare(ShopDetailActivity.this,shareData);
+                    shareData.setUrl(URL.SHOP_GOOD_DETAIL_URL + shop_id);
+                    otherLoginUtils.showShare(ShopDetailActivity.this, shareData);
                 }
                 break;
                 case R.id.title_right_before_imageButton: {//收藏
@@ -424,9 +426,10 @@ public class ShopDetailActivity extends BaseActivity {
                     }
                 }
                 break;
-                case R.id.title_left_imageButton:{
+                case R.id.title_left_imageButton: {
                     SkipUtils.back(ShopDetailActivity.this);
-                }break;
+                }
+                break;
             }
 
         }

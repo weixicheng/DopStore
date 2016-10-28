@@ -37,20 +37,19 @@ import java.util.List;
 import java.util.Map;
 
 
-
 /**
  * Created by 喜成 on 16/9/8.
  * name
  */
-public class MyActivityActivity extends BaseActivity implements OnRefreshListener<ListView>{
+public class MyActivityActivity extends BaseActivity implements OnRefreshListener<ListView> {
     private PullToRefreshListView pullToRefreshView;
     private LinearLayout errorLayout;
     private TextView loadTv;
     private LinearLayout emptyLayout;
     private View emptyV;
-    private TextView emptyTv,emptyLoadTV;
+    private TextView emptyTv, emptyLoadTV;
     private List<MyActivityData> items = new ArrayList<MyActivityData>();
-    private boolean isRefresh=false;
+    private boolean isRefresh = false;
     private CommHttp httpHelper;
 
     @Override
@@ -62,7 +61,7 @@ public class MyActivityActivity extends BaseActivity implements OnRefreshListene
     }
 
     private void initView() {
-        httpHelper=CommHttp.getInstance();
+        httpHelper = CommHttp.getInstance();
         setCustomTitle("我的活动", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         errorLayout = (LinearLayout) findViewById(R.id.comm_error_layout);
@@ -88,7 +87,7 @@ public class MyActivityActivity extends BaseActivity implements OnRefreshListene
         emptyLoadTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SkipUtils.directJump(MyActivityActivity.this, MainActivity.class,true);
+                SkipUtils.directJump(MyActivityActivity.this, MainActivity.class, true);
             }
         });
     }
@@ -154,9 +153,9 @@ public class MyActivityActivity extends BaseActivity implements OnRefreshListene
     };
 
     private void refreshListView() {
-        if (items.size()>0){
+        if (items.size() > 0) {
             emptyLayout.setVisibility(View.GONE);
-        }else {
+        } else {
             emptyLayout.setVisibility(View.VISIBLE);
         }
         pullToRefreshView.setAdapter(new MyActivityAdapter(this, items));
@@ -164,8 +163,8 @@ public class MyActivityActivity extends BaseActivity implements OnRefreshListene
         pullToRefreshView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String id = items.get(i-1).getId();
-                String stu = items.get(i-1).getState();
+                String id = items.get(i - 1).getId();
+                String stu = items.get(i - 1).getState();
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put(Constant.ID, id);
                 map.put("type", stu);
@@ -175,14 +174,15 @@ public class MyActivityActivity extends BaseActivity implements OnRefreshListene
     }
 
     private final static int BACK_DETAIL_CODE = 1;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (data==null)return;
-        if (requestCode==BACK_DETAIL_CODE){
-            Map<String,Object> map=(Map<String, Object>) data.getSerializableExtra("map");
-            if (map==null)return;
-            String flag=map.get(Constant.ID).toString();
+        if (data == null) return;
+        if (requestCode == BACK_DETAIL_CODE) {
+            Map<String, Object> map = (Map<String, Object>) data.getSerializableExtra("map");
+            if (map == null) return;
+            String flag = map.get(Constant.ID).toString();
             if ("true".equals(flag)) {
                 isRefresh = true;
                 if (isRefresh) {
@@ -203,10 +203,10 @@ public class MyActivityActivity extends BaseActivity implements OnRefreshListene
         }
     }
 
-    private void dismissRefresh(){
-        if (isRefresh){
+    private void dismissRefresh() {
+        if (isRefresh) {
             pullToRefreshView.onRefreshComplete();
-            isRefresh=false;
+            isRefresh = false;
         }
     }
 
@@ -215,7 +215,7 @@ public class MyActivityActivity extends BaseActivity implements OnRefreshListene
         pullToRefreshView.getLoadingLayoutProxy().setRefreshingLabel("正在刷新");
         pullToRefreshView.getLoadingLayoutProxy().setPullLabel("下拉刷新");
         pullToRefreshView.getLoadingLayoutProxy().setReleaseLabel("释放开始刷新");
-        isRefresh=true;
+        isRefresh = true;
         if (isRefresh) {
             items.clear();
             getMyOrder();

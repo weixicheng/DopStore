@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 
-
 /**
  * Created by 喜成 on 16/9/12.
  * name
@@ -51,7 +50,7 @@ public class HelpActivity extends BaseActivity {
     }
 
     private void initView() {
-        httpHelper=CommHttp.getInstance();
+        httpHelper = CommHttp.getInstance();
         setCustomTitle("帮助中心", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         listView = (ListView) findViewById(R.id.help_list);

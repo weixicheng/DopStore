@@ -26,7 +26,7 @@ public class ActivityDetailAdapter extends BaseAdapter {
     public ActivityDetailAdapter(Context context, List<ShopData> list) {
         this.context = context;
         this.list = list;
-        imageLoader=ImageLoader.getInstance();
+        imageLoader = ImageLoader.getInstance();
     }
 
     @Override
@@ -58,7 +58,7 @@ public class ActivityDetailAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
         if (list.size() > 0) {
-            imageLoader.displayImage(list.get(i).getCover()+"?imageView2/1/w/204/h/204", viewHolder.bigImageView);
+            imageLoader.displayImage(list.get(i).getCover() + "?imageView2/1/w/204/h/204", viewHolder.bigImageView);
             viewHolder.titleTv.setText(list.get(i).getName());
             viewHolder.priceTv.setText("￥" + list.get(i).getPrice());
         }

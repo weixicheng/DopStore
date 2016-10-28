@@ -62,7 +62,7 @@ import java.util.Map;
 /**
  * 作者：xicheng on 16/9/13
  */
-public class   ActivityDetailActivity extends BaseActivity {
+public class ActivityDetailActivity extends BaseActivity {
     private RelativeLayout bottomLy;
     private String isCollect = "0";
     private ImageButton collectBt, shareBt;
@@ -98,15 +98,15 @@ public class   ActivityDetailActivity extends BaseActivity {
     }
 
     private void initView() {
-        httpHelper=CommHttp.getInstance();
+        httpHelper = CommHttp.getInstance();
         otherLoginUtils = new OtherLoginUtils(this);
-        imageLoader=ImageLoader.getInstance();
+        imageLoader = ImageLoader.getInstance();
         Map<String, Object> map = SkipUtils.getMap(this);
         if (map == null) return;
         activity_id = map.get(Constant.ID).toString();
         mcoySnapPageLayout = (McoySnapPageLayout) findViewById(R.id.activity_detail_flipLayout);
-        View topView= LayoutInflater.from(this).inflate(R.layout.activity_detail_top_layout, null);
-        View bottomView= LayoutInflater.from(this).inflate(R.layout.activity_detail_bottom_layout, null);
+        View topView = LayoutInflater.from(this).inflate(R.layout.activity_detail_top_layout, null);
+        View bottomView = LayoutInflater.from(this).inflate(R.layout.activity_detail_bottom_layout, null);
         topPage = new McoyProductDetailInfoPage(this, topView);
         bottomPage = new McoyProductContentPage(this, bottomView);
         mcoySnapPageLayout.setSnapPages(topPage, bottomPage);
@@ -142,7 +142,7 @@ public class   ActivityDetailActivity extends BaseActivity {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         // 设置图片宽高
-        int screenWidth =getWindowManager().getDefaultDisplay().getWidth();
+        int screenWidth = getWindowManager().getDefaultDisplay().getWidth();
         int picSize = screenWidth / 2;
         RelativeLayout.LayoutParams imagePa = new RelativeLayout.LayoutParams(
                 screenWidth, picSize);
@@ -161,10 +161,10 @@ public class   ActivityDetailActivity extends BaseActivity {
         phoneTv = (TextView) topView.findViewById(R.id.activity_detail_phone);
         eScrollView = (EScrollView) topView.findViewById(R.id.activity_detail_about_scrollview);
     }
-    private void initBottomView(View bottomView) {
-        webView=(WebView) bottomView.findViewById(R.id.activity_detail_bottom_web);
-    }
 
+    private void initBottomView(View bottomView) {
+        webView = (WebView) bottomView.findViewById(R.id.activity_detail_bottom_web);
+    }
 
 
     private void initData() {
@@ -200,10 +200,10 @@ public class   ActivityDetailActivity extends BaseActivity {
                         detailBean = new ActivityDetailBean();
                         detailBean.setId(middle.optString("id"));
                         detailBean.setName(middle.optString("name"));
-                        JSONArray pictureJa=middle.optJSONArray("picture");
-                        List<String> picList=new ArrayList<String>();
-                        if (pictureJa!=null&&pictureJa.length()>0){
-                            for (int i=0;i<pictureJa.length();i++){
+                        JSONArray pictureJa = middle.optJSONArray("picture");
+                        List<String> picList = new ArrayList<String>();
+                        if (pictureJa != null && pictureJa.length() > 0) {
+                            for (int i = 0; i < pictureJa.length(); i++) {
                                 picList.add(pictureJa.getString(i));
                             }
                         }
@@ -310,7 +310,7 @@ public class   ActivityDetailActivity extends BaseActivity {
                         shopLayout.setVisibility(View.GONE);
                     }
 
-                    String url=detailBean.getContent();
+                    String url = detailBean.getContent();
                     initWebViewSetting(url);
                 }
                 break;
@@ -363,27 +363,27 @@ public class   ActivityDetailActivity extends BaseActivity {
             }
 
         });
-        url="https://www.baidu.com/";
+        url = "https://www.baidu.com/";
         webView.loadUrl(url);
     }
 
     private void setImageList(List<String> picture) {
-        if (picture != null&&picture.size()>0) {
-            if (picture.size()==1){
+        if (picture != null && picture.size() > 0) {
+            if (picture.size() == 1) {
                 rollHeaderView.setVisibility(View.GONE);
                 headImagView.setVisibility(View.VISIBLE);
-                imageLoader.displayImage(picture.get(0)+"?imageView2/1/w/1000/h/480", headImagView);
-            }else {
+                imageLoader.displayImage(picture.get(0) + "?imageView2/1/w/1000/h/480", headImagView);
+            } else {
                 rollHeaderView.setVisibility(View.VISIBLE);
                 headImagView.setVisibility(View.GONE);
                 List<String> imgUrlList = new ArrayList<String>();
-                for (int i=0;i<picture.size();i++) {
+                for (int i = 0; i < picture.size(); i++) {
                     imgUrlList.add(picture.get(i));
                 }
                 rollHeaderView.setImgUrlData(imgUrlList);
                 rollHeaderView.stopRoll();
             }
-        }else {
+        } else {
             rollHeaderView.setVisibility(View.GONE);
             headImagView.setVisibility(View.VISIBLE);
         }

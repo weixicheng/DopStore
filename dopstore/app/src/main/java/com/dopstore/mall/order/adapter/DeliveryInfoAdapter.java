@@ -57,14 +57,14 @@ public class DeliveryInfoAdapter extends BaseAdapter {
         if (items != null && items.size() > 0) {
             DeliveryListData data = items.get(position);
             if (data != null) {
-                holder.name.setText("【"+data.getLogistics_zone()+"】"+data.getLogistics_remark());
-                long time=data.getLogistics_time();
+                holder.name.setText("【" + data.getLogistics_zone() + "】" + data.getLogistics_remark());
+                long time = data.getLogistics_time();
                 String logistTime = Utils.formatSecond(time, "yyyy-MM-dd HH:mm:ss");
                 holder.time.setText(logistTime);
-                if (position==0){
+                if (position == 0) {
                     holder.empty.setVisibility(View.VISIBLE);
                     holder.line.setBackgroundResource(R.drawable.dot_focus);
-                }else {
+                } else {
                     holder.empty.setVisibility(View.GONE);
                     holder.line.setBackgroundResource(R.drawable.dot_normal);
                 }
@@ -75,7 +75,7 @@ public class DeliveryInfoAdapter extends BaseAdapter {
 
     static class ViewHolder {
         private TextView name, time;
-        private View line,empty;
+        private View line, empty;
     }
 
 }

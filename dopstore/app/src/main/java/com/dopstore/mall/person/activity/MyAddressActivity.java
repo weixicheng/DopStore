@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 
 
-
 /**
  * 我的地址薄
  */
@@ -46,7 +45,7 @@ public class MyAddressActivity extends BaseActivity {
     private TextView emptyTv;
     private List<MyAddressData> listData = new ArrayList<MyAddressData>();
     private MyAddressAdapter mAdapter;
-    private int isShow=0;
+    private int isShow = 0;
     private CommHttp httpHelper;
 
     @Override
@@ -58,7 +57,7 @@ public class MyAddressActivity extends BaseActivity {
     }
 
     private void initView() {
-        httpHelper=CommHttp.getInstance();
+        httpHelper = CommHttp.getInstance();
         setCustomTitle("选择收货地址", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         my_address = (ListView) findViewById(R.id.lv_my_address);
@@ -77,13 +76,13 @@ public class MyAddressActivity extends BaseActivity {
     }
 
     private void doRequest() {
-        Map<String,Object> map=SkipUtils.getMap(this);
-        if (map==null)return;
-        String isSelect=map.get(Constant.ID).toString();
-        if ("1".equals(isSelect)){
-            isShow=1;
-        }else {
-            isShow=0;
+        Map<String, Object> map = SkipUtils.getMap(this);
+        if (map == null) return;
+        String isSelect = map.get(Constant.ID).toString();
+        if ("1".equals(isSelect)) {
+            isShow = 1;
+        } else {
+            isShow = 0;
         }
         getAddress();
     }
@@ -116,7 +115,7 @@ public class MyAddressActivity extends BaseActivity {
                                 listData.add(data);
                             }
                             emptyLayout.setVisibility(View.GONE);
-                        }else {
+                        } else {
                             emptyLayout.setVisibility(View.VISIBLE);
                         }
                         handler.sendEmptyMessage(UPDATE_ADDRESS_CODE);
@@ -138,10 +137,10 @@ public class MyAddressActivity extends BaseActivity {
 
     private void refreshAdapter() {
         if (mAdapter == null) {
-            mAdapter = new MyAddressAdapter(this, listData,isShow);
+            mAdapter = new MyAddressAdapter(this, listData, isShow);
             my_address.setAdapter(mAdapter);
         } else {
-            mAdapter.upData(listData,isShow);
+            mAdapter.upData(listData, isShow);
         }
 
     }
@@ -160,7 +159,7 @@ public class MyAddressActivity extends BaseActivity {
                 }
                 break;
                 case R.id.error_data_load_tv: {
-                    if (listData!=null){
+                    if (listData != null) {
                         listData.clear();
                     }
                     getAddress();

@@ -40,25 +40,26 @@ public class ShopThemeActivity extends BaseActivity {
     }
 
     private void initView() {
-        imageLoader=ImageLoader.getInstance();
+        imageLoader = ImageLoader.getInstance();
         leftImageBack(R.mipmap.back_arrow);
-        topImage=(ImageView) findViewById(R.id.shop_theme_image);
-        scrollView=(ScrollView) findViewById(R.id.shop_theme_scrollview);
-        myGridView=(MyGridView) findViewById(R.id.shop_theme_gridview);
+        topImage = (ImageView) findViewById(R.id.shop_theme_image);
+        scrollView = (ScrollView) findViewById(R.id.shop_theme_scrollview);
+        myGridView = (MyGridView) findViewById(R.id.shop_theme_gridview);
     }
+
     private void initData() {
-        Map<String,Object> map= SkipUtils.getMap(this);
-        if (map==null)return;
-        MainMiddleData mainMiddleData=(MainMiddleData)map.get(Constant.LIST);
-        setCustomTitle(mainMiddleData.getTitle(),getResources().getColor(R.color.white));
-        imageLoader.displayImage(mainMiddleData.getPicture(),topImage);
+        Map<String, Object> map = SkipUtils.getMap(this);
+        if (map == null) return;
+        MainMiddleData mainMiddleData = (MainMiddleData) map.get(Constant.LIST);
+        setCustomTitle(mainMiddleData.getTitle(), getResources().getColor(R.color.white));
+        imageLoader.displayImage(mainMiddleData.getPicture(), topImage);
         myGridView.setAdapter(new MiddleDataAdapter(this, mainMiddleData.getRelated_goods()));
-        scrollView.smoothScrollBy(0,0);
-        final List<ShopData> newDatas=mainMiddleData.getRelated_goods();
+        scrollView.smoothScrollBy(0, 0);
+        final List<ShopData> newDatas = mainMiddleData.getRelated_goods();
         myGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ShopData data=newDatas.get(position);
+                ShopData data = newDatas.get(position);
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put(Constant.ID, data.getId());
                 map.put(Constant.NAME, data.getName());

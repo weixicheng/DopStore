@@ -27,9 +27,9 @@ public class MyAddressAdapter extends BaseAdapter {
     private List<MyAddressData> items;
     private LayoutInflater mInflater;
     public Context context;
-    private int isShow=0;
+    private int isShow = 0;
 
-    public MyAddressAdapter(Context context, List<MyAddressData> items,int isShow) {
+    public MyAddressAdapter(Context context, List<MyAddressData> items, int isShow) {
         super();
         this.items = items;
         this.context = context;
@@ -70,9 +70,9 @@ public class MyAddressAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        if (isShow==1){
+        if (isShow == 1) {
             holder.checkBoxLayout.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             holder.checkBoxLayout.setVisibility(View.GONE);
         }
         if (items != null && items.size() > 0) {
@@ -107,7 +107,7 @@ public class MyAddressAdapter extends BaseAdapter {
                         SkipUtils.jumpForMapResult(context, NewAddressActivity.class, map, 1);
                     }
                 });
-                final  List<MyAddressData> listData=items;
+                final List<MyAddressData> listData = items;
                 holder.checkBoxLayout.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -118,9 +118,9 @@ public class MyAddressAdapter extends BaseAdapter {
                             items.get(mPosition).setIs_check("1");
                         }
                         notifyDataSetChanged();
-                        Map<String,Object> map=new HashMap<String, Object>();
-                        map.put(Constant.LIST,listData.get(position));
-                        SkipUtils.backForMapResult(context,map);
+                        Map<String, Object> map = new HashMap<String, Object>();
+                        map.put(Constant.LIST, listData.get(position));
+                        SkipUtils.backForMapResult(context, map);
                     }
                 });
             }
@@ -128,7 +128,7 @@ public class MyAddressAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void upData(List<MyAddressData> listData,int isShow) {
+    public void upData(List<MyAddressData> listData, int isShow) {
         this.items = listData;
         this.isShow = isShow;
         notifyDataSetChanged();

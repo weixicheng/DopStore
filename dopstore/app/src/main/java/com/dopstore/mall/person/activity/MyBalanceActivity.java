@@ -29,7 +29,7 @@ public class MyBalanceActivity extends BaseActivity {
     private TextView numTv;
     private MyListView listView;
     private List<MyBalanceData> items = new ArrayList<MyBalanceData>();
-    private String numStr="";
+    private String numStr = "";
 
 
     @Override
@@ -66,10 +66,10 @@ public class MyBalanceActivity extends BaseActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Map<String,Object> map=new HashMap<String, Object>();
-                numStr=items.get(position).getTitle();
-                map.put(Constant.PRICE,numStr);
-                SkipUtils.jumpForMap(MyBalanceActivity.this, ReChargeActivity.class,map,true);
+                Map<String, Object> map = new HashMap<String, Object>();
+                numStr = items.get(position).getTitle();
+                map.put(Constant.PRICE, numStr);
+                SkipUtils.jumpForMap(MyBalanceActivity.this, ReChargeActivity.class, map, true);
             }
         });
     }
@@ -88,7 +88,7 @@ public class MyBalanceActivity extends BaseActivity {
                 }
                 break;
             }
-         }
+        }
     };
 
     @Override

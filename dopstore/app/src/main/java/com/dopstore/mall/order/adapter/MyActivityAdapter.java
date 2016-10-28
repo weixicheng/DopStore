@@ -25,7 +25,7 @@ public class MyActivityAdapter extends BaseAdapter {
         super();
         this.items = items;
         mInflater = LayoutInflater.from(context);
-        imageLoader=ImageLoader.getInstance();
+        imageLoader = ImageLoader.getInstance();
     }
 
     @Override
@@ -109,7 +109,7 @@ public class MyActivityAdapter extends BaseAdapter {
                 holder.state.setText(typeName);
                 holder.title.setText(data.getTitle());
                 holder.intro.setText(data.getIntro());
-                imageLoader.displayImage(data.getImage()+"?imageView2/1/w/182/h/182", holder.imageView);
+                imageLoader.displayImage(data.getImage() + "?imageView2/1/w/182/h/182", holder.imageView);
             }
         }
         return convertView;

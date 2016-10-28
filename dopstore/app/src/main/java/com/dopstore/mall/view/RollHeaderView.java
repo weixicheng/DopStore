@@ -61,7 +61,7 @@ public class RollHeaderView extends FrameLayout implements OnPageChangeListener 
 
     //初始化view
     private void initView() {
-        imageLoader=ImageLoader.getInstance();
+        imageLoader = ImageLoader.getInstance();
         View.inflate(mContext, R.layout.view_header, this);
         mViewPager = (ViewPager) findViewById(R.id.vp);
         mDotLl = (LinearLayout) findViewById(R.id.ll_dot);
@@ -247,7 +247,7 @@ public class RollHeaderView extends FrameLayout implements OnPageChangeListener 
                 }
             });
             //加载图片
-            imageLoader.displayImage(mUrlList.get(position % mUrlList.size())+"?imageView2/1/w/1000/h/480", iv);
+            imageLoader.displayImage(mUrlList.get(position % mUrlList.size()) + "?imageView2/1/w/1000/h/480", iv);
             ((ViewPager) container).addView(iv);
             return iv;
         }

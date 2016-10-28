@@ -72,11 +72,11 @@ public class CommHttp {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                if(e.getCause().equals(SocketTimeoutException.class) && serversLoadTimes<maxLoadTimes)//如果超时并未超过指定次数，则重新连接
+                if (e.getCause().equals(SocketTimeoutException.class) && serversLoadTimes < maxLoadTimes)//如果超时并未超过指定次数，则重新连接
                 {
                     serversLoadTimes++;
                     client.newCall(call.request()).enqueue(this);
-                }else {
+                } else {
                     e.printStackTrace();
                 }
 
@@ -137,7 +137,7 @@ public class CommHttp {
     }
 
     public static void get(final Context context, String url, final HttpCallBack callBack) {
-        serversLoadTimes=0;
+        serversLoadTimes = 0;
         String token = UserUtils.getToken(context);
         Request request;
         if (!TextUtils.isEmpty(token)) {
@@ -148,11 +148,11 @@ public class CommHttp {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                if(e.getCause().equals(SocketTimeoutException.class) && serversLoadTimes<maxLoadTimes)//如果超时并未超过指定次数，则重新连接
+                if (e.getCause().equals(SocketTimeoutException.class) && serversLoadTimes < maxLoadTimes)//如果超时并未超过指定次数，则重新连接
                 {
                     serversLoadTimes++;
                     client.newCall(call.request()).enqueue(this);
-                }else {
+                } else {
                     e.printStackTrace();
                 }
             }
