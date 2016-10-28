@@ -34,7 +34,6 @@ import com.dopstore.mall.view.pulltorefresh.PullToRefreshBase;
 import com.dopstore.mall.view.pulltorefresh.PullToRefreshBase.Mode;
 import com.dopstore.mall.view.pulltorefresh.PullToRefreshBase.OnRefreshListener;
 import com.dopstore.mall.view.pulltorefresh.PullToRefreshListView;
-import com.loopj.android.http.RequestParams;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -92,7 +91,7 @@ public class TrolleyFragment extends Fragment implements OnRefreshListener<ListV
 
     public TrolleyFragment(Context context) {
         this.context = context;
-        httpHelper=CommHttp.getInstance(context);
+        httpHelper=CommHttp.getInstance();
     }
 
 
@@ -134,10 +133,10 @@ public class TrolleyFragment extends Fragment implements OnRefreshListener<ListV
                 ja.put(goodBean.getId());
             }
         }
-        RequestParams params=new RequestParams();
+        Map<String,Object> params=new HashMap<String,Object>();
         params.put("user_id", UserUtils.getId(context));
         params.put("item_list",ja.toString());
-        httpHelper.postObject(context, URL.CART_DELETE, params, new CommHttp.HttpCallBack() {
+        httpHelper.post(context, URL.CART_DELETE, params, new CommHttp.HttpCallBack() {
             @Override
             public void success(String body) {
                 try {

@@ -56,6 +56,7 @@ public class ShopListActivity extends BaseActivity implements OnRefreshListener<
     private boolean isUpRefresh = false;
     private int page=1;
     private int viewTYpe=0;
+    private CommHttp httpHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +67,7 @@ public class ShopListActivity extends BaseActivity implements OnRefreshListener<
     }
 
     private void initView() {
+        httpHelper=CommHttp.getInstance();
         setCustomTitle("列表", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         firstTv = (TextView) findViewById(R.id.shop_list_first);

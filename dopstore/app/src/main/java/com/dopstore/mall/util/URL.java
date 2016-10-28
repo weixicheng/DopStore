@@ -6,7 +6,7 @@ package com.dopstore.mall.util;
  */
 public class URL {
    public static String HOST_BASE_URL = "http://orange.dev.attackt.com/";
-//    public static String HOST_BASE_URL = "http://www.dopstore.cn/";
+//  public static String HOST_BASE_URL = "https://www.dopstore.cn/";
     public static String BASE_URL = HOST_BASE_URL+"api/v1/";
     public static String SHOP_GOOD_DETAIL_URL = HOST_BASE_URL+"h5/goods/";//商品分享目标地址
     public static String ACTIVITY_GOOD_DETAIL_URL = HOST_BASE_URL+"h5/activity/";//活动分享目标地址
@@ -45,7 +45,6 @@ public class URL {
     public static String GOODS_ORDERS = BASE_URL + "goods/orders";//我的订单查询
     public static String ORDER_GOODS = BASE_URL + "order/goods";//我的订单详情
     public static String ORDER_REFUND = BASE_URL + "order/refund";//商品订单退款
-    public static String ACTIVITY_REFUND = BASE_URL + "order/activity/refund";//活动订单退款
     public static String LOGISTICS_URL = BASE_URL + "logistics";//物流信息
     public static String USER_RECHARGE = BASE_URL + "user/recharge";//充值
     public static String ORDER_CONFIRM = BASE_URL + "order/confirm";//确认收货

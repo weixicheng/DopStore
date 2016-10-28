@@ -45,6 +45,7 @@ public class LosePwdActivity extends BaseActivity {
     private MyCount mc;
     private String titleStr = "忘记密码";
     private boolean isShow = false;
+    private CommHttp httpHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +62,7 @@ public class LosePwdActivity extends BaseActivity {
                 titleStr = "重置密码";
             }
         }
+        httpHelper = CommHttp.getInstance();
         topLayout = (RelativeLayout) findViewById(R.id.brandsquare_title_layout);
         titleTv = (TextView) findViewById(R.id.register_title_tv);
         titleTv.setText(titleStr);

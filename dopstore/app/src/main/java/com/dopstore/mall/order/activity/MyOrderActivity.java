@@ -56,6 +56,7 @@ public class MyOrderActivity extends BaseActivity implements OnRefreshListener {
     private boolean isUpRefresh = false;
     private int page=1;
     private MyOrderAdapter myOrderAdapter;
+    private CommHttp httpHelper;
 
 
     @Override
@@ -67,6 +68,7 @@ public class MyOrderActivity extends BaseActivity implements OnRefreshListener {
     }
 
     private void initView() {
+        httpHelper=CommHttp.getInstance();
         Map<String, Object> map = SkipUtils.getMap(this);
         if (map == null) return;
         String type = map.get("title").toString();

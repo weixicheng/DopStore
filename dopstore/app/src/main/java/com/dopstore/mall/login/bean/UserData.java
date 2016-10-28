@@ -1,4 +1,4 @@
-package com.dopstore.mall.activity.bean;
+package com.dopstore.mall.login.bean;
 
 /**
  * Created by 喜成 on 16/9/9.

@@ -66,7 +66,6 @@ public class BaseActivity extends AppCompatActivity {
     protected String mCurrentZipCode = "";
 
 
-    public CommHttp httpHelper;
     public CustomProDialog customProDialog;
 
     @Override
@@ -74,7 +73,6 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         MyApplication.getInstance().addActivity(this);
         ShareSDK.initSDK(this);
-        httpHelper = CommHttp.getInstance(this);
         customProDialog=new CustomProDialog(this);
     }
 

@@ -51,6 +51,7 @@ public class ActivityOrderDetailActivity extends BaseActivity {
     private ActivityOrderDetailBean detailBean;
     private CommonDialog dialog;
     private ImageLoader imageLoader;
+    private CommHttp httpHelper;
 
 
     @Override
@@ -63,6 +64,7 @@ public class ActivityOrderDetailActivity extends BaseActivity {
 
     private void initView() {
         imageLoader=ImageLoader.getInstance();
+        httpHelper=CommHttp.getInstance();
         setCustomTitle("订单详情", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         idTv = (TextView) findViewById(R.id.activity_detail_id);
@@ -224,7 +226,7 @@ public class ActivityOrderDetailActivity extends BaseActivity {
     private void refundOrder() {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("order_num", detailBean.getOrder_num());
-        httpHelper.post(this, URL.ACTIVITY_REFUND, map, new CommHttp.HttpCallBack() {
+        httpHelper.post(this, URL.ORDER_REFUND, map, new CommHttp.HttpCallBack() {
             @Override
             public void success(String body) {
                 try {

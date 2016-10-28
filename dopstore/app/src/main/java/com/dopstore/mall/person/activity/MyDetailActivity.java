@@ -1,8 +1,12 @@
 package com.dopstore.mall.person.activity;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -16,7 +20,7 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.bean.CityBean;
-import com.dopstore.mall.activity.bean.UserData;
+import com.dopstore.mall.login.bean.UserData;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.time.TimePopupWindow;
 import com.dopstore.mall.util.ACache;
@@ -81,6 +85,7 @@ public class MyDetailActivity extends BaseActivity {
     private CommonDialog dialog;
     private ACache aCache;
     private List<CityBean> cityList = new ArrayList<CityBean>();
+    private CommHttp httpHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +96,7 @@ public class MyDetailActivity extends BaseActivity {
     }
 
     private void initview() {
+        httpHelper=CommHttp.getInstance();
         aCache = ACache.get(this);
         imageLoader=ImageLoader.getInstance();
         cityList = (List<CityBean>) aCache.getAsObject(Constant.CITYS);
@@ -353,6 +359,12 @@ public class MyDetailActivity extends BaseActivity {
     }
 
     private void getPick() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{"android.permission.CAMERA"}, 112);
+            }
+            return;
+        }
         GalleryFinal.openCamera(REQUEST_CODE_CAMERA, new GalleryFinal.OnHanlderResultCallback() {
             @Override
             public void onHanlderSuccess(int reqeustCode, List<PhotoInfo> resultList) {
@@ -477,7 +489,8 @@ public class MyDetailActivity extends BaseActivity {
                     JSONObject jo = new JSONObject(body);
                     String code = jo.optString(Constant.ERROR_CODE);
                     if ("0".equals(code)) {
-                        aCache.put(Constant.TOKEN, jo.optString(Constant.TOKEN));
+                        String tokenStr=jo.optString(Constant.TOKEN);
+                        UserUtils.setToken(MyDetailActivity.this, tokenStr);
                         JSONObject user = jo.optJSONObject(Constant.USER);
                         JSONArray citys = jo.optJSONArray(Constant.CITYS);
                         List<CityBean> cityList = new ArrayList<CityBean>();

@@ -57,6 +57,7 @@ public class NewAddressActivity extends BaseActivity {
     private TextView mBtnCancle;
     private String is_default = "0";
     private String address_id = "";
+    private CommHttp httpHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +67,7 @@ public class NewAddressActivity extends BaseActivity {
     }
 
     private void initView() {
+        httpHelper=CommHttp.getInstance();
         setCustomTitle("新增收货地址", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
 

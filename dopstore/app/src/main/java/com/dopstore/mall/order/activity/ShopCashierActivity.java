@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.bean.CityBean;
-import com.dopstore.mall.activity.bean.UserData;
+import com.dopstore.mall.login.bean.UserData;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.util.ACache;
 import com.dopstore.mall.util.CommHttp;
@@ -57,6 +57,7 @@ public class ShopCashierActivity extends BaseActivity {
     //支付类型
     private int PAY_CODE = 0;
     private ACache aCache;
+    private CommHttp httpHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +68,7 @@ public class ShopCashierActivity extends BaseActivity {
     }
 
     private void initView() {
+        httpHelper=CommHttp.getInstance();
         aCache=ACache.get(this);
         setCustomTitle("收银台", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
@@ -220,7 +222,8 @@ public class ShopCashierActivity extends BaseActivity {
             JSONObject jo = new JSONObject(body);
             String code = jo.optString(Constant.ERROR_CODE);
             if ("0".equals(code)) {
-                aCache.put(Constant.TOKEN, jo.optString(Constant.TOKEN));
+                String tokenStr=jo.optString(Constant.TOKEN);
+                UserUtils.setToken(ShopCashierActivity.this, tokenStr);
                 JSONObject user = jo.optJSONObject(Constant.USER);
                 JSONArray citys = jo.optJSONArray(Constant.CITYS);
                 List<CityBean> cityList = new ArrayList<CityBean>();

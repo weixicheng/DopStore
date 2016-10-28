@@ -40,6 +40,7 @@ public class HelpActivity extends BaseActivity {
     private LinearLayout errorLayout;
     private TextView loadTv;
     private List<HelpData> lists = new ArrayList<HelpData>();
+    private CommHttp httpHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +51,7 @@ public class HelpActivity extends BaseActivity {
     }
 
     private void initView() {
+        httpHelper=CommHttp.getInstance();
         setCustomTitle("帮助中心", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         listView = (ListView) findViewById(R.id.help_list);

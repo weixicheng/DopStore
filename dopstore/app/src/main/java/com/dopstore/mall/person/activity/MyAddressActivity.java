@@ -47,6 +47,7 @@ public class MyAddressActivity extends BaseActivity {
     private List<MyAddressData> listData = new ArrayList<MyAddressData>();
     private MyAddressAdapter mAdapter;
     private int isShow=0;
+    private CommHttp httpHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +58,7 @@ public class MyAddressActivity extends BaseActivity {
     }
 
     private void initView() {
+        httpHelper=CommHttp.getInstance();
         setCustomTitle("选择收货地址", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         my_address = (ListView) findViewById(R.id.lv_my_address);

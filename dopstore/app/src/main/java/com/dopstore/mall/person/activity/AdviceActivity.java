@@ -32,6 +32,7 @@ import java.util.Map;
 public class AdviceActivity extends BaseActivity {
     private EditText adviceEt, postEt;
     private Button submit;
+    private CommHttp httpHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +43,7 @@ public class AdviceActivity extends BaseActivity {
     }
 
     private void initView() {
+        httpHelper=CommHttp.getInstance();
         setCustomTitle("意见反馈", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         adviceEt = (EditText) findViewById(R.id.advice_input_et);

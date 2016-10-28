@@ -1,6 +1,7 @@
 package com.dopstore.mall.login.activity;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,6 @@ import com.dopstore.mall.R;
 import com.dopstore.mall.activity.MainActivity;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.util.SkipUtils;
-import com.dopstore.mall.util.SpUtils;
 import com.dopstore.mall.view.MyScrollLayoutForStart;
 
 
@@ -37,14 +37,14 @@ public class WelcomePageActivity extends BaseActivity {
     public void initView() {
         jumpBt = (Button) findViewById(R.id.before_start_jump_bt);
         mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        boolean flag = (Boolean) SpUtils.getParam(this, "boolean", false);
+        boolean flag = getFlag();
         if (flag) {
             SkipUtils.directJump(WelcomePageActivity.this, MainActivity.class, true);
         }
         jumpBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SpUtils.setParam(WelcomePageActivity.this, "boolean", true);
+                setFlag(true);
                 SkipUtils.directJump(WelcomePageActivity.this, MainActivity.class, true);
             }
         });
@@ -77,6 +77,7 @@ public class WelcomePageActivity extends BaseActivity {
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        setFlag(true);
                         SkipUtils.directJump(WelcomePageActivity.this, MainActivity.class, true);
                     }
                 });
@@ -94,6 +95,17 @@ public class WelcomePageActivity extends BaseActivity {
 
             }
         });
+    }
+
+    private void setFlag(boolean flag){
+        SharedPreferences sp = getSharedPreferences("welcome_page", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean("flag",flag);
+        editor.commit();
+    }
+    private boolean getFlag(){
+        SharedPreferences sp = getSharedPreferences("welcome_page", Context.MODE_PRIVATE);
+        return sp.getBoolean("flag", false);
     }
 
 

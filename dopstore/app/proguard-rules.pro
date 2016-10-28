@@ -12,16 +12,15 @@
 # If your project uses WebView with JS, uncomment the following
 # and specify the fully qualified class name to the JavaScript interface
 # class:
--optimizationpasses 5
--dontusemixedcaseclassnames
--dontskipnonpubliclibraryclasses
--dontpreverify
--ignorewarnings
--verbose
--optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
 
 -keepclassmembers class fqcn.of.javascript.interface.for.webview {
    public *;}
+
+-dontoptimize
+-dontpreverify
+
+-dontwarn cn.jpush.**
+-keep class cn.jpush.** { *; }
 
 
 

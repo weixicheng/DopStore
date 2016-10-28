@@ -54,6 +54,7 @@ public class OrderDetailActivity extends BaseActivity {
     private String order_num = "";
     private LinearLayout errorLayout,hintLayout;
     private TextView loadTv;
+    private CommHttp httpHelper;
 
 
     @Override
@@ -65,6 +66,7 @@ public class OrderDetailActivity extends BaseActivity {
     }
 
     private void initView() {
+        httpHelper=CommHttp.getInstance();
         Map<String, Object> map = SkipUtils.getMap(this);
         if (map == null) return;
         order_num = map.get(Constant.ID).toString();

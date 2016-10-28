@@ -40,6 +40,7 @@ public class DeliveryInfoActivity extends BaseActivity {
     private String logistics_company = "";
     private LinearLayout errorLayout;
     private TextView loadTv;
+    private CommHttp httpHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +51,7 @@ public class DeliveryInfoActivity extends BaseActivity {
     }
 
     private void initView() {
+        httpHelper=CommHttp.getInstance();
         setCustomTitle("配送信息", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         errorLayout = (LinearLayout) findViewById(R.id.comm_error_layout);

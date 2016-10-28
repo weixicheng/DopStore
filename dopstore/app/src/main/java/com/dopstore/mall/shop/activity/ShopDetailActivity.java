@@ -21,7 +21,7 @@ import android.widget.TextView;
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.MainActivity;
 import com.dopstore.mall.activity.bean.CityBean;
-import com.dopstore.mall.activity.bean.UserData;
+import com.dopstore.mall.login.bean.UserData;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.login.activity.LoginActivity;
 import com.dopstore.mall.order.activity.ShopPaySuccessActivity;
@@ -65,6 +65,7 @@ public class ShopDetailActivity extends BaseActivity {
     private  String shop_title="";
     private  String shop_image="";
     private ACache aCache;
+    private CommHttp httpHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +76,7 @@ public class ShopDetailActivity extends BaseActivity {
 
     private void initView() {
         aCache = ACache.get(this);
+        httpHelper=CommHttp.getInstance();
         otherLoginUtils=new OtherLoginUtils(this);
         Map<String, Object> map = SkipUtils.getMap(this);
         if (map == null) return;
@@ -319,7 +321,8 @@ public class ShopDetailActivity extends BaseActivity {
             JSONObject jo = new JSONObject(body);
             String code = jo.optString(Constant.ERROR_CODE);
             if ("0".equals(code)) {
-                aCache.put(Constant.TOKEN, jo.optString(Constant.TOKEN));
+                String tokenStr=jo.optString(Constant.TOKEN);
+                UserUtils.setToken(ShopDetailActivity.this, tokenStr);
                 JSONObject user = jo.optJSONObject(Constant.USER);
                 JSONArray citys = jo.optJSONArray(Constant.CITYS);
                 List<CityBean> cityList = new ArrayList<CityBean>();

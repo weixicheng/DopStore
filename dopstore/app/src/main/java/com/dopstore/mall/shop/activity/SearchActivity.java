@@ -39,6 +39,7 @@ public class SearchActivity extends BaseActivity {
     private List<MainTabData> list = new ArrayList<MainTabData>();
     private EditText editText;
     private TextView searTv;
+    private CommHttp httpHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +50,7 @@ public class SearchActivity extends BaseActivity {
     }
 
     private void initView() {
+        httpHelper=CommHttp.getInstance();
         setCustomTitle("分类", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         gridView = (GridView) findViewById(R.id.search_gridview);

@@ -3,37 +3,45 @@ package com.dopstore.mall.login.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.widget.ImageView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.MainActivity;
-import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.base.MyApplication;
 import com.dopstore.mall.util.SkipUtils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import cn.jpush.android.api.InstrumentedActivity;
+
 /**
  * Created by 喜成 on 16/9/30.
  * name
  */
-public class SplashActivity extends BaseActivity {
+public class SplashActivity extends InstrumentedActivity {
     private ImageView imageView;
     private ImageLoader imageLoader;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         initView();
-        initData();
     }
 
     private void initView() {
-        imageLoader=ImageLoader.getInstance();
-        imageView=(ImageView) findViewById(R.id.splash_image);
+        initTo();
+    }
+
+    private void initTo() {
+        imageLoader = ImageLoader.getInstance();
+        imageView = (ImageView) findViewById(R.id.splash_image);
         // 设置异步加载条件
         DisplayImageOptions options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.mipmap.splash)
@@ -41,8 +49,8 @@ public class SplashActivity extends BaseActivity {
                 .showImageOnFail(R.mipmap.splash)
                 .cacheInMemory(true).cacheOnDisk(false).considerExifParams(true)
                 .bitmapConfig(Bitmap.Config.RGB_565).build();
-        imageLoader.displayImage("",imageView,options);
-
+        imageLoader.displayImage("", imageView, options);
+        initData();
     }
 
     private void initData() {
@@ -81,4 +89,6 @@ public class SplashActivity extends BaseActivity {
         SharedPreferences sp = getSharedPreferences("splash", Context.MODE_PRIVATE);
         return sp.getBoolean("isFirst", false);
     }
+
+
 }

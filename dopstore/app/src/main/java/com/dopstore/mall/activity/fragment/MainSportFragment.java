@@ -108,7 +108,7 @@ public class MainSportFragment extends Fragment implements OnRefreshListener<Scr
 
     public MainSportFragment(Context context) {
         this.context = context;
-        httpHelper=CommHttp.getInstance(context);
+        httpHelper=CommHttp.getInstance();
     }
 
     @Nullable

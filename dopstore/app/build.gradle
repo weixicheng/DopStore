@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.2"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
 
     signingConfigs {
         release {
@@ -17,7 +17,7 @@ android {
     defaultConfig {
         applicationId "com.dopstore.mall"
         minSdkVersion 15
-        targetSdkVersion 24
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
 
@@ -52,13 +52,12 @@ android {
                 if (variant.buildType.name.equals('release')) {
                     fileName = "dop_v${defaultConfig.versionName}.apk"
                 } else if (variant.buildType.name.equals('debug')) {
-                    fileName = "dop_v${defaultConfig.versionName}_debug.apk"
+                    fileName = "dop_v${defaultConfig.versionName}_bug.apk"
                 }
                 output.outputFile = new File(outputFile.parent, fileName)
             }
         }
     }
-
 }
 
 repositories {
@@ -73,18 +72,19 @@ repositories {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:appcompat-v7:23.2.1'
     compile 'cz.msebera.android:httpclient:4.3.6'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     compile 'cn.finalteam:galleryfinal:1.4.8.7'
     compile 'com.meiqia:meiqiasdk:3.3.1@aar'
     compile 'com.squareup.okhttp3:okhttp:3.3.1'
+    compile 'com.squareup.okio:okio:1.7.0'
     compile 'com.github.bumptech.glide:glide:3.6.1'
+    compile 'com.google.android.gms:play-services-appindexing:8.4.0'
     compile project(':lib:pingpp')
     compile project(':lib:pingpp_one')
     compile project(':lib:bdwallet_pay_sdk')
-    compile files('libs/android-async-http-1.4.8.jar')
     compile files('libs/zxing.jar')
     compile files('libs/MobCommons-2016.0830.1940.jar')
     compile files('libs/MobTools-2016.0830.1940.jar')
@@ -96,7 +96,6 @@ dependencies {
     compile files('libs/ShareSDK-Wechat-Moments-2.7.7.jar')
     compile files('libs/gson-2.3.1.jar')
     compile files('libs/jpush-android-2.1.9.jar')
-    compile 'com.google.android.gms:play-services-appindexing:8.4.0'
     compile files('libs/httpcore-4.4.4.jar')
     compile files('libs/AMap_Location_V3.00_20160922.jar')
 }

@@ -49,6 +49,7 @@ public class ReChargeActivity extends BaseActivity {
     private static final String CHANNEL_ALIPAY = "alipay";
     //支付类型
     private int PAY_CODE = 0;
+    private CommHttp httpHelper;
 
 
     @Override
@@ -60,6 +61,7 @@ public class ReChargeActivity extends BaseActivity {
     }
 
     private void initView() {
+        httpHelper=CommHttp.getInstance();
         setCustomTitle("收银台", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         balanceLy = (RelativeLayout) findViewById(R.id.cashier_balance_layout);

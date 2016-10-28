@@ -51,6 +51,7 @@ public class MyActivityActivity extends BaseActivity implements OnRefreshListene
     private TextView emptyTv,emptyLoadTV;
     private List<MyActivityData> items = new ArrayList<MyActivityData>();
     private boolean isRefresh=false;
+    private CommHttp httpHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +62,7 @@ public class MyActivityActivity extends BaseActivity implements OnRefreshListene
     }
 
     private void initView() {
+        httpHelper=CommHttp.getInstance();
         setCustomTitle("我的活动", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         errorLayout = (LinearLayout) findViewById(R.id.comm_error_layout);

@@ -27,7 +27,6 @@ import com.dopstore.mall.util.URL;
 import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.util.Utils;
 import com.dopstore.mall.view.MyListView;
-import com.loopj.android.http.RequestParams;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -55,6 +54,7 @@ public class ConfirmOrderActivity extends BaseActivity {
     private List<MyAddressData> addressList = new ArrayList<MyAddressData>();
     private Double totalPrice = 0.00; // 商品总价
     private String address_id="";
+    private CommHttp httpHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +65,7 @@ public class ConfirmOrderActivity extends BaseActivity {
     }
 
     private void initView() {
+        httpHelper=CommHttp.getInstance();
         setCustomTitle("确认订单", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         payBt = (Button) findViewById(R.id.confirm_order_pay_bt);
@@ -191,7 +192,7 @@ public class ConfirmOrderActivity extends BaseActivity {
             ja=null;
         }
         String noteStr=hintText.getText().toString().trim();
-        RequestParams params=new RequestParams();
+        Map<String,Object> params=new HashMap<String,Object>();
         params.put("user_id",UserUtils.getId(this));
         params.put("goods_relateds",ja.toString());
         params.put("address_id",address_id);
@@ -201,8 +202,8 @@ public class ConfirmOrderActivity extends BaseActivity {
         getOrderID(params);
     }
 
-    private void getOrderID(RequestParams params) {
-        httpHelper.postObject(this, URL.CART_CREATE_ORDER, params, new CommHttp.HttpCallBack() {
+    private void getOrderID(Map<String,Object>  params) {
+        httpHelper.post(this, URL.CART_CREATE_ORDER, params, new CommHttp.HttpCallBack() {
             @Override
             public void success(String body) {
                 try {

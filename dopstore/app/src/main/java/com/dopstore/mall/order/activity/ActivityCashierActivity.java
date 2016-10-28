@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.dopstore.mall.R;
 import com.dopstore.mall.activity.bean.CityBean;
-import com.dopstore.mall.activity.bean.UserData;
+import com.dopstore.mall.login.bean.UserData;
 import com.dopstore.mall.base.BaseActivity;
 import com.dopstore.mall.util.ACache;
 import com.dopstore.mall.util.CommHttp;
@@ -61,6 +61,7 @@ public class ActivityCashierActivity extends BaseActivity {
     private int PAY_CODE = 0;
 
     private ACache aCache;
+    private CommHttp httpHelper;
 
 
     @Override
@@ -73,6 +74,7 @@ public class ActivityCashierActivity extends BaseActivity {
 
     private void initView() {
         aCache = ACache.get(this);
+        httpHelper=CommHttp.getInstance();
         setCustomTitle("收银台", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         balanceLy = (RelativeLayout) findViewById(R.id.cashier_balance_layout);
@@ -225,7 +227,8 @@ public class ActivityCashierActivity extends BaseActivity {
             JSONObject jo = new JSONObject(body);
             String code = jo.optString(Constant.ERROR_CODE);
             if ("0".equals(code)) {
-                aCache.put(Constant.TOKEN, jo.optString(Constant.TOKEN));
+                String tokenStr=jo.optString(Constant.TOKEN);
+                UserUtils.setToken(ActivityCashierActivity.this, tokenStr);
                 JSONObject user = jo.optJSONObject(Constant.USER);
                 JSONArray citys = jo.optJSONArray(Constant.CITYS);
                 List<CityBean> cityList = new ArrayList<CityBean>();

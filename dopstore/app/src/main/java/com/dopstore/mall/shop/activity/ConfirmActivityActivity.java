@@ -47,6 +47,7 @@ public class ConfirmActivityActivity extends BaseActivity {
     private ActivityDetailBean detailBean;
     private String price;
     private ImageLoader imageLoader;
+    private CommHttp httpHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +58,7 @@ public class ConfirmActivityActivity extends BaseActivity {
     }
 
     private void initView() {
+        httpHelper=CommHttp.getInstance();
         imageLoader=ImageLoader.getInstance();
         Map<String, Object> map = SkipUtils.getMap(this);
         if (map == null) return;

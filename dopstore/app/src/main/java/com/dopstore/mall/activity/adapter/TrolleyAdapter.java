@@ -48,7 +48,7 @@ public class TrolleyAdapter extends BaseAdapter {
         this.mPriceAll = mPriceAll;
         this.totalPrice = totalPrice;
         this.mCheckAll = mCheckAll;
-        httpHelper = CommHttp.getInstance(context);
+        httpHelper = CommHttp.getInstance();
         imageLoader=ImageLoader.getInstance();
     }
 

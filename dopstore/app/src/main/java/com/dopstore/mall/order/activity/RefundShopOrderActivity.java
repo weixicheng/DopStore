@@ -40,6 +40,7 @@ public class RefundShopOrderActivity extends BaseActivity {
     private Button subBt;
     private OrderDetailData orderDetailData;
     private CommonDialog dialog;
+    private CommHttp httpHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +51,7 @@ public class RefundShopOrderActivity extends BaseActivity {
     }
 
     private void initView() {
+        httpHelper=CommHttp.getInstance();
         setCustomTitle("订单详情", getResources().getColor(R.color.white_color));
         leftImageBack(R.mipmap.back_arrow);
         idTv = (TextView) findViewById(R.id.refund_order_id);

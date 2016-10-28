@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-import com.dopstore.mall.activity.bean.UserData;
+import com.dopstore.mall.login.bean.UserData;
 
 import static com.dopstore.mall.util.Constant.BIRTHDAY;
 
@@ -14,6 +14,7 @@ import static com.dopstore.mall.util.Constant.BIRTHDAY;
  */
 public class UserUtils {
     private static final String FILE_NAME = "user_data";
+    private static final String TOKEN_NAME = "token";
 
     public static void setData(Context context, UserData userData) {
         SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
@@ -33,6 +34,18 @@ public class UserUtils {
         float baF=Float.valueOf(balance+"");
         editor.putFloat(Constant.BALANCE, baF);
         editor.commit();
+    }
+
+    public static void setToken(Context context,String token){
+        SharedPreferences sp = context.getSharedPreferences(TOKEN_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("token",token);
+        editor.commit();
+    }
+
+    public static String getToken(Context context){
+        SharedPreferences sp = context.getSharedPreferences(TOKEN_NAME, Context.MODE_PRIVATE);
+        return sp.getString("token","");
     }
 
     public static boolean haveLogin(Context context) {
@@ -116,5 +129,9 @@ public class UserUtils {
         SharedPreferences.Editor editor = sp.edit();
         editor.clear();
         editor.commit();
+        SharedPreferences tokenSp = context.getSharedPreferences(TOKEN_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor tokenEd = tokenSp.edit();
+        tokenEd.clear();
+        tokenEd.commit();
     }
 }

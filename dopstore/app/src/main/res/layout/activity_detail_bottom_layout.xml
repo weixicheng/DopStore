@@ -9,6 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/gray_color_ee"
+        android:keepScreenOn="true"
+        android:overScrollMode="never"
         android:scrollbars="none" />
 
 </LinearLayout>

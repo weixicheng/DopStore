@@ -3,6 +3,7 @@ package com.dopstore.mall.shop.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,8 +15,10 @@ import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -83,6 +86,7 @@ public class   ActivityDetailActivity extends BaseActivity {
     private McoyProductContentPage bottomPage = null;
     private McoyProductDetailInfoPage topPage = null;
     private ImageLoader imageLoader;
+    private CommHttp httpHelper;
 
 
     @Override
@@ -94,6 +98,7 @@ public class   ActivityDetailActivity extends BaseActivity {
     }
 
     private void initView() {
+        httpHelper=CommHttp.getInstance();
         otherLoginUtils = new OtherLoginUtils(this);
         imageLoader=ImageLoader.getInstance();
         Map<String, Object> map = SkipUtils.getMap(this);
@@ -304,17 +309,9 @@ public class   ActivityDetailActivity extends BaseActivity {
                     } else {
                         shopLayout.setVisibility(View.GONE);
                     }
-                    WebSettings webSettings = webView.getSettings();
-                    webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
-                    webSettings.setUseWideViewPort(true);//关键点
-                    webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-                    webSettings.setDisplayZoomControls(false);
-                    webSettings.setJavaScriptEnabled(true); // 设置支持javascript脚本
-                    webSettings.setAllowFileAccess(true); // 允许访问文件
-                    webSettings.setBuiltInZoomControls(true); // 设置显示缩放按钮
-                    webSettings.setSupportZoom(true); // 支持缩放
-                    webSettings.setLoadWithOverviewMode(true);
-                    webView.loadDataWithBaseURL(null, detailBean.getContent(), "text/html", "utf-8", null);
+
+                    String url=detailBean.getContent();
+                    initWebViewSetting(url);
                 }
                 break;
                 case MAKE_CALL_CODE: {
@@ -327,6 +324,48 @@ public class   ActivityDetailActivity extends BaseActivity {
             }
         }
     };
+
+
+    private void initWebViewSetting(String url) {
+        WebSettings settings = webView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        settings.setSupportZoom(true);
+        settings.setBuiltInZoomControls(true);
+
+        webView.setWebChromeClient(new WebChromeClient() {
+
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                super.onProgressChanged(view, newProgress);
+                if (newProgress == 100) {
+                    // 滚动条消失
+                }
+            }
+
+        });
+
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                webView.loadUrl(url);
+                return true;
+            }
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+            }
+
+        });
+        url="https://www.baidu.com/";
+        webView.loadUrl(url);
+    }
 
     private void setImageList(List<String> picture) {
         if (picture != null&&picture.size()>0) {
@@ -352,7 +391,6 @@ public class   ActivityDetailActivity extends BaseActivity {
 
     private void callPhone() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(new String[]{"android.permission.CALL_PHONE"}, 111);
             }

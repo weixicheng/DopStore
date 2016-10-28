@@ -91,7 +91,7 @@ public class MainShopFragment extends Fragment implements OnRefreshListener<Scro
 
     public MainShopFragment(Context context) {
         this.mContext = context;
-        httpHelper=CommHttp.getInstance(context);
+        httpHelper=CommHttp.getInstance();
     }
 
     @Nullable
