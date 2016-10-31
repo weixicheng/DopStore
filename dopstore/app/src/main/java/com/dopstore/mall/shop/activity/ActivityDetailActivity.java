@@ -74,7 +74,6 @@ public class ActivityDetailActivity extends BaseActivity {
     private LinearLayout shopLayout;
     private LinearLayout errorLayout;
     private TextView loadTv;
-
     private ActivityDetailBean detailBean;
     private List<ShopData> datas;
     private String activity_id;
@@ -82,7 +81,6 @@ public class ActivityDetailActivity extends BaseActivity {
     private LinearLayout phoneLayout;
     private CommonDialog dialog;
     private McoySnapPageLayout mcoySnapPageLayout = null;
-
     private McoyProductContentPage bottomPage = null;
     private McoyProductDetailInfoPage topPage = null;
     private ImageLoader imageLoader;
@@ -112,7 +110,6 @@ public class ActivityDetailActivity extends BaseActivity {
         mcoySnapPageLayout.setSnapPages(topPage, bottomPage);
         initTopView(topView);
         initBottomView(bottomView);
-
         bottomLy = (RelativeLayout) findViewById(R.id.activity_detail_bottom_layout);
         errorLayout = (LinearLayout) findViewById(R.id.comm_error_layout);
         loadTv = (TextView) findViewById(R.id.error_data_load_tv);
@@ -141,11 +138,9 @@ public class ActivityDetailActivity extends BaseActivity {
     private void initTopView(View topView) {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
-        // 设置图片宽高
         int screenWidth = getWindowManager().getDefaultDisplay().getWidth();
         int picSize = screenWidth / 2;
-        RelativeLayout.LayoutParams imagePa = new RelativeLayout.LayoutParams(
-                screenWidth, picSize);
+        RelativeLayout.LayoutParams imagePa = new RelativeLayout.LayoutParams(screenWidth, picSize);
         rollHeaderView = (RollHeaderView) topView.findViewById(R.id.activity_detail_title_image);
         headImagView = (ImageView) topView.findViewById(R.id.activity_detail_title_single_image);
         headImagView.setLayoutParams(imagePa);
@@ -301,7 +296,13 @@ public class ActivityDetailActivity extends BaseActivity {
                     ageTv.setText(detailBean.getAge());
                     addressTv.setText(detailBean.getAddress());
                     shopTv.setText(detailBean.getMerchant());
-                    phoneTv.setText(detailBean.getPhone());
+                    String phoneStr = detailBean.getPhone();
+                    if (TextUtils.isEmpty(phoneStr)) {
+                        phoneLayout.setVisibility(View.INVISIBLE);
+                    } else {
+                        phoneLayout.setVisibility(View.VISIBLE);
+                        phoneTv.setText(phoneStr);
+                    }
                     List<ShopData> beens = detailBean.getItems();
                     if (beens.size() > 0) {
                         shopLayout.setVisibility(View.VISIBLE);
@@ -363,7 +364,6 @@ public class ActivityDetailActivity extends BaseActivity {
             }
 
         });
-        url = "https://www.baidu.com/";
         webView.loadUrl(url);
     }
 
@@ -441,8 +441,10 @@ public class ActivityDetailActivity extends BaseActivity {
                 break;
                 case R.id.activity_detail_phone_layout: {
                     String phone = phoneTv.getText().toString();
-                    dialog = new CommonDialog(ActivityDetailActivity.this, handler, MAKE_CALL_CODE, "", "是否给商家(" + phone + ")打电话？", Constant.SHOWALLBUTTON);
-                    dialog.show();
+                    if (!TextUtils.isEmpty(phone)) {
+                        dialog = new CommonDialog(ActivityDetailActivity.this, handler, MAKE_CALL_CODE, "", "是否给商家(" + phone + ")打电话？", Constant.SHOWALLBUTTON);
+                        dialog.show();
+                    }
                 }
                 break;
             }

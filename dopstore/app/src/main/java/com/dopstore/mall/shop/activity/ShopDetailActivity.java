@@ -213,24 +213,6 @@ public class ShopDetailActivity extends BaseActivity {
             });
         }
 
-        @android.webkit.JavascriptInterface
-        public void changeTitle(final String name) {
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-
-                @Override
-                public void run() {
-                    if ("\n商品详情\n".equals(name)) {
-                        collectBt.setVisibility(View.VISIBLE);
-                        shareBt.setVisibility(View.VISIBLE);
-                        titleTv.setText("商品详情");
-                    } else {
-                        collectBt.setVisibility(View.GONE);
-                        shareBt.setVisibility(View.GONE);
-                        titleTv.setText(name);
-                    }
-                }
-            });
-        }
 
         @android.webkit.JavascriptInterface
         public String getUserID() {

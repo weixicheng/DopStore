@@ -14,11 +14,8 @@ import cn.jpush.android.api.JPushInterface;
 
 
 public class MyApplication extends Application {
-
     public static MyApplication instance = null;
-    //用来管理所有打开的Activity
     public static List<Activity> activities = new ArrayList<Activity>();
-
 
     @Override
     public void onCreate() {
@@ -29,7 +26,6 @@ public class MyApplication extends Application {
         PingppLog.DEBUG = false;
     }
 
-
     public static MyApplication getInstance() {
         if (instance == null) {
             instance = new MyApplication();
@@ -37,38 +33,20 @@ public class MyApplication extends Application {
         return instance;
     }
 
-    /**
-     * 打开了某个Activity
-     *
-     * @param activity
-     */
     public void addActivity(Activity activity) {
         activities.add(activity);
     }
 
-    /**
-     * 关闭了某个Activity
-     *
-     * @param activity
-     */
     public void removeActivity(Activity activity) {
 //        activity.finish();
         activities.remove(activity);
     }
 
-    /**
-     * 主动销毁某个Activity
-     *
-     * @param activity
-     */
     public static void distoryActivity(Activity activity) {
         activity.finish();
         activities.remove(activity);
     }
 
-    /**
-     * 结束所有的Activity然后退出
-     */
     public void finishAllActivity() {
         for (Activity activity : activities) {
             if (!activity.isFinishing()) {

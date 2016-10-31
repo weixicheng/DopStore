@@ -31,7 +31,7 @@ import com.dopstore.mall.view.CommonDialog;
 import com.dopstore.mall.view.MyViewPager;
 
 public class MainActivity extends BaseActivity {
-    protected RelativeLayout mainRly;
+    private RelativeLayout mainRly;
     private RelativeLayout bilingRly;
     private RelativeLayout headRly;
     private RelativeLayout myRly;
@@ -124,7 +124,6 @@ public class MainActivity extends BaseActivity {
                     return personFragment = new PersonFragment(MainActivity.this);
             }
             return null;
-
         }
 
 

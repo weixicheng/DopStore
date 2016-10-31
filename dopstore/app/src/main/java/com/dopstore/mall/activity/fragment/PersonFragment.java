@@ -28,6 +28,7 @@ import com.dopstore.mall.util.SkipUtils;
 import com.dopstore.mall.util.UserUtils;
 import com.dopstore.mall.util.Utils;
 import com.dopstore.mall.view.CircleImageView;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.HashMap;
@@ -52,6 +53,7 @@ public class PersonFragment extends Fragment {
     private View v;
 
     private Context context;
+    private DisplayImageOptions options;
 
     public PersonFragment() {
     }
@@ -97,6 +99,10 @@ public class PersonFragment extends Fragment {
         rightBt.setVisibility(View.VISIBLE);
         rightBt.setOnClickListener(listener);
         headImage = (CircleImageView) v.findViewById(R.id.fragment_person_user_image);
+        options = new DisplayImageOptions.Builder()
+                .showImageOnFail(R.mipmap.me_icon)
+                .showImageForEmptyUri(R.mipmap.me_icon)
+                .showImageOnLoading(R.mipmap.me_icon).build();
     }
 
     public void loadData() {
@@ -109,14 +115,10 @@ public class PersonFragment extends Fragment {
             String babyName = UserUtils.getBabyName(context);
             introTv.setText(babyName + "  " + Utils.formatMilli(babytime, "yyyy年MM月dd日"));
             String avatar = UserUtils.getAvatar(context);
-            if (TextUtils.isEmpty(avatar)) {
-                headImage.setImageResource(R.mipmap.me_icon);
-            } else {
-                imageLoader.displayImage(avatar, headImage);
-            }
+            imageLoader.displayImage(avatar, headImage,options);
             priceTv.setText(UserUtils.getBalance(context));
         } else {
-            headImage.setImageResource(R.mipmap.me_icon);
+            imageLoader.displayImage("", headImage,options);
             nameTv.setVisibility(View.INVISIBLE);
             introTv.setText("登录/注册");
         }

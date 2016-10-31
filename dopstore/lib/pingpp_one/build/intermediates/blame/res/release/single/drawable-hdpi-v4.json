@@ -1,70 +1,70 @@
 [
-  {
-    "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/cmbkb_list_separator.png",
-    "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_list_separator.png"
-  },
-  {
-    "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/cmbkb_space_dark.png",
-    "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_space_dark.png"
-  },
-  {
-    "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/cmbkb_shift_dark_normal.png",
-    "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_shift_dark_normal.png"
-  },
-  {
-    "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/cmbkb_shift_normal.png",
-    "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_shift_normal.png"
-  },
-  {
-    "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/cmbkb_backspace_dark_icon.png",
-    "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_backspace_dark_icon.png"
-  },
-  {
-    "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/cmbkb_emotionstore_progresscancelbtn.png",
-    "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_emotionstore_progresscancelbtn.png"
-  },
-  {
-    "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/cmbkb_key_delete_normal.png",
-    "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_key_delete_normal.png"
-  },
-  {
-    "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/cmbkb_shift_actived.png",
-    "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_shift_actived.png"
-  },
-  {
-    "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/cmbkb_bg.9.png",
-    "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_bg.9.png"
-  },
-  {
-    "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/cmbkb_btn_pressed.9.png",
-    "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_btn_pressed.9.png"
-  },
-  {
-    "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/pingpp_back.png",
-    "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/pingpp_back.png"
-  },
-  {
-    "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/cmbkb_logo.png",
-    "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_logo.png"
-  },
-  {
-    "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/cmbkb_space.png",
-    "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_space.png"
-  },
-  {
-    "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/cmbkb_sym_keyboard_space.png",
-    "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_sym_keyboard_space.png"
-  },
-  {
-    "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/tips_bg.9.png",
-    "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/tips_bg.9.png"
-  },
-  {
-    "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/cmbkb_backspace_icon.png",
-    "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_backspace_icon.png"
-  },
-  {
-    "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/cmbkb_btn_normal.9.png",
-    "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_btn_normal.9.png"
-  }
+    {
+        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/cmbkb_list_separator.png",
+        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_list_separator.png"
+    },
+    {
+        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/cmbkb_space_dark.png",
+        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_space_dark.png"
+    },
+    {
+        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/cmbkb_shift_dark_normal.png",
+        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_shift_dark_normal.png"
+    },
+    {
+        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/cmbkb_shift_normal.png",
+        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_shift_normal.png"
+    },
+    {
+        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/cmbkb_backspace_dark_icon.png",
+        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_backspace_dark_icon.png"
+    },
+    {
+        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/cmbkb_emotionstore_progresscancelbtn.png",
+        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_emotionstore_progresscancelbtn.png"
+    },
+    {
+        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/cmbkb_key_delete_normal.png",
+        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_key_delete_normal.png"
+    },
+    {
+        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/cmbkb_shift_actived.png",
+        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_shift_actived.png"
+    },
+    {
+        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/cmbkb_bg.9.png",
+        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_bg.9.png"
+    },
+    {
+        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/cmbkb_btn_pressed.9.png",
+        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_btn_pressed.9.png"
+    },
+    {
+        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/pingpp_back.png",
+        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/pingpp_back.png"
+    },
+    {
+        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/cmbkb_logo.png",
+        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_logo.png"
+    },
+    {
+        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/cmbkb_space.png",
+        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_space.png"
+    },
+    {
+        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/cmbkb_sym_keyboard_space.png",
+        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_sym_keyboard_space.png"
+    },
+    {
+        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/tips_bg.9.png",
+        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/tips_bg.9.png"
+    },
+    {
+        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/cmbkb_backspace_icon.png",
+        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_backspace_icon.png"
+    },
+    {
+        "merged": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/res/merged/release/drawable-hdpi-v4/cmbkb_btn_normal.9.png",
+        "source": "/Users/xicheng/Desktop/MyApplication/dopstore/lib/pingpp_one/build/intermediates/exploded-aar/dopstore.lib/pingpp/unspecified/res/drawable-hdpi-v4/cmbkb_btn_normal.9.png"
+    }
 ]
