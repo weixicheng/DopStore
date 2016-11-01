@@ -58,18 +58,15 @@ public class TabAdapter extends BaseAdapter {
         }
         String title = list.get(i).getName();
         String isSelect = list.get(i).getIsSelect();
-
         viewHolder.titleTv.setText(title);
         DisplayMetrics dm = new DisplayMetrics();
-        ((Activity) context).getWindowManager().getDefaultDisplay()
-                .getMetrics(dm);
-        // 设置图片宽高
-        int screenWidth = ((Activity) context).getWindowManager()
-                .getDefaultDisplay().getWidth();
-        int picSize = screenWidth / list.size();
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(picSize, LinearLayout.LayoutParams.WRAP_CONTENT);
-        viewHolder.topLayout.setLayoutParams(layoutParams);
-
+        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int screenWidth = ((Activity) context).getWindowManager().getDefaultDisplay().getWidth();
+        if (list.size() <= 5) {
+            int picSize = screenWidth / list.size();
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(picSize, LinearLayout.LayoutParams.WRAP_CONTENT);
+            viewHolder.topLayout.setLayoutParams(layoutParams);
+        }
         if ("1".equals(isSelect)) {
             viewHolder.titleTv.setTextColor(context.getResources().getColor(R.color.red_color_f93448));
             viewHolder.line.setBackgroundColor(context.getResources().getColor(R.color.red_color_f93448));
@@ -77,8 +74,6 @@ public class TabAdapter extends BaseAdapter {
             viewHolder.titleTv.setTextColor(context.getResources().getColor(R.color.gray_color_33));
             viewHolder.line.setBackgroundColor(context.getResources().getColor(R.color.white_color));
         }
-
-
         return view;
     }
 

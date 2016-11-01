@@ -7,8 +7,6 @@ import android.text.TextUtils;
 
 import com.dopstore.mall.login.activity.LoginActivity;
 
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.Map;
@@ -72,6 +70,7 @@ public class CommHttp {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                callBack.failed("网络加载失败");
                 if (e.getCause().equals(SocketTimeoutException.class) && serversLoadTimes < maxLoadTimes)//如果超时并未超过指定次数，则重新连接
                 {
                     serversLoadTimes++;
@@ -79,7 +78,6 @@ public class CommHttp {
                 } else {
                     e.printStackTrace();
                 }
-
             }
 
             @Override
@@ -89,30 +87,13 @@ public class CommHttp {
                 final String bobyStr = boby;
                 final int statusCode = code;
                 if (code == 200) {
-                    try {
-                        JSONObject jo = new JSONObject(boby);
-                        String detail = jo.optString("detail");
-                        if (TextUtils.isEmpty(detail)) {
-                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
 
-                                @Override
-                                public void run() {
-                                    callBack.success(bobyStr);
-                                }
-                            });
-                        } else if ("Error decoding signature".equals(detail)) {
-                            new Handler(Looper.getMainLooper()).post(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                    T.show(context, "请重新登录");
-                                    SkipUtils.directJump(context, LoginActivity.class, false);
-                                }
-                            });
+                        @Override
+                        public void run() {
+                            callBack.success(bobyStr);
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    });
                 } else {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
 
@@ -148,6 +129,7 @@ public class CommHttp {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                callBack.failed("网络加载失败");
                 if (e.getCause().equals(SocketTimeoutException.class) && serversLoadTimes < maxLoadTimes)//如果超时并未超过指定次数，则重新连接
                 {
                     serversLoadTimes++;
@@ -164,30 +146,13 @@ public class CommHttp {
                 final String bobyStr = boby;
                 final int statusCode = code;
                 if (code == 200) {
-                    try {
-                        JSONObject jo = new JSONObject(boby);
-                        String detail = jo.optString("detail");
-                        if (TextUtils.isEmpty(detail)) {
-                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
 
-                                @Override
-                                public void run() {
-                                    callBack.success(bobyStr);
-                                }
-                            });
-                        } else if ("Error decoding signature".equals(detail)) {
-                            new Handler(Looper.getMainLooper()).post(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                    T.show(context, "请重新登录");
-                                    SkipUtils.directJump(context, LoginActivity.class, false);
-                                }
-                            });
+                        @Override
+                        public void run() {
+                            callBack.success(bobyStr);
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    });
                 } else {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
 
